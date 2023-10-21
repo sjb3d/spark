@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 267
+//! Generated from vk.xml with `VK_HEADER_VERSION` 269
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1841,6 +1841,12 @@ impl InstanceExtensions {
     }
     pub fn enable_ext_pageable_device_local_memory(&mut self) {
         self.enable_ext_memory_priority();
+    }
+    pub fn supports_arm_scheduling_controls(&self) -> bool {
+        self.supports_arm_shader_core_builtins()
+    }
+    pub fn enable_arm_scheduling_controls(&mut self) {
+        self.enable_arm_shader_core_builtins();
     }
     pub fn supports_ext_image_sliced_view_of_3d(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -4682,6 +4688,7 @@ pub struct DeviceExtensions {
     pub ext_pipeline_creation_cache_control: bool,
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
+    pub nv_cuda_kernel_launch: bool,
     pub nv_low_latency: bool,
     pub ext_metal_objects: bool,
     pub khr_synchronization2: bool,
@@ -4740,6 +4747,7 @@ pub struct DeviceExtensions {
     pub ext_pageable_device_local_memory: bool,
     pub khr_maintenance4: bool,
     pub arm_shader_core_properties: bool,
+    pub arm_scheduling_controls: bool,
     pub ext_image_sliced_view_of_3d: bool,
     pub valve_descriptor_set_host_mapping: bool,
     pub ext_depth_clamp_zero_one: bool,
@@ -4987,6 +4995,7 @@ impl DeviceExtensions {
             b"VK_EXT_pipeline_creation_cache_control" => self.ext_pipeline_creation_cache_control = true,
             b"VK_NV_device_diagnostics_config" => self.nv_device_diagnostics_config = true,
             b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
+            b"VK_NV_cuda_kernel_launch" => self.nv_cuda_kernel_launch = true,
             b"VK_NV_low_latency" => self.nv_low_latency = true,
             b"VK_EXT_metal_objects" => self.ext_metal_objects = true,
             b"VK_KHR_synchronization2" => self.khr_synchronization2 = true,
@@ -5045,6 +5054,7 @@ impl DeviceExtensions {
             b"VK_EXT_pageable_device_local_memory" => self.ext_pageable_device_local_memory = true,
             b"VK_KHR_maintenance4" => self.khr_maintenance4 = true,
             b"VK_ARM_shader_core_properties" => self.arm_shader_core_properties = true,
+            b"VK_ARM_scheduling_controls" => self.arm_scheduling_controls = true,
             b"VK_EXT_image_sliced_view_of_3d" => self.ext_image_sliced_view_of_3d = true,
             b"VK_VALVE_descriptor_set_host_mapping" => self.valve_descriptor_set_host_mapping = true,
             b"VK_EXT_depth_clamp_zero_one" => self.ext_depth_clamp_zero_one = true,
@@ -5292,6 +5302,7 @@ impl DeviceExtensions {
             ext_pipeline_creation_cache_control: false,
             nv_device_diagnostics_config: false,
             qcom_render_pass_store_ops: false,
+            nv_cuda_kernel_launch: false,
             nv_low_latency: false,
             ext_metal_objects: false,
             khr_synchronization2: false,
@@ -5350,6 +5361,7 @@ impl DeviceExtensions {
             ext_pageable_device_local_memory: false,
             khr_maintenance4: false,
             arm_shader_core_properties: false,
+            arm_scheduling_controls: false,
             ext_image_sliced_view_of_3d: false,
             valve_descriptor_set_host_mapping: false,
             ext_depth_clamp_zero_one: false,
@@ -6852,6 +6864,12 @@ impl DeviceExtensions {
     pub fn enable_qcom_render_pass_store_ops(&mut self) {
         self.qcom_render_pass_store_ops = true;
     }
+    pub fn supports_nv_cuda_kernel_launch(&self) -> bool {
+        self.nv_cuda_kernel_launch
+    }
+    pub fn enable_nv_cuda_kernel_launch(&mut self) {
+        self.nv_cuda_kernel_launch = true;
+    }
     pub fn supports_nv_low_latency(&self) -> bool {
         self.nv_low_latency
     }
@@ -7262,6 +7280,13 @@ impl DeviceExtensions {
     }
     pub fn enable_arm_shader_core_properties(&mut self) {
         self.arm_shader_core_properties = true;
+    }
+    pub fn supports_arm_scheduling_controls(&self) -> bool {
+        self.arm_scheduling_controls && self.supports_arm_shader_core_builtins()
+    }
+    pub fn enable_arm_scheduling_controls(&mut self) {
+        self.arm_scheduling_controls = true;
+        self.enable_arm_shader_core_builtins();
     }
     pub fn supports_ext_image_sliced_view_of_3d(&self) -> bool {
         self.ext_image_sliced_view_of_3d && self.supports_khr_maintenance1()
@@ -8158,6 +8183,9 @@ impl DeviceExtensions {
         if self.qcom_render_pass_store_ops {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_store_ops\0") })
         }
+        if self.nv_cuda_kernel_launch {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cuda_kernel_launch\0") })
+        }
         if self.nv_low_latency {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_low_latency\0") })
         }
@@ -8331,6 +8359,9 @@ impl DeviceExtensions {
         }
         if self.arm_shader_core_properties {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_shader_core_properties\0") })
+        }
+        if self.arm_scheduling_controls {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_scheduling_controls\0") })
         }
         if self.ext_image_sliced_view_of_3d {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_sliced_view_of_3d\0") })
@@ -8903,6 +8934,12 @@ pub struct Device {
     pub fp_set_buffer_collection_image_constraints_fuchsia: Option<vk::FnSetBufferCollectionImageConstraintsFUCHSIA>,
     pub fp_destroy_buffer_collection_fuchsia: Option<vk::FnDestroyBufferCollectionFUCHSIA>,
     pub fp_get_buffer_collection_properties_fuchsia: Option<vk::FnGetBufferCollectionPropertiesFUCHSIA>,
+    pub fp_create_cuda_module_nv: Option<vk::FnCreateCudaModuleNV>,
+    pub fp_get_cuda_module_cache_nv: Option<vk::FnGetCudaModuleCacheNV>,
+    pub fp_create_cuda_function_nv: Option<vk::FnCreateCudaFunctionNV>,
+    pub fp_destroy_cuda_module_nv: Option<vk::FnDestroyCudaModuleNV>,
+    pub fp_destroy_cuda_function_nv: Option<vk::FnDestroyCudaFunctionNV>,
+    pub fp_cmd_cuda_launch_kernel_nv: Option<vk::FnCmdCudaLaunchKernelNV>,
     pub fp_cmd_begin_rendering: Option<vk::FnCmdBeginRendering>,
     pub fp_cmd_end_rendering: Option<vk::FnCmdEndRendering>,
     pub fp_get_descriptor_set_layout_host_mapping_info_valve: Option<vk::FnGetDescriptorSetLayoutHostMappingInfoVALVE>,
@@ -12469,6 +12506,42 @@ impl Device {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetBufferCollectionPropertiesFUCHSIA\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_cuda_module_nv: if extensions.nv_cuda_kernel_launch {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateCudaModuleNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_cuda_module_cache_nv: if extensions.nv_cuda_kernel_launch {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetCudaModuleCacheNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_cuda_function_nv: if extensions.nv_cuda_kernel_launch {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateCudaFunctionNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_cuda_module_nv: if extensions.nv_cuda_kernel_launch {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyCudaModuleNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_cuda_function_nv: if extensions.nv_cuda_kernel_launch {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyCudaFunctionNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_cuda_launch_kernel_nv: if extensions.nv_cuda_kernel_launch {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCudaLaunchKernelNV\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -20185,6 +20258,98 @@ impl Device {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         }
+    }
+    pub unsafe fn create_cuda_module_nv(
+        &self,
+        p_create_info: &vk::CudaModuleCreateInfoNV,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::CudaModuleNV> {
+        let fp = self
+            .fp_create_cuda_module_nv
+            .expect("vkCreateCudaModuleNV is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_cuda_module_cache_nv_to_vec(&self, module: vk::CudaModuleNV) -> Result<Vec<u8>> {
+        let fp = self
+            .fp_get_cuda_module_cache_nv
+            .expect("vkGetCudaModuleCacheNV is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(self.handle), Some(module), len.as_mut_ptr(), ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(self.handle), Some(module), &mut len, v.as_mut_ptr() as *mut _);
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn create_cuda_function_nv(
+        &self,
+        p_create_info: &vk::CudaFunctionCreateInfoNV,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::CudaFunctionNV> {
+        let fp = self
+            .fp_create_cuda_function_nv
+            .expect("vkCreateCudaFunctionNV is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_cuda_module_nv(
+        &self,
+        module: vk::CudaModuleNV,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_cuda_module_nv
+            .expect("vkDestroyCudaModuleNV is not loaded");
+        (fp)(Some(self.handle), Some(module), p_allocator.map_or(ptr::null(), |r| r));
+    }
+    pub unsafe fn destroy_cuda_function_nv(
+        &self,
+        function: vk::CudaFunctionNV,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_cuda_function_nv
+            .expect("vkDestroyCudaFunctionNV is not loaded");
+        (fp)(
+            Some(self.handle),
+            Some(function),
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn cmd_cuda_launch_kernel_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_launch_info: &vk::CudaLaunchInfoNV,
+    ) {
+        let fp = self
+            .fp_cmd_cuda_launch_kernel_nv
+            .expect("vkCmdCudaLaunchKernelNV is not loaded");
+        (fp)(Some(command_buffer), p_launch_info);
     }
     pub unsafe fn cmd_begin_rendering(&self, command_buffer: vk::CommandBuffer, p_rendering_info: &vk::RenderingInfo) {
         let fp = self.fp_cmd_begin_rendering.expect("vkCmdBeginRendering is not loaded");

@@ -4324,6 +4324,18 @@ impl fmt::Display for ShaderCreateFlagsEXT {
     }
 }
 #[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct PhysicalDeviceSchedulingControlsFlagsARM(pub(crate) u64);
+impl PhysicalDeviceSchedulingControlsFlagsARM {
+    pub const SHADER_CORE_COUNT: Self = Self(0x1);
+}
+impl_bitmask!(PhysicalDeviceSchedulingControlsFlagsARM, 0x1);
+impl fmt::Display for PhysicalDeviceSchedulingControlsFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "SHADER_CORE_COUNT")], f)
+    }
+}
+#[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Instance(num::NonZeroUsize);
 impl Instance {
@@ -7665,6 +7677,16 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV: Self = Self(1000300000);
     /// Added by extension VK_NV_device_diagnostics_config.
     pub const DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV: Self = Self(1000300001);
+    /// Added by extension VK_NV_cuda_kernel_launch.
+    pub const CUDA_MODULE_CREATE_INFO_NV: Self = Self(1000307000);
+    /// Added by extension VK_NV_cuda_kernel_launch.
+    pub const CUDA_FUNCTION_CREATE_INFO_NV: Self = Self(1000307001);
+    /// Added by extension VK_NV_cuda_kernel_launch.
+    pub const CUDA_LAUNCH_INFO_NV: Self = Self(1000307002);
+    /// Added by extension VK_NV_cuda_kernel_launch.
+    pub const PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_FEATURES_NV: Self = Self(1000307003);
+    /// Added by extension VK_NV_cuda_kernel_launch.
+    pub const PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_PROPERTIES_NV: Self = Self(1000307004);
     /// Added by extension VK_NV_low_latency.
     pub const QUERY_LOW_LATENCY_SUPPORT_NV: Self = Self(1000310000);
     /// Added by extension VK_EXT_metal_objects.
@@ -7955,6 +7977,12 @@ impl StructureType {
     pub const DEVICE_IMAGE_MEMORY_REQUIREMENTS_KHR: Self = Self::DEVICE_IMAGE_MEMORY_REQUIREMENTS;
     /// Added by extension VK_ARM_shader_core_properties.
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_ARM: Self = Self(1000415000);
+    /// Added by extension VK_ARM_scheduling_controls.
+    pub const DEVICE_QUEUE_SHADER_CORE_CONTROL_CREATE_INFO_ARM: Self = Self(1000417000);
+    /// Added by extension VK_ARM_scheduling_controls.
+    pub const PHYSICAL_DEVICE_SCHEDULING_CONTROLS_FEATURES_ARM: Self = Self(1000417001);
+    /// Added by extension VK_ARM_scheduling_controls.
+    pub const PHYSICAL_DEVICE_SCHEDULING_CONTROLS_PROPERTIES_ARM: Self = Self(1000417002);
     /// Added by extension VK_EXT_image_sliced_view_of_3d.
     pub const PHYSICAL_DEVICE_IMAGE_SLICED_VIEW_OF_3D_FEATURES_EXT: Self = Self(1000418000);
     /// Added by extension VK_EXT_image_sliced_view_of_3d.
@@ -8701,6 +8729,11 @@ impl fmt::Display for StructureType {
             1000294001 => Some(&"PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR"),
             1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
             1000300001 => Some(&"DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV"),
+            1000307000 => Some(&"CUDA_MODULE_CREATE_INFO_NV"),
+            1000307001 => Some(&"CUDA_FUNCTION_CREATE_INFO_NV"),
+            1000307002 => Some(&"CUDA_LAUNCH_INFO_NV"),
+            1000307003 => Some(&"PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_FEATURES_NV"),
+            1000307004 => Some(&"PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_PROPERTIES_NV"),
             1000310000 => Some(&"QUERY_LOW_LATENCY_SUPPORT_NV"),
             1000311000 => Some(&"EXPORT_METAL_OBJECT_CREATE_INFO_EXT"),
             1000311001 => Some(&"EXPORT_METAL_OBJECTS_INFO_EXT"),
@@ -8827,6 +8860,9 @@ impl fmt::Display for StructureType {
             1000411001 => Some(&"SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT"),
             1000412000 => Some(&"PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT"),
             1000415000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_ARM"),
+            1000417000 => Some(&"DEVICE_QUEUE_SHADER_CORE_CONTROL_CREATE_INFO_ARM"),
+            1000417001 => Some(&"PHYSICAL_DEVICE_SCHEDULING_CONTROLS_FEATURES_ARM"),
+            1000417002 => Some(&"PHYSICAL_DEVICE_SCHEDULING_CONTROLS_PROPERTIES_ARM"),
             1000418000 => Some(&"PHYSICAL_DEVICE_IMAGE_SLICED_VIEW_OF_3D_FEATURES_EXT"),
             1000418001 => Some(&"IMAGE_VIEW_SLICED_CREATE_INFO_EXT"),
             1000420000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE"),
@@ -9147,6 +9183,10 @@ impl ObjectType {
     /// Added by extension VK_NV_device_generated_commands.
     pub const INDIRECT_COMMANDS_LAYOUT_NV: Self = Self(1000277000);
     pub const PRIVATE_DATA_SLOT_EXT: Self = Self::PRIVATE_DATA_SLOT;
+    /// Added by extension VK_NV_cuda_kernel_launch.
+    pub const CUDA_MODULE_NV: Self = Self(1000307000);
+    /// Added by extension VK_NV_cuda_kernel_launch.
+    pub const CUDA_FUNCTION_NV: Self = Self(1000307001);
     /// VkBufferCollectionFUCHSIA
     /// Added by extension VK_FUCHSIA_buffer_collection.
     pub const BUFFER_COLLECTION_FUCHSIA: Self = Self(1000366000);
@@ -9203,6 +9243,8 @@ impl fmt::Display for ObjectType {
             1000210000 => Some(&"PERFORMANCE_CONFIGURATION_INTEL"),
             1000268000 => Some(&"DEFERRED_OPERATION_KHR"),
             1000277000 => Some(&"INDIRECT_COMMANDS_LAYOUT_NV"),
+            1000307000 => Some(&"CUDA_MODULE_NV"),
+            1000307001 => Some(&"CUDA_FUNCTION_NV"),
             1000366000 => Some(&"BUFFER_COLLECTION_FUCHSIA"),
             1000396000 => Some(&"MICROMAP_EXT"),
             1000464000 => Some(&"OPTICAL_FLOW_SESSION_NV"),
@@ -10756,6 +10798,10 @@ impl DebugReportObjectTypeEXT {
     pub const SAMPLER_YCBCR_CONVERSION_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION;
     /// Added by extension VK_NV_ray_tracing.
     pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
+    /// Added by extension VK_NV_cuda_kernel_launch.
+    pub const CUDA_MODULE_NV: Self = Self(1000307000);
+    /// Added by extension VK_NV_cuda_kernel_launch.
+    pub const CUDA_FUNCTION_NV: Self = Self(1000307001);
     /// Added by extension VK_FUCHSIA_buffer_collection.
     pub const BUFFER_COLLECTION_FUCHSIA: Self = Self(1000366000);
 }
@@ -10800,6 +10846,8 @@ impl fmt::Display for DebugReportObjectTypeEXT {
             1000029001 => Some(&"CU_FUNCTION_NVX"),
             1000150000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
+            1000307000 => Some(&"CUDA_MODULE_NV"),
+            1000307001 => Some(&"CUDA_FUNCTION_NV"),
             1000366000 => Some(&"BUFFER_COLLECTION_FUCHSIA"),
             _ => None,
         };
@@ -37979,6 +38027,142 @@ impl fmt::Debug for BufferCollectionConstraintsInfoFUCHSIA {
             .finish()
     }
 }
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct CudaModuleNV(num::NonZeroU64);
+impl CudaModuleNV {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct CudaFunctionNV(num::NonZeroU64);
+impl CudaFunctionNV {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CudaModuleCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub data_size: usize,
+    pub p_data: *const c_void,
+}
+unsafe impl Send for CudaModuleCreateInfoNV {}
+unsafe impl Sync for CudaModuleCreateInfoNV {}
+impl Default for CudaModuleCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CUDA_MODULE_CREATE_INFO_NV,
+            p_next: ptr::null(),
+            data_size: Default::default(),
+            p_data: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CudaModuleCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CudaModuleCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("data_size", &self.data_size)
+            .field("p_data", &self.p_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CudaFunctionCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub module: Option<CudaModuleNV>,
+    pub p_name: *const c_char,
+}
+unsafe impl Send for CudaFunctionCreateInfoNV {}
+unsafe impl Sync for CudaFunctionCreateInfoNV {}
+impl Default for CudaFunctionCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CUDA_FUNCTION_CREATE_INFO_NV,
+            p_next: ptr::null(),
+            module: Default::default(),
+            p_name: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CudaFunctionCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CudaFunctionCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("module", &self.module)
+            .field("p_name", &self.p_name)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CudaLaunchInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub function: Option<CudaFunctionNV>,
+    pub grid_dim_x: u32,
+    pub grid_dim_y: u32,
+    pub grid_dim_z: u32,
+    pub block_dim_x: u32,
+    pub block_dim_y: u32,
+    pub block_dim_z: u32,
+    pub shared_mem_bytes: u32,
+    pub param_count: usize,
+    pub p_params: *const *const c_void,
+    pub extra_count: usize,
+    pub p_extras: *const *const c_void,
+}
+unsafe impl Send for CudaLaunchInfoNV {}
+unsafe impl Sync for CudaLaunchInfoNV {}
+impl Default for CudaLaunchInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CUDA_LAUNCH_INFO_NV,
+            p_next: ptr::null(),
+            function: Default::default(),
+            grid_dim_x: Default::default(),
+            grid_dim_y: Default::default(),
+            grid_dim_z: Default::default(),
+            block_dim_x: Default::default(),
+            block_dim_y: Default::default(),
+            block_dim_z: Default::default(),
+            shared_mem_bytes: Default::default(),
+            param_count: Default::default(),
+            p_params: ptr::null(),
+            extra_count: Default::default(),
+            p_extras: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CudaLaunchInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CudaLaunchInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("function", &self.function)
+            .field("grid_dim_x", &self.grid_dim_x)
+            .field("grid_dim_y", &self.grid_dim_y)
+            .field("grid_dim_z", &self.grid_dim_z)
+            .field("block_dim_x", &self.block_dim_x)
+            .field("block_dim_y", &self.block_dim_y)
+            .field("block_dim_z", &self.block_dim_z)
+            .field("shared_mem_bytes", &self.shared_mem_bytes)
+            .field("param_count", &self.param_count)
+            .field("p_params", &self.p_params)
+            .field("extra_count", &self.extra_count)
+            .field("p_extras", &self.p_extras)
+            .finish()
+    }
+}
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceRGBA10X6FormatsFeaturesEXT {
@@ -43536,6 +43720,144 @@ impl fmt::Debug for LatencySurfaceCapabilitiesNV {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCudaKernelLaunchFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cuda_kernel_launch_features: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCudaKernelLaunchFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceCudaKernelLaunchFeaturesNV {}
+impl Default for PhysicalDeviceCudaKernelLaunchFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            cuda_kernel_launch_features: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCudaKernelLaunchFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCudaKernelLaunchFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("cuda_kernel_launch_features", &self.cuda_kernel_launch_features)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCudaKernelLaunchPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub compute_capability_minor: u32,
+    pub compute_capability_major: u32,
+}
+unsafe impl Send for PhysicalDeviceCudaKernelLaunchPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceCudaKernelLaunchPropertiesNV {}
+impl Default for PhysicalDeviceCudaKernelLaunchPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            compute_capability_minor: Default::default(),
+            compute_capability_major: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCudaKernelLaunchPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCudaKernelLaunchPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("compute_capability_minor", &self.compute_capability_minor)
+            .field("compute_capability_major", &self.compute_capability_major)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceQueueShaderCoreControlCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_core_count: u32,
+}
+unsafe impl Send for DeviceQueueShaderCoreControlCreateInfoARM {}
+unsafe impl Sync for DeviceQueueShaderCoreControlCreateInfoARM {}
+impl Default for DeviceQueueShaderCoreControlCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_QUEUE_SHADER_CORE_CONTROL_CREATE_INFO_ARM,
+            p_next: ptr::null_mut(),
+            shader_core_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DeviceQueueShaderCoreControlCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceQueueShaderCoreControlCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_core_count", &self.shader_core_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceSchedulingControlsFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub scheduling_controls: Bool32,
+}
+unsafe impl Send for PhysicalDeviceSchedulingControlsFeaturesARM {}
+unsafe impl Sync for PhysicalDeviceSchedulingControlsFeaturesARM {}
+impl Default for PhysicalDeviceSchedulingControlsFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SCHEDULING_CONTROLS_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            scheduling_controls: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceSchedulingControlsFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceSchedulingControlsFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("scheduling_controls", &self.scheduling_controls)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceSchedulingControlsPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub scheduling_controls_flags: PhysicalDeviceSchedulingControlsFlagsARM,
+}
+unsafe impl Send for PhysicalDeviceSchedulingControlsPropertiesARM {}
+unsafe impl Sync for PhysicalDeviceSchedulingControlsPropertiesARM {}
+impl Default for PhysicalDeviceSchedulingControlsPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SCHEDULING_CONTROLS_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            scheduling_controls_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceSchedulingControlsPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceSchedulingControlsPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("scheduling_controls_flags", &self.scheduling_controls_flags)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -46019,6 +46341,36 @@ pub type FnGetBufferCollectionPropertiesFUCHSIA = unsafe extern "system" fn(
     collection: Option<BufferCollectionFUCHSIA>,
     p_properties: *mut BufferCollectionPropertiesFUCHSIA,
 ) -> Result;
+pub type FnCreateCudaModuleNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const CudaModuleCreateInfoNV,
+    p_allocator: *const AllocationCallbacks,
+    p_module: *mut CudaModuleNV,
+) -> Result;
+pub type FnGetCudaModuleCacheNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    module: Option<CudaModuleNV>,
+    p_cache_size: *mut usize,
+    p_cache_data: *mut c_void,
+) -> Result;
+pub type FnCreateCudaFunctionNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const CudaFunctionCreateInfoNV,
+    p_allocator: *const AllocationCallbacks,
+    p_function: *mut CudaFunctionNV,
+) -> Result;
+pub type FnDestroyCudaModuleNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    module: Option<CudaModuleNV>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnDestroyCudaFunctionNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    function: Option<CudaFunctionNV>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnCmdCudaLaunchKernelNV =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_launch_info: *const CudaLaunchInfoNV);
 pub type FnCmdBeginRendering =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_rendering_info: *const RenderingInfo);
 pub type FnCmdEndRendering = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>);

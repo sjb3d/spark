@@ -20172,6 +20172,130 @@ impl Deref for BufferCollectionConstraintsInfoFUCHSIABuilder {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::CudaModuleCreateInfoNV {
+    type Type = CudaModuleCreateInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CudaModuleCreateInfoNVBuilder<'a> {
+    inner: vk::CudaModuleCreateInfoNV,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CudaModuleCreateInfoNVBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_data<T>(mut self, p_data: &'a [T]) -> Self {
+        self.inner.data_size = mem::size_of_val(p_data) as usize;
+        self.inner.p_data = p_data.first().map_or(ptr::null(), |s| s as *const _) as *const _;
+        self
+    }
+}
+impl<'a> Deref for CudaModuleCreateInfoNVBuilder<'a> {
+    type Target = vk::CudaModuleCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CudaFunctionCreateInfoNV {
+    type Type = CudaFunctionCreateInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CudaFunctionCreateInfoNVBuilder<'a> {
+    inner: vk::CudaFunctionCreateInfoNV,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CudaFunctionCreateInfoNVBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn module(mut self, module: vk::CudaModuleNV) -> Self {
+        self.inner.module = Some(module);
+        self
+    }
+    pub fn p_name(mut self, p_name: &'a CStr) -> Self {
+        self.inner.p_name = p_name.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for CudaFunctionCreateInfoNVBuilder<'a> {
+    type Target = vk::CudaFunctionCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CudaLaunchInfoNV {
+    type Type = CudaLaunchInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CudaLaunchInfoNVBuilder<'a> {
+    inner: vk::CudaLaunchInfoNV,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CudaLaunchInfoNVBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn function(mut self, function: vk::CudaFunctionNV) -> Self {
+        self.inner.function = Some(function);
+        self
+    }
+    pub fn grid_dim_x(mut self, grid_dim_x: u32) -> Self {
+        self.inner.grid_dim_x = grid_dim_x;
+        self
+    }
+    pub fn grid_dim_y(mut self, grid_dim_y: u32) -> Self {
+        self.inner.grid_dim_y = grid_dim_y;
+        self
+    }
+    pub fn grid_dim_z(mut self, grid_dim_z: u32) -> Self {
+        self.inner.grid_dim_z = grid_dim_z;
+        self
+    }
+    pub fn block_dim_x(mut self, block_dim_x: u32) -> Self {
+        self.inner.block_dim_x = block_dim_x;
+        self
+    }
+    pub fn block_dim_y(mut self, block_dim_y: u32) -> Self {
+        self.inner.block_dim_y = block_dim_y;
+        self
+    }
+    pub fn block_dim_z(mut self, block_dim_z: u32) -> Self {
+        self.inner.block_dim_z = block_dim_z;
+        self
+    }
+    pub fn shared_mem_bytes(mut self, shared_mem_bytes: u32) -> Self {
+        self.inner.shared_mem_bytes = shared_mem_bytes;
+        self
+    }
+    pub fn p_params(mut self, p_params: &'a [*const c_void]) -> Self {
+        self.inner.param_count = p_params.len() as usize;
+        self.inner.p_params = p_params.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn p_extras(mut self, p_extras: &'a [*const c_void]) -> Self {
+        self.inner.extra_count = p_extras.len() as usize;
+        self.inner.p_extras = p_extras.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for CudaLaunchInfoNVBuilder<'a> {
+    type Target = vk::CudaLaunchInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::PhysicalDeviceRGBA10X6FormatsFeaturesEXT {
     type Type = PhysicalDeviceRGBA10X6FormatsFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -25178,3 +25302,129 @@ impl Deref for LatencySurfaceCapabilitiesNVBuilder {
 }
 impl SurfaceCapabilities2KHRNext for LatencySurfaceCapabilitiesNVBuilder {}
 impl SurfaceCapabilities2KHRNext for vk::LatencySurfaceCapabilitiesNV {}
+impl Builder<'_> for vk::PhysicalDeviceCudaKernelLaunchFeaturesNV {
+    type Type = PhysicalDeviceCudaKernelLaunchFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceCudaKernelLaunchFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceCudaKernelLaunchFeaturesNV,
+}
+impl PhysicalDeviceCudaKernelLaunchFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cuda_kernel_launch_features(mut self, cuda_kernel_launch_features: bool) -> Self {
+        self.inner.cuda_kernel_launch_features = if cuda_kernel_launch_features {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCudaKernelLaunchFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceCudaKernelLaunchFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCudaKernelLaunchFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCudaKernelLaunchFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCudaKernelLaunchFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCudaKernelLaunchFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCudaKernelLaunchPropertiesNV {}
+impl Builder<'_> for vk::DeviceQueueShaderCoreControlCreateInfoARM {
+    type Type = DeviceQueueShaderCoreControlCreateInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DeviceQueueShaderCoreControlCreateInfoARMBuilder {
+    inner: vk::DeviceQueueShaderCoreControlCreateInfoARM,
+}
+impl DeviceQueueShaderCoreControlCreateInfoARMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_core_count(mut self, shader_core_count: u32) -> Self {
+        self.inner.shader_core_count = shader_core_count;
+        self
+    }
+}
+impl Deref for DeviceQueueShaderCoreControlCreateInfoARMBuilder {
+    type Target = vk::DeviceQueueShaderCoreControlCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DeviceQueueCreateInfoNext for DeviceQueueShaderCoreControlCreateInfoARMBuilder {}
+impl DeviceCreateInfoNext for DeviceQueueShaderCoreControlCreateInfoARMBuilder {}
+impl DeviceQueueCreateInfoNext for vk::DeviceQueueShaderCoreControlCreateInfoARM {}
+impl DeviceCreateInfoNext for vk::DeviceQueueShaderCoreControlCreateInfoARM {}
+impl Builder<'_> for vk::PhysicalDeviceSchedulingControlsFeaturesARM {
+    type Type = PhysicalDeviceSchedulingControlsFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceSchedulingControlsFeaturesARMBuilder {
+    inner: vk::PhysicalDeviceSchedulingControlsFeaturesARM,
+}
+impl PhysicalDeviceSchedulingControlsFeaturesARMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn scheduling_controls(mut self, scheduling_controls: bool) -> Self {
+        self.inner.scheduling_controls = if scheduling_controls { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceSchedulingControlsFeaturesARMBuilder {
+    type Target = vk::PhysicalDeviceSchedulingControlsFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceSchedulingControlsFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceSchedulingControlsFeaturesARMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSchedulingControlsFeaturesARM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceSchedulingControlsFeaturesARM {}
+impl Builder<'_> for vk::PhysicalDeviceSchedulingControlsPropertiesARM {
+    type Type = PhysicalDeviceSchedulingControlsPropertiesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceSchedulingControlsPropertiesARMBuilder {
+    inner: vk::PhysicalDeviceSchedulingControlsPropertiesARM,
+}
+impl PhysicalDeviceSchedulingControlsPropertiesARMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn scheduling_controls_flags(
+        mut self,
+        scheduling_controls_flags: vk::PhysicalDeviceSchedulingControlsFlagsARM,
+    ) -> Self {
+        self.inner.scheduling_controls_flags = scheduling_controls_flags;
+        self
+    }
+}
+impl Deref for PhysicalDeviceSchedulingControlsPropertiesARMBuilder {
+    type Target = vk::PhysicalDeviceSchedulingControlsPropertiesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceSchedulingControlsPropertiesARMBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSchedulingControlsPropertiesARM {}
