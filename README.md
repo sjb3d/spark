@@ -218,6 +218,6 @@ A minimal console application that runs a compute shader to fill some memory.  S
 
 A minimal windowed application that draws a spinning triangle and some UI.
 * Uses [`winit`](https://github.com/rust-windowing/winit) for windowing
-* Demonstrates [`spark-imgui`](https://github.com/sjb3d/spark/tree/master/spark-imgui) as a renderer for [`imgui-rs`](https://github.com/imgui-rs/imgui-rs) (which wraps the amazing [Dear ImGui](https://github.com/ocornut/imgui)).
+* Demonstrates [`spark-egui`](https://github.com/sjb3d/spark/tree/master/spark-egui) as a renderer for [`egui`](https://github.com/emilk/egui).
 
 ![graphics](https://raw.githubusercontent.com/sjb3d/spark/master/docs/graphics.png)

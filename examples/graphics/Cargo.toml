@@ -6,4 +6,9 @@ edition = "2018"
 publish = false
 
 [dependencies]
-graphics-lib = { path = "../graphics-lib" }
+spark = { path = "../../spark" }
+spark-egui = { path = "../../spark-egui" }
+winit = "0.28"
+egui = "0.23"
+egui-winit = "0.23"
+raw-window-handle = "0.5"

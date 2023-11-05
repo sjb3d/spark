@@ -2,6 +2,7 @@
 members = [
     "generator",
     "spark",
+    "spark-egui",
     "spark-imgui",
     "examples/compute",
     "examples/graphics"

@@ -1,9 +1,8 @@
 use raw_window_handle::{HasRawWindowHandle, RawWindowHandle};
 use spark::{vk, Instance, InstanceExtensions, Result};
-use winit::window::Window;
 
-pub fn enable_extensions(window: &Window, extensions: &mut InstanceExtensions) {
-    match window.raw_window_handle() {
+pub fn enable_extensions(window_handle: &dyn HasRawWindowHandle, extensions: &mut InstanceExtensions) {
+    match window_handle.raw_window_handle() {
         #[cfg(target_os = "linux")]
         RawWindowHandle::Xlib(..) => extensions.enable_khr_xlib_surface(),
 
@@ -20,8 +19,8 @@ pub fn enable_extensions(window: &Window, extensions: &mut InstanceExtensions) {
     }
 }
 
-pub fn create(instance: &Instance, window: &Window) -> Result<vk::SurfaceKHR> {
-    match window.raw_window_handle() {
+pub fn create(instance: &Instance, window_handle: &dyn HasRawWindowHandle) -> Result<vk::SurfaceKHR> {
+    match window_handle.raw_window_handle() {
         #[cfg(target_os = "linux")]
         RawWindowHandle::Xlib(handle) => {
             let create_info = vk::XlibSurfaceCreateInfoKHR {

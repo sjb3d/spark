@@ -1,0 +1,13 @@
+[package]
+name = "spark-egui"
+version = "0.1.0"
+authors = ["Simon Brown <si@sjbrown.co.uk>"]
+edition = "2018"
+publish = false
+
+[dependencies]
+spark = { path = "../spark" }
+egui = { version = "0.23", features = [ "bytemuck" ] }
+memoffset = "0.9"
+bytemuck = "1.14.0"
+
