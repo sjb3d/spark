@@ -10,7 +10,7 @@ pub fn enable_extensions(display_handle: &RawDisplayHandle, extensions: &mut Ins
         RawDisplayHandle::Wayland(_) => extensions.enable_khr_wayland_surface(),
 
         #[cfg(target_os = "windows")]
-        RawDisplayHandle::Win32(_) => extensions.enable_khr_win32_surface(),
+        RawDisplayHandle::Windows(_) => extensions.enable_khr_win32_surface(),
 
         #[cfg(target_os = "android")]
         RawDisplayHandle::AndroidNdk(_) => extensions.enable_khr_android_surface(),
@@ -46,7 +46,7 @@ pub fn create(
         }
 
         #[cfg(target_os = "windows")]
-        (RawDisplayHandle::Win32(_), RawWindowHandle::Win32(window_handle)) => {
+        (RawDisplayHandle::Windows(_), RawWindowHandle::Win32(window_handle)) => {
             let create_info = vk::Win32SurfaceCreateInfoKHR {
                 hwnd: window_handle.hwnd,
                 ..Default::default()
