@@ -1,4 +1,5 @@
 use crate::window_surface;
+use raw_window_handle::{HasRawDisplayHandle, HasRawWindowHandle};
 use spark::{vk, Builder, Device, DeviceExtensions, Instance, InstanceExtensions, Loader};
 use std::ffi::CStr;
 use std::os::raw::c_void;
@@ -65,11 +66,12 @@ pub struct Context {
 
 impl Context {
     pub fn new(window: &Window, version: vk::Version, is_debug: bool) -> Self {
+        let display_handle = window.raw_display_handle();
         let instance = {
             let loader = Loader::new().unwrap();
 
             let mut extensions = InstanceExtensions::new(version);
-            window_surface::enable_extensions(window, &mut extensions);
+            window_surface::enable_extensions(&display_handle, &mut extensions);
             if is_debug {
                 extensions.enable_ext_debug_utils();
             }
@@ -101,7 +103,8 @@ impl Context {
             None
         };
 
-        let surface = window_surface::create(&instance, window).unwrap();
+        let window_handle = window.raw_window_handle();
+        let surface = window_surface::create(&instance, &display_handle, &window_handle).unwrap();
 
         let physical_device = {
             let physical_devices = unsafe { instance.enumerate_physical_devices_to_vec() }.unwrap();
