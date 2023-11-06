@@ -473,7 +473,7 @@ pub fn c_parse_function_decl(i: &str) -> CFunctionDecl {
         .unwrap_or_else(|res| panic!("parse fail: {} -> {:?}", i, res))
 }
 
-fn function_ptr_typedef<'a>(i: &'a str) -> Res<'a, CFunctionDecl> {
+fn function_ptr_typedef(i: &str) -> Res<'_, CFunctionDecl> {
     let (i, ret_base) = preceded(keyword("typedef"), base_type)(i)?;
     let (i, ret_ptr) = opt(op('*'))(i)?;
     let (i, func_name) = delimited(tuple((op('('), keyword("VKAPI_PTR"), op('*'))), ident, op(')'))(i)?;
@@ -623,7 +623,7 @@ impl<'a> CExpr<'a> {
     }
 }
 
-fn expr_inner<'a>(i: &'a str) -> Res<CExpr<'a>> {
+fn expr_inner(i: &str) -> Res<CExpr<'_>> {
     preceded(
         multispace0,
         alt((
@@ -636,7 +636,7 @@ fn expr_inner<'a>(i: &'a str) -> Res<CExpr<'a>> {
     )(i)
 }
 
-fn expr<'a>(i: &'a str) -> Res<CExpr<'a>> {
+fn expr(i: &str) -> Res<CExpr<'_>> {
     alt((
         map(separated_pair(expr_inner, op('+'), expr), |(a, b)| {
             CExpr::Add(Box::new((a, b)))
@@ -651,7 +651,7 @@ fn expr<'a>(i: &'a str) -> Res<CExpr<'a>> {
     ))(i)
 }
 
-pub fn c_parse_expr<'a>(i: &'a str) -> CExpr<'a> {
+pub fn c_parse_expr(i: &str) -> CExpr<'_> {
     all_consuming(expr)(i)
         .map(ignore_remainder)
         .unwrap_or_else(|res| panic!("parse fail: {} -> {:?}", i, res))

@@ -17,7 +17,7 @@ fn add_dimension_separators(s: &str) -> String {
     let mut input = s.chars().peekable();
     let mut output = String::new();
     while let Some(c) = input.next() {
-        if '1' <= c && c <= '4' && input.peek().copied() == Some('D') {
+        if ('1'..='4').contains(&c) && input.peek().copied() == Some('D') {
             output.push('_');
             output.push(c);
             output.push('D');
@@ -83,16 +83,7 @@ trait CollectOne {
 impl<I: Iterator> CollectOne for I {
     type Item = I::Item;
     fn collect_one(mut self) -> Option<Self::Item> {
-        match self.next() {
-            Some(item) => {
-                if self.next().is_some() {
-                    None
-                } else {
-                    Some(item)
-                }
-            }
-            None => None,
-        }
+        self.next().filter(|_| self.next().is_none())
     }
 }
 
@@ -2450,20 +2441,18 @@ impl<'a> Generator<'a> {
             }
 
             // match generic mutable reference (via BaseOutStructure)
-            if cparam.ty.decoration == CDecoration::Pointer {
-                if !vparam.validstructs.is_empty() {
-                    if vparam.validstructs.len() > 1 {
-                        panic!("more than one valid struct in {:?}", vparam.validstructs);
-                    }
-                    params[i].ty = LibParamType::GenericMutRef {
-                        inner_type_name: self.get_rust_type_name(
-                            CBaseType::Named(&vparam.validstructs[0]),
-                            false,
-                            Some("vk::"),
-                        ),
-                    };
-                    continue;
+            if cparam.ty.decoration == CDecoration::Pointer && !vparam.validstructs.is_empty() {
+                if vparam.validstructs.len() > 1 {
+                    panic!("more than one valid struct in {:?}", vparam.validstructs);
                 }
+                params[i].ty = LibParamType::GenericMutRef {
+                    inner_type_name: self.get_rust_type_name(
+                        CBaseType::Named(&vparam.validstructs[0]),
+                        false,
+                        Some("vk::"),
+                    ),
+                };
+                continue;
             }
 
             // match single return type (last parameter only)
@@ -3149,7 +3138,7 @@ impl<'a> Generator<'a> {
                 let ext = self
                     .extension_by_name
                     .get(name)
-                    .expect(&format!("missing extension {name}"));
+                    .unwrap_or_else(|| panic!("missing extension {}", name));
                 let rust_name = name.skip_prefix(CONST_PREFIX).to_snake_case();
                 if category == Category::Device && ext.get_category() == Category::Instance {
                     write!(w, "instance.extensions.{}", rust_name)?;
@@ -3377,10 +3366,11 @@ impl<'a> Generator<'a> {
                             if let Some(depends) = ext.depends.as_deref() {
                                 for name in depends.split(&['+', ',', '(', ')', ' ']) {
                                     if let Some(dep) = self.extension_by_name.get(name) {
-                                        if dep.is_supported() && !dep.is_blacklisted() {
-                                            if needs_support_check.contains(name) {
-                                                needs_check = true;
-                                            }
+                                        if dep.is_supported()
+                                            && !dep.is_blacklisted()
+                                            && needs_support_check.contains(name)
+                                        {
+                                            needs_check = true;
                                         }
                                     }
                                 }
@@ -3603,7 +3593,7 @@ impl<'a> Generator<'a> {
             if Some("define") == ty.category.as_deref() {
                 if let vk::TypeSpec::Code(ref type_code) = ty.spec {
                     let prefix = "#define VK_HEADER_VERSION";
-                    if let Some(offset) = type_code.code.find(&prefix) {
+                    if let Some(offset) = type_code.code.find(prefix) {
                         header_version =
                             Some(type_code.code[(offset + prefix.len())..].trim_matches(char::is_whitespace));
                         break;

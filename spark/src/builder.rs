@@ -1,4 +1,4 @@
-#![allow(clippy::wrong_self_convention)]
+#![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
 use super::vk;
 use std::{

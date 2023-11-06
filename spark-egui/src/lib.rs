@@ -794,6 +794,7 @@ impl TextureSet {
         }
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn update(
         &mut self,
         device: &Device,
