@@ -3399,6 +3399,72 @@ impl<'a> Deref for ValidationFeaturesEXTBuilder<'a> {
 }
 impl<'a> InstanceCreateInfoNext for ValidationFeaturesEXTBuilder<'a> {}
 impl InstanceCreateInfoNext for vk::ValidationFeaturesEXT {}
+impl<'a> Builder<'a> for vk::LayerSettingsCreateInfoEXT {
+    type Type = LayerSettingsCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct LayerSettingsCreateInfoEXTBuilder<'a> {
+    inner: vk::LayerSettingsCreateInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> LayerSettingsCreateInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_settings(mut self, p_settings: &'a [vk::LayerSettingEXT]) -> Self {
+        self.inner.setting_count = p_settings.len() as u32;
+        self.inner.p_settings = p_settings.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for LayerSettingsCreateInfoEXTBuilder<'a> {
+    type Target = vk::LayerSettingsCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> InstanceCreateInfoNext for LayerSettingsCreateInfoEXTBuilder<'a> {}
+impl InstanceCreateInfoNext for vk::LayerSettingsCreateInfoEXT {}
+impl<'a> Builder<'a> for vk::LayerSettingEXT {
+    type Type = LayerSettingEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct LayerSettingEXTBuilder<'a> {
+    inner: vk::LayerSettingEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> LayerSettingEXTBuilder<'a> {
+    pub fn p_layer_name(mut self, p_layer_name: &'a CStr) -> Self {
+        self.inner.p_layer_name = p_layer_name.as_ptr();
+        self
+    }
+    pub fn p_setting_name(mut self, p_setting_name: &'a CStr) -> Self {
+        self.inner.p_setting_name = p_setting_name.as_ptr();
+        self
+    }
+    pub fn ty(mut self, ty: vk::LayerSettingTypeEXT) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn p_values<T>(mut self, p_values: &'a [T]) -> Self {
+        self.inner.value_count = mem::size_of_val(p_values) as u32;
+        self.inner.p_values = p_values.first().map_or(ptr::null(), |s| s as *const _) as *const _;
+        self
+    }
+}
+impl<'a> Deref for LayerSettingEXTBuilder<'a> {
+    type Target = vk::LayerSettingEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::PipelineRasterizationStateRasterizationOrderAMD {
     type Type = PipelineRasterizationStateRasterizationOrderAMDBuilder;
     fn builder() -> Self::Type {
@@ -16747,17 +16813,25 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceSubpassShadingFeaturesHUAWEIB
 impl DeviceCreateInfoNext for PhysicalDeviceSubpassShadingFeaturesHUAWEIBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSubpassShadingFeaturesHUAWEI {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceSubpassShadingFeaturesHUAWEI {}
-impl Builder<'_> for vk::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {
-    type Type = PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder;
+impl<'a> Builder<'a> for vk::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {
+    type Type = PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait PhysicalDeviceClusterCullingShaderFeaturesHUAWEINext {}
 #[derive(Default)]
-pub struct PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder {
+pub struct PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder<'a> {
     inner: vk::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder {
+impl<'a> PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder<'a> {
+    pub fn insert_next<T: PhysicalDeviceClusterCullingShaderFeaturesHUAWEINext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16775,16 +16849,47 @@ impl PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder {
         self
     }
 }
-impl Deref for PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder {
+impl<'a> Deref for PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder<'a> {
     type Target = vk::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceFeatures2Next for PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder {}
-impl DeviceCreateInfoNext for PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder {}
+impl<'a> PhysicalDeviceFeatures2Next for PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder<'a> {}
+impl<'a> DeviceCreateInfoNext for PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder<'a> {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {}
+impl Builder<'_> for vk::PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI {
+    type Type = PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEIBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEIBuilder {
+    inner: vk::PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI,
+}
+impl PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEIBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cluster_shading_rate(mut self, cluster_shading_rate: bool) -> Self {
+        self.inner.cluster_shading_rate = if cluster_shading_rate { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEIBuilder {
+    type Target = vk::PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceClusterCullingShaderFeaturesHUAWEINext
+    for PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEIBuilder
+{
+}
+impl PhysicalDeviceClusterCullingShaderFeaturesHUAWEINext for vk::PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI {}
 impl Builder<'_> for vk::BufferCopy2 {
     type Type = BufferCopy2Builder;
     fn builder() -> Self::Type {
@@ -18295,17 +18400,25 @@ impl Deref for SemaphoreSubmitInfoBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::CommandBufferSubmitInfo {
-    type Type = CommandBufferSubmitInfoBuilder;
+impl<'a> Builder<'a> for vk::CommandBufferSubmitInfo {
+    type Type = CommandBufferSubmitInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait CommandBufferSubmitInfoNext {}
 #[derive(Default)]
-pub struct CommandBufferSubmitInfoBuilder {
+pub struct CommandBufferSubmitInfoBuilder<'a> {
     inner: vk::CommandBufferSubmitInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl CommandBufferSubmitInfoBuilder {
+impl<'a> CommandBufferSubmitInfoBuilder<'a> {
+    pub fn insert_next<T: CommandBufferSubmitInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18319,7 +18432,7 @@ impl CommandBufferSubmitInfoBuilder {
         self
     }
 }
-impl Deref for CommandBufferSubmitInfoBuilder {
+impl<'a> Deref for CommandBufferSubmitInfoBuilder<'a> {
     type Target = vk::CommandBufferSubmitInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -25466,3 +25579,124 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceRelaxedLineRasterizationFeatu
 impl DeviceCreateInfoNext for PhysicalDeviceRelaxedLineRasterizationFeaturesIMGBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRelaxedLineRasterizationFeaturesIMG {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceRelaxedLineRasterizationFeaturesIMG {}
+impl Builder<'_> for vk::PhysicalDeviceRenderPassStripedFeaturesARM {
+    type Type = PhysicalDeviceRenderPassStripedFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRenderPassStripedFeaturesARMBuilder {
+    inner: vk::PhysicalDeviceRenderPassStripedFeaturesARM,
+}
+impl PhysicalDeviceRenderPassStripedFeaturesARMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn render_pass_striped(mut self, render_pass_striped: bool) -> Self {
+        self.inner.render_pass_striped = if render_pass_striped { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceRenderPassStripedFeaturesARMBuilder {
+    type Target = vk::PhysicalDeviceRenderPassStripedFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRenderPassStripedFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRenderPassStripedFeaturesARMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRenderPassStripedFeaturesARM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRenderPassStripedFeaturesARM {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRenderPassStripedPropertiesARM {}
+impl Builder<'_> for vk::RenderPassStripeInfoARM {
+    type Type = RenderPassStripeInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RenderPassStripeInfoARMBuilder {
+    inner: vk::RenderPassStripeInfoARM,
+}
+impl RenderPassStripeInfoARMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stripe_area(mut self, stripe_area: vk::Rect2D) -> Self {
+        self.inner.stripe_area = stripe_area;
+        self
+    }
+}
+impl Deref for RenderPassStripeInfoARMBuilder {
+    type Target = vk::RenderPassStripeInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::RenderPassStripeBeginInfoARM {
+    type Type = RenderPassStripeBeginInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RenderPassStripeBeginInfoARMBuilder {
+    inner: vk::RenderPassStripeBeginInfoARM,
+}
+impl RenderPassStripeBeginInfoARMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stripe_info_count(mut self, stripe_info_count: u32) -> Self {
+        self.inner.stripe_info_count = stripe_info_count;
+        self
+    }
+    pub fn p_stripe_infos(mut self, p_stripe_infos: *mut vk::RenderPassStripeInfoARM) -> Self {
+        self.inner.p_stripe_infos = p_stripe_infos;
+        self
+    }
+}
+impl Deref for RenderPassStripeBeginInfoARMBuilder {
+    type Target = vk::RenderPassStripeBeginInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl RenderingInfoNext for RenderPassStripeBeginInfoARMBuilder {}
+impl RenderPassBeginInfoNext for RenderPassStripeBeginInfoARMBuilder {}
+impl RenderingInfoNext for vk::RenderPassStripeBeginInfoARM {}
+impl RenderPassBeginInfoNext for vk::RenderPassStripeBeginInfoARM {}
+impl<'a> Builder<'a> for vk::RenderPassStripeSubmitInfoARM {
+    type Type = RenderPassStripeSubmitInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RenderPassStripeSubmitInfoARMBuilder<'a> {
+    inner: vk::RenderPassStripeSubmitInfoARM,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> RenderPassStripeSubmitInfoARMBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_stripe_semaphore_infos(mut self, p_stripe_semaphore_infos: &'a [vk::SemaphoreSubmitInfo]) -> Self {
+        self.inner.stripe_semaphore_info_count = p_stripe_semaphore_infos.len() as u32;
+        self.inner.p_stripe_semaphore_infos = p_stripe_semaphore_infos.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for RenderPassStripeSubmitInfoARMBuilder<'a> {
+    type Target = vk::RenderPassStripeSubmitInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> CommandBufferSubmitInfoNext for RenderPassStripeSubmitInfoARMBuilder<'a> {}
+impl CommandBufferSubmitInfoNext for vk::RenderPassStripeSubmitInfoARM {}

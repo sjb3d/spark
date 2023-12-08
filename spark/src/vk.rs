@@ -7967,6 +7967,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_FEATURES_HUAWEI: Self = Self(1000404000);
     /// Added by extension VK_HUAWEI_cluster_culling_shader.
     pub const PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_PROPERTIES_HUAWEI: Self = Self(1000404001);
+    /// Added by extension VK_HUAWEI_cluster_culling_shader.
+    pub const PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_VRS_FEATURES_HUAWEI: Self = Self(1000404002);
     /// Added by extension VK_EXT_border_color_swizzle.
     pub const PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT: Self = Self(1000411000);
     /// Added by extension VK_EXT_border_color_swizzle.
@@ -7999,6 +8001,16 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT: Self = Self(1000421000);
     /// Added by extension VK_EXT_non_seamless_cube_map.
     pub const PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT: Self = Self(1000422000);
+    /// Added by extension VK_ARM_render_pass_striped.
+    pub const PHYSICAL_DEVICE_RENDER_PASS_STRIPED_FEATURES_ARM: Self = Self(1000424000);
+    /// Added by extension VK_ARM_render_pass_striped.
+    pub const PHYSICAL_DEVICE_RENDER_PASS_STRIPED_PROPERTIES_ARM: Self = Self(1000424001);
+    /// Added by extension VK_ARM_render_pass_striped.
+    pub const RENDER_PASS_STRIPE_BEGIN_INFO_ARM: Self = Self(1000424002);
+    /// Added by extension VK_ARM_render_pass_striped.
+    pub const RENDER_PASS_STRIPE_INFO_ARM: Self = Self(1000424003);
+    /// Added by extension VK_ARM_render_pass_striped.
+    pub const RENDER_PASS_STRIPE_SUBMIT_INFO_ARM: Self = Self(1000424004);
     /// Added by extension VK_QCOM_fragment_density_map_offset.
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM: Self = Self(1000425000);
     /// Added by extension VK_QCOM_fragment_density_map_offset.
@@ -8128,6 +8140,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_PROPERTIES_NV: Self = Self(1000492001);
     pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT: Self = Self(1000351000);
     pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT: Self = Self(1000351002);
+    /// Added by extension VK_EXT_layer_settings.
+    pub const LAYER_SETTINGS_CREATE_INFO_EXT: Self = Self(1000496000);
     /// Added by extension VK_ARM_shader_core_builtins.
     pub const PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM: Self = Self(1000497000);
     /// Added by extension VK_ARM_shader_core_builtins.
@@ -8859,6 +8873,7 @@ impl fmt::Display for StructureType {
             1000397002 => Some(&"ACCELERATION_STRUCTURE_TRIANGLES_DISPLACEMENT_MICROMAP_NV"),
             1000404000 => Some(&"PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_FEATURES_HUAWEI"),
             1000404001 => Some(&"PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_PROPERTIES_HUAWEI"),
+            1000404002 => Some(&"PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_VRS_FEATURES_HUAWEI"),
             1000411000 => Some(&"PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT"),
             1000411001 => Some(&"SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT"),
             1000412000 => Some(&"PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT"),
@@ -8873,6 +8888,11 @@ impl fmt::Display for StructureType {
             1000420002 => Some(&"DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE"),
             1000421000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT"),
             1000422000 => Some(&"PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT"),
+            1000424000 => Some(&"PHYSICAL_DEVICE_RENDER_PASS_STRIPED_FEATURES_ARM"),
+            1000424001 => Some(&"PHYSICAL_DEVICE_RENDER_PASS_STRIPED_PROPERTIES_ARM"),
+            1000424002 => Some(&"RENDER_PASS_STRIPE_BEGIN_INFO_ARM"),
+            1000424003 => Some(&"RENDER_PASS_STRIPE_INFO_ARM"),
+            1000424004 => Some(&"RENDER_PASS_STRIPE_SUBMIT_INFO_ARM"),
             1000425000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM"),
             1000425001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM"),
             1000425002 => Some(&"SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM"),
@@ -8939,6 +8959,7 @@ impl fmt::Display for StructureType {
             1000492001 => Some(&"PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_PROPERTIES_NV"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT"),
             1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT"),
+            1000496000 => Some(&"LAYER_SETTINGS_CREATE_INFO_EXT"),
             1000497000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM"),
             1000497001 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM"),
             1000498000 => Some(&"PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT"),
@@ -11377,6 +11398,39 @@ impl fmt::Display for DeviceFaultAddressTypeEXT {
             4 => Some(&"INSTRUCTION_POINTER_UNKNOWN"),
             5 => Some(&"INSTRUCTION_POINTER_INVALID"),
             6 => Some(&"INSTRUCTION_POINTER_FAULT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct LayerSettingTypeEXT(pub(crate) i32);
+impl LayerSettingTypeEXT {
+    pub const BOOL32: Self = Self(0);
+    pub const INT32: Self = Self(1);
+    pub const INT64: Self = Self(2);
+    pub const UINT32: Self = Self(3);
+    pub const UINT64: Self = Self(4);
+    pub const FLOAT32: Self = Self(5);
+    pub const FLOAT64: Self = Self(6);
+    pub const STRING: Self = Self(7);
+}
+impl fmt::Display for LayerSettingTypeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"BOOL32"),
+            1 => Some(&"INT32"),
+            2 => Some(&"INT64"),
+            3 => Some(&"UINT32"),
+            4 => Some(&"UINT64"),
+            5 => Some(&"FLOAT32"),
+            6 => Some(&"FLOAT64"),
+            7 => Some(&"STRING"),
             _ => None,
         };
         if let Some(name) = name {
@@ -16772,6 +16826,75 @@ impl fmt::Debug for ValidationFeaturesEXT {
                 &self.disabled_validation_feature_count,
             )
             .field("p_disabled_validation_features", &self.p_disabled_validation_features)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct LayerSettingsCreateInfoEXT {
+    /// Must be VK_STRUCTURE_TYPE_LAYER_SETTINGS_CREATE_INFO_EXT
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Number of settings to configure
+    pub setting_count: u32,
+    /// Validation features to enable
+    pub p_settings: *const LayerSettingEXT,
+}
+unsafe impl Send for LayerSettingsCreateInfoEXT {}
+unsafe impl Sync for LayerSettingsCreateInfoEXT {}
+impl Default for LayerSettingsCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::LAYER_SETTINGS_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            setting_count: Default::default(),
+            p_settings: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for LayerSettingsCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("LayerSettingsCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("setting_count", &self.setting_count)
+            .field("p_settings", &self.p_settings)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct LayerSettingEXT {
+    pub p_layer_name: *const c_char,
+    pub p_setting_name: *const c_char,
+    /// The type of the object
+    pub ty: LayerSettingTypeEXT,
+    /// Number of values of the setting
+    pub value_count: u32,
+    /// Values to pass for a setting
+    pub p_values: *const c_void,
+}
+unsafe impl Send for LayerSettingEXT {}
+unsafe impl Sync for LayerSettingEXT {}
+impl Default for LayerSettingEXT {
+    fn default() -> Self {
+        Self {
+            p_layer_name: ptr::null(),
+            p_setting_name: ptr::null(),
+            ty: Default::default(),
+            value_count: Default::default(),
+            p_values: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for LayerSettingEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("LayerSettingEXT")
+            .field("p_layer_name", &self.p_layer_name)
+            .field("p_setting_name", &self.p_setting_name)
+            .field("ty", &self.ty)
+            .field("value_count", &self.value_count)
+            .field("p_values", &self.p_values)
             .finish()
     }
 }
@@ -33902,6 +34025,33 @@ impl fmt::Debug for PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cluster_shading_rate: Bool32,
+}
+unsafe impl Send for PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI {}
+unsafe impl Sync for PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI {}
+impl Default for PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_VRS_FEATURES_HUAWEI,
+            p_next: ptr::null_mut(),
+            cluster_shading_rate: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("cluster_shading_rate", &self.cluster_shading_rate)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct BufferCopy2 {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -43888,6 +44038,150 @@ impl fmt::Debug for PhysicalDeviceRelaxedLineRasterizationFeaturesIMG {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("relaxed_line_rasterization", &self.relaxed_line_rasterization)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRenderPassStripedFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub render_pass_striped: Bool32,
+}
+unsafe impl Send for PhysicalDeviceRenderPassStripedFeaturesARM {}
+unsafe impl Sync for PhysicalDeviceRenderPassStripedFeaturesARM {}
+impl Default for PhysicalDeviceRenderPassStripedFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RENDER_PASS_STRIPED_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            render_pass_striped: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRenderPassStripedFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRenderPassStripedFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("render_pass_striped", &self.render_pass_striped)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRenderPassStripedPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub render_pass_stripe_granularity: Extent2D,
+    pub max_render_pass_stripes: u32,
+}
+unsafe impl Send for PhysicalDeviceRenderPassStripedPropertiesARM {}
+unsafe impl Sync for PhysicalDeviceRenderPassStripedPropertiesARM {}
+impl Default for PhysicalDeviceRenderPassStripedPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RENDER_PASS_STRIPED_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            render_pass_stripe_granularity: Default::default(),
+            max_render_pass_stripes: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRenderPassStripedPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRenderPassStripedPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("render_pass_stripe_granularity", &self.render_pass_stripe_granularity)
+            .field("max_render_pass_stripes", &self.max_render_pass_stripes)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassStripeInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub stripe_area: Rect2D,
+}
+unsafe impl Send for RenderPassStripeInfoARM {}
+unsafe impl Sync for RenderPassStripeInfoARM {}
+impl Default for RenderPassStripeInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDER_PASS_STRIPE_INFO_ARM,
+            p_next: ptr::null(),
+            stripe_area: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassStripeInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassStripeInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stripe_area", &self.stripe_area)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassStripeBeginInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub stripe_info_count: u32,
+    pub p_stripe_infos: *mut RenderPassStripeInfoARM,
+}
+unsafe impl Send for RenderPassStripeBeginInfoARM {}
+unsafe impl Sync for RenderPassStripeBeginInfoARM {}
+impl Default for RenderPassStripeBeginInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDER_PASS_STRIPE_BEGIN_INFO_ARM,
+            p_next: ptr::null(),
+            stripe_info_count: Default::default(),
+            p_stripe_infos: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassStripeBeginInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassStripeBeginInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stripe_info_count", &self.stripe_info_count)
+            .field("p_stripe_infos", &self.p_stripe_infos)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassStripeSubmitInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub stripe_semaphore_info_count: u32,
+    pub p_stripe_semaphore_infos: *const SemaphoreSubmitInfo,
+}
+unsafe impl Send for RenderPassStripeSubmitInfoARM {}
+unsafe impl Sync for RenderPassStripeSubmitInfoARM {}
+impl Default for RenderPassStripeSubmitInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDER_PASS_STRIPE_SUBMIT_INFO_ARM,
+            p_next: ptr::null(),
+            stripe_semaphore_info_count: Default::default(),
+            p_stripe_semaphore_infos: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassStripeSubmitInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassStripeSubmitInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stripe_semaphore_info_count", &self.stripe_semaphore_info_count)
+            .field("p_stripe_semaphore_infos", &self.p_stripe_semaphore_infos)
             .finish()
     }
 }

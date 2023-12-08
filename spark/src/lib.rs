@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 271
+//! Generated from vk.xml with `VK_HEADER_VERSION` 272
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -266,6 +266,7 @@ pub struct InstanceExtensions {
     pub khr_portability_enumeration: bool,
     pub google_surfaceless_query: bool,
     pub lunarg_direct_driver_loading: bool,
+    pub ext_layer_settings: bool,
 }
 impl InstanceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -306,6 +307,7 @@ impl InstanceExtensions {
             b"VK_KHR_portability_enumeration" => self.khr_portability_enumeration = true,
             b"VK_GOOGLE_surfaceless_query" => self.google_surfaceless_query = true,
             b"VK_LUNARG_direct_driver_loading" => self.lunarg_direct_driver_loading = true,
+            b"VK_EXT_layer_settings" => self.ext_layer_settings = true,
             _ => {}
         }
     }
@@ -348,6 +350,7 @@ impl InstanceExtensions {
             khr_portability_enumeration: false,
             google_surfaceless_query: false,
             lunarg_direct_driver_loading: false,
+            ext_layer_settings: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -1881,6 +1884,14 @@ impl InstanceExtensions {
     pub fn enable_ext_non_seamless_cube_map(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_arm_render_pass_striped(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() || self.supports_khr_synchronization2()
+    }
+    pub fn enable_arm_render_pass_striped(&mut self) {
+        if !(self.supports_khr_get_physical_device_properties2() || self.supports_khr_synchronization2()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_qcom_fragment_density_map_offset(&self) -> bool {
         self.supports_khr_get_physical_device_properties2() && self.supports_ext_fragment_density_map()
     }
@@ -2059,6 +2070,12 @@ impl InstanceExtensions {
     pub fn enable_ext_mutable_descriptor_type(&mut self) {
         self.enable_khr_maintenance3();
     }
+    pub fn supports_ext_layer_settings(&self) -> bool {
+        self.ext_layer_settings
+    }
+    pub fn enable_ext_layer_settings(&mut self) {
+        self.ext_layer_settings = true;
+    }
     pub fn supports_arm_shader_core_builtins(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -2234,6 +2251,9 @@ impl InstanceExtensions {
         }
         if self.lunarg_direct_driver_loading {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_LUNARG_direct_driver_loading\0") })
+        }
+        if self.ext_layer_settings {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_layer_settings\0") })
         }
         v
     }
@@ -4770,6 +4790,7 @@ pub struct DeviceExtensions {
     pub valve_descriptor_set_host_mapping: bool,
     pub ext_depth_clamp_zero_one: bool,
     pub ext_non_seamless_cube_map: bool,
+    pub arm_render_pass_striped: bool,
     pub qcom_fragment_density_map_offset: bool,
     pub nv_copy_memory_indirect: bool,
     pub nv_memory_decompression: bool,
@@ -5078,6 +5099,7 @@ impl DeviceExtensions {
             b"VK_VALVE_descriptor_set_host_mapping" => self.valve_descriptor_set_host_mapping = true,
             b"VK_EXT_depth_clamp_zero_one" => self.ext_depth_clamp_zero_one = true,
             b"VK_EXT_non_seamless_cube_map" => self.ext_non_seamless_cube_map = true,
+            b"VK_ARM_render_pass_striped" => self.arm_render_pass_striped = true,
             b"VK_QCOM_fragment_density_map_offset" => self.qcom_fragment_density_map_offset = true,
             b"VK_NV_copy_memory_indirect" => self.nv_copy_memory_indirect = true,
             b"VK_NV_memory_decompression" => self.nv_memory_decompression = true,
@@ -5386,6 +5408,7 @@ impl DeviceExtensions {
             valve_descriptor_set_host_mapping: false,
             ext_depth_clamp_zero_one: false,
             ext_non_seamless_cube_map: false,
+            arm_render_pass_striped: false,
             qcom_fragment_density_map_offset: false,
             nv_copy_memory_indirect: false,
             nv_memory_decompression: false,
@@ -7339,6 +7362,12 @@ impl DeviceExtensions {
     pub fn enable_ext_non_seamless_cube_map(&mut self) {
         self.ext_non_seamless_cube_map = true;
     }
+    pub fn supports_arm_render_pass_striped(&self) -> bool {
+        self.arm_render_pass_striped
+    }
+    pub fn enable_arm_render_pass_striped(&mut self) {
+        self.arm_render_pass_striped = true;
+    }
     pub fn supports_qcom_fragment_density_map_offset(&self) -> bool {
         self.qcom_fragment_density_map_offset && self.supports_ext_fragment_density_map()
     }
@@ -8407,6 +8436,9 @@ impl DeviceExtensions {
         }
         if self.ext_non_seamless_cube_map {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_non_seamless_cube_map\0") })
+        }
+        if self.arm_render_pass_striped {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_render_pass_striped\0") })
         }
         if self.qcom_fragment_density_map_offset {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_fragment_density_map_offset\0") })
