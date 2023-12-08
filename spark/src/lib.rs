@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 269
+//! Generated from vk.xml with `VK_HEADER_VERSION` 270
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -729,6 +729,14 @@ impl InstanceExtensions {
     }
     pub fn enable_khr_create_renderpass2(&mut self) {
         self.enable_khr_multiview();
+    }
+    pub fn supports_img_relaxed_line_rasterization(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_img_relaxed_line_rasterization(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_khr_shared_presentable_image(&self) -> bool {
         self.supports_khr_swapchain()
@@ -2074,6 +2082,14 @@ impl InstanceExtensions {
         }
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             self.enable_khr_dynamic_rendering();
+        }
+    }
+    pub fn supports_nv_low_latency2(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_timeline_semaphore()
+    }
+    pub fn enable_nv_low_latency2(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_timeline_semaphore();
         }
     }
     pub fn supports_khr_cooperative_matrix(&self) -> bool {
@@ -4555,6 +4571,7 @@ pub struct DeviceExtensions {
     pub ext_hdr_metadata: bool,
     pub khr_imageless_framebuffer: bool,
     pub khr_create_renderpass2: bool,
+    pub img_relaxed_line_rasterization: bool,
     pub khr_shared_presentable_image: bool,
     pub khr_external_fence: bool,
     pub khr_external_fence_win32: bool,
@@ -4860,6 +4877,7 @@ impl DeviceExtensions {
             b"VK_EXT_hdr_metadata" => self.ext_hdr_metadata = true,
             b"VK_KHR_imageless_framebuffer" => self.khr_imageless_framebuffer = true,
             b"VK_KHR_create_renderpass2" => self.khr_create_renderpass2 = true,
+            b"VK_IMG_relaxed_line_rasterization" => self.img_relaxed_line_rasterization = true,
             b"VK_KHR_shared_presentable_image" => self.khr_shared_presentable_image = true,
             b"VK_KHR_external_fence" => self.khr_external_fence = true,
             b"VK_KHR_external_fence_win32" => self.khr_external_fence_win32 = true,
@@ -5169,6 +5187,7 @@ impl DeviceExtensions {
             ext_hdr_metadata: false,
             khr_imageless_framebuffer: false,
             khr_create_renderpass2: false,
+            img_relaxed_line_rasterization: false,
             khr_shared_presentable_image: false,
             khr_external_fence: false,
             khr_external_fence_win32: false,
@@ -5860,6 +5879,12 @@ impl DeviceExtensions {
         }
         self.enable_khr_multiview();
         self.enable_khr_maintenance2();
+    }
+    pub fn supports_img_relaxed_line_rasterization(&self) -> bool {
+        self.img_relaxed_line_rasterization
+    }
+    pub fn enable_img_relaxed_line_rasterization(&mut self) {
+        self.img_relaxed_line_rasterization = true;
     }
     pub fn supports_khr_shared_presentable_image(&self) -> bool {
         self.khr_shared_presentable_image && self.supports_khr_swapchain()
@@ -7519,9 +7544,13 @@ impl DeviceExtensions {
     }
     pub fn supports_nv_low_latency2(&self) -> bool {
         self.nv_low_latency2
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_timeline_semaphore())
     }
     pub fn enable_nv_low_latency2(&mut self) {
         self.nv_low_latency2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_timeline_semaphore();
+        }
     }
     pub fn supports_khr_cooperative_matrix(&self) -> bool {
         self.khr_cooperative_matrix
@@ -7779,6 +7808,9 @@ impl DeviceExtensions {
         }
         if self.khr_create_renderpass2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_create_renderpass2\0") })
+        }
+        if self.img_relaxed_line_rasterization {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_IMG_relaxed_line_rasterization\0") })
         }
         if self.khr_shared_presentable_image {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shared_presentable_image\0") })

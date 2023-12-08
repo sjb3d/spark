@@ -7088,6 +7088,8 @@ impl StructureType {
     pub const RENDER_PASS_CREATE_INFO_2_KHR: Self = Self::RENDER_PASS_CREATE_INFO_2;
     pub const SUBPASS_BEGIN_INFO_KHR: Self = Self::SUBPASS_BEGIN_INFO;
     pub const SUBPASS_END_INFO_KHR: Self = Self::SUBPASS_END_INFO;
+    /// Added by extension VK_IMG_relaxed_line_rasterization.
+    pub const PHYSICAL_DEVICE_RELAXED_LINE_RASTERIZATION_FEATURES_IMG: Self = Self(1000110000);
     /// Added by extension VK_KHR_shared_presentable_image.
     pub const SHARED_PRESENT_SURFACE_CAPABILITIES_KHR: Self = Self(1000111000);
     pub const PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR: Self = Self::PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO;
@@ -8491,6 +8493,7 @@ impl fmt::Display for StructureType {
             1000102000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT"),
             1000102001 => Some(&"PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT"),
             1000105000 => Some(&"HDR_METADATA_EXT"),
+            1000110000 => Some(&"PHYSICAL_DEVICE_RELAXED_LINE_RASTERIZATION_FEATURES_IMG"),
             1000111000 => Some(&"SHARED_PRESENT_SURFACE_CAPABILITIES_KHR"),
             1000114000 => Some(&"IMPORT_FENCE_WIN32_HANDLE_INFO_KHR"),
             1000114001 => Some(&"EXPORT_FENCE_WIN32_HANDLE_INFO_KHR"),
@@ -42199,7 +42202,7 @@ impl fmt::Debug for DirectDriverLoadingInfoLUNARG {
 #[derive(Copy, Clone)]
 pub struct DirectDriverLoadingListLUNARG {
     pub s_type: StructureType,
-    pub p_next: *mut c_void,
+    pub p_next: *const c_void,
     pub mode: DirectDriverLoadingModeLUNARG,
     pub driver_count: u32,
     pub p_drivers: *const DirectDriverLoadingInfoLUNARG,
@@ -42210,7 +42213,7 @@ impl Default for DirectDriverLoadingListLUNARG {
     fn default() -> Self {
         Self {
             s_type: StructureType::DIRECT_DRIVER_LOADING_LIST_LUNARG,
-            p_next: ptr::null_mut(),
+            p_next: ptr::null(),
             mode: Default::default(),
             driver_count: Default::default(),
             p_drivers: ptr::null(),
@@ -43855,6 +43858,33 @@ impl fmt::Debug for PhysicalDeviceSchedulingControlsPropertiesARM {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("scheduling_controls_flags", &self.scheduling_controls_flags)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRelaxedLineRasterizationFeaturesIMG {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub relaxed_line_rasterization: Bool32,
+}
+unsafe impl Send for PhysicalDeviceRelaxedLineRasterizationFeaturesIMG {}
+unsafe impl Sync for PhysicalDeviceRelaxedLineRasterizationFeaturesIMG {}
+impl Default for PhysicalDeviceRelaxedLineRasterizationFeaturesIMG {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RELAXED_LINE_RASTERIZATION_FEATURES_IMG,
+            p_next: ptr::null_mut(),
+            relaxed_line_rasterization: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRelaxedLineRasterizationFeaturesIMG {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRelaxedLineRasterizationFeaturesIMG")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("relaxed_line_rasterization", &self.relaxed_line_rasterization)
             .finish()
     }
 }

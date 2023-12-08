@@ -23957,7 +23957,7 @@ pub struct DirectDriverLoadingListLUNARGBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DirectDriverLoadingListLUNARGBuilder<'a> {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -25428,3 +25428,37 @@ impl Deref for PhysicalDeviceSchedulingControlsPropertiesARMBuilder {
 }
 impl PhysicalDeviceProperties2Next for PhysicalDeviceSchedulingControlsPropertiesARMBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSchedulingControlsPropertiesARM {}
+impl Builder<'_> for vk::PhysicalDeviceRelaxedLineRasterizationFeaturesIMG {
+    type Type = PhysicalDeviceRelaxedLineRasterizationFeaturesIMGBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRelaxedLineRasterizationFeaturesIMGBuilder {
+    inner: vk::PhysicalDeviceRelaxedLineRasterizationFeaturesIMG,
+}
+impl PhysicalDeviceRelaxedLineRasterizationFeaturesIMGBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn relaxed_line_rasterization(mut self, relaxed_line_rasterization: bool) -> Self {
+        self.inner.relaxed_line_rasterization = if relaxed_line_rasterization {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceRelaxedLineRasterizationFeaturesIMGBuilder {
+    type Target = vk::PhysicalDeviceRelaxedLineRasterizationFeaturesIMG;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRelaxedLineRasterizationFeaturesIMGBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRelaxedLineRasterizationFeaturesIMGBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRelaxedLineRasterizationFeaturesIMG {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRelaxedLineRasterizationFeaturesIMG {}
