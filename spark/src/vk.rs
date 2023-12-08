@@ -7361,8 +7361,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR: Self = Self(1000181000);
     /// Added by extension VK_AMD_pipeline_compiler_control.
     pub const PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD: Self = Self(1000183000);
-    /// Added by extension VK_EXT_calibrated_timestamps.
-    pub const CALIBRATED_TIMESTAMP_INFO_EXT: Self = Self(1000184000);
+    pub const CALIBRATED_TIMESTAMP_INFO_EXT: Self = Self::CALIBRATED_TIMESTAMP_INFO_KHR;
     /// Added by extension VK_AMD_shader_core_properties.
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD: Self = Self(1000185000);
     pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR: Self = Self(1000174000);
@@ -7372,10 +7371,10 @@ impl StructureType {
     pub const DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD: Self = Self(1000189000);
     /// Added by extension VK_EXT_vertex_attribute_divisor.
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT: Self = Self(1000190000);
-    /// Added by extension VK_EXT_vertex_attribute_divisor.
-    pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT: Self = Self(1000190001);
-    /// Added by extension VK_EXT_vertex_attribute_divisor.
-    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT: Self = Self(1000190002);
+    pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT: Self =
+        Self::PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_KHR;
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT: Self =
+        Self::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR;
     pub const PIPELINE_CREATION_FEEDBACK_CREATE_INFO_EXT: Self = Self::PIPELINE_CREATION_FEEDBACK_CREATE_INFO;
     pub const PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_DRIVER_PROPERTIES;
     pub const PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES;
@@ -8198,8 +8197,13 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_CUBIC_CLAMP_FEATURES_QCOM: Self = Self(1000521000);
     /// Added by extension VK_EXT_attachment_feedback_loop_dynamic_state.
     pub const PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT: Self = Self(1000524000);
+    /// Added by extension VK_KHR_vertex_attribute_divisor.
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_KHR: Self = Self(1000525000);
+    pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_KHR: Self = Self(1000190001);
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR: Self = Self(1000190002);
     /// Added by extension VK_MSFT_layered_driver.
     pub const PHYSICAL_DEVICE_LAYERED_DRIVER_PROPERTIES_MSFT: Self = Self(1000530000);
+    pub const CALIBRATED_TIMESTAMP_INFO_KHR: Self = Self(1000184000);
     /// Added by extension VK_NV_descriptor_pool_overallocation.
     pub const PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV: Self = Self(1000546000);
 }
@@ -8616,15 +8620,12 @@ impl fmt::Display for StructureType {
             1000178002 => Some(&"PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT"),
             1000181000 => Some(&"PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR"),
             1000183000 => Some(&"PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD"),
-            1000184000 => Some(&"CALIBRATED_TIMESTAMP_INFO_EXT"),
             1000185000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD"),
             1000174000 => Some(&"DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR"),
             1000388000 => Some(&"PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR"),
             1000388001 => Some(&"QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR"),
             1000189000 => Some(&"DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD"),
             1000190000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT"),
-            1000190001 => Some(&"PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT"),
-            1000190002 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT"),
             1000201000 => Some(&"PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV"),
             1000202000 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV"),
             1000202001 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV"),
@@ -8988,7 +8989,11 @@ impl fmt::Display for StructureType {
             1000520001 => Some(&"SAMPLER_YCBCR_CONVERSION_YCBCR_DEGAMMA_CREATE_INFO_QCOM"),
             1000521000 => Some(&"PHYSICAL_DEVICE_CUBIC_CLAMP_FEATURES_QCOM"),
             1000524000 => Some(&"PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT"),
+            1000525000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_KHR"),
+            1000190001 => Some(&"PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_KHR"),
+            1000190002 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR"),
             1000530000 => Some(&"PHYSICAL_DEVICE_LAYERED_DRIVER_PROPERTIES_MSFT"),
+            1000184000 => Some(&"CALIBRATED_TIMESTAMP_INFO_KHR"),
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
             _ => None,
         };
@@ -9569,14 +9574,18 @@ impl fmt::Display for QueueGlobalPriorityKHR {
 pub type QueueGlobalPriorityEXT = QueueGlobalPriorityKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct TimeDomainEXT(pub(crate) i32);
-impl TimeDomainEXT {
+pub struct TimeDomainKHR(pub(crate) i32);
+impl TimeDomainKHR {
     pub const DEVICE: Self = Self(0);
     pub const CLOCK_MONOTONIC: Self = Self(1);
     pub const CLOCK_MONOTONIC_RAW: Self = Self(2);
     pub const QUERY_PERFORMANCE_COUNTER: Self = Self(3);
+    pub const DEVICE_EXT: Self = Self::DEVICE;
+    pub const CLOCK_MONOTONIC_EXT: Self = Self::CLOCK_MONOTONIC;
+    pub const CLOCK_MONOTONIC_RAW_EXT: Self = Self::CLOCK_MONOTONIC_RAW;
+    pub const QUERY_PERFORMANCE_COUNTER_EXT: Self = Self::QUERY_PERFORMANCE_COUNTER;
 }
-impl fmt::Display for TimeDomainEXT {
+impl fmt::Display for TimeDomainKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"DEVICE"),
@@ -9592,6 +9601,7 @@ impl fmt::Display for TimeDomainEXT {
         }
     }
 }
+pub type TimeDomainEXT = TimeDomainKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ConservativeRasterizationModeEXT(pub(crate) i32);
@@ -24123,31 +24133,32 @@ impl fmt::Debug for PhysicalDeviceConservativeRasterizationPropertiesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct CalibratedTimestampInfoEXT {
+pub struct CalibratedTimestampInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub time_domain: TimeDomainEXT,
+    pub time_domain: TimeDomainKHR,
 }
-unsafe impl Send for CalibratedTimestampInfoEXT {}
-unsafe impl Sync for CalibratedTimestampInfoEXT {}
-impl Default for CalibratedTimestampInfoEXT {
+unsafe impl Send for CalibratedTimestampInfoKHR {}
+unsafe impl Sync for CalibratedTimestampInfoKHR {}
+impl Default for CalibratedTimestampInfoKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::CALIBRATED_TIMESTAMP_INFO_EXT,
+            s_type: StructureType::CALIBRATED_TIMESTAMP_INFO_KHR,
             p_next: ptr::null(),
             time_domain: Default::default(),
         }
     }
 }
-impl fmt::Debug for CalibratedTimestampInfoEXT {
+impl fmt::Debug for CalibratedTimestampInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("CalibratedTimestampInfoEXT")
+        fmt.debug_struct("CalibratedTimestampInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("time_domain", &self.time_domain)
             .finish()
     }
 }
+pub type CalibratedTimestampInfoEXT = CalibratedTimestampInfoKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderCorePropertiesAMD {
@@ -25191,41 +25202,42 @@ impl fmt::Debug for SemaphoreSignalInfo {
 pub type SemaphoreSignalInfoKHR = SemaphoreSignalInfo;
 #[repr(C)]
 #[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct VertexInputBindingDivisorDescriptionEXT {
+pub struct VertexInputBindingDivisorDescriptionKHR {
     pub binding: u32,
     pub divisor: u32,
 }
-impl fmt::Debug for VertexInputBindingDivisorDescriptionEXT {
+impl fmt::Debug for VertexInputBindingDivisorDescriptionKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("VertexInputBindingDivisorDescriptionEXT")
+        fmt.debug_struct("VertexInputBindingDivisorDescriptionKHR")
             .field("binding", &self.binding)
             .field("divisor", &self.divisor)
             .finish()
     }
 }
+pub type VertexInputBindingDivisorDescriptionEXT = VertexInputBindingDivisorDescriptionKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PipelineVertexInputDivisorStateCreateInfoEXT {
+pub struct PipelineVertexInputDivisorStateCreateInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub vertex_binding_divisor_count: u32,
-    pub p_vertex_binding_divisors: *const VertexInputBindingDivisorDescriptionEXT,
+    pub p_vertex_binding_divisors: *const VertexInputBindingDivisorDescriptionKHR,
 }
-unsafe impl Send for PipelineVertexInputDivisorStateCreateInfoEXT {}
-unsafe impl Sync for PipelineVertexInputDivisorStateCreateInfoEXT {}
-impl Default for PipelineVertexInputDivisorStateCreateInfoEXT {
+unsafe impl Send for PipelineVertexInputDivisorStateCreateInfoKHR {}
+unsafe impl Sync for PipelineVertexInputDivisorStateCreateInfoKHR {}
+impl Default for PipelineVertexInputDivisorStateCreateInfoKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT,
+            s_type: StructureType::PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_KHR,
             p_next: ptr::null(),
             vertex_binding_divisor_count: Default::default(),
             p_vertex_binding_divisors: ptr::null(),
         }
     }
 }
-impl fmt::Debug for PipelineVertexInputDivisorStateCreateInfoEXT {
+impl fmt::Debug for PipelineVertexInputDivisorStateCreateInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PipelineVertexInputDivisorStateCreateInfoEXT")
+        fmt.debug_struct("PipelineVertexInputDivisorStateCreateInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("vertex_binding_divisor_count", &self.vertex_binding_divisor_count)
@@ -25233,6 +25245,7 @@ impl fmt::Debug for PipelineVertexInputDivisorStateCreateInfoEXT {
             .finish()
     }
 }
+pub type PipelineVertexInputDivisorStateCreateInfoEXT = PipelineVertexInputDivisorStateCreateInfoKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
@@ -25258,6 +25271,40 @@ impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("max_vertex_attrib_divisor", &self.max_vertex_attrib_divisor)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceVertexAttributeDivisorPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// max value of vertex attribute divisor
+    pub max_vertex_attrib_divisor: u32,
+    pub supports_non_zero_first_instance: Bool32,
+}
+unsafe impl Send for PhysicalDeviceVertexAttributeDivisorPropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceVertexAttributeDivisorPropertiesKHR {}
+impl Default for PhysicalDeviceVertexAttributeDivisorPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            max_vertex_attrib_divisor: Default::default(),
+            supports_non_zero_first_instance: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceVertexAttributeDivisorPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_vertex_attrib_divisor", &self.max_vertex_attrib_divisor)
+            .field(
+                "supports_non_zero_first_instance",
+                &self.supports_non_zero_first_instance,
+            )
             .finish()
     }
 }
@@ -25819,27 +25866,27 @@ impl fmt::Debug for PhysicalDeviceShaderAtomicFloat2FeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
+pub struct PhysicalDeviceVertexAttributeDivisorFeaturesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub vertex_attribute_instance_rate_divisor: Bool32,
     pub vertex_attribute_instance_rate_zero_divisor: Bool32,
 }
-unsafe impl Send for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {}
-unsafe impl Sync for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {}
-impl Default for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
+unsafe impl Send for PhysicalDeviceVertexAttributeDivisorFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceVertexAttributeDivisorFeaturesKHR {}
+impl Default for PhysicalDeviceVertexAttributeDivisorFeaturesKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT,
+            s_type: StructureType::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR,
             p_next: ptr::null_mut(),
             vertex_attribute_instance_rate_divisor: Default::default(),
             vertex_attribute_instance_rate_zero_divisor: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
+impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorFeaturesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceVertexAttributeDivisorFeaturesEXT")
+        fmt.debug_struct("PhysicalDeviceVertexAttributeDivisorFeaturesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field(
@@ -25853,6 +25900,7 @@ impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
             .finish()
     }
 }
+pub type PhysicalDeviceVertexAttributeDivisorFeaturesEXT = PhysicalDeviceVertexAttributeDivisorFeaturesKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct QueueFamilyCheckpointPropertiesNV {
@@ -45653,15 +45701,15 @@ pub type FnGetShaderInfoAMD = unsafe extern "system" fn(
 ) -> Result;
 pub type FnSetLocalDimmingAMD =
     unsafe extern "system" fn(device: Option<Device>, swap_chain: Option<SwapchainKHR>, local_dimming_enable: Bool32);
-pub type FnGetPhysicalDeviceCalibrateableTimeDomainsEXT = unsafe extern "system" fn(
+pub type FnGetPhysicalDeviceCalibrateableTimeDomainsKHR = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     p_time_domain_count: *mut u32,
-    p_time_domains: *mut TimeDomainEXT,
+    p_time_domains: *mut TimeDomainKHR,
 ) -> Result;
-pub type FnGetCalibratedTimestampsEXT = unsafe extern "system" fn(
+pub type FnGetCalibratedTimestampsKHR = unsafe extern "system" fn(
     device: Option<Device>,
     timestamp_count: u32,
-    p_timestamp_infos: *const CalibratedTimestampInfoEXT,
+    p_timestamp_infos: *const CalibratedTimestampInfoKHR,
     p_timestamps: *mut u64,
     p_max_deviation: *mut u64,
 ) -> Result;

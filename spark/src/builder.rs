@@ -8890,28 +8890,28 @@ impl MemoryAllocateInfoNext for ImportMemoryHostPointerInfoEXTBuilder {}
 impl MemoryAllocateInfoNext for vk::ImportMemoryHostPointerInfoEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceExternalMemoryHostPropertiesEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceConservativeRasterizationPropertiesEXT {}
-impl Builder<'_> for vk::CalibratedTimestampInfoEXT {
-    type Type = CalibratedTimestampInfoEXTBuilder;
+impl Builder<'_> for vk::CalibratedTimestampInfoKHR {
+    type Type = CalibratedTimestampInfoKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct CalibratedTimestampInfoEXTBuilder {
-    inner: vk::CalibratedTimestampInfoEXT,
+pub struct CalibratedTimestampInfoKHRBuilder {
+    inner: vk::CalibratedTimestampInfoKHR,
 }
-impl CalibratedTimestampInfoEXTBuilder {
+impl CalibratedTimestampInfoKHRBuilder {
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn time_domain(mut self, time_domain: vk::TimeDomainEXT) -> Self {
+    pub fn time_domain(mut self, time_domain: vk::TimeDomainKHR) -> Self {
         self.inner.time_domain = time_domain;
         self
     }
 }
-impl Deref for CalibratedTimestampInfoEXTBuilder {
-    type Target = vk::CalibratedTimestampInfoEXT;
+impl Deref for CalibratedTimestampInfoKHRBuilder {
+    type Target = vk::CalibratedTimestampInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -9790,40 +9790,41 @@ impl Deref for SemaphoreSignalInfoBuilder {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::PipelineVertexInputDivisorStateCreateInfoEXT {
-    type Type = PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a>;
+impl<'a> Builder<'a> for vk::PipelineVertexInputDivisorStateCreateInfoKHR {
+    type Type = PipelineVertexInputDivisorStateCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {
-    inner: vk::PipelineVertexInputDivisorStateCreateInfoEXT,
+pub struct PipelineVertexInputDivisorStateCreateInfoKHRBuilder<'a> {
+    inner: vk::PipelineVertexInputDivisorStateCreateInfoKHR,
     phantom: PhantomData<&'a vk::Never>,
 }
-impl<'a> PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {
+impl<'a> PipelineVertexInputDivisorStateCreateInfoKHRBuilder<'a> {
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
     pub fn p_vertex_binding_divisors(
         mut self,
-        p_vertex_binding_divisors: &'a [vk::VertexInputBindingDivisorDescriptionEXT],
+        p_vertex_binding_divisors: &'a [vk::VertexInputBindingDivisorDescriptionKHR],
     ) -> Self {
         self.inner.vertex_binding_divisor_count = p_vertex_binding_divisors.len() as u32;
         self.inner.p_vertex_binding_divisors = p_vertex_binding_divisors.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
-impl<'a> Deref for PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {
-    type Target = vk::PipelineVertexInputDivisorStateCreateInfoEXT;
+impl<'a> Deref for PipelineVertexInputDivisorStateCreateInfoKHRBuilder<'a> {
+    type Target = vk::PipelineVertexInputDivisorStateCreateInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> PipelineVertexInputStateCreateInfoNext for PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {}
-impl PipelineVertexInputStateCreateInfoNext for vk::PipelineVertexInputDivisorStateCreateInfoEXT {}
+impl<'a> PipelineVertexInputStateCreateInfoNext for PipelineVertexInputDivisorStateCreateInfoKHRBuilder<'a> {}
+impl PipelineVertexInputStateCreateInfoNext for vk::PipelineVertexInputDivisorStateCreateInfoKHR {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceVertexAttributeDivisorPropertiesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceVertexAttributeDivisorPropertiesKHR {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePCIBusInfoPropertiesEXT {}
 impl Builder<'_> for vk::ImportAndroidHardwareBufferInfoANDROID {
     type Type = ImportAndroidHardwareBufferInfoANDROIDBuilder;
@@ -10398,17 +10399,17 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderAtomicFloat2FeaturesEXT
 impl DeviceCreateInfoNext for PhysicalDeviceShaderAtomicFloat2FeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderAtomicFloat2FeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderAtomicFloat2FeaturesEXT {}
-impl Builder<'_> for vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
-    type Type = PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder;
+impl Builder<'_> for vk::PhysicalDeviceVertexAttributeDivisorFeaturesKHR {
+    type Type = PhysicalDeviceVertexAttributeDivisorFeaturesKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder {
-    inner: vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT,
+pub struct PhysicalDeviceVertexAttributeDivisorFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceVertexAttributeDivisorFeaturesKHR,
 }
-impl PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder {
+impl PhysicalDeviceVertexAttributeDivisorFeaturesKHRBuilder {
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10433,16 +10434,16 @@ impl PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder {
         self
     }
 }
-impl Deref for PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder {
-    type Target = vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT;
+impl Deref for PhysicalDeviceVertexAttributeDivisorFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceVertexAttributeDivisorFeaturesKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceFeatures2Next for PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder {}
-impl DeviceCreateInfoNext for PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder {}
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT {}
-impl DeviceCreateInfoNext for vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceVertexAttributeDivisorFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceVertexAttributeDivisorFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceVertexAttributeDivisorFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceVertexAttributeDivisorFeaturesKHR {}
 impl QueueFamilyProperties2Next for vk::QueueFamilyCheckpointPropertiesNV {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDepthStencilResolveProperties {}
 impl<'a> Builder<'a> for vk::SubpassDescriptionDepthStencilResolve {

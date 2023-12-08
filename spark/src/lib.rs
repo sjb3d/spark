@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 272
+//! Generated from vk.xml with `VK_HEADER_VERSION` 273
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2136,11 +2136,27 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
         self.enable_ext_attachment_feedback_loop_layout();
     }
+    pub fn supports_khr_vertex_attribute_divisor(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_khr_vertex_attribute_divisor(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_msft_layered_driver(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_msft_layered_driver(&mut self) {
         self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_khr_calibrated_timestamps(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_khr_calibrated_timestamps(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -4828,7 +4844,9 @@ pub struct DeviceExtensions {
     pub qcom_ycbcr_degamma: bool,
     pub qcom_filter_cubic_clamp: bool,
     pub ext_attachment_feedback_loop_dynamic_state: bool,
+    pub khr_vertex_attribute_divisor: bool,
     pub msft_layered_driver: bool,
+    pub khr_calibrated_timestamps: bool,
     pub nv_descriptor_pool_overallocation: bool,
 }
 impl DeviceExtensions {
@@ -5137,7 +5155,9 @@ impl DeviceExtensions {
             b"VK_QCOM_ycbcr_degamma" => self.qcom_ycbcr_degamma = true,
             b"VK_QCOM_filter_cubic_clamp" => self.qcom_filter_cubic_clamp = true,
             b"VK_EXT_attachment_feedback_loop_dynamic_state" => self.ext_attachment_feedback_loop_dynamic_state = true,
+            b"VK_KHR_vertex_attribute_divisor" => self.khr_vertex_attribute_divisor = true,
             b"VK_MSFT_layered_driver" => self.msft_layered_driver = true,
+            b"VK_KHR_calibrated_timestamps" => self.khr_calibrated_timestamps = true,
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
             _ => {}
         }
@@ -5446,7 +5466,9 @@ impl DeviceExtensions {
             qcom_ycbcr_degamma: false,
             qcom_filter_cubic_clamp: false,
             ext_attachment_feedback_loop_dynamic_state: false,
+            khr_vertex_attribute_divisor: false,
             msft_layered_driver: false,
+            khr_calibrated_timestamps: false,
             nv_descriptor_pool_overallocation: false,
         }
     }
@@ -7632,11 +7654,23 @@ impl DeviceExtensions {
         self.ext_attachment_feedback_loop_dynamic_state = true;
         self.enable_ext_attachment_feedback_loop_layout();
     }
+    pub fn supports_khr_vertex_attribute_divisor(&self) -> bool {
+        self.khr_vertex_attribute_divisor
+    }
+    pub fn enable_khr_vertex_attribute_divisor(&mut self) {
+        self.khr_vertex_attribute_divisor = true;
+    }
     pub fn supports_msft_layered_driver(&self) -> bool {
         self.msft_layered_driver
     }
     pub fn enable_msft_layered_driver(&mut self) {
         self.msft_layered_driver = true;
+    }
+    pub fn supports_khr_calibrated_timestamps(&self) -> bool {
+        self.khr_calibrated_timestamps
+    }
+    pub fn enable_khr_calibrated_timestamps(&mut self) {
+        self.khr_calibrated_timestamps = true;
     }
     pub fn supports_nv_descriptor_pool_overallocation(&self) -> bool {
         self.nv_descriptor_pool_overallocation && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -8551,8 +8585,14 @@ impl DeviceExtensions {
         if self.ext_attachment_feedback_loop_dynamic_state {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_attachment_feedback_loop_dynamic_state\0") })
         }
+        if self.khr_vertex_attribute_divisor {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_vertex_attribute_divisor\0") })
+        }
         if self.msft_layered_driver {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_MSFT_layered_driver\0") })
+        }
+        if self.khr_calibrated_timestamps {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_calibrated_timestamps\0") })
         }
         if self.nv_descriptor_pool_overallocation {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_descriptor_pool_overallocation\0") })
@@ -8781,9 +8821,9 @@ pub struct Device {
     pub fp_get_descriptor_set_layout_support: Option<vk::FnGetDescriptorSetLayoutSupport>,
     pub fp_get_shader_info_amd: Option<vk::FnGetShaderInfoAMD>,
     pub fp_set_local_dimming_amd: Option<vk::FnSetLocalDimmingAMD>,
-    pub fp_get_physical_device_calibrateable_time_domains_ext:
-        Option<vk::FnGetPhysicalDeviceCalibrateableTimeDomainsEXT>,
-    pub fp_get_calibrated_timestamps_ext: Option<vk::FnGetCalibratedTimestampsEXT>,
+    pub fp_get_physical_device_calibrateable_time_domains_khr:
+        Option<vk::FnGetPhysicalDeviceCalibrateableTimeDomainsKHR>,
+    pub fp_get_calibrated_timestamps_khr: Option<vk::FnGetCalibratedTimestampsKHR>,
     pub fp_get_memory_host_pointer_properties_ext: Option<vk::FnGetMemoryHostPointerPropertiesEXT>,
     pub fp_cmd_write_buffer_marker_amd: Option<vk::FnCmdWriteBufferMarkerAMD>,
     pub fp_create_render_pass2: Option<vk::FnCreateRenderPass2>,
@@ -10752,15 +10792,23 @@ impl Device {
             } else {
                 None
             },
-            fp_get_physical_device_calibrateable_time_domains_ext: if extensions.ext_calibrated_timestamps {
+            fp_get_physical_device_calibrateable_time_domains_khr: if extensions.khr_calibrated_timestamps {
                 let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceCalibrateableTimeDomainsKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.ext_calibrated_timestamps {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceCalibrateableTimeDomainsEXT\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_get_calibrated_timestamps_ext: if extensions.ext_calibrated_timestamps {
+            fp_get_calibrated_timestamps_khr: if extensions.khr_calibrated_timestamps {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetCalibratedTimestampsKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.ext_calibrated_timestamps {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetCalibratedTimestampsEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -16543,12 +16591,33 @@ impl Device {
             if local_dimming_enable { vk::TRUE } else { vk::FALSE },
         );
     }
+    pub unsafe fn get_physical_device_calibrateable_time_domains_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::TimeDomainKHR>> {
+        let fp = self
+            .fp_get_physical_device_calibrateable_time_domains_khr
+            .expect("vkGetPhysicalDeviceCalibrateableTimeDomainsKHR is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        }
+    }
     pub unsafe fn get_physical_device_calibrateable_time_domains_ext_to_vec(
         &self,
         physical_device: vk::PhysicalDevice,
-    ) -> Result<Vec<vk::TimeDomainEXT>> {
+    ) -> Result<Vec<vk::TimeDomainKHR>> {
         let fp = self
-            .fp_get_physical_device_calibrateable_time_domains_ext
+            .fp_get_physical_device_calibrateable_time_domains_khr
             .expect("vkGetPhysicalDeviceCalibrateableTimeDomainsEXT is not loaded");
         let mut len = MaybeUninit::<_>::uninit();
         let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
@@ -16564,14 +16633,103 @@ impl Device {
             _ => Err(v_err),
         }
     }
-    pub unsafe fn get_calibrated_timestamps_ext(
+    pub unsafe fn get_calibrated_timestamps_khr(
         &self,
-        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoKHR],
         p_timestamps: *mut u64,
         p_max_deviation: &mut u64,
     ) -> Result<()> {
         let fp = self
-            .fp_get_calibrated_timestamps_ext
+            .fp_get_calibrated_timestamps_khr
+            .expect("vkGetCalibratedTimestampsKHR is not loaded");
+        let timestamp_count = p_timestamp_infos.len() as u32;
+        let v_err = (fp)(
+            Some(self.handle),
+            timestamp_count,
+            p_timestamp_infos.first().map_or(ptr::null(), |s| s as *const _),
+            p_timestamps,
+            p_max_deviation,
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn get_calibrated_timestamps_khr_to_vec(
+        &self,
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoKHR],
+        p_max_deviation: &mut u64,
+    ) -> Result<Vec<u64>> {
+        let fp = self
+            .fp_get_calibrated_timestamps_khr
+            .expect("vkGetCalibratedTimestampsKHR is not loaded");
+        let timestamp_count = p_timestamp_infos.len() as u32;
+        let mut v = VecMaybeUninit::with_len(timestamp_count as usize);
+        let v_err = (fp)(
+            Some(self.handle),
+            timestamp_count,
+            p_timestamp_infos.first().map_or(ptr::null(), |s| s as *const _),
+            v.as_mut_ptr(),
+            p_max_deviation,
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(v.assume_init()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn get_calibrated_timestamps_khr_array<const N: usize>(
+        &self,
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoKHR],
+        p_max_deviation: &mut u64,
+    ) -> Result<[u64; N]> {
+        let fp = self
+            .fp_get_calibrated_timestamps_khr
+            .expect("vkGetCalibratedTimestampsKHR is not loaded");
+        let timestamp_count = p_timestamp_infos.len() as u32;
+        assert_eq!(timestamp_count, N as u32);
+        let mut v = MaybeUninit::<_>::uninit();
+        let v_err = (fp)(
+            Some(self.handle),
+            timestamp_count,
+            p_timestamp_infos.first().map_or(ptr::null(), |s| s as *const _),
+            v.as_mut_ptr() as *mut _,
+            p_max_deviation,
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(v.assume_init()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn get_calibrated_timestamps_khr_single(
+        &self,
+        p_timestamp_infos: &vk::CalibratedTimestampInfoKHR,
+        p_max_deviation: &mut u64,
+    ) -> Result<u64> {
+        let fp = self
+            .fp_get_calibrated_timestamps_khr
+            .expect("vkGetCalibratedTimestampsKHR is not loaded");
+        let timestamp_count = 1;
+        let mut v = MaybeUninit::<_>::uninit();
+        let v_err = (fp)(
+            Some(self.handle),
+            timestamp_count,
+            p_timestamp_infos,
+            v.as_mut_ptr(),
+            p_max_deviation,
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(v.assume_init()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn get_calibrated_timestamps_ext(
+        &self,
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoKHR],
+        p_timestamps: *mut u64,
+        p_max_deviation: &mut u64,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_calibrated_timestamps_khr
             .expect("vkGetCalibratedTimestampsEXT is not loaded");
         let timestamp_count = p_timestamp_infos.len() as u32;
         let v_err = (fp)(
@@ -16588,11 +16746,11 @@ impl Device {
     }
     pub unsafe fn get_calibrated_timestamps_ext_to_vec(
         &self,
-        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoKHR],
         p_max_deviation: &mut u64,
     ) -> Result<Vec<u64>> {
         let fp = self
-            .fp_get_calibrated_timestamps_ext
+            .fp_get_calibrated_timestamps_khr
             .expect("vkGetCalibratedTimestampsEXT is not loaded");
         let timestamp_count = p_timestamp_infos.len() as u32;
         let mut v = VecMaybeUninit::with_len(timestamp_count as usize);
@@ -16610,11 +16768,11 @@ impl Device {
     }
     pub unsafe fn get_calibrated_timestamps_ext_array<const N: usize>(
         &self,
-        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoKHR],
         p_max_deviation: &mut u64,
     ) -> Result<[u64; N]> {
         let fp = self
-            .fp_get_calibrated_timestamps_ext
+            .fp_get_calibrated_timestamps_khr
             .expect("vkGetCalibratedTimestampsEXT is not loaded");
         let timestamp_count = p_timestamp_infos.len() as u32;
         assert_eq!(timestamp_count, N as u32);
@@ -16633,11 +16791,11 @@ impl Device {
     }
     pub unsafe fn get_calibrated_timestamps_ext_single(
         &self,
-        p_timestamp_infos: &vk::CalibratedTimestampInfoEXT,
+        p_timestamp_infos: &vk::CalibratedTimestampInfoKHR,
         p_max_deviation: &mut u64,
     ) -> Result<u64> {
         let fp = self
-            .fp_get_calibrated_timestamps_ext
+            .fp_get_calibrated_timestamps_khr
             .expect("vkGetCalibratedTimestampsEXT is not loaded");
         let timestamp_count = 1;
         let mut v = MaybeUninit::<_>::uninit();
