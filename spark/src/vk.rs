@@ -43524,6 +43524,7 @@ impl fmt::Debug for SetLatencyMarkerInfoNV {
 pub struct GetLatencyMarkerInfoNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
+    pub timing_count: u32,
     pub p_timings: *mut LatencyTimingsFrameReportNV,
 }
 unsafe impl Send for GetLatencyMarkerInfoNV {}
@@ -43533,6 +43534,7 @@ impl Default for GetLatencyMarkerInfoNV {
         Self {
             s_type: StructureType::GET_LATENCY_MARKER_INFO_NV,
             p_next: ptr::null(),
+            timing_count: Default::default(),
             p_timings: ptr::null_mut(),
         }
     }
@@ -43542,6 +43544,7 @@ impl fmt::Debug for GetLatencyMarkerInfoNV {
         fmt.debug_struct("GetLatencyMarkerInfoNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
+            .field("timing_count", &self.timing_count)
             .field("p_timings", &self.p_timings)
             .finish()
     }
@@ -46646,7 +46649,6 @@ pub type FnSetLatencyMarkerNV = unsafe extern "system" fn(
 pub type FnGetLatencyTimingsNV = unsafe extern "system" fn(
     device: Option<Device>,
     swapchain: Option<SwapchainKHR>,
-    p_timing_count: *mut u32,
     p_latency_marker_info: *mut GetLatencyMarkerInfoNV,
 );
 pub type FnQueueNotifyOutOfBandNV =

@@ -25097,6 +25097,10 @@ impl GetLatencyMarkerInfoNVBuilder {
         self.inner.p_next = p_next;
         self
     }
+    pub fn timing_count(mut self, timing_count: u32) -> Self {
+        self.inner.timing_count = timing_count;
+        self
+    }
     pub fn p_timings(mut self, p_timings: *mut vk::LatencyTimingsFrameReportNV) -> Self {
         self.inner.p_timings = p_timings;
         self

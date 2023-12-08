@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 270
+//! Generated from vk.xml with `VK_HEADER_VERSION` 271
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -21230,18 +21230,12 @@ impl Device {
     pub unsafe fn get_latency_timings_nv(
         &self,
         swapchain: vk::SwapchainKHR,
-        p_timing_count: &mut u32,
         p_latency_marker_info: &mut vk::GetLatencyMarkerInfoNV,
     ) {
         let fp = self
             .fp_get_latency_timings_nv
             .expect("vkGetLatencyTimingsNV is not loaded");
-        (fp)(
-            Some(self.handle),
-            Some(swapchain),
-            p_timing_count,
-            p_latency_marker_info,
-        );
+        (fp)(Some(self.handle), Some(swapchain), p_latency_marker_info);
     }
     pub unsafe fn queue_notify_out_of_band_nv(
         &self,
