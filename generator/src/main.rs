@@ -3256,20 +3256,27 @@ impl<'a> Generator<'a> {
             DependencyExpr::Or(deps) => {
                 // only handle pairs
                 if deps.len() == 2 {
-                    let (v, other) = if let DependencyExpr::Version(v) = &deps[0] {
-                        (v, &deps[1])
-                    } else if let DependencyExpr::Version(v) = &deps[1] {
-                        (v, &deps[0])
-                    } else {
-                        unimplemented!()
-                    };
-                    writeln!(
-                        w,
-                        "if self.core_version < vk::Version::from_raw_parts({}, {}, 0) {{",
-                        v.0, v.1
-                    )?;
-                    Self::write_enable_impl(w, current_name, other)?;
-                    writeln!(w, "}}")?;
+                    match (&deps[0], &deps[1]) {
+                        (DependencyExpr::Version(v), other) | (other, DependencyExpr::Version(v)) => {
+                            writeln!(
+                                w,
+                                "if self.core_version < vk::Version::from_raw_parts({}, {}, 0) {{",
+                                v.0, v.1
+                            )?;
+                            Self::write_enable_impl(w, current_name, other)?;
+                            writeln!(w, "}}")?;
+                        }
+                        (DependencyExpr::Extension(a), DependencyExpr::Extension(b)) => {
+                            // enable the first choice of dependency, if necessary
+                            let name_a = a.skip_prefix(CONST_PREFIX).to_snake_case();
+                            let name_b = b.skip_prefix(CONST_PREFIX).to_snake_case();
+                            writeln!(
+                                w,
+                                "if !(self.supports_{name_a}() || self.supports_{name_b}()) {{ self.enable_{name_a}(); }}"
+                            )?;
+                        }
+                        _ => unimplemented!(),
+                    }
                 } else {
                     unimplemented!();
                 }
