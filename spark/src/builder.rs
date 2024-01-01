@@ -2102,6 +2102,18 @@ impl<'a> Deref for PipelineLayoutCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> BindDescriptorSetsInfoKHRNext for PipelineLayoutCreateInfoBuilder<'a> {}
+impl<'a> PushConstantsInfoKHRNext for PipelineLayoutCreateInfoBuilder<'a> {}
+impl<'a> PushDescriptorSetInfoKHRNext for PipelineLayoutCreateInfoBuilder<'a> {}
+impl<'a> PushDescriptorSetWithTemplateInfoKHRNext for PipelineLayoutCreateInfoBuilder<'a> {}
+impl<'a> SetDescriptorBufferOffsetsInfoEXTNext for PipelineLayoutCreateInfoBuilder<'a> {}
+impl<'a> BindDescriptorBufferEmbeddedSamplersInfoEXTNext for PipelineLayoutCreateInfoBuilder<'a> {}
+impl BindDescriptorSetsInfoKHRNext for vk::PipelineLayoutCreateInfo {}
+impl PushConstantsInfoKHRNext for vk::PipelineLayoutCreateInfo {}
+impl PushDescriptorSetInfoKHRNext for vk::PipelineLayoutCreateInfo {}
+impl PushDescriptorSetWithTemplateInfoKHRNext for vk::PipelineLayoutCreateInfo {}
+impl SetDescriptorBufferOffsetsInfoEXTNext for vk::PipelineLayoutCreateInfo {}
+impl BindDescriptorBufferEmbeddedSamplersInfoEXTNext for vk::PipelineLayoutCreateInfo {}
 impl<'a> Builder<'a> for vk::SamplerCreateInfo {
     type Type = SamplerCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -8329,6 +8341,37 @@ impl DeviceCreateInfoNext for PhysicalDeviceMaintenance5FeaturesKHRBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMaintenance5FeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceMaintenance5FeaturesKHR {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMaintenance5PropertiesKHR {}
+impl Builder<'_> for vk::PhysicalDeviceMaintenance6FeaturesKHR {
+    type Type = PhysicalDeviceMaintenance6FeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMaintenance6FeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceMaintenance6FeaturesKHR,
+}
+impl PhysicalDeviceMaintenance6FeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn maintenance6(mut self, maintenance6: bool) -> Self {
+        self.inner.maintenance6 = if maintenance6 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMaintenance6FeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceMaintenance6FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMaintenance6FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMaintenance6FeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMaintenance6FeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMaintenance6FeaturesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMaintenance6PropertiesKHR {}
 impl<'a> Builder<'a> for vk::RenderingAreaInfoKHR {
     type Type = RenderingAreaInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
@@ -24794,6 +24837,319 @@ impl Deref for ExecutionGraphPipelineScratchSizeAMDXBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::BindMemoryStatusKHR {
+    type Type = BindMemoryStatusKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BindMemoryStatusKHRBuilder {
+    inner: vk::BindMemoryStatusKHR,
+}
+impl BindMemoryStatusKHRBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_result(mut self, p_result: *mut vk::Result) -> Self {
+        self.inner.p_result = p_result;
+        self
+    }
+}
+impl Deref for BindMemoryStatusKHRBuilder {
+    type Target = vk::BindMemoryStatusKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl BindBufferMemoryInfoNext for BindMemoryStatusKHRBuilder {}
+impl BindImageMemoryInfoNext for BindMemoryStatusKHRBuilder {}
+impl BindBufferMemoryInfoNext for vk::BindMemoryStatusKHR {}
+impl BindImageMemoryInfoNext for vk::BindMemoryStatusKHR {}
+impl<'a> Builder<'a> for vk::BindDescriptorSetsInfoKHR {
+    type Type = BindDescriptorSetsInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait BindDescriptorSetsInfoKHRNext {}
+#[derive(Default)]
+pub struct BindDescriptorSetsInfoKHRBuilder<'a> {
+    inner: vk::BindDescriptorSetsInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> BindDescriptorSetsInfoKHRBuilder<'a> {
+    pub fn insert_next<T: BindDescriptorSetsInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stage_flags(mut self, stage_flags: vk::ShaderStageFlags) -> Self {
+        self.inner.stage_flags = stage_flags;
+        self
+    }
+    pub fn layout(mut self, layout: Option<vk::PipelineLayout>) -> Self {
+        self.inner.layout = layout;
+        self
+    }
+    pub fn first_set(mut self, first_set: u32) -> Self {
+        self.inner.first_set = first_set;
+        self
+    }
+    pub fn p_descriptor_sets(mut self, p_descriptor_sets: &'a [vk::DescriptorSet]) -> Self {
+        self.inner.descriptor_set_count = p_descriptor_sets.len() as u32;
+        self.inner.p_descriptor_sets = p_descriptor_sets.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn p_dynamic_offsets(mut self, p_dynamic_offsets: &'a [u32]) -> Self {
+        self.inner.dynamic_offset_count = p_dynamic_offsets.len() as u32;
+        self.inner.p_dynamic_offsets = p_dynamic_offsets.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for BindDescriptorSetsInfoKHRBuilder<'a> {
+    type Target = vk::BindDescriptorSetsInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PushConstantsInfoKHR {
+    type Type = PushConstantsInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait PushConstantsInfoKHRNext {}
+#[derive(Default)]
+pub struct PushConstantsInfoKHRBuilder<'a> {
+    inner: vk::PushConstantsInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PushConstantsInfoKHRBuilder<'a> {
+    pub fn insert_next<T: PushConstantsInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn layout(mut self, layout: Option<vk::PipelineLayout>) -> Self {
+        self.inner.layout = layout;
+        self
+    }
+    pub fn stage_flags(mut self, stage_flags: vk::ShaderStageFlags) -> Self {
+        self.inner.stage_flags = stage_flags;
+        self
+    }
+    pub fn offset(mut self, offset: u32) -> Self {
+        self.inner.offset = offset;
+        self
+    }
+    pub fn p_values<T>(mut self, p_values: &'a [T]) -> Self {
+        self.inner.size = mem::size_of_val(p_values) as u32;
+        self.inner.p_values = p_values.first().map_or(ptr::null(), |s| s as *const _) as *const _;
+        self
+    }
+}
+impl<'a> Deref for PushConstantsInfoKHRBuilder<'a> {
+    type Target = vk::PushConstantsInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PushDescriptorSetInfoKHR {
+    type Type = PushDescriptorSetInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait PushDescriptorSetInfoKHRNext {}
+#[derive(Default)]
+pub struct PushDescriptorSetInfoKHRBuilder<'a> {
+    inner: vk::PushDescriptorSetInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PushDescriptorSetInfoKHRBuilder<'a> {
+    pub fn insert_next<T: PushDescriptorSetInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stage_flags(mut self, stage_flags: vk::ShaderStageFlags) -> Self {
+        self.inner.stage_flags = stage_flags;
+        self
+    }
+    pub fn layout(mut self, layout: Option<vk::PipelineLayout>) -> Self {
+        self.inner.layout = layout;
+        self
+    }
+    pub fn set(mut self, set: u32) -> Self {
+        self.inner.set = set;
+        self
+    }
+    pub fn p_descriptor_writes(mut self, p_descriptor_writes: &'a [vk::WriteDescriptorSet]) -> Self {
+        self.inner.descriptor_write_count = p_descriptor_writes.len() as u32;
+        self.inner.p_descriptor_writes = p_descriptor_writes.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for PushDescriptorSetInfoKHRBuilder<'a> {
+    type Target = vk::PushDescriptorSetInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PushDescriptorSetWithTemplateInfoKHR {
+    type Type = PushDescriptorSetWithTemplateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait PushDescriptorSetWithTemplateInfoKHRNext {}
+#[derive(Default)]
+pub struct PushDescriptorSetWithTemplateInfoKHRBuilder<'a> {
+    inner: vk::PushDescriptorSetWithTemplateInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PushDescriptorSetWithTemplateInfoKHRBuilder<'a> {
+    pub fn insert_next<T: PushDescriptorSetWithTemplateInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn descriptor_update_template(mut self, descriptor_update_template: vk::DescriptorUpdateTemplate) -> Self {
+        self.inner.descriptor_update_template = Some(descriptor_update_template);
+        self
+    }
+    pub fn layout(mut self, layout: Option<vk::PipelineLayout>) -> Self {
+        self.inner.layout = layout;
+        self
+    }
+    pub fn set(mut self, set: u32) -> Self {
+        self.inner.set = set;
+        self
+    }
+    pub fn p_data(mut self, p_data: *const c_void) -> Self {
+        self.inner.p_data = p_data;
+        self
+    }
+}
+impl<'a> Deref for PushDescriptorSetWithTemplateInfoKHRBuilder<'a> {
+    type Target = vk::PushDescriptorSetWithTemplateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::SetDescriptorBufferOffsetsInfoEXT {
+    type Type = SetDescriptorBufferOffsetsInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait SetDescriptorBufferOffsetsInfoEXTNext {}
+#[derive(Default)]
+pub struct SetDescriptorBufferOffsetsInfoEXTBuilder<'a> {
+    inner: vk::SetDescriptorBufferOffsetsInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> SetDescriptorBufferOffsetsInfoEXTBuilder<'a> {
+    pub fn insert_next<T: SetDescriptorBufferOffsetsInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stage_flags(mut self, stage_flags: vk::ShaderStageFlags) -> Self {
+        self.inner.stage_flags = stage_flags;
+        self
+    }
+    pub fn layout(mut self, layout: Option<vk::PipelineLayout>) -> Self {
+        self.inner.layout = layout;
+        self
+    }
+    pub fn first_set(mut self, first_set: u32) -> Self {
+        self.inner.first_set = first_set;
+        self
+    }
+    pub fn p_buffer_indices(mut self, p_buffer_indices: &'a [u32], p_offsets: &'a [vk::DeviceSize]) -> Self {
+        self.inner.set_count = p_buffer_indices.len() as u32;
+        assert_eq!(self.inner.set_count, p_offsets.len() as u32);
+        self.inner.p_buffer_indices = p_buffer_indices.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_offsets = p_offsets.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for SetDescriptorBufferOffsetsInfoEXTBuilder<'a> {
+    type Target = vk::SetDescriptorBufferOffsetsInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::BindDescriptorBufferEmbeddedSamplersInfoEXT {
+    type Type = BindDescriptorBufferEmbeddedSamplersInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait BindDescriptorBufferEmbeddedSamplersInfoEXTNext {}
+#[derive(Default)]
+pub struct BindDescriptorBufferEmbeddedSamplersInfoEXTBuilder<'a> {
+    inner: vk::BindDescriptorBufferEmbeddedSamplersInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> BindDescriptorBufferEmbeddedSamplersInfoEXTBuilder<'a> {
+    pub fn insert_next<T: BindDescriptorBufferEmbeddedSamplersInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stage_flags(mut self, stage_flags: vk::ShaderStageFlags) -> Self {
+        self.inner.stage_flags = stage_flags;
+        self
+    }
+    pub fn layout(mut self, layout: Option<vk::PipelineLayout>) -> Self {
+        self.inner.layout = layout;
+        self
+    }
+    pub fn set(mut self, set: u32) -> Self {
+        self.inner.set = set;
+        self
+    }
+}
+impl<'a> Deref for BindDescriptorBufferEmbeddedSamplersInfoEXTBuilder<'a> {
+    type Target = vk::BindDescriptorBufferEmbeddedSamplersInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::PhysicalDeviceCubicClampFeaturesQCOM {
     type Type = PhysicalDeviceCubicClampFeaturesQCOMBuilder;
     fn builder() -> Self::Type {
@@ -25070,6 +25426,40 @@ impl DeviceCreateInfoNext for PhysicalDeviceDescriptorPoolOverallocationFeatures
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceLayeredDriverPropertiesMSFT {}
+impl Builder<'_> for vk::PhysicalDevicePerStageDescriptorSetFeaturesNV {
+    type Type = PhysicalDevicePerStageDescriptorSetFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePerStageDescriptorSetFeaturesNVBuilder {
+    inner: vk::PhysicalDevicePerStageDescriptorSetFeaturesNV,
+}
+impl PhysicalDevicePerStageDescriptorSetFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn per_stage_descriptor_set(mut self, per_stage_descriptor_set: bool) -> Self {
+        self.inner.per_stage_descriptor_set = if per_stage_descriptor_set { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn dynamic_pipeline_layout(mut self, dynamic_pipeline_layout: bool) -> Self {
+        self.inner.dynamic_pipeline_layout = if dynamic_pipeline_layout { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePerStageDescriptorSetFeaturesNVBuilder {
+    type Target = vk::PhysicalDevicePerStageDescriptorSetFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePerStageDescriptorSetFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePerStageDescriptorSetFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePerStageDescriptorSetFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePerStageDescriptorSetFeaturesNV {}
 impl Builder<'_> for vk::PhysicalDeviceExternalFormatResolveFeaturesANDROID {
     type Type = PhysicalDeviceExternalFormatResolveFeaturesANDROIDBuilder;
     fn builder() -> Self::Type {
@@ -25637,38 +26027,36 @@ impl Deref for RenderPassStripeInfoARMBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::RenderPassStripeBeginInfoARM {
-    type Type = RenderPassStripeBeginInfoARMBuilder;
+impl<'a> Builder<'a> for vk::RenderPassStripeBeginInfoARM {
+    type Type = RenderPassStripeBeginInfoARMBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct RenderPassStripeBeginInfoARMBuilder {
+pub struct RenderPassStripeBeginInfoARMBuilder<'a> {
     inner: vk::RenderPassStripeBeginInfoARM,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl RenderPassStripeBeginInfoARMBuilder {
+impl<'a> RenderPassStripeBeginInfoARMBuilder<'a> {
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn stripe_info_count(mut self, stripe_info_count: u32) -> Self {
-        self.inner.stripe_info_count = stripe_info_count;
-        self
-    }
-    pub fn p_stripe_infos(mut self, p_stripe_infos: *mut vk::RenderPassStripeInfoARM) -> Self {
-        self.inner.p_stripe_infos = p_stripe_infos;
+    pub fn p_stripe_infos(mut self, p_stripe_infos: &'a [vk::RenderPassStripeInfoARM]) -> Self {
+        self.inner.stripe_info_count = p_stripe_infos.len() as u32;
+        self.inner.p_stripe_infos = p_stripe_infos.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
-impl Deref for RenderPassStripeBeginInfoARMBuilder {
+impl<'a> Deref for RenderPassStripeBeginInfoARMBuilder<'a> {
     type Target = vk::RenderPassStripeBeginInfoARM;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl RenderingInfoNext for RenderPassStripeBeginInfoARMBuilder {}
-impl RenderPassBeginInfoNext for RenderPassStripeBeginInfoARMBuilder {}
+impl<'a> RenderingInfoNext for RenderPassStripeBeginInfoARMBuilder<'a> {}
+impl<'a> RenderPassBeginInfoNext for RenderPassStripeBeginInfoARMBuilder<'a> {}
 impl RenderingInfoNext for vk::RenderPassStripeBeginInfoARM {}
 impl RenderPassBeginInfoNext for vk::RenderPassStripeBeginInfoARM {}
 impl<'a> Builder<'a> for vk::RenderPassStripeSubmitInfoARM {

@@ -478,8 +478,10 @@ impl DescriptorSetLayoutCreateFlags {
     pub const INDIRECT_BINDABLE_NV: Self = Self(0x80);
     /// Added by extension VK_EXT_mutable_descriptor_type.
     pub const HOST_ONLY_POOL_EXT: Self = Self(0x4);
+    /// Added by extension VK_NV_per_stage_descriptor_set.
+    pub const PER_STAGE_NV: Self = Self(0x40);
 }
-impl_bitmask!(DescriptorSetLayoutCreateFlags, 0xb7);
+impl_bitmask!(DescriptorSetLayoutCreateFlags, 0xf7);
 impl fmt::Display for DescriptorSetLayoutCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -491,6 +493,7 @@ impl fmt::Display for DescriptorSetLayoutCreateFlags {
                 (0x20, "EMBEDDED_IMMUTABLE_SAMPLERS_EXT"),
                 (0x80, "INDIRECT_BINDABLE_NV"),
                 (0x4, "HOST_ONLY_POOL_EXT"),
+                (0x40, "PER_STAGE_NV"),
             ],
             f,
         )
@@ -8177,6 +8180,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM: Self = Self(1000510000);
     /// Added by extension VK_QCOM_multiview_per_view_render_areas.
     pub const MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM: Self = Self(1000510001);
+    /// Added by extension VK_NV_per_stage_descriptor_set.
+    pub const PHYSICAL_DEVICE_PER_STAGE_DESCRIPTOR_SET_FEATURES_NV: Self = Self(1000516000);
     /// Added by extension VK_QCOM_image_processing2.
     pub const PHYSICAL_DEVICE_IMAGE_PROCESSING_2_FEATURES_QCOM: Self = Self(1000518000);
     /// Added by extension VK_QCOM_image_processing2.
@@ -8204,6 +8209,24 @@ impl StructureType {
     /// Added by extension VK_MSFT_layered_driver.
     pub const PHYSICAL_DEVICE_LAYERED_DRIVER_PROPERTIES_MSFT: Self = Self(1000530000);
     pub const CALIBRATED_TIMESTAMP_INFO_KHR: Self = Self(1000184000);
+    /// Added by extension VK_KHR_maintenance6.
+    pub const PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES_KHR: Self = Self(1000545000);
+    /// Added by extension VK_KHR_maintenance6.
+    pub const PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES_KHR: Self = Self(1000545001);
+    /// Added by extension VK_KHR_maintenance6.
+    pub const BIND_MEMORY_STATUS_KHR: Self = Self(1000545002);
+    /// Added by extension VK_KHR_maintenance6.
+    pub const BIND_DESCRIPTOR_SETS_INFO_KHR: Self = Self(1000545003);
+    /// Added by extension VK_KHR_maintenance6.
+    pub const PUSH_CONSTANTS_INFO_KHR: Self = Self(1000545004);
+    /// Added by extension VK_KHR_maintenance6.
+    pub const PUSH_DESCRIPTOR_SET_INFO_KHR: Self = Self(1000545005);
+    /// Added by extension VK_KHR_maintenance6.
+    pub const PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO_KHR: Self = Self(1000545006);
+    /// Added by extension VK_KHR_maintenance6.
+    pub const SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT: Self = Self(1000545007);
+    /// Added by extension VK_KHR_maintenance6.
+    pub const BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT: Self = Self(1000545008);
     /// Added by extension VK_NV_descriptor_pool_overallocation.
     pub const PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV: Self = Self(1000546000);
 }
@@ -8979,6 +9002,7 @@ impl fmt::Display for StructureType {
             1000506002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_KHR"),
             1000510000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM"),
             1000510001 => Some(&"MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM"),
+            1000516000 => Some(&"PHYSICAL_DEVICE_PER_STAGE_DESCRIPTOR_SET_FEATURES_NV"),
             1000518000 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_2_FEATURES_QCOM"),
             1000518001 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_2_PROPERTIES_QCOM"),
             1000518002 => Some(&"SAMPLER_BLOCK_MATCH_WINDOW_CREATE_INFO_QCOM"),
@@ -8994,6 +9018,15 @@ impl fmt::Display for StructureType {
             1000190002 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR"),
             1000530000 => Some(&"PHYSICAL_DEVICE_LAYERED_DRIVER_PROPERTIES_MSFT"),
             1000184000 => Some(&"CALIBRATED_TIMESTAMP_INFO_KHR"),
+            1000545000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES_KHR"),
+            1000545001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES_KHR"),
+            1000545002 => Some(&"BIND_MEMORY_STATUS_KHR"),
+            1000545003 => Some(&"BIND_DESCRIPTOR_SETS_INFO_KHR"),
+            1000545004 => Some(&"PUSH_CONSTANTS_INFO_KHR"),
+            1000545005 => Some(&"PUSH_DESCRIPTOR_SET_INFO_KHR"),
+            1000545006 => Some(&"PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO_KHR"),
+            1000545007 => Some(&"SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT"),
+            1000545008 => Some(&"BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT"),
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
             _ => None,
         };
@@ -23236,6 +23269,75 @@ impl fmt::Debug for PhysicalDeviceMaintenance5PropertiesKHR {
             .field(
                 "non_strict_wide_lines_use_parallelogram",
                 &self.non_strict_wide_lines_use_parallelogram,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance6FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub maintenance6: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMaintenance6FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance6FeaturesKHR {}
+impl Default for PhysicalDeviceMaintenance6FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            maintenance6: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance6FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance6FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("maintenance6", &self.maintenance6)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance6PropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub block_texel_view_compatible_multiple_layers: Bool32,
+    pub max_combined_image_sampler_descriptor_count: u32,
+    pub fragment_shading_rate_clamp_combiner_inputs: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMaintenance6PropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance6PropertiesKHR {}
+impl Default for PhysicalDeviceMaintenance6PropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            block_texel_view_compatible_multiple_layers: Default::default(),
+            max_combined_image_sampler_descriptor_count: Default::default(),
+            fragment_shading_rate_clamp_combiner_inputs: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance6PropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance6PropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "block_texel_view_compatible_multiple_layers",
+                &self.block_texel_view_compatible_multiple_layers,
+            )
+            .field(
+                "max_combined_image_sampler_descriptor_count",
+                &self.max_combined_image_sampler_descriptor_count,
+            )
+            .field(
+                "fragment_shading_rate_clamp_combiner_inputs",
+                &self.fragment_shading_rate_clamp_combiner_inputs,
             )
             .finish()
     }
@@ -43227,6 +43329,267 @@ impl fmt::Debug for DispatchGraphCountInfoAMDX {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct BindMemoryStatusKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_result: *mut Result,
+}
+unsafe impl Send for BindMemoryStatusKHR {}
+unsafe impl Sync for BindMemoryStatusKHR {}
+impl Default for BindMemoryStatusKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BIND_MEMORY_STATUS_KHR,
+            p_next: ptr::null(),
+            p_result: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for BindMemoryStatusKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindMemoryStatusKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_result", &self.p_result)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BindDescriptorSetsInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub stage_flags: ShaderStageFlags,
+    pub layout: Option<PipelineLayout>,
+    pub first_set: u32,
+    pub descriptor_set_count: u32,
+    pub p_descriptor_sets: *const DescriptorSet,
+    pub dynamic_offset_count: u32,
+    pub p_dynamic_offsets: *const u32,
+}
+unsafe impl Send for BindDescriptorSetsInfoKHR {}
+unsafe impl Sync for BindDescriptorSetsInfoKHR {}
+impl Default for BindDescriptorSetsInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BIND_DESCRIPTOR_SETS_INFO_KHR,
+            p_next: ptr::null(),
+            stage_flags: Default::default(),
+            layout: Default::default(),
+            first_set: Default::default(),
+            descriptor_set_count: Default::default(),
+            p_descriptor_sets: ptr::null(),
+            dynamic_offset_count: Default::default(),
+            p_dynamic_offsets: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for BindDescriptorSetsInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindDescriptorSetsInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stage_flags", &self.stage_flags)
+            .field("layout", &self.layout)
+            .field("first_set", &self.first_set)
+            .field("descriptor_set_count", &self.descriptor_set_count)
+            .field("p_descriptor_sets", &self.p_descriptor_sets)
+            .field("dynamic_offset_count", &self.dynamic_offset_count)
+            .field("p_dynamic_offsets", &self.p_dynamic_offsets)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PushConstantsInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub layout: Option<PipelineLayout>,
+    pub stage_flags: ShaderStageFlags,
+    pub offset: u32,
+    pub size: u32,
+    pub p_values: *const c_void,
+}
+unsafe impl Send for PushConstantsInfoKHR {}
+unsafe impl Sync for PushConstantsInfoKHR {}
+impl Default for PushConstantsInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PUSH_CONSTANTS_INFO_KHR,
+            p_next: ptr::null(),
+            layout: Default::default(),
+            stage_flags: Default::default(),
+            offset: Default::default(),
+            size: Default::default(),
+            p_values: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PushConstantsInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PushConstantsInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("layout", &self.layout)
+            .field("stage_flags", &self.stage_flags)
+            .field("offset", &self.offset)
+            .field("size", &self.size)
+            .field("p_values", &self.p_values)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PushDescriptorSetInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub stage_flags: ShaderStageFlags,
+    pub layout: Option<PipelineLayout>,
+    pub set: u32,
+    pub descriptor_write_count: u32,
+    pub p_descriptor_writes: *const WriteDescriptorSet,
+}
+unsafe impl Send for PushDescriptorSetInfoKHR {}
+unsafe impl Sync for PushDescriptorSetInfoKHR {}
+impl Default for PushDescriptorSetInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PUSH_DESCRIPTOR_SET_INFO_KHR,
+            p_next: ptr::null(),
+            stage_flags: Default::default(),
+            layout: Default::default(),
+            set: Default::default(),
+            descriptor_write_count: Default::default(),
+            p_descriptor_writes: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PushDescriptorSetInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PushDescriptorSetInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stage_flags", &self.stage_flags)
+            .field("layout", &self.layout)
+            .field("set", &self.set)
+            .field("descriptor_write_count", &self.descriptor_write_count)
+            .field("p_descriptor_writes", &self.p_descriptor_writes)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PushDescriptorSetWithTemplateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub descriptor_update_template: Option<DescriptorUpdateTemplate>,
+    pub layout: Option<PipelineLayout>,
+    pub set: u32,
+    pub p_data: *const c_void,
+}
+unsafe impl Send for PushDescriptorSetWithTemplateInfoKHR {}
+unsafe impl Sync for PushDescriptorSetWithTemplateInfoKHR {}
+impl Default for PushDescriptorSetWithTemplateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO_KHR,
+            p_next: ptr::null(),
+            descriptor_update_template: Default::default(),
+            layout: Default::default(),
+            set: Default::default(),
+            p_data: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PushDescriptorSetWithTemplateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PushDescriptorSetWithTemplateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("descriptor_update_template", &self.descriptor_update_template)
+            .field("layout", &self.layout)
+            .field("set", &self.set)
+            .field("p_data", &self.p_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SetDescriptorBufferOffsetsInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub stage_flags: ShaderStageFlags,
+    pub layout: Option<PipelineLayout>,
+    pub first_set: u32,
+    pub set_count: u32,
+    pub p_buffer_indices: *const u32,
+    pub p_offsets: *const DeviceSize,
+}
+unsafe impl Send for SetDescriptorBufferOffsetsInfoEXT {}
+unsafe impl Sync for SetDescriptorBufferOffsetsInfoEXT {}
+impl Default for SetDescriptorBufferOffsetsInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT,
+            p_next: ptr::null(),
+            stage_flags: Default::default(),
+            layout: Default::default(),
+            first_set: Default::default(),
+            set_count: Default::default(),
+            p_buffer_indices: ptr::null(),
+            p_offsets: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for SetDescriptorBufferOffsetsInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SetDescriptorBufferOffsetsInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stage_flags", &self.stage_flags)
+            .field("layout", &self.layout)
+            .field("first_set", &self.first_set)
+            .field("set_count", &self.set_count)
+            .field("p_buffer_indices", &self.p_buffer_indices)
+            .field("p_offsets", &self.p_offsets)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BindDescriptorBufferEmbeddedSamplersInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub stage_flags: ShaderStageFlags,
+    pub layout: Option<PipelineLayout>,
+    pub set: u32,
+}
+unsafe impl Send for BindDescriptorBufferEmbeddedSamplersInfoEXT {}
+unsafe impl Sync for BindDescriptorBufferEmbeddedSamplersInfoEXT {}
+impl Default for BindDescriptorBufferEmbeddedSamplersInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT,
+            p_next: ptr::null(),
+            stage_flags: Default::default(),
+            layout: Default::default(),
+            set: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for BindDescriptorBufferEmbeddedSamplersInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindDescriptorBufferEmbeddedSamplersInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stage_flags", &self.stage_flags)
+            .field("layout", &self.layout)
+            .field("set", &self.set)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceCubicClampFeaturesQCOM {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -43525,6 +43888,36 @@ impl fmt::Debug for PhysicalDeviceLayeredDriverPropertiesMSFT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("underlying_api", &self.underlying_api)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePerStageDescriptorSetFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub per_stage_descriptor_set: Bool32,
+    pub dynamic_pipeline_layout: Bool32,
+}
+unsafe impl Send for PhysicalDevicePerStageDescriptorSetFeaturesNV {}
+unsafe impl Sync for PhysicalDevicePerStageDescriptorSetFeaturesNV {}
+impl Default for PhysicalDevicePerStageDescriptorSetFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PER_STAGE_DESCRIPTOR_SET_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            per_stage_descriptor_set: Default::default(),
+            dynamic_pipeline_layout: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePerStageDescriptorSetFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePerStageDescriptorSetFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("per_stage_descriptor_set", &self.per_stage_descriptor_set)
+            .field("dynamic_pipeline_layout", &self.dynamic_pipeline_layout)
             .finish()
     }
 }
@@ -44179,7 +44572,7 @@ pub struct RenderPassStripeBeginInfoARM {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub stripe_info_count: u32,
-    pub p_stripe_infos: *mut RenderPassStripeInfoARM,
+    pub p_stripe_infos: *const RenderPassStripeInfoARM,
 }
 unsafe impl Send for RenderPassStripeBeginInfoARM {}
 unsafe impl Sync for RenderPassStripeBeginInfoARM {}
@@ -44189,7 +44582,7 @@ impl Default for RenderPassStripeBeginInfoARM {
             s_type: StructureType::RENDER_PASS_STRIPE_BEGIN_INFO_ARM,
             p_next: ptr::null(),
             stripe_info_count: Default::default(),
-            p_stripe_infos: ptr::null_mut(),
+            p_stripe_infos: ptr::null(),
         }
     }
 }
@@ -46973,6 +47366,30 @@ pub type FnCmdDispatchGraphIndirectAMDX = unsafe extern "system" fn(
 );
 pub type FnCmdDispatchGraphIndirectCountAMDX =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, scratch: DeviceAddress, count_info: DeviceAddress);
+pub type FnCmdBindDescriptorSets2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_bind_descriptor_sets_info: *const BindDescriptorSetsInfoKHR,
+);
+pub type FnCmdPushConstants2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_push_constants_info: *const PushConstantsInfoKHR,
+);
+pub type FnCmdPushDescriptorSet2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_push_descriptor_set_info: *const PushDescriptorSetInfoKHR,
+);
+pub type FnCmdPushDescriptorSetWithTemplate2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_push_descriptor_set_with_template_info: *const PushDescriptorSetWithTemplateInfoKHR,
+);
+pub type FnCmdSetDescriptorBufferOffsets2EXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_set_descriptor_buffer_offsets_info: *const SetDescriptorBufferOffsetsInfoEXT,
+);
+pub type FnCmdBindDescriptorBufferEmbeddedSamplers2EXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_bind_descriptor_buffer_embedded_samplers_info: *const BindDescriptorBufferEmbeddedSamplersInfoEXT,
+);
 pub type FnSetLatencySleepModeNV = unsafe extern "system" fn(
     device: Option<Device>,
     swapchain: Option<SwapchainKHR>,

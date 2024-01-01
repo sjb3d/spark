@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 273
+//! Generated from vk.xml with `VK_HEADER_VERSION` 274
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -4839,6 +4839,7 @@ pub struct DeviceExtensions {
     pub nv_low_latency2: bool,
     pub khr_cooperative_matrix: bool,
     pub qcom_multiview_per_view_render_areas: bool,
+    pub nv_per_stage_descriptor_set: bool,
     pub qcom_image_processing2: bool,
     pub qcom_filter_cubic_weights: bool,
     pub qcom_ycbcr_degamma: bool,
@@ -4847,6 +4848,7 @@ pub struct DeviceExtensions {
     pub khr_vertex_attribute_divisor: bool,
     pub msft_layered_driver: bool,
     pub khr_calibrated_timestamps: bool,
+    pub khr_maintenance6: bool,
     pub nv_descriptor_pool_overallocation: bool,
 }
 impl DeviceExtensions {
@@ -5150,6 +5152,7 @@ impl DeviceExtensions {
             b"VK_NV_low_latency2" => self.nv_low_latency2 = true,
             b"VK_KHR_cooperative_matrix" => self.khr_cooperative_matrix = true,
             b"VK_QCOM_multiview_per_view_render_areas" => self.qcom_multiview_per_view_render_areas = true,
+            b"VK_NV_per_stage_descriptor_set" => self.nv_per_stage_descriptor_set = true,
             b"VK_QCOM_image_processing2" => self.qcom_image_processing2 = true,
             b"VK_QCOM_filter_cubic_weights" => self.qcom_filter_cubic_weights = true,
             b"VK_QCOM_ycbcr_degamma" => self.qcom_ycbcr_degamma = true,
@@ -5158,6 +5161,7 @@ impl DeviceExtensions {
             b"VK_KHR_vertex_attribute_divisor" => self.khr_vertex_attribute_divisor = true,
             b"VK_MSFT_layered_driver" => self.msft_layered_driver = true,
             b"VK_KHR_calibrated_timestamps" => self.khr_calibrated_timestamps = true,
+            b"VK_KHR_maintenance6" => self.khr_maintenance6 = true,
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
             _ => {}
         }
@@ -5461,6 +5465,7 @@ impl DeviceExtensions {
             nv_low_latency2: false,
             khr_cooperative_matrix: false,
             qcom_multiview_per_view_render_areas: false,
+            nv_per_stage_descriptor_set: false,
             qcom_image_processing2: false,
             qcom_filter_cubic_weights: false,
             qcom_ycbcr_degamma: false,
@@ -5469,6 +5474,7 @@ impl DeviceExtensions {
             khr_vertex_attribute_divisor: false,
             msft_layered_driver: false,
             khr_calibrated_timestamps: false,
+            khr_maintenance6: false,
             nv_descriptor_pool_overallocation: false,
         }
     }
@@ -7615,6 +7621,13 @@ impl DeviceExtensions {
     pub fn enable_qcom_multiview_per_view_render_areas(&mut self) {
         self.qcom_multiview_per_view_render_areas = true;
     }
+    pub fn supports_nv_per_stage_descriptor_set(&self) -> bool {
+        self.nv_per_stage_descriptor_set && self.supports_khr_maintenance6()
+    }
+    pub fn enable_nv_per_stage_descriptor_set(&mut self) {
+        self.nv_per_stage_descriptor_set = true;
+        self.enable_khr_maintenance6();
+    }
     pub fn supports_qcom_image_processing2(&self) -> bool {
         self.qcom_image_processing2 && self.supports_qcom_image_processing()
     }
@@ -7671,6 +7684,12 @@ impl DeviceExtensions {
     }
     pub fn enable_khr_calibrated_timestamps(&mut self) {
         self.khr_calibrated_timestamps = true;
+    }
+    pub fn supports_khr_maintenance6(&self) -> bool {
+        self.khr_maintenance6
+    }
+    pub fn enable_khr_maintenance6(&mut self) {
+        self.khr_maintenance6 = true;
     }
     pub fn supports_nv_descriptor_pool_overallocation(&self) -> bool {
         self.nv_descriptor_pool_overallocation && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -8570,6 +8589,9 @@ impl DeviceExtensions {
         if self.qcom_multiview_per_view_render_areas {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_multiview_per_view_render_areas\0") })
         }
+        if self.nv_per_stage_descriptor_set {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_per_stage_descriptor_set\0") })
+        }
         if self.qcom_image_processing2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_image_processing2\0") })
         }
@@ -8593,6 +8615,9 @@ impl DeviceExtensions {
         }
         if self.khr_calibrated_timestamps {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_calibrated_timestamps\0") })
+        }
+        if self.khr_maintenance6 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance6\0") })
         }
         if self.nv_descriptor_pool_overallocation {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_descriptor_pool_overallocation\0") })
@@ -9094,6 +9119,12 @@ pub struct Device {
     pub fp_cmd_dispatch_graph_amdx: Option<vk::FnCmdDispatchGraphAMDX>,
     pub fp_cmd_dispatch_graph_indirect_amdx: Option<vk::FnCmdDispatchGraphIndirectAMDX>,
     pub fp_cmd_dispatch_graph_indirect_count_amdx: Option<vk::FnCmdDispatchGraphIndirectCountAMDX>,
+    pub fp_cmd_bind_descriptor_sets2_khr: Option<vk::FnCmdBindDescriptorSets2KHR>,
+    pub fp_cmd_push_constants2_khr: Option<vk::FnCmdPushConstants2KHR>,
+    pub fp_cmd_push_descriptor_set2_khr: Option<vk::FnCmdPushDescriptorSet2KHR>,
+    pub fp_cmd_push_descriptor_set_with_template2_khr: Option<vk::FnCmdPushDescriptorSetWithTemplate2KHR>,
+    pub fp_cmd_set_descriptor_buffer_offsets2_ext: Option<vk::FnCmdSetDescriptorBufferOffsets2EXT>,
+    pub fp_cmd_bind_descriptor_buffer_embedded_samplers2_ext: Option<vk::FnCmdBindDescriptorBufferEmbeddedSamplers2EXT>,
     pub fp_set_latency_sleep_mode_nv: Option<vk::FnSetLatencySleepModeNV>,
     pub fp_latency_sleep_nv: Option<vk::FnLatencySleepNV>,
     pub fp_set_latency_marker_nv: Option<vk::FnSetLatencyMarkerNV>,
@@ -12998,6 +13029,55 @@ impl Device {
             } else {
                 None
             },
+            fp_cmd_bind_descriptor_sets2_khr: if extensions.khr_maintenance6 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindDescriptorSets2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_push_constants2_khr: if extensions.khr_maintenance6 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPushConstants2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_push_descriptor_set2_khr: if extensions.khr_maintenance6 && extensions.khr_push_descriptor {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPushDescriptorSet2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_push_descriptor_set_with_template2_khr: if extensions.khr_maintenance6
+                && extensions.khr_push_descriptor
+                && version >= vk::Version::from_raw_parts(1, 1, 0)
+            {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdPushDescriptorSetWithTemplate2KHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_descriptor_buffer_offsets2_ext: if extensions.khr_maintenance6
+                && extensions.ext_descriptor_buffer
+            {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetDescriptorBufferOffsets2EXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_descriptor_buffer_embedded_samplers2_ext: if extensions.khr_maintenance6
+                && extensions.ext_descriptor_buffer
+            {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdBindDescriptorBufferEmbeddedSamplers2EXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_set_latency_sleep_mode_nv: if extensions.nv_low_latency2 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkSetLatencySleepModeNV\0"));
                 fp.map(|f| mem::transmute(f))
@@ -14453,14 +14533,14 @@ impl Device {
     pub unsafe fn cmd_bind_index_buffer(
         &self,
         command_buffer: vk::CommandBuffer,
-        buffer: vk::Buffer,
+        buffer: Option<vk::Buffer>,
         offset: vk::DeviceSize,
         index_type: vk::IndexType,
     ) {
         let fp = self
             .fp_cmd_bind_index_buffer
             .expect("vkCmdBindIndexBuffer is not loaded");
-        (fp)(Some(command_buffer), Some(buffer), offset, index_type);
+        (fp)(Some(command_buffer), buffer, offset, index_type);
     }
     pub unsafe fn cmd_bind_vertex_buffers(
         &self,
@@ -18894,7 +18974,7 @@ impl Device {
     pub unsafe fn cmd_bind_index_buffer2_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        buffer: vk::Buffer,
+        buffer: Option<vk::Buffer>,
         offset: vk::DeviceSize,
         size: vk::DeviceSize,
         index_type: vk::IndexType,
@@ -18902,7 +18982,7 @@ impl Device {
         let fp = self
             .fp_cmd_bind_index_buffer2_khr
             .expect("vkCmdBindIndexBuffer2KHR is not loaded");
-        (fp)(Some(command_buffer), Some(buffer), offset, size, index_type);
+        (fp)(Some(command_buffer), buffer, offset, size, index_type);
     }
     pub unsafe fn cmd_bind_vertex_buffers2(
         &self,
@@ -21380,6 +21460,66 @@ impl Device {
             .fp_cmd_dispatch_graph_indirect_count_amdx
             .expect("vkCmdDispatchGraphIndirectCountAMDX is not loaded");
         (fp)(Some(command_buffer), scratch, count_info);
+    }
+    pub unsafe fn cmd_bind_descriptor_sets2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_bind_descriptor_sets_info: &vk::BindDescriptorSetsInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_bind_descriptor_sets2_khr
+            .expect("vkCmdBindDescriptorSets2KHR is not loaded");
+        (fp)(Some(command_buffer), p_bind_descriptor_sets_info);
+    }
+    pub unsafe fn cmd_push_constants2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_push_constants_info: &vk::PushConstantsInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_push_constants2_khr
+            .expect("vkCmdPushConstants2KHR is not loaded");
+        (fp)(Some(command_buffer), p_push_constants_info);
+    }
+    pub unsafe fn cmd_push_descriptor_set2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_push_descriptor_set_info: &vk::PushDescriptorSetInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_push_descriptor_set2_khr
+            .expect("vkCmdPushDescriptorSet2KHR is not loaded");
+        (fp)(Some(command_buffer), p_push_descriptor_set_info);
+    }
+    pub unsafe fn cmd_push_descriptor_set_with_template2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_push_descriptor_set_with_template_info: &vk::PushDescriptorSetWithTemplateInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_push_descriptor_set_with_template2_khr
+            .expect("vkCmdPushDescriptorSetWithTemplate2KHR is not loaded");
+        (fp)(Some(command_buffer), p_push_descriptor_set_with_template_info);
+    }
+    pub unsafe fn cmd_set_descriptor_buffer_offsets2_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_set_descriptor_buffer_offsets_info: &vk::SetDescriptorBufferOffsetsInfoEXT,
+    ) {
+        let fp = self
+            .fp_cmd_set_descriptor_buffer_offsets2_ext
+            .expect("vkCmdSetDescriptorBufferOffsets2EXT is not loaded");
+        (fp)(Some(command_buffer), p_set_descriptor_buffer_offsets_info);
+    }
+    pub unsafe fn cmd_bind_descriptor_buffer_embedded_samplers2_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_bind_descriptor_buffer_embedded_samplers_info: &vk::BindDescriptorBufferEmbeddedSamplersInfoEXT,
+    ) {
+        let fp = self
+            .fp_cmd_bind_descriptor_buffer_embedded_samplers2_ext
+            .expect("vkCmdBindDescriptorBufferEmbeddedSamplers2EXT is not loaded");
+        (fp)(Some(command_buffer), p_bind_descriptor_buffer_embedded_samplers_info);
     }
     pub unsafe fn set_latency_sleep_mode_nv(
         &self,

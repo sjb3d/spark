@@ -1020,7 +1020,12 @@ impl Renderer {
                 slice::from_ref(&self.mesh_buffers.vertex_buffer),
                 &[0],
             );
-            device.cmd_bind_index_buffer(command_buffer, self.mesh_buffers.index_buffer, 0, vk::IndexType::UINT32);
+            device.cmd_bind_index_buffer(
+                command_buffer,
+                Some(self.mesh_buffers.index_buffer),
+                0,
+                vk::IndexType::UINT32,
+            );
         }
 
         for clipped_draw in &self.mesh_buffers.clipped_draws {

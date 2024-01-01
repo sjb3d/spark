@@ -611,7 +611,7 @@ impl Renderer {
 
             unsafe {
                 device.cmd_bind_vertex_buffers(command_buffer, 0, slice::from_ref(&vertex_buffer), &[0]);
-                device.cmd_bind_index_buffer(command_buffer, index_buffer, 0, vk::IndexType::UINT16);
+                device.cmd_bind_index_buffer(command_buffer, Some(index_buffer), 0, vk::IndexType::UINT16);
             }
 
             let clip_off = draw_data.display_pos;
