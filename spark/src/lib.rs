@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 274
+//! Generated from vk.xml with `VK_HEADER_VERSION` 275
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1431,13 +1431,6 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
-    pub fn supports_qcom_render_pass_transform(&self) -> bool {
-        self.supports_khr_swapchain() && self.supports_khr_surface()
-    }
-    pub fn enable_qcom_render_pass_transform(&mut self) {
-        self.enable_khr_swapchain();
-        self.enable_khr_surface();
-    }
     pub fn supports_ext_depth_bias_control(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1587,10 +1580,9 @@ impl InstanceExtensions {
         self.enable_ext_fragment_density_map();
     }
     pub fn supports_qcom_rotated_copy_commands(&self) -> bool {
-        self.supports_khr_swapchain() && self.supports_khr_copy_commands2()
+        self.supports_khr_copy_commands2()
     }
     pub fn enable_qcom_rotated_copy_commands(&mut self) {
-        self.enable_khr_swapchain();
         self.enable_khr_copy_commands2();
     }
     pub fn supports_ext_image_robustness(&self) -> bool {
@@ -6849,11 +6841,10 @@ impl DeviceExtensions {
         }
     }
     pub fn supports_qcom_render_pass_transform(&self) -> bool {
-        self.qcom_render_pass_transform && self.supports_khr_swapchain()
+        self.qcom_render_pass_transform
     }
     pub fn enable_qcom_render_pass_transform(&mut self) {
         self.qcom_render_pass_transform = true;
-        self.enable_khr_swapchain();
     }
     pub fn supports_ext_depth_bias_control(&self) -> bool {
         self.ext_depth_bias_control
@@ -7054,11 +7045,10 @@ impl DeviceExtensions {
         self.enable_ext_fragment_density_map();
     }
     pub fn supports_qcom_rotated_copy_commands(&self) -> bool {
-        self.qcom_rotated_copy_commands && self.supports_khr_swapchain() && self.supports_khr_copy_commands2()
+        self.qcom_rotated_copy_commands && self.supports_khr_copy_commands2()
     }
     pub fn enable_qcom_rotated_copy_commands(&mut self) {
         self.qcom_rotated_copy_commands = true;
-        self.enable_khr_swapchain();
         self.enable_khr_copy_commands2();
     }
     pub fn supports_ext_image_robustness(&self) -> bool {
@@ -7686,7 +7676,7 @@ impl DeviceExtensions {
         self.khr_calibrated_timestamps = true;
     }
     pub fn supports_khr_maintenance6(&self) -> bool {
-        self.khr_maintenance6
+        self.khr_maintenance6 && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_maintenance6(&mut self) {
         self.khr_maintenance6 = true;
@@ -13049,7 +13039,6 @@ impl Device {
             },
             fp_cmd_push_descriptor_set_with_template2_khr: if extensions.khr_maintenance6
                 && extensions.khr_push_descriptor
-                && version >= vk::Version::from_raw_parts(1, 1, 0)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdPushDescriptorSetWithTemplate2KHR\0",
