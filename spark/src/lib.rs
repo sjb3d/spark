@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 275
+//! Generated from vk.xml with `VK_HEADER_VERSION` 276
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1181,6 +1181,12 @@ impl InstanceExtensions {
     pub fn enable_amd_device_coherent_memory(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_khr_dynamic_rendering_local_read(&self) -> bool {
+        self.supports_khr_dynamic_rendering()
+    }
+    pub fn enable_khr_dynamic_rendering_local_read(&mut self) {
+        self.enable_khr_dynamic_rendering();
+    }
     pub fn supports_ext_shader_image_atomic_int64(&self) -> bool {
         self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
@@ -1188,6 +1194,12 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+    pub fn supports_khr_shader_quad_control(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_vulkan_memory_model()
+    }
+    pub fn enable_khr_shader_quad_control(&mut self) {
+        self.enable_khr_vulkan_memory_model();
     }
     pub fn supports_khr_spirv_1_4(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_shader_float_controls()
@@ -2136,11 +2148,33 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_khr_shader_float_controls2(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_shader_float_controls()
+    }
+    pub fn enable_khr_shader_float_controls2(&mut self) {
+        self.enable_khr_shader_float_controls();
+    }
     pub fn supports_msft_layered_driver(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_msft_layered_driver(&mut self) {
         self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_khr_index_type_uint8(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_khr_index_type_uint8(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_khr_line_rasterization(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_khr_line_rasterization(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_khr_calibrated_timestamps(&self) -> bool {
         self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -2149,6 +2183,12 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+    pub fn supports_khr_shader_expect_assume(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_shader_expect_assume(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -4686,7 +4726,9 @@ pub struct DeviceExtensions {
     pub khr_fragment_shading_rate: bool,
     pub amd_shader_core_properties2: bool,
     pub amd_device_coherent_memory: bool,
+    pub khr_dynamic_rendering_local_read: bool,
     pub ext_shader_image_atomic_int64: bool,
+    pub khr_shader_quad_control: bool,
     pub khr_spirv_1_4: bool,
     pub ext_memory_budget: bool,
     pub ext_memory_priority: bool,
@@ -4793,6 +4835,7 @@ pub struct DeviceExtensions {
     pub ext_pageable_device_local_memory: bool,
     pub khr_maintenance4: bool,
     pub arm_shader_core_properties: bool,
+    pub khr_shader_subgroup_rotate: bool,
     pub arm_scheduling_controls: bool,
     pub ext_image_sliced_view_of_3d: bool,
     pub valve_descriptor_set_host_mapping: bool,
@@ -4804,6 +4847,7 @@ pub struct DeviceExtensions {
     pub nv_memory_decompression: bool,
     pub nv_device_generated_commands_compute: bool,
     pub nv_linear_color_attachment: bool,
+    pub khr_shader_maximal_reconvergence: bool,
     pub ext_image_compression_control_swapchain: bool,
     pub qcom_image_processing: bool,
     pub ext_nested_command_buffer: bool,
@@ -4838,8 +4882,13 @@ pub struct DeviceExtensions {
     pub qcom_filter_cubic_clamp: bool,
     pub ext_attachment_feedback_loop_dynamic_state: bool,
     pub khr_vertex_attribute_divisor: bool,
+    pub khr_load_store_op_none: bool,
+    pub khr_shader_float_controls2: bool,
     pub msft_layered_driver: bool,
+    pub khr_index_type_uint8: bool,
+    pub khr_line_rasterization: bool,
     pub khr_calibrated_timestamps: bool,
+    pub khr_shader_expect_assume: bool,
     pub khr_maintenance6: bool,
     pub nv_descriptor_pool_overallocation: bool,
 }
@@ -4999,7 +5048,9 @@ impl DeviceExtensions {
             b"VK_KHR_fragment_shading_rate" => self.khr_fragment_shading_rate = true,
             b"VK_AMD_shader_core_properties2" => self.amd_shader_core_properties2 = true,
             b"VK_AMD_device_coherent_memory" => self.amd_device_coherent_memory = true,
+            b"VK_KHR_dynamic_rendering_local_read" => self.khr_dynamic_rendering_local_read = true,
             b"VK_EXT_shader_image_atomic_int64" => self.ext_shader_image_atomic_int64 = true,
+            b"VK_KHR_shader_quad_control" => self.khr_shader_quad_control = true,
             b"VK_KHR_spirv_1_4" => self.khr_spirv_1_4 = true,
             b"VK_EXT_memory_budget" => self.ext_memory_budget = true,
             b"VK_EXT_memory_priority" => self.ext_memory_priority = true,
@@ -5106,6 +5157,7 @@ impl DeviceExtensions {
             b"VK_EXT_pageable_device_local_memory" => self.ext_pageable_device_local_memory = true,
             b"VK_KHR_maintenance4" => self.khr_maintenance4 = true,
             b"VK_ARM_shader_core_properties" => self.arm_shader_core_properties = true,
+            b"VK_KHR_shader_subgroup_rotate" => self.khr_shader_subgroup_rotate = true,
             b"VK_ARM_scheduling_controls" => self.arm_scheduling_controls = true,
             b"VK_EXT_image_sliced_view_of_3d" => self.ext_image_sliced_view_of_3d = true,
             b"VK_VALVE_descriptor_set_host_mapping" => self.valve_descriptor_set_host_mapping = true,
@@ -5117,6 +5169,7 @@ impl DeviceExtensions {
             b"VK_NV_memory_decompression" => self.nv_memory_decompression = true,
             b"VK_NV_device_generated_commands_compute" => self.nv_device_generated_commands_compute = true,
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
+            b"VK_KHR_shader_maximal_reconvergence" => self.khr_shader_maximal_reconvergence = true,
             b"VK_EXT_image_compression_control_swapchain" => self.ext_image_compression_control_swapchain = true,
             b"VK_QCOM_image_processing" => self.qcom_image_processing = true,
             b"VK_EXT_nested_command_buffer" => self.ext_nested_command_buffer = true,
@@ -5151,8 +5204,13 @@ impl DeviceExtensions {
             b"VK_QCOM_filter_cubic_clamp" => self.qcom_filter_cubic_clamp = true,
             b"VK_EXT_attachment_feedback_loop_dynamic_state" => self.ext_attachment_feedback_loop_dynamic_state = true,
             b"VK_KHR_vertex_attribute_divisor" => self.khr_vertex_attribute_divisor = true,
+            b"VK_KHR_load_store_op_none" => self.khr_load_store_op_none = true,
+            b"VK_KHR_shader_float_controls2" => self.khr_shader_float_controls2 = true,
             b"VK_MSFT_layered_driver" => self.msft_layered_driver = true,
+            b"VK_KHR_index_type_uint8" => self.khr_index_type_uint8 = true,
+            b"VK_KHR_line_rasterization" => self.khr_line_rasterization = true,
             b"VK_KHR_calibrated_timestamps" => self.khr_calibrated_timestamps = true,
+            b"VK_KHR_shader_expect_assume" => self.khr_shader_expect_assume = true,
             b"VK_KHR_maintenance6" => self.khr_maintenance6 = true,
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
             _ => {}
@@ -5312,7 +5370,9 @@ impl DeviceExtensions {
             khr_fragment_shading_rate: false,
             amd_shader_core_properties2: false,
             amd_device_coherent_memory: false,
+            khr_dynamic_rendering_local_read: false,
             ext_shader_image_atomic_int64: false,
+            khr_shader_quad_control: false,
             khr_spirv_1_4: false,
             ext_memory_budget: false,
             ext_memory_priority: false,
@@ -5419,6 +5479,7 @@ impl DeviceExtensions {
             ext_pageable_device_local_memory: false,
             khr_maintenance4: false,
             arm_shader_core_properties: false,
+            khr_shader_subgroup_rotate: false,
             arm_scheduling_controls: false,
             ext_image_sliced_view_of_3d: false,
             valve_descriptor_set_host_mapping: false,
@@ -5430,6 +5491,7 @@ impl DeviceExtensions {
             nv_memory_decompression: false,
             nv_device_generated_commands_compute: false,
             nv_linear_color_attachment: false,
+            khr_shader_maximal_reconvergence: false,
             ext_image_compression_control_swapchain: false,
             qcom_image_processing: false,
             ext_nested_command_buffer: false,
@@ -5464,8 +5526,13 @@ impl DeviceExtensions {
             qcom_filter_cubic_clamp: false,
             ext_attachment_feedback_loop_dynamic_state: false,
             khr_vertex_attribute_divisor: false,
+            khr_load_store_op_none: false,
+            khr_shader_float_controls2: false,
             msft_layered_driver: false,
+            khr_index_type_uint8: false,
+            khr_line_rasterization: false,
             khr_calibrated_timestamps: false,
+            khr_shader_expect_assume: false,
             khr_maintenance6: false,
             nv_descriptor_pool_overallocation: false,
         }
@@ -6588,11 +6655,29 @@ impl DeviceExtensions {
     pub fn enable_amd_device_coherent_memory(&mut self) {
         self.amd_device_coherent_memory = true;
     }
+    pub fn supports_khr_dynamic_rendering_local_read(&self) -> bool {
+        self.khr_dynamic_rendering_local_read && self.supports_khr_dynamic_rendering()
+    }
+    pub fn enable_khr_dynamic_rendering_local_read(&mut self) {
+        self.khr_dynamic_rendering_local_read = true;
+        self.enable_khr_dynamic_rendering();
+    }
     pub fn supports_ext_shader_image_atomic_int64(&self) -> bool {
         self.ext_shader_image_atomic_int64
     }
     pub fn enable_ext_shader_image_atomic_int64(&mut self) {
         self.ext_shader_image_atomic_int64 = true;
+    }
+    pub fn supports_khr_shader_quad_control(&self) -> bool {
+        self.khr_shader_quad_control
+            && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            && self.supports_khr_vulkan_memory_model()
+            && self.supports_khr_shader_maximal_reconvergence()
+    }
+    pub fn enable_khr_shader_quad_control(&mut self) {
+        self.khr_shader_quad_control = true;
+        self.enable_khr_vulkan_memory_model();
+        self.enable_khr_shader_maximal_reconvergence();
     }
     pub fn supports_khr_spirv_1_4(&self) -> bool {
         (self.khr_spirv_1_4 || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
@@ -7348,6 +7433,12 @@ impl DeviceExtensions {
     pub fn enable_arm_shader_core_properties(&mut self) {
         self.arm_shader_core_properties = true;
     }
+    pub fn supports_khr_shader_subgroup_rotate(&self) -> bool {
+        self.khr_shader_subgroup_rotate
+    }
+    pub fn enable_khr_shader_subgroup_rotate(&mut self) {
+        self.khr_shader_subgroup_rotate = true;
+    }
     pub fn supports_arm_scheduling_controls(&self) -> bool {
         self.arm_scheduling_controls && self.supports_arm_shader_core_builtins()
     }
@@ -7419,6 +7510,12 @@ impl DeviceExtensions {
     }
     pub fn enable_nv_linear_color_attachment(&mut self) {
         self.nv_linear_color_attachment = true;
+    }
+    pub fn supports_khr_shader_maximal_reconvergence(&self) -> bool {
+        self.khr_shader_maximal_reconvergence && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_khr_shader_maximal_reconvergence(&mut self) {
+        self.khr_shader_maximal_reconvergence = true;
     }
     pub fn supports_ext_image_compression_control_swapchain(&self) -> bool {
         self.ext_image_compression_control_swapchain && self.supports_ext_image_compression_control()
@@ -7663,17 +7760,50 @@ impl DeviceExtensions {
     pub fn enable_khr_vertex_attribute_divisor(&mut self) {
         self.khr_vertex_attribute_divisor = true;
     }
+    pub fn supports_khr_load_store_op_none(&self) -> bool {
+        self.khr_load_store_op_none
+    }
+    pub fn enable_khr_load_store_op_none(&mut self) {
+        self.khr_load_store_op_none = true;
+    }
+    pub fn supports_khr_shader_float_controls2(&self) -> bool {
+        self.khr_shader_float_controls2
+            && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            && self.supports_khr_shader_float_controls()
+    }
+    pub fn enable_khr_shader_float_controls2(&mut self) {
+        self.khr_shader_float_controls2 = true;
+        self.enable_khr_shader_float_controls();
+    }
     pub fn supports_msft_layered_driver(&self) -> bool {
         self.msft_layered_driver
     }
     pub fn enable_msft_layered_driver(&mut self) {
         self.msft_layered_driver = true;
     }
+    pub fn supports_khr_index_type_uint8(&self) -> bool {
+        self.khr_index_type_uint8
+    }
+    pub fn enable_khr_index_type_uint8(&mut self) {
+        self.khr_index_type_uint8 = true;
+    }
+    pub fn supports_khr_line_rasterization(&self) -> bool {
+        self.khr_line_rasterization
+    }
+    pub fn enable_khr_line_rasterization(&mut self) {
+        self.khr_line_rasterization = true;
+    }
     pub fn supports_khr_calibrated_timestamps(&self) -> bool {
         self.khr_calibrated_timestamps
     }
     pub fn enable_khr_calibrated_timestamps(&mut self) {
         self.khr_calibrated_timestamps = true;
+    }
+    pub fn supports_khr_shader_expect_assume(&self) -> bool {
+        self.khr_shader_expect_assume
+    }
+    pub fn enable_khr_shader_expect_assume(&mut self) {
+        self.khr_shader_expect_assume = true;
     }
     pub fn supports_khr_maintenance6(&self) -> bool {
         self.khr_maintenance6 && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -8144,8 +8274,14 @@ impl DeviceExtensions {
         if self.amd_device_coherent_memory {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_device_coherent_memory\0") })
         }
+        if self.khr_dynamic_rendering_local_read {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_dynamic_rendering_local_read\0") })
+        }
         if self.ext_shader_image_atomic_int64 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_image_atomic_int64\0") })
+        }
+        if self.khr_shader_quad_control {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_quad_control\0") })
         }
         if self.khr_spirv_1_4 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_spirv_1_4\0") })
@@ -8465,6 +8601,9 @@ impl DeviceExtensions {
         if self.arm_shader_core_properties {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_shader_core_properties\0") })
         }
+        if self.khr_shader_subgroup_rotate {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_subgroup_rotate\0") })
+        }
         if self.arm_scheduling_controls {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_scheduling_controls\0") })
         }
@@ -8497,6 +8636,9 @@ impl DeviceExtensions {
         }
         if self.nv_linear_color_attachment {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_linear_color_attachment\0") })
+        }
+        if self.khr_shader_maximal_reconvergence {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_maximal_reconvergence\0") })
         }
         if self.ext_image_compression_control_swapchain {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_compression_control_swapchain\0") })
@@ -8600,11 +8742,26 @@ impl DeviceExtensions {
         if self.khr_vertex_attribute_divisor {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_vertex_attribute_divisor\0") })
         }
+        if self.khr_load_store_op_none {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_load_store_op_none\0") })
+        }
+        if self.khr_shader_float_controls2 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_float_controls2\0") })
+        }
         if self.msft_layered_driver {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_MSFT_layered_driver\0") })
         }
+        if self.khr_index_type_uint8 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_index_type_uint8\0") })
+        }
+        if self.khr_line_rasterization {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_line_rasterization\0") })
+        }
         if self.khr_calibrated_timestamps {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_calibrated_timestamps\0") })
+        }
+        if self.khr_shader_expect_assume {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_expect_assume\0") })
         }
         if self.khr_maintenance6 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance6\0") })
@@ -8937,7 +9094,7 @@ pub struct Device {
     pub fp_get_pipeline_executable_statistics_khr: Option<vk::FnGetPipelineExecutableStatisticsKHR>,
     pub fp_get_pipeline_executable_internal_representations_khr:
         Option<vk::FnGetPipelineExecutableInternalRepresentationsKHR>,
-    pub fp_cmd_set_line_stipple_ext: Option<vk::FnCmdSetLineStippleEXT>,
+    pub fp_cmd_set_line_stipple_khr: Option<vk::FnCmdSetLineStippleKHR>,
     pub fp_get_physical_device_tool_properties: Option<vk::FnGetPhysicalDeviceToolProperties>,
     pub fp_create_acceleration_structure_khr: Option<vk::FnCreateAccelerationStructureKHR>,
     pub fp_cmd_build_acceleration_structures_khr: Option<vk::FnCmdBuildAccelerationStructuresKHR>,
@@ -9120,6 +9277,8 @@ pub struct Device {
     pub fp_set_latency_marker_nv: Option<vk::FnSetLatencyMarkerNV>,
     pub fp_get_latency_timings_nv: Option<vk::FnGetLatencyTimingsNV>,
     pub fp_queue_notify_out_of_band_nv: Option<vk::FnQueueNotifyOutOfBandNV>,
+    pub fp_cmd_set_rendering_attachment_locations_khr: Option<vk::FnCmdSetRenderingAttachmentLocationsKHR>,
+    pub fp_cmd_set_rendering_input_attachment_indices_khr: Option<vk::FnCmdSetRenderingInputAttachmentIndicesKHR>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -11585,7 +11744,10 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_line_stipple_ext: if extensions.ext_line_rasterization {
+            fp_cmd_set_line_stipple_khr: if extensions.khr_line_rasterization {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLineStippleKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.ext_line_rasterization {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLineStippleEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11909,7 +12071,8 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_tessellation_domain_origin_ext: if extensions.ext_extended_dynamic_state3
+            fp_cmd_set_tessellation_domain_origin_ext: if (extensions.ext_extended_dynamic_state3
+                && (extensions.khr_maintenance2 || version >= vk::Version::from_raw_parts(1, 1, 0)))
                 || extensions.ext_shader_object
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
@@ -11993,16 +12156,18 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_rasterization_stream_ext: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_rasterization_stream_ext: if (extensions.ext_extended_dynamic_state3
+                && extensions.ext_transform_feedback)
+                || (extensions.ext_shader_object && extensions.ext_transform_feedback)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetRasterizationStreamEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_conservative_rasterization_mode_ext: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_conservative_rasterization_mode_ext: if (extensions.ext_extended_dynamic_state3
+                && extensions.ext_conservative_rasterization)
+                || (extensions.ext_shader_object && extensions.ext_conservative_rasterization)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetConservativeRasterizationModeEXT\0",
@@ -12011,8 +12176,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_extra_primitive_overestimation_size_ext: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_extra_primitive_overestimation_size_ext: if (extensions.ext_extended_dynamic_state3
+                && extensions.ext_conservative_rasterization)
+                || (extensions.ext_shader_object && extensions.ext_conservative_rasterization)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetExtraPrimitiveOverestimationSizeEXT\0",
@@ -12021,15 +12187,18 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_depth_clip_enable_ext: if extensions.ext_extended_dynamic_state3 || extensions.ext_shader_object
+            fp_cmd_set_depth_clip_enable_ext: if (extensions.ext_extended_dynamic_state3
+                && extensions.ext_depth_clip_enable)
+                || (extensions.ext_shader_object && extensions.ext_depth_clip_enable)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthClipEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_sample_locations_enable_ext: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_sample_locations_enable_ext: if (extensions.ext_extended_dynamic_state3
+                && extensions.ext_sample_locations)
+                || (extensions.ext_shader_object && extensions.ext_sample_locations)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetSampleLocationsEnableEXT\0",
@@ -12038,24 +12207,27 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_color_blend_advanced_ext: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_color_blend_advanced_ext: if (extensions.ext_extended_dynamic_state3
+                && extensions.ext_blend_operation_advanced)
+                || (extensions.ext_shader_object && extensions.ext_blend_operation_advanced)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetColorBlendAdvancedEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_provoking_vertex_mode_ext: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_provoking_vertex_mode_ext: if (extensions.ext_extended_dynamic_state3
+                && extensions.ext_provoking_vertex)
+                || (extensions.ext_shader_object && extensions.ext_provoking_vertex)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetProvokingVertexModeEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_line_rasterization_mode_ext: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_line_rasterization_mode_ext: if (extensions.ext_extended_dynamic_state3
+                && extensions.ext_line_rasterization)
+                || (extensions.ext_shader_object && extensions.ext_line_rasterization)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetLineRasterizationModeEXT\0",
@@ -12064,16 +12236,18 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_line_stipple_enable_ext: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_line_stipple_enable_ext: if (extensions.ext_extended_dynamic_state3
+                && extensions.ext_line_rasterization)
+                || (extensions.ext_shader_object && extensions.ext_line_rasterization)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLineStippleEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_depth_clip_negative_one_to_one_ext: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_depth_clip_negative_one_to_one_ext: if (extensions.ext_extended_dynamic_state3
+                && extensions.ext_depth_clip_control)
+                || (extensions.ext_shader_object && extensions.ext_depth_clip_control)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetDepthClipNegativeOneToOneEXT\0",
@@ -13093,6 +13267,22 @@ impl Device {
             },
             fp_queue_notify_out_of_band_nv: if extensions.nv_low_latency2 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkQueueNotifyOutOfBandNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_rendering_attachment_locations_khr: if extensions.khr_dynamic_rendering_local_read {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetRenderingAttachmentLocationsKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_rendering_input_attachment_indices_khr: if extensions.khr_dynamic_rendering_local_read {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetRenderingInputAttachmentIndicesKHR\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -18652,6 +18842,17 @@ impl Device {
             _ => Err(v_err),
         }
     }
+    pub unsafe fn cmd_set_line_stipple_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        line_stipple_factor: u32,
+        line_stipple_pattern: u16,
+    ) {
+        let fp = self
+            .fp_cmd_set_line_stipple_khr
+            .expect("vkCmdSetLineStippleKHR is not loaded");
+        (fp)(Some(command_buffer), line_stipple_factor, line_stipple_pattern);
+    }
     pub unsafe fn cmd_set_line_stipple_ext(
         &self,
         command_buffer: vk::CommandBuffer,
@@ -18659,7 +18860,7 @@ impl Device {
         line_stipple_pattern: u16,
     ) {
         let fp = self
-            .fp_cmd_set_line_stipple_ext
+            .fp_cmd_set_line_stipple_khr
             .expect("vkCmdSetLineStippleEXT is not loaded");
         (fp)(Some(command_buffer), line_stipple_factor, line_stipple_pattern);
     }
@@ -21222,9 +21423,13 @@ impl Device {
             _ => Err(v_err),
         }
     }
-    pub unsafe fn destroy_shader_ext(&self, shader: vk::ShaderEXT, p_allocator: Option<&vk::AllocationCallbacks>) {
+    pub unsafe fn destroy_shader_ext(
+        &self,
+        shader: Option<vk::ShaderEXT>,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
         let fp = self.fp_destroy_shader_ext.expect("vkDestroyShaderEXT is not loaded");
-        (fp)(Some(self.handle), Some(shader), p_allocator.map_or(ptr::null(), |r| r));
+        (fp)(Some(self.handle), shader, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn get_shader_binary_data_ext_to_vec(&self, shader: vk::ShaderEXT) -> Result<Vec<u8>> {
         let fp = self
@@ -21565,6 +21770,26 @@ impl Device {
             .fp_queue_notify_out_of_band_nv
             .expect("vkQueueNotifyOutOfBandNV is not loaded");
         (fp)(Some(queue), p_queue_type_info);
+    }
+    pub unsafe fn cmd_set_rendering_attachment_locations_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_location_info: &vk::RenderingAttachmentLocationInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_set_rendering_attachment_locations_khr
+            .expect("vkCmdSetRenderingAttachmentLocationsKHR is not loaded");
+        (fp)(Some(command_buffer), p_location_info);
+    }
+    pub unsafe fn cmd_set_rendering_input_attachment_indices_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_location_info: &vk::RenderingInputAttachmentIndexInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_set_rendering_input_attachment_indices_khr
+            .expect("vkCmdSetRenderingInputAttachmentIndicesKHR is not loaded");
+        (fp)(Some(command_buffer), p_location_info);
     }
 }
 
