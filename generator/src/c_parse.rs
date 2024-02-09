@@ -13,8 +13,8 @@ use std::fmt;
 
 #[derive(Debug, Clone)]
 pub enum DependencyExpr<'a> {
-    False,
-    True,
+    Never,
+    Always,
     Version((u16, u16)),
     Extension(&'a str),
     And(Vec<DependencyExpr<'a>>),
@@ -22,17 +22,17 @@ pub enum DependencyExpr<'a> {
 }
 
 impl<'a> DependencyExpr<'a> {
-    pub fn is_false(&self) -> bool {
-        matches!(self, DependencyExpr::False)
+    pub fn is_never(&self) -> bool {
+        matches!(self, DependencyExpr::Never)
     }
 
-    pub fn is_true(&self) -> bool {
-        matches!(self, DependencyExpr::True)
+    pub fn is_always(&self) -> bool {
+        matches!(self, DependencyExpr::Always)
     }
 
     pub fn visit_leaves(&mut self, f: &impl Fn(&mut DependencyExpr)) {
         match self {
-            Self::False | Self::True | Self::Version(_) | Self::Extension(_) => f(self),
+            Self::Never | Self::Always | Self::Version(_) | Self::Extension(_) => f(self),
             Self::And(v) | Self::Or(v) => {
                 for dep in v.iter_mut() {
                     dep.visit_leaves(f)
@@ -43,7 +43,8 @@ impl<'a> DependencyExpr<'a> {
 
     fn matches(&self, other: &Self) -> bool {
         match (self, other) {
-            (Self::False, Self::False) | (Self::True, Self::True) => true,
+            (Self::Never, Self::Never) => true,
+            (Self::Always, Self::Always) => true,
             (Self::Version(a), Self::Version(b)) => a == b,
             (Self::Extension(a), Self::Extension(b)) => a == b,
             (Self::And(ref a), Self::And(ref b)) | (Self::Or(ref a), Self::Or(ref b)) => match (a.len(), b.len()) {
@@ -56,13 +57,39 @@ impl<'a> DependencyExpr<'a> {
         }
     }
 
+    fn try_merge_and(a: &Self, b: &Self) -> Option<Self> {
+        if a.matches(b) {
+            Some(a.clone())
+        } else {
+            match (a, b) {
+                (Self::Never, _) | (_, Self::Never) => Some(Self::Never),
+                (Self::Always, other) | (other, Self::Always) => Some(other.clone()),
+                (Self::Version(a), Self::Version(b)) => Some(Self::Version(*a.max(b))),
+                _ => None,
+            }
+        }
+    }
+
+    fn try_merge_or(a: &Self, b: &Self) -> Option<Self> {
+        if a.matches(b) {
+            Some(a.clone())
+        } else {
+            match (a, b) {
+                (Self::Never, other) | (other, Self::Never) => Some(other.clone()),
+                (Self::Always, _) | (_, Self::Always) => Some(Self::Always),
+                (Self::Version(a), Self::Version(b)) => Some(Self::Version(*a.min(b))),
+                _ => None,
+            }
+        }
+    }
+
     pub fn simplify(&mut self) {
         match self {
-            Self::False => {}
-            Self::True => {}
+            Self::Never => {}
+            Self::Always => {}
             Self::Version(v) => {
                 if *v == (1, 0) {
-                    *self = Self::True;
+                    *self = Self::Always;
                 }
             }
             Self::Extension(_) => {}
@@ -70,65 +97,52 @@ impl<'a> DependencyExpr<'a> {
                 let mut tmp = Vec::new();
                 for mut dep in v.drain(..) {
                     dep.simplify();
-                    match dep {
-                        Self::False => {
-                            tmp.clear();
-                            tmp.push(dep);
-                            break;
-                        }
-                        Self::True => {}
-                        Self::And(mut dep_v) => {
-                            for dep in dep_v.drain(..) {
-                                if !tmp.iter().any(|existing| existing.matches(&dep)) {
-                                    tmp.push(dep);
-                                }
-                            }
-                        }
-                        _ => {
-                            if !tmp.iter().any(|existing| existing.matches(&dep)) {
-                                tmp.push(dep);
-                            }
-                        }
+                    if let Self::And(mut inner) = dep {
+                        tmp.append(&mut inner);
+                    } else {
+                        tmp.push(dep);
                     }
                 }
-                match tmp.len() {
-                    0 => *self = Self::True,
-                    1 => *self = tmp.pop().unwrap(),
-                    _ => *v = tmp,
+                let mut result = Vec::new();
+                'outer: for dep in tmp.drain(..) {
+                    for prev in &mut result {
+                        if let Some(merged) = Self::try_merge_and(prev, &dep) {
+                            *prev = merged;
+                            break 'outer;
+                        }
+                    }
+                    result.push(dep);
+                }
+                match result.len() {
+                    0 => unreachable!(),
+                    1 => *self = result.pop().unwrap(),
+                    _ => *v = result,
                 }
             }
             Self::Or(v) => {
-                for dep in v.iter_mut() {
-                    dep.simplify();
-                }
                 let mut tmp = Vec::new();
                 for mut dep in v.drain(..) {
                     dep.simplify();
-                    match dep {
-                        Self::False => {}
-                        Self::True => {
-                            tmp.clear();
-                            tmp.push(dep);
-                            break;
-                        }
-                        Self::Or(mut dep_v) => {
-                            for dep in dep_v.drain(..) {
-                                if !tmp.iter().any(|existing| existing.matches(&dep)) {
-                                    tmp.push(dep);
-                                }
-                            }
-                        }
-                        _ => {
-                            if !tmp.iter().any(|existing| existing.matches(&dep)) {
-                                tmp.push(dep);
-                            }
-                        }
+                    if let Self::Or(mut inner) = dep {
+                        tmp.append(&mut inner);
+                    } else {
+                        tmp.push(dep);
                     }
                 }
-                match tmp.len() {
-                    0 => *self = Self::False,
-                    1 => *self = tmp.pop().unwrap(),
-                    _ => *v = tmp,
+                let mut result = Vec::new();
+                'outer: for dep in tmp.drain(..) {
+                    for prev in &mut result {
+                        if let Some(merged) = Self::try_merge_or(prev, &dep) {
+                            *prev = merged;
+                            break 'outer;
+                        }
+                    }
+                    result.push(dep);
+                }
+                match result.len() {
+                    0 => unreachable!(),
+                    1 => *self = result.pop().unwrap(),
+                    _ => *v = result,
                 }
             }
         }

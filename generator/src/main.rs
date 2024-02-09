@@ -849,7 +849,7 @@ impl<'a> Generator<'a> {
                                         cmd_def,
                                         alias: None,
                                         category: None,
-                                        depends: DependencyExpr::False,
+                                        depends: DependencyExpr::Never,
                                     },
                                 );
                                 let decl = c_parse_function_decl(cmd_def.code.as_str());
@@ -883,7 +883,7 @@ impl<'a> Generator<'a> {
                     cmd_def,
                     alias: Some(alias),
                     category: None,
-                    depends: DependencyExpr::False,
+                    depends: DependencyExpr::Never,
                 },
             );
         }
@@ -922,7 +922,10 @@ impl<'a> Generator<'a> {
                         let ext_category = ext.get_category();
                         for (check, items) in ext.children.iter().filter_map(|ext_child| match ext_child {
                             vk::ExtensionChild::Require { depends, items, .. } => {
-                                let check = depends.as_deref().map(c_parse_depends).unwrap_or(DependencyExpr::True);
+                                let check = depends
+                                    .as_deref()
+                                    .map(c_parse_depends)
+                                    .unwrap_or(DependencyExpr::Always);
                                 Some((check, items))
                             }
                             _ => None,
@@ -990,7 +993,7 @@ impl<'a> Generator<'a> {
 
         // fill in missing command categories
         for info in self.cmd_info_by_name.values_mut() {
-            if info.depends.is_false() {
+            if info.depends.is_never() {
                 info.category = None;
             } else if info.category.is_none() {
                 info.category = Some(info.cmd_def.guess_command_category());
@@ -3125,10 +3128,10 @@ impl<'a> Generator<'a> {
 
     fn write_command_dependency(&self, category: Category, expr: &DependencyExpr, w: &mut impl IoWrite) -> WriteResult {
         match expr {
-            DependencyExpr::False => {
+            DependencyExpr::Never => {
                 write!(w, "false")?;
             }
-            DependencyExpr::True => {
+            DependencyExpr::Always => {
                 write!(w, "true")?;
             }
             DependencyExpr::Version(v) => {
@@ -3182,12 +3185,7 @@ impl<'a> Generator<'a> {
 
     fn write_support_impl(w: &mut impl IoWrite, current_name: &'a str, expr: &DependencyExpr) -> WriteResult {
         match expr {
-            DependencyExpr::False => {
-                write!(w, "false")?;
-            }
-            DependencyExpr::True => {
-                write!(w, "true")?;
-            }
+            DependencyExpr::Never | DependencyExpr::Always => unimplemented!(),
             DependencyExpr::Version(v) => {
                 write!(
                     w,
@@ -3239,7 +3237,14 @@ impl<'a> Generator<'a> {
 
     fn write_enable_impl(w: &mut impl IoWrite, current_name: &'a str, expr: &DependencyExpr) -> WriteResult {
         match expr {
-            DependencyExpr::False | DependencyExpr::True | DependencyExpr::Version(_) => {}
+            DependencyExpr::Never | DependencyExpr::Always => unimplemented!(),
+            DependencyExpr::Version(v) => {
+                write!(
+                    w,
+                    "debug_assert!(self.core_version >= vk::Version::from_raw_parts({}, {}, 0));",
+                    v.0, v.1
+                )?;
+            }
             DependencyExpr::Extension(n) => {
                 let rust_name = n.skip_prefix(CONST_PREFIX).to_snake_case();
                 if *n == current_name {
@@ -3402,20 +3407,19 @@ impl<'a> Generator<'a> {
                     .depends
                     .as_deref()
                     .map(c_parse_depends)
-                    .unwrap_or(DependencyExpr::True);
+                    .unwrap_or(DependencyExpr::Always);
                 check.visit_leaves(&|dep| {
                     if let DependencyExpr::Extension(s) = dep {
                         if !needs_support_check.contains(s) {
-                            *dep = DependencyExpr::True;
+                            *dep = DependencyExpr::Always;
                         }
                     }
                 });
                 if ext.get_category() == category {
-                    let mut self_check = DependencyExpr::Extension(&ext.name);
-                    if let Some(version) = promoted_to_version {
-                        self_check = DependencyExpr::Or(vec![self_check, DependencyExpr::Version(version)]);
-                    }
-                    check = DependencyExpr::And(vec![self_check, check]);
+                    check = DependencyExpr::And(vec![DependencyExpr::Extension(&ext.name), check]);
+                }
+                if let Some(version) = promoted_to_version {
+                    check = DependencyExpr::Or(vec![DependencyExpr::Version(version), check]);
                 }
                 check.simplify();
 
@@ -3524,7 +3528,7 @@ impl<'a> Generator<'a> {
         }) {
             let fn_name = name.skip_prefix(FN_PREFIX).to_snake_case();
             writeln!(w, "fp_{}:", fn_name)?;
-            let always_load = info.depends.is_true() || category == Category::Loader;
+            let always_load = info.depends.is_always() || category == Category::Loader;
             let load_on_instance =
                 category == Category::Device && info.cmd_def.guess_command_category() == Category::Instance;
             if name == "vkGetInstanceProcAddr" {
@@ -3540,7 +3544,7 @@ impl<'a> Generator<'a> {
                     if load_on_instance { "f_instance" } else { "f" },
                     name
                 )?;
-                let is_core = matches!(info.depends, DependencyExpr::True | DependencyExpr::Version(_));
+                let is_core = matches!(info.depends, DependencyExpr::Always | DependencyExpr::Version(_));
                 if is_core && category != Category::Loader {
                     writeln!(
                         w,
