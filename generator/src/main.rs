@@ -2277,7 +2277,8 @@ impl<'a> Generator<'a> {
             }
 
             // match slice (parameter or return)
-            if let Some(len_name) = vparam.len.as_deref() {
+            let vparam_non_unit_len = vparam.len.as_deref().filter(|&s| s != "1");
+            if let Some(len_name) = vparam_non_unit_len {
                 if cparam.ty.decoration == CDecoration::PointerToConst
                     || cparam.ty.decoration == CDecoration::PointerToConstPointerToConst
                     || (cparam.ty.base == CBaseType::Void
@@ -2395,7 +2396,6 @@ impl<'a> Generator<'a> {
                 if cparam.ty.base != CBaseType::Void
                     && cparam.ty.decoration == CDecoration::Pointer
                     && vparam.optional.is_none()
-                    && vparam.len.is_some()
                 {
                     let len_names: Vec<&str> = len_name.split("::").flat_map(|s| s.split("->")).collect();
                     let len_expr = if len_names.len() == 1 {
@@ -2464,7 +2464,7 @@ impl<'a> Generator<'a> {
                 && (cparam.ty.decoration == CDecoration::Pointer
                     || cparam.ty.decoration == CDecoration::PointerToPointer)
                 && (vparam.optional.is_none() || vparam.optional.as_deref() == Some("false,true"))
-                && vparam.len.is_none()
+                && vparam_non_unit_len.is_none()
                 && cmd_return_value != CommandReturnValue::Other
                 && return_type == LibReturnType::CDecl
             {
