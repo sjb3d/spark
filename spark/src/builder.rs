@@ -8596,33 +8596,6 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceGlobalPriorityQueryFeaturesKH
 impl DeviceCreateInfoNext for PhysicalDeviceGlobalPriorityQueryFeaturesKHRBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceGlobalPriorityQueryFeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceGlobalPriorityQueryFeaturesKHR {}
-impl Builder<'_> for vk::QueueFamilyGlobalPriorityPropertiesKHR {
-    type Type = QueueFamilyGlobalPriorityPropertiesKHRBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct QueueFamilyGlobalPriorityPropertiesKHRBuilder {
-    inner: vk::QueueFamilyGlobalPriorityPropertiesKHR,
-}
-impl QueueFamilyGlobalPriorityPropertiesKHRBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn priority_count(mut self, priority_count: u32) -> Self {
-        self.inner.priority_count = priority_count;
-        self
-    }
-}
-impl Deref for QueueFamilyGlobalPriorityPropertiesKHRBuilder {
-    type Target = vk::QueueFamilyGlobalPriorityPropertiesKHR;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl QueueFamilyProperties2Next for QueueFamilyGlobalPriorityPropertiesKHRBuilder {}
 impl QueueFamilyProperties2Next for vk::QueueFamilyGlobalPriorityPropertiesKHR {}
 impl<'a> Builder<'a> for vk::DebugUtilsObjectNameInfoEXT {
     type Type = DebugUtilsObjectNameInfoEXTBuilder<'a>;
@@ -14268,6 +14241,37 @@ impl DeviceCreateInfoNext for vk::PhysicalDeviceSubgroupSizeControlFeatures {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSubgroupSizeControlProperties {}
 impl PipelineShaderStageCreateInfoNext for vk::PipelineShaderStageRequiredSubgroupSizeCreateInfo {}
 impl ShaderCreateInfoEXTNext for vk::PipelineShaderStageRequiredSubgroupSizeCreateInfo {}
+impl Builder<'_> for vk::SubpassShadingPipelineCreateInfoHUAWEI {
+    type Type = SubpassShadingPipelineCreateInfoHUAWEIBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SubpassShadingPipelineCreateInfoHUAWEIBuilder {
+    inner: vk::SubpassShadingPipelineCreateInfoHUAWEI,
+}
+impl SubpassShadingPipelineCreateInfoHUAWEIBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn render_pass(mut self, render_pass: vk::RenderPass) -> Self {
+        self.inner.render_pass = Some(render_pass);
+        self
+    }
+    pub fn subpass(mut self, subpass: u32) -> Self {
+        self.inner.subpass = subpass;
+        self
+    }
+}
+impl Deref for SubpassShadingPipelineCreateInfoHUAWEIBuilder {
+    type Target = vk::SubpassShadingPipelineCreateInfoHUAWEI;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ComputePipelineCreateInfoNext for SubpassShadingPipelineCreateInfoHUAWEIBuilder {}
 impl ComputePipelineCreateInfoNext for vk::SubpassShadingPipelineCreateInfoHUAWEI {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSubpassShadingPropertiesHUAWEI {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {}
@@ -24117,17 +24121,25 @@ impl Deref for QueryLowLatencySupportNVBuilder {
 }
 impl SemaphoreCreateInfoNext for QueryLowLatencySupportNVBuilder {}
 impl SemaphoreCreateInfoNext for vk::QueryLowLatencySupportNV {}
-impl Builder<'_> for vk::MemoryMapInfoKHR {
-    type Type = MemoryMapInfoKHRBuilder;
+impl<'a> Builder<'a> for vk::MemoryMapInfoKHR {
+    type Type = MemoryMapInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait MemoryMapInfoKHRNext {}
 #[derive(Default)]
-pub struct MemoryMapInfoKHRBuilder {
+pub struct MemoryMapInfoKHRBuilder<'a> {
     inner: vk::MemoryMapInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl MemoryMapInfoKHRBuilder {
+impl<'a> MemoryMapInfoKHRBuilder<'a> {
+    pub fn insert_next<T: MemoryMapInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -24149,7 +24161,7 @@ impl MemoryMapInfoKHRBuilder {
         self
     }
 }
-impl Deref for MemoryMapInfoKHRBuilder {
+impl<'a> Deref for MemoryMapInfoKHRBuilder<'a> {
     type Target = vk::MemoryMapInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -25345,84 +25357,6 @@ impl Deref for GetLatencyMarkerInfoNVBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::LatencyTimingsFrameReportNV {
-    type Type = LatencyTimingsFrameReportNVBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct LatencyTimingsFrameReportNVBuilder {
-    inner: vk::LatencyTimingsFrameReportNV,
-}
-impl LatencyTimingsFrameReportNVBuilder {
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn present_id(mut self, present_id: u64) -> Self {
-        self.inner.present_id = present_id;
-        self
-    }
-    pub fn input_sample_time_us(mut self, input_sample_time_us: u64) -> Self {
-        self.inner.input_sample_time_us = input_sample_time_us;
-        self
-    }
-    pub fn sim_start_time_us(mut self, sim_start_time_us: u64) -> Self {
-        self.inner.sim_start_time_us = sim_start_time_us;
-        self
-    }
-    pub fn sim_end_time_us(mut self, sim_end_time_us: u64) -> Self {
-        self.inner.sim_end_time_us = sim_end_time_us;
-        self
-    }
-    pub fn render_submit_start_time_us(mut self, render_submit_start_time_us: u64) -> Self {
-        self.inner.render_submit_start_time_us = render_submit_start_time_us;
-        self
-    }
-    pub fn render_submit_end_time_us(mut self, render_submit_end_time_us: u64) -> Self {
-        self.inner.render_submit_end_time_us = render_submit_end_time_us;
-        self
-    }
-    pub fn present_start_time_us(mut self, present_start_time_us: u64) -> Self {
-        self.inner.present_start_time_us = present_start_time_us;
-        self
-    }
-    pub fn present_end_time_us(mut self, present_end_time_us: u64) -> Self {
-        self.inner.present_end_time_us = present_end_time_us;
-        self
-    }
-    pub fn driver_start_time_us(mut self, driver_start_time_us: u64) -> Self {
-        self.inner.driver_start_time_us = driver_start_time_us;
-        self
-    }
-    pub fn driver_end_time_us(mut self, driver_end_time_us: u64) -> Self {
-        self.inner.driver_end_time_us = driver_end_time_us;
-        self
-    }
-    pub fn os_render_queue_start_time_us(mut self, os_render_queue_start_time_us: u64) -> Self {
-        self.inner.os_render_queue_start_time_us = os_render_queue_start_time_us;
-        self
-    }
-    pub fn os_render_queue_end_time_us(mut self, os_render_queue_end_time_us: u64) -> Self {
-        self.inner.os_render_queue_end_time_us = os_render_queue_end_time_us;
-        self
-    }
-    pub fn gpu_render_start_time_us(mut self, gpu_render_start_time_us: u64) -> Self {
-        self.inner.gpu_render_start_time_us = gpu_render_start_time_us;
-        self
-    }
-    pub fn gpu_render_end_time_us(mut self, gpu_render_end_time_us: u64) -> Self {
-        self.inner.gpu_render_end_time_us = gpu_render_end_time_us;
-        self
-    }
-}
-impl Deref for LatencyTimingsFrameReportNVBuilder {
-    type Target = vk::LatencyTimingsFrameReportNV;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
 impl Builder<'_> for vk::OutOfBandQueueTypeInfoNV {
     type Type = OutOfBandQueueTypeInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -26090,3 +26024,104 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderQuadControlFeaturesKHRB
 impl DeviceCreateInfoNext for PhysicalDeviceShaderQuadControlFeaturesKHRBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderQuadControlFeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderQuadControlFeaturesKHR {}
+impl Builder<'_> for vk::PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV {
+    type Type = PhysicalDeviceShaderAtomicFloat16VectorFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderAtomicFloat16VectorFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV,
+}
+impl PhysicalDeviceShaderAtomicFloat16VectorFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_float16_vector_atomics(mut self, shader_float16_vector_atomics: bool) -> Self {
+        self.inner.shader_float16_vector_atomics = if shader_float16_vector_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderAtomicFloat16VectorFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderAtomicFloat16VectorFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderAtomicFloat16VectorFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV {}
+impl Builder<'_> for vk::PhysicalDeviceMapMemoryPlacedFeaturesEXT {
+    type Type = PhysicalDeviceMapMemoryPlacedFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMapMemoryPlacedFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceMapMemoryPlacedFeaturesEXT,
+}
+impl PhysicalDeviceMapMemoryPlacedFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn memory_map_placed(mut self, memory_map_placed: bool) -> Self {
+        self.inner.memory_map_placed = if memory_map_placed { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn memory_map_range_placed(mut self, memory_map_range_placed: bool) -> Self {
+        self.inner.memory_map_range_placed = if memory_map_range_placed { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn memory_unmap_reserve(mut self, memory_unmap_reserve: bool) -> Self {
+        self.inner.memory_unmap_reserve = if memory_unmap_reserve { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMapMemoryPlacedFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceMapMemoryPlacedFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMapMemoryPlacedFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMapMemoryPlacedFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMapMemoryPlacedFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMapMemoryPlacedFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMapMemoryPlacedPropertiesEXT {}
+impl Builder<'_> for vk::MemoryMapPlacedInfoEXT {
+    type Type = MemoryMapPlacedInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MemoryMapPlacedInfoEXTBuilder {
+    inner: vk::MemoryMapPlacedInfoEXT,
+}
+impl MemoryMapPlacedInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_placed_address(mut self, p_placed_address: *mut c_void) -> Self {
+        self.inner.p_placed_address = p_placed_address;
+        self
+    }
+}
+impl Deref for MemoryMapPlacedInfoEXTBuilder {
+    type Target = vk::MemoryMapPlacedInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl MemoryMapInfoKHRNext for MemoryMapPlacedInfoEXTBuilder {}
+impl MemoryMapInfoKHRNext for vk::MemoryMapPlacedInfoEXT {}

@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 276
+//! Generated from vk.xml with `VK_HEADER_VERSION` 278
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -4832,6 +4832,7 @@ pub struct DeviceExtensions {
     pub khr_pipeline_executable_properties: bool,
     pub ext_host_image_copy: bool,
     pub khr_map_memory2: bool,
+    pub ext_map_memory_placed: bool,
     pub ext_shader_atomic_float2: bool,
     pub ext_swapchain_maintenance1: bool,
     pub ext_shader_demote_to_helper_invocation: bool,
@@ -4968,6 +4969,7 @@ pub struct DeviceExtensions {
     pub khr_shader_expect_assume: bool,
     pub khr_maintenance6: bool,
     pub nv_descriptor_pool_overallocation: bool,
+    pub nv_shader_atomic_float16_vector: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -5154,6 +5156,7 @@ impl DeviceExtensions {
             b"VK_KHR_pipeline_executable_properties" => self.khr_pipeline_executable_properties = true,
             b"VK_EXT_host_image_copy" => self.ext_host_image_copy = true,
             b"VK_KHR_map_memory2" => self.khr_map_memory2 = true,
+            b"VK_EXT_map_memory_placed" => self.ext_map_memory_placed = true,
             b"VK_EXT_shader_atomic_float2" => self.ext_shader_atomic_float2 = true,
             b"VK_EXT_swapchain_maintenance1" => self.ext_swapchain_maintenance1 = true,
             b"VK_EXT_shader_demote_to_helper_invocation" => self.ext_shader_demote_to_helper_invocation = true,
@@ -5290,6 +5293,7 @@ impl DeviceExtensions {
             b"VK_KHR_shader_expect_assume" => self.khr_shader_expect_assume = true,
             b"VK_KHR_maintenance6" => self.khr_maintenance6 = true,
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
+            b"VK_NV_shader_atomic_float16_vector" => self.nv_shader_atomic_float16_vector = true,
             _ => {}
         }
     }
@@ -5476,6 +5480,7 @@ impl DeviceExtensions {
             khr_pipeline_executable_properties: false,
             ext_host_image_copy: false,
             khr_map_memory2: false,
+            ext_map_memory_placed: false,
             ext_shader_atomic_float2: false,
             ext_swapchain_maintenance1: false,
             ext_shader_demote_to_helper_invocation: false,
@@ -5612,6 +5617,7 @@ impl DeviceExtensions {
             khr_shader_expect_assume: false,
             khr_maintenance6: false,
             nv_descriptor_pool_overallocation: false,
+            nv_shader_atomic_float16_vector: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -6959,6 +6965,13 @@ impl DeviceExtensions {
     pub fn enable_khr_map_memory2(&mut self) {
         self.khr_map_memory2 = true;
     }
+    pub fn supports_ext_map_memory_placed(&self) -> bool {
+        self.ext_map_memory_placed && self.supports_khr_map_memory2()
+    }
+    pub fn enable_ext_map_memory_placed(&mut self) {
+        self.ext_map_memory_placed = true;
+        self.enable_khr_map_memory2();
+    }
     pub fn supports_ext_shader_atomic_float2(&self) -> bool {
         self.ext_shader_atomic_float2 && self.supports_ext_shader_atomic_float()
     }
@@ -7915,6 +7928,12 @@ impl DeviceExtensions {
         self.nv_descriptor_pool_overallocation = true;
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
+    pub fn supports_nv_shader_atomic_float16_vector(&self) -> bool {
+        self.nv_shader_atomic_float16_vector
+    }
+    pub fn enable_nv_shader_atomic_float16_vector(&mut self) {
+        self.nv_shader_atomic_float16_vector = true;
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -8459,6 +8478,9 @@ impl DeviceExtensions {
         if self.khr_map_memory2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_map_memory2\0") })
         }
+        if self.ext_map_memory_placed {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_map_memory_placed\0") })
+        }
         if self.ext_shader_atomic_float2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_atomic_float2\0") })
         }
@@ -8866,6 +8888,9 @@ impl DeviceExtensions {
         }
         if self.nv_descriptor_pool_overallocation {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_descriptor_pool_overallocation\0") })
+        }
+        if self.nv_shader_atomic_float16_vector {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_atomic_float16_vector\0") })
         }
         v
     }
@@ -14196,14 +14221,14 @@ impl Device {
     pub unsafe fn get_device_subpass_shading_max_workgroup_size_huawei(
         &self,
         renderpass: vk::RenderPass,
-    ) -> Result<(vk::Result, vk::Extent2D)> {
+    ) -> Result<vk::Extent2D> {
         let fp = self
             .fp_get_device_subpass_shading_max_workgroup_size_huawei
             .expect("vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI is not loaded");
         let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(Some(self.handle), Some(renderpass), res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok((err, res.assume_init())),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }

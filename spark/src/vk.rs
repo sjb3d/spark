@@ -231,6 +231,7 @@ pub const SHADER_UNUSED_NV: u32 = SHADER_UNUSED_KHR;
 pub const MAX_GLOBAL_PRIORITY_SIZE_KHR: usize = 16;
 pub const MAX_GLOBAL_PRIORITY_SIZE_EXT: usize = MAX_GLOBAL_PRIORITY_SIZE_KHR;
 pub const MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT: usize = 32;
+pub const MAX_VIDEO_AV1_REFERENCES_PER_FRAME_KHR: usize = 7;
 pub const SHADER_INDEX_UNUSED_AMDX: u32 = 0xffffffff;
 pub type SampleMask = u32;
 pub type Bool32 = u32;
@@ -1556,21 +1557,27 @@ impl fmt::Display for QueryPipelineStatisticFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MemoryMapFlags(pub(crate) u32);
-impl MemoryMapFlags {}
-impl_bitmask!(MemoryMapFlags, 0x0);
+impl MemoryMapFlags {
+    /// Added by extension VK_EXT_map_memory_placed.
+    pub const PLACED_EXT: Self = Self(0x1);
+}
+impl_bitmask!(MemoryMapFlags, 0x1);
 impl fmt::Display for MemoryMapFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[], f)
+        display_bitmask(self.0 as _, &[(0x1, "PLACED_EXT")], f)
     }
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MemoryUnmapFlagsKHR(pub(crate) u32);
-impl MemoryUnmapFlagsKHR {}
-impl_bitmask!(MemoryUnmapFlagsKHR, 0x0);
+impl MemoryUnmapFlagsKHR {
+    /// Added by extension VK_EXT_map_memory_placed.
+    pub const RESERVE_EXT: Self = Self(0x1);
+}
+impl_bitmask!(MemoryUnmapFlagsKHR, 0x1);
 impl fmt::Display for MemoryUnmapFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[], f)
+        display_bitmask(self.0 as _, &[(0x1, "RESERVE_EXT")], f)
     }
 }
 #[repr(transparent)]
@@ -1990,8 +1997,12 @@ impl SubgroupFeatureFlags {
     pub const QUAD: Self = Self(0x80);
     /// Added by extension VK_NV_shader_subgroup_partitioned.
     pub const PARTITIONED_NV: Self = Self(0x100);
+    /// Added by extension VK_KHR_shader_subgroup_rotate.
+    pub const ROTATE_KHR: Self = Self(0x200);
+    /// Added by extension VK_KHR_shader_subgroup_rotate.
+    pub const ROTATE_CLUSTERED_KHR: Self = Self(0x400);
 }
-impl_bitmask!(SubgroupFeatureFlags, 0x1ff);
+impl_bitmask!(SubgroupFeatureFlags, 0x7ff);
 impl fmt::Display for SubgroupFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2006,6 +2017,8 @@ impl fmt::Display for SubgroupFeatureFlags {
                 (0x40, "CLUSTERED"),
                 (0x80, "QUAD"),
                 (0x100, "PARTITIONED_NV"),
+                (0x200, "ROTATE_KHR"),
+                (0x400, "ROTATE_CLUSTERED_KHR"),
             ],
             f,
         )
@@ -6557,7 +6570,8 @@ impl Result {
     /// Added by extension VK_EXT_image_compression_control.
     pub const ERROR_COMPRESSION_EXHAUSTED_EXT: Self = Self(-1000338000);
     /// Added by extension VK_EXT_shader_object.
-    pub const ERROR_INCOMPATIBLE_SHADER_BINARY_EXT: Self = Self(1000482000);
+    pub const INCOMPATIBLE_SHADER_BINARY_EXT: Self = Self(1000482000);
+    pub const ERROR_INCOMPATIBLE_SHADER_BINARY_EXT: Self = Self::INCOMPATIBLE_SHADER_BINARY_EXT;
 }
 impl fmt::Display for Result {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6601,7 +6615,7 @@ impl fmt::Display for Result {
             1000268002 => Some(&"OPERATION_DEFERRED_KHR"),
             1000268003 => Some(&"OPERATION_NOT_DEFERRED_KHR"),
             -1000338000 => Some(&"ERROR_COMPRESSION_EXHAUSTED_EXT"),
-            1000482000 => Some(&"ERROR_INCOMPATIBLE_SHADER_BINARY_EXT"),
+            1000482000 => Some(&"INCOMPATIBLE_SHADER_BINARY_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -7593,6 +7607,12 @@ impl StructureType {
     pub const MEMORY_MAP_INFO_KHR: Self = Self(1000271000);
     /// Added by extension VK_KHR_map_memory2.
     pub const MEMORY_UNMAP_INFO_KHR: Self = Self(1000271001);
+    /// Added by extension VK_EXT_map_memory_placed.
+    pub const PHYSICAL_DEVICE_MAP_MEMORY_PLACED_FEATURES_EXT: Self = Self(1000272000);
+    /// Added by extension VK_EXT_map_memory_placed.
+    pub const PHYSICAL_DEVICE_MAP_MEMORY_PLACED_PROPERTIES_EXT: Self = Self(1000272001);
+    /// Added by extension VK_EXT_map_memory_placed.
+    pub const MEMORY_MAP_PLACED_INFO_EXT: Self = Self(1000272002);
     /// Added by extension VK_EXT_shader_atomic_float2.
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT: Self = Self(1000273000);
     /// Added by extension VK_EXT_surface_maintenance1.
@@ -8251,6 +8271,8 @@ impl StructureType {
     pub const BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT: Self = Self(1000545008);
     /// Added by extension VK_NV_descriptor_pool_overallocation.
     pub const PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV: Self = Self(1000546000);
+    /// Added by extension VK_NV_shader_atomic_float16_vector.
+    pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV: Self = Self(1000563000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8750,6 +8772,9 @@ impl fmt::Display for StructureType {
             1000270009 => Some(&"HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY_EXT"),
             1000271000 => Some(&"MEMORY_MAP_INFO_KHR"),
             1000271001 => Some(&"MEMORY_UNMAP_INFO_KHR"),
+            1000272000 => Some(&"PHYSICAL_DEVICE_MAP_MEMORY_PLACED_FEATURES_EXT"),
+            1000272001 => Some(&"PHYSICAL_DEVICE_MAP_MEMORY_PLACED_PROPERTIES_EXT"),
+            1000272002 => Some(&"MEMORY_MAP_PLACED_INFO_EXT"),
             1000273000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT"),
             1000274000 => Some(&"SURFACE_PRESENT_MODE_EXT"),
             1000274001 => Some(&"SURFACE_PRESENT_SCALING_CAPABILITIES_EXT"),
@@ -9058,6 +9083,7 @@ impl fmt::Display for StructureType {
             1000545007 => Some(&"SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT"),
             1000545008 => Some(&"BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT"),
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
+            1000563000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -44902,6 +44928,120 @@ impl fmt::Debug for PhysicalDeviceShaderQuadControlFeaturesKHR {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_quad_control", &self.shader_quad_control)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_float16_vector_atomics: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV {}
+impl Default for PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            shader_float16_vector_atomics: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_float16_vector_atomics", &self.shader_float16_vector_atomics)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMapMemoryPlacedFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub memory_map_placed: Bool32,
+    pub memory_map_range_placed: Bool32,
+    pub memory_unmap_reserve: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMapMemoryPlacedFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceMapMemoryPlacedFeaturesEXT {}
+impl Default for PhysicalDeviceMapMemoryPlacedFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAP_MEMORY_PLACED_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            memory_map_placed: Default::default(),
+            memory_map_range_placed: Default::default(),
+            memory_unmap_reserve: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMapMemoryPlacedFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMapMemoryPlacedFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory_map_placed", &self.memory_map_placed)
+            .field("memory_map_range_placed", &self.memory_map_range_placed)
+            .field("memory_unmap_reserve", &self.memory_unmap_reserve)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMapMemoryPlacedPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub min_placed_memory_map_alignment: DeviceSize,
+}
+unsafe impl Send for PhysicalDeviceMapMemoryPlacedPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceMapMemoryPlacedPropertiesEXT {}
+impl Default for PhysicalDeviceMapMemoryPlacedPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAP_MEMORY_PLACED_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            min_placed_memory_map_alignment: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMapMemoryPlacedPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMapMemoryPlacedPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("min_placed_memory_map_alignment", &self.min_placed_memory_map_alignment)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryMapPlacedInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_placed_address: *mut c_void,
+}
+unsafe impl Send for MemoryMapPlacedInfoEXT {}
+unsafe impl Sync for MemoryMapPlacedInfoEXT {}
+impl Default for MemoryMapPlacedInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_MAP_PLACED_INFO_EXT,
+            p_next: ptr::null(),
+            p_placed_address: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for MemoryMapPlacedInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryMapPlacedInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_placed_address", &self.p_placed_address)
             .finish()
     }
 }
