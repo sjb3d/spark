@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 278
+//! Generated from vk.xml with `VK_HEADER_VERSION` 279
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -4969,6 +4969,7 @@ pub struct DeviceExtensions {
     pub khr_shader_expect_assume: bool,
     pub khr_maintenance6: bool,
     pub nv_descriptor_pool_overallocation: bool,
+    pub nv_raw_access_chains: bool,
     pub nv_shader_atomic_float16_vector: bool,
 }
 impl DeviceExtensions {
@@ -5293,6 +5294,7 @@ impl DeviceExtensions {
             b"VK_KHR_shader_expect_assume" => self.khr_shader_expect_assume = true,
             b"VK_KHR_maintenance6" => self.khr_maintenance6 = true,
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
+            b"VK_NV_raw_access_chains" => self.nv_raw_access_chains = true,
             b"VK_NV_shader_atomic_float16_vector" => self.nv_shader_atomic_float16_vector = true,
             _ => {}
         }
@@ -5617,6 +5619,7 @@ impl DeviceExtensions {
             khr_shader_expect_assume: false,
             khr_maintenance6: false,
             nv_descriptor_pool_overallocation: false,
+            nv_raw_access_chains: false,
             nv_shader_atomic_float16_vector: false,
         }
     }
@@ -7928,6 +7931,12 @@ impl DeviceExtensions {
         self.nv_descriptor_pool_overallocation = true;
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
+    pub fn supports_nv_raw_access_chains(&self) -> bool {
+        self.nv_raw_access_chains
+    }
+    pub fn enable_nv_raw_access_chains(&mut self) {
+        self.nv_raw_access_chains = true;
+    }
     pub fn supports_nv_shader_atomic_float16_vector(&self) -> bool {
         self.nv_shader_atomic_float16_vector
     }
@@ -8888,6 +8897,9 @@ impl DeviceExtensions {
         }
         if self.nv_descriptor_pool_overallocation {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_descriptor_pool_overallocation\0") })
+        }
+        if self.nv_raw_access_chains {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_raw_access_chains\0") })
         }
         if self.nv_shader_atomic_float16_vector {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_atomic_float16_vector\0") })

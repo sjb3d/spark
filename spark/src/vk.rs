@@ -8271,6 +8271,8 @@ impl StructureType {
     pub const BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT: Self = Self(1000545008);
     /// Added by extension VK_NV_descriptor_pool_overallocation.
     pub const PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV: Self = Self(1000546000);
+    /// Added by extension VK_NV_raw_access_chains.
+    pub const PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV: Self = Self(1000555000);
     /// Added by extension VK_NV_shader_atomic_float16_vector.
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV: Self = Self(1000563000);
 }
@@ -9083,6 +9085,7 @@ impl fmt::Display for StructureType {
             1000545007 => Some(&"SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT"),
             1000545008 => Some(&"BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT"),
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
+            1000555000 => Some(&"PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV"),
             1000563000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV"),
             _ => None,
         };
@@ -45042,6 +45045,33 @@ impl fmt::Debug for MemoryMapPlacedInfoEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("p_placed_address", &self.p_placed_address)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRawAccessChainsFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_raw_access_chains: Bool32,
+}
+unsafe impl Send for PhysicalDeviceRawAccessChainsFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceRawAccessChainsFeaturesNV {}
+impl Default for PhysicalDeviceRawAccessChainsFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            shader_raw_access_chains: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRawAccessChainsFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRawAccessChainsFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_raw_access_chains", &self.shader_raw_access_chains)
             .finish()
     }
 }

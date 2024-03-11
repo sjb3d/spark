@@ -1428,6 +1428,8 @@ impl Deref for ComputePipelineIndirectBufferInfoNVBuilder {
         &self.inner
     }
 }
+impl ComputePipelineCreateInfoNext for ComputePipelineIndirectBufferInfoNVBuilder {}
+impl ComputePipelineCreateInfoNext for vk::ComputePipelineIndirectBufferInfoNV {}
 impl Builder<'_> for vk::PipelineCreateFlags2CreateInfoKHR {
     type Type = PipelineCreateFlags2CreateInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -4236,8 +4238,8 @@ impl<'a> GeneratedCommandsInfoNVBuilder<'a> {
         self.inner.pipeline_bind_point = pipeline_bind_point;
         self
     }
-    pub fn pipeline(mut self, pipeline: vk::Pipeline) -> Self {
-        self.inner.pipeline = Some(pipeline);
+    pub fn pipeline(mut self, pipeline: Option<vk::Pipeline>) -> Self {
+        self.inner.pipeline = pipeline;
         self
     }
     pub fn indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutNV) -> Self {
@@ -26125,3 +26127,33 @@ impl Deref for MemoryMapPlacedInfoEXTBuilder {
 }
 impl MemoryMapInfoKHRNext for MemoryMapPlacedInfoEXTBuilder {}
 impl MemoryMapInfoKHRNext for vk::MemoryMapPlacedInfoEXT {}
+impl Builder<'_> for vk::PhysicalDeviceRawAccessChainsFeaturesNV {
+    type Type = PhysicalDeviceRawAccessChainsFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRawAccessChainsFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceRawAccessChainsFeaturesNV,
+}
+impl PhysicalDeviceRawAccessChainsFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_raw_access_chains(mut self, shader_raw_access_chains: bool) -> Self {
+        self.inner.shader_raw_access_chains = if shader_raw_access_chains { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceRawAccessChainsFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceRawAccessChainsFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRawAccessChainsFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRawAccessChainsFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRawAccessChainsFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRawAccessChainsFeaturesNV {}
