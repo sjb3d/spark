@@ -8275,6 +8275,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV: Self = Self(1000555000);
     /// Added by extension VK_NV_shader_atomic_float16_vector.
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV: Self = Self(1000563000);
+    /// Added by extension VK_NV_ray_tracing_validation.
+    pub const PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV: Self = Self(1000568000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9087,6 +9089,7 @@ impl fmt::Display for StructureType {
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
             1000555000 => Some(&"PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV"),
             1000563000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV"),
+            1000568000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -37793,6 +37796,33 @@ impl fmt::Debug for PhysicalDeviceRayTracingMotionBlurFeaturesNV {
                 "ray_tracing_motion_blur_pipeline_trace_rays_indirect",
                 &self.ray_tracing_motion_blur_pipeline_trace_rays_indirect,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayTracingValidationFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ray_tracing_validation: Bool32,
+}
+unsafe impl Send for PhysicalDeviceRayTracingValidationFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceRayTracingValidationFeaturesNV {}
+impl Default for PhysicalDeviceRayTracingValidationFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            ray_tracing_validation: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayTracingValidationFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayTracingValidationFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ray_tracing_validation", &self.ray_tracing_validation)
             .finish()
     }
 }

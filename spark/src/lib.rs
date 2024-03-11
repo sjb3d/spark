@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 279
+//! Generated from vk.xml with `VK_HEADER_VERSION` 280
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -4971,6 +4971,7 @@ pub struct DeviceExtensions {
     pub nv_descriptor_pool_overallocation: bool,
     pub nv_raw_access_chains: bool,
     pub nv_shader_atomic_float16_vector: bool,
+    pub nv_ray_tracing_validation: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -5296,6 +5297,7 @@ impl DeviceExtensions {
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
             b"VK_NV_raw_access_chains" => self.nv_raw_access_chains = true,
             b"VK_NV_shader_atomic_float16_vector" => self.nv_shader_atomic_float16_vector = true,
+            b"VK_NV_ray_tracing_validation" => self.nv_ray_tracing_validation = true,
             _ => {}
         }
     }
@@ -5621,6 +5623,7 @@ impl DeviceExtensions {
             nv_descriptor_pool_overallocation: false,
             nv_raw_access_chains: false,
             nv_shader_atomic_float16_vector: false,
+            nv_ray_tracing_validation: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -7943,6 +7946,12 @@ impl DeviceExtensions {
     pub fn enable_nv_shader_atomic_float16_vector(&mut self) {
         self.nv_shader_atomic_float16_vector = true;
     }
+    pub fn supports_nv_ray_tracing_validation(&self) -> bool {
+        self.nv_ray_tracing_validation
+    }
+    pub fn enable_nv_ray_tracing_validation(&mut self) {
+        self.nv_ray_tracing_validation = true;
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -8903,6 +8912,9 @@ impl DeviceExtensions {
         }
         if self.nv_shader_atomic_float16_vector {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_atomic_float16_vector\0") })
+        }
+        if self.nv_ray_tracing_validation {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing_validation\0") })
         }
         v
     }

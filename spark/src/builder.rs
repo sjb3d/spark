@@ -19778,6 +19778,36 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingMotionBlurFeaturesN
 impl DeviceCreateInfoNext for PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV {}
+impl Builder<'_> for vk::PhysicalDeviceRayTracingValidationFeaturesNV {
+    type Type = PhysicalDeviceRayTracingValidationFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRayTracingValidationFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceRayTracingValidationFeaturesNV,
+}
+impl PhysicalDeviceRayTracingValidationFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ray_tracing_validation(mut self, ray_tracing_validation: bool) -> Self {
+        self.inner.ray_tracing_validation = if ray_tracing_validation { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceRayTracingValidationFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceRayTracingValidationFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingValidationFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRayTracingValidationFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingValidationFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingValidationFeaturesNV {}
 impl Builder<'_> for vk::AccelerationStructureGeometryMotionTrianglesDataNV {
     type Type = AccelerationStructureGeometryMotionTrianglesDataNVBuilder;
     fn builder() -> Self::Type {
