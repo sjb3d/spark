@@ -17757,6 +17757,68 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceAttachmentFeedbackLoopDynamic
 impl DeviceCreateInfoNext for PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceLegacyVertexAttributesFeaturesEXT {
+    type Type = PhysicalDeviceLegacyVertexAttributesFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceLegacyVertexAttributesFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceLegacyVertexAttributesFeaturesEXT,
+}
+impl PhysicalDeviceLegacyVertexAttributesFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn legacy_vertex_attributes(mut self, legacy_vertex_attributes: bool) -> Self {
+        self.inner.legacy_vertex_attributes = if legacy_vertex_attributes { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceLegacyVertexAttributesFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceLegacyVertexAttributesFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceLegacyVertexAttributesFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceLegacyVertexAttributesFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceLegacyVertexAttributesFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceLegacyVertexAttributesFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceLegacyVertexAttributesPropertiesEXT {
+    type Type = PhysicalDeviceLegacyVertexAttributesPropertiesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceLegacyVertexAttributesPropertiesEXTBuilder {
+    inner: vk::PhysicalDeviceLegacyVertexAttributesPropertiesEXT,
+}
+impl PhysicalDeviceLegacyVertexAttributesPropertiesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn native_unaligned_performance(mut self, native_unaligned_performance: bool) -> Self {
+        self.inner.native_unaligned_performance = if native_unaligned_performance {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceLegacyVertexAttributesPropertiesEXTBuilder {
+    type Target = vk::PhysicalDeviceLegacyVertexAttributesPropertiesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceLegacyVertexAttributesPropertiesEXTBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceLegacyVertexAttributesPropertiesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceMutableDescriptorTypeFeaturesEXT {
     type Type = PhysicalDeviceMutableDescriptorTypeFeaturesEXTBuilder;
     fn builder() -> Self::Type {

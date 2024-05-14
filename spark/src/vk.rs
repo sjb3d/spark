@@ -8180,6 +8180,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_PROPERTIES_NV: Self = Self(1000492001);
     pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT: Self = Self(1000351000);
     pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT: Self = Self(1000351002);
+    /// Added by extension VK_EXT_legacy_vertex_attributes.
+    pub const PHYSICAL_DEVICE_LEGACY_VERTEX_ATTRIBUTES_FEATURES_EXT: Self = Self(1000495000);
+    /// Added by extension VK_EXT_legacy_vertex_attributes.
+    pub const PHYSICAL_DEVICE_LEGACY_VERTEX_ATTRIBUTES_PROPERTIES_EXT: Self = Self(1000495001);
     /// Added by extension VK_EXT_layer_settings.
     pub const LAYER_SETTINGS_CREATE_INFO_EXT: Self = Self(1000496000);
     /// Added by extension VK_ARM_shader_core_builtins.
@@ -9040,6 +9044,8 @@ impl fmt::Display for StructureType {
             1000492001 => Some(&"PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_PROPERTIES_NV"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT"),
             1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT"),
+            1000495000 => Some(&"PHYSICAL_DEVICE_LEGACY_VERTEX_ATTRIBUTES_FEATURES_EXT"),
+            1000495001 => Some(&"PHYSICAL_DEVICE_LEGACY_VERTEX_ATTRIBUTES_PROPERTIES_EXT"),
             1000496000 => Some(&"LAYER_SETTINGS_CREATE_INFO_EXT"),
             1000497000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM"),
             1000497001 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM"),
@@ -35259,6 +35265,60 @@ impl fmt::Debug for PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT 
                 "attachment_feedback_loop_dynamic_state",
                 &self.attachment_feedback_loop_dynamic_state,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceLegacyVertexAttributesFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub legacy_vertex_attributes: Bool32,
+}
+unsafe impl Send for PhysicalDeviceLegacyVertexAttributesFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceLegacyVertexAttributesFeaturesEXT {}
+impl Default for PhysicalDeviceLegacyVertexAttributesFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_LEGACY_VERTEX_ATTRIBUTES_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            legacy_vertex_attributes: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceLegacyVertexAttributesFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceLegacyVertexAttributesFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("legacy_vertex_attributes", &self.legacy_vertex_attributes)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceLegacyVertexAttributesPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub native_unaligned_performance: Bool32,
+}
+unsafe impl Send for PhysicalDeviceLegacyVertexAttributesPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceLegacyVertexAttributesPropertiesEXT {}
+impl Default for PhysicalDeviceLegacyVertexAttributesPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_LEGACY_VERTEX_ATTRIBUTES_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            native_unaligned_performance: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceLegacyVertexAttributesPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceLegacyVertexAttributesPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("native_unaligned_performance", &self.native_unaligned_performance)
             .finish()
     }
 }

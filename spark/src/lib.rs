@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 283
+//! Generated from vk.xml with `VK_HEADER_VERSION` 284
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2423,6 +2423,12 @@ impl InstanceExtensions {
     }
     pub fn enable_ext_mutable_descriptor_type(&mut self) {
         self.enable_khr_maintenance3();
+    }
+    pub fn supports_ext_legacy_vertex_attributes(&self) -> bool {
+        self.supports_ext_vertex_input_dynamic_state()
+    }
+    pub fn enable_ext_legacy_vertex_attributes(&mut self) {
+        self.enable_ext_vertex_input_dynamic_state();
     }
     pub fn supports_ext_layer_settings(&self) -> bool {
         self.ext_layer_settings
@@ -5234,6 +5240,7 @@ pub struct DeviceExtensions {
     pub nv_ray_tracing_invocation_reorder: bool,
     pub nv_extended_sparse_address_space: bool,
     pub ext_mutable_descriptor_type: bool,
+    pub ext_legacy_vertex_attributes: bool,
     pub arm_shader_core_builtins: bool,
     pub ext_pipeline_library_group_handles: bool,
     pub ext_dynamic_rendering_unused_attachments: bool,
@@ -5560,6 +5567,7 @@ impl DeviceExtensions {
             b"VK_NV_ray_tracing_invocation_reorder" => self.nv_ray_tracing_invocation_reorder = true,
             b"VK_NV_extended_sparse_address_space" => self.nv_extended_sparse_address_space = true,
             b"VK_EXT_mutable_descriptor_type" => self.ext_mutable_descriptor_type = true,
+            b"VK_EXT_legacy_vertex_attributes" => self.ext_legacy_vertex_attributes = true,
             b"VK_ARM_shader_core_builtins" => self.arm_shader_core_builtins = true,
             b"VK_EXT_pipeline_library_group_handles" => self.ext_pipeline_library_group_handles = true,
             b"VK_EXT_dynamic_rendering_unused_attachments" => self.ext_dynamic_rendering_unused_attachments = true,
@@ -5886,6 +5894,7 @@ impl DeviceExtensions {
             nv_ray_tracing_invocation_reorder: false,
             nv_extended_sparse_address_space: false,
             ext_mutable_descriptor_type: false,
+            ext_legacy_vertex_attributes: false,
             arm_shader_core_builtins: false,
             ext_pipeline_library_group_handles: false,
             ext_dynamic_rendering_unused_attachments: false,
@@ -8212,6 +8221,13 @@ impl DeviceExtensions {
         self.ext_mutable_descriptor_type = true;
         self.enable_khr_maintenance3();
     }
+    pub fn supports_ext_legacy_vertex_attributes(&self) -> bool {
+        self.ext_legacy_vertex_attributes && self.supports_ext_vertex_input_dynamic_state()
+    }
+    pub fn enable_ext_legacy_vertex_attributes(&mut self) {
+        self.ext_legacy_vertex_attributes = true;
+        self.enable_ext_vertex_input_dynamic_state();
+    }
     pub fn supports_arm_shader_core_builtins(&self) -> bool {
         self.arm_shader_core_builtins
     }
@@ -9278,6 +9294,9 @@ impl DeviceExtensions {
         }
         if self.ext_mutable_descriptor_type {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_mutable_descriptor_type\0") })
+        }
+        if self.ext_legacy_vertex_attributes {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_legacy_vertex_attributes\0") })
         }
         if self.arm_shader_core_builtins {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_shader_core_builtins\0") })
