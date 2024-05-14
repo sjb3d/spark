@@ -2864,6 +2864,8 @@ impl PipelineCreateFlags2KHR {
     pub const DISABLE_OPTIMIZATION: Self = Self(0x1);
     pub const ALLOW_DERIVATIVES: Self = Self(0x2);
     pub const DERIVATIVE: Self = Self(0x4);
+    /// Added by extension VK_EXT_legacy_dithering.
+    pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x400000000);
     /// Added by extension VK_KHR_maintenance5.
     pub const VIEW_INDEX_FROM_DEVICE_INDEX: Self = Self(0x8);
     /// Added by extension VK_KHR_maintenance5.
@@ -2921,7 +2923,7 @@ impl PipelineCreateFlags2KHR {
     /// Added by extension VK_KHR_maintenance5.
     pub const DESCRIPTOR_BUFFER_EXT: Self = Self(0x20000000);
 }
-impl_bitmask!(PipelineCreateFlags2KHR, 0x7fffffff);
+impl_bitmask!(PipelineCreateFlags2KHR, 0x47fffffff);
 impl fmt::Display for PipelineCreateFlags2KHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2930,6 +2932,7 @@ impl fmt::Display for PipelineCreateFlags2KHR {
                 (0x1, "DISABLE_OPTIMIZATION"),
                 (0x2, "ALLOW_DERIVATIVES"),
                 (0x4, "DERIVATIVE"),
+                (0x400000000, "ENABLE_LEGACY_DITHERING_EXT"),
                 (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
                 (0x10, "DISPATCH_BASE"),
                 (0x20, "DEFER_COMPILE_NV"),
