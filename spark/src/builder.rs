@@ -26249,3 +26249,89 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceRawAccessChainsFeaturesNVBuil
 impl DeviceCreateInfoNext for PhysicalDeviceRawAccessChainsFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRawAccessChainsFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceRawAccessChainsFeaturesNV {}
+impl Builder<'_> for vk::PhysicalDeviceImageAlignmentControlFeaturesMESA {
+    type Type = PhysicalDeviceImageAlignmentControlFeaturesMESABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceImageAlignmentControlFeaturesMESABuilder {
+    inner: vk::PhysicalDeviceImageAlignmentControlFeaturesMESA,
+}
+impl PhysicalDeviceImageAlignmentControlFeaturesMESABuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_alignment_control(mut self, image_alignment_control: bool) -> Self {
+        self.inner.image_alignment_control = if image_alignment_control { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceImageAlignmentControlFeaturesMESABuilder {
+    type Target = vk::PhysicalDeviceImageAlignmentControlFeaturesMESA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageAlignmentControlFeaturesMESABuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceImageAlignmentControlFeaturesMESABuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageAlignmentControlFeaturesMESA {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceImageAlignmentControlFeaturesMESA {}
+impl Builder<'_> for vk::PhysicalDeviceImageAlignmentControlPropertiesMESA {
+    type Type = PhysicalDeviceImageAlignmentControlPropertiesMESABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceImageAlignmentControlPropertiesMESABuilder {
+    inner: vk::PhysicalDeviceImageAlignmentControlPropertiesMESA,
+}
+impl PhysicalDeviceImageAlignmentControlPropertiesMESABuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn supported_image_alignment_mask(mut self, supported_image_alignment_mask: u32) -> Self {
+        self.inner.supported_image_alignment_mask = supported_image_alignment_mask;
+        self
+    }
+}
+impl Deref for PhysicalDeviceImageAlignmentControlPropertiesMESABuilder {
+    type Target = vk::PhysicalDeviceImageAlignmentControlPropertiesMESA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceImageAlignmentControlPropertiesMESABuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceImageAlignmentControlPropertiesMESA {}
+impl Builder<'_> for vk::ImageAlignmentControlCreateInfoMESA {
+    type Type = ImageAlignmentControlCreateInfoMESABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageAlignmentControlCreateInfoMESABuilder {
+    inner: vk::ImageAlignmentControlCreateInfoMESA,
+}
+impl ImageAlignmentControlCreateInfoMESABuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn maximum_requested_alignment(mut self, maximum_requested_alignment: u32) -> Self {
+        self.inner.maximum_requested_alignment = maximum_requested_alignment;
+        self
+    }
+}
+impl Deref for ImageAlignmentControlCreateInfoMESABuilder {
+    type Target = vk::ImageAlignmentControlCreateInfoMESA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageCreateInfoNext for ImageAlignmentControlCreateInfoMESABuilder {}
+impl ImageCreateInfoNext for vk::ImageAlignmentControlCreateInfoMESA {}

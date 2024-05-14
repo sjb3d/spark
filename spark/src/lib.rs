@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 284
+//! Generated from vk.xml with `VK_HEADER_VERSION` 285
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2556,6 +2556,14 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_shader_expect_assume(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_mesa_image_alignment_control(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_mesa_image_alignment_control(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -5266,6 +5274,7 @@ pub struct DeviceExtensions {
     pub nv_raw_access_chains: bool,
     pub nv_shader_atomic_float16_vector: bool,
     pub nv_ray_tracing_validation: bool,
+    pub mesa_image_alignment_control: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -5593,6 +5602,7 @@ impl DeviceExtensions {
             b"VK_NV_raw_access_chains" => self.nv_raw_access_chains = true,
             b"VK_NV_shader_atomic_float16_vector" => self.nv_shader_atomic_float16_vector = true,
             b"VK_NV_ray_tracing_validation" => self.nv_ray_tracing_validation = true,
+            b"VK_MESA_image_alignment_control" => self.mesa_image_alignment_control = true,
             _ => {}
         }
     }
@@ -5920,6 +5930,7 @@ impl DeviceExtensions {
             nv_raw_access_chains: false,
             nv_shader_atomic_float16_vector: false,
             nv_ray_tracing_validation: false,
+            mesa_image_alignment_control: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -8406,6 +8417,12 @@ impl DeviceExtensions {
     pub fn enable_nv_ray_tracing_validation(&mut self) {
         self.nv_ray_tracing_validation = true;
     }
+    pub fn supports_mesa_image_alignment_control(&self) -> bool {
+        self.mesa_image_alignment_control
+    }
+    pub fn enable_mesa_image_alignment_control(&mut self) {
+        self.mesa_image_alignment_control = true;
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -9372,6 +9389,9 @@ impl DeviceExtensions {
         }
         if self.nv_ray_tracing_validation {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing_validation\0") })
+        }
+        if self.mesa_image_alignment_control {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_MESA_image_alignment_control\0") })
         }
         v
     }

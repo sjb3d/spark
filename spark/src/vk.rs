@@ -8285,6 +8285,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV: Self = Self(1000563000);
     /// Added by extension VK_NV_ray_tracing_validation.
     pub const PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV: Self = Self(1000568000);
+    /// Added by extension VK_MESA_image_alignment_control.
+    pub const PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA: Self = Self(1000575000);
+    /// Added by extension VK_MESA_image_alignment_control.
+    pub const PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA: Self = Self(1000575001);
+    /// Added by extension VK_MESA_image_alignment_control.
+    pub const IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA: Self = Self(1000575002);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9100,6 +9106,9 @@ impl fmt::Display for StructureType {
             1000555000 => Some(&"PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV"),
             1000563000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV"),
             1000568000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV"),
+            1000575000 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA"),
+            1000575001 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA"),
+            1000575002 => Some(&"IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA"),
             _ => None,
         };
         if let Some(name) = name {
@@ -45166,6 +45175,87 @@ impl fmt::Debug for PhysicalDeviceRawAccessChainsFeaturesNV {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_raw_access_chains", &self.shader_raw_access_chains)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageAlignmentControlFeaturesMESA {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub image_alignment_control: Bool32,
+}
+unsafe impl Send for PhysicalDeviceImageAlignmentControlFeaturesMESA {}
+unsafe impl Sync for PhysicalDeviceImageAlignmentControlFeaturesMESA {}
+impl Default for PhysicalDeviceImageAlignmentControlFeaturesMESA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA,
+            p_next: ptr::null_mut(),
+            image_alignment_control: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageAlignmentControlFeaturesMESA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageAlignmentControlFeaturesMESA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_alignment_control", &self.image_alignment_control)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageAlignmentControlPropertiesMESA {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub supported_image_alignment_mask: u32,
+}
+unsafe impl Send for PhysicalDeviceImageAlignmentControlPropertiesMESA {}
+unsafe impl Sync for PhysicalDeviceImageAlignmentControlPropertiesMESA {}
+impl Default for PhysicalDeviceImageAlignmentControlPropertiesMESA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA,
+            p_next: ptr::null_mut(),
+            supported_image_alignment_mask: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageAlignmentControlPropertiesMESA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageAlignmentControlPropertiesMESA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("supported_image_alignment_mask", &self.supported_image_alignment_mask)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageAlignmentControlCreateInfoMESA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub maximum_requested_alignment: u32,
+}
+unsafe impl Send for ImageAlignmentControlCreateInfoMESA {}
+unsafe impl Sync for ImageAlignmentControlCreateInfoMESA {}
+impl Default for ImageAlignmentControlCreateInfoMESA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA,
+            p_next: ptr::null(),
+            maximum_requested_alignment: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageAlignmentControlCreateInfoMESA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageAlignmentControlCreateInfoMESA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("maximum_requested_alignment", &self.maximum_requested_alignment)
             .finish()
     }
 }
