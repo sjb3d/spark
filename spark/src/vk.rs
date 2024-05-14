@@ -5756,7 +5756,8 @@ impl Format {
     pub const A4R4G4B4_UNORM_PACK16_EXT: Self = Self::A4R4G4B4_UNORM_PACK16;
     pub const A4B4G4R4_UNORM_PACK16_EXT: Self = Self::A4B4G4R4_UNORM_PACK16;
     /// Added by extension VK_NV_optical_flow.
-    pub const R16G16_S10_5_NV: Self = Self(1000464000);
+    pub const R16G16_SFIXED5_NV: Self = Self(1000464000);
+    pub const R16G16_S10_5_NV: Self = Self::R16G16_SFIXED5_NV;
     /// Added by extension VK_KHR_maintenance5.
     pub const A1B5G5R5_UNORM_PACK16_KHR: Self = Self(1000470000);
     /// Added by extension VK_KHR_maintenance5.
@@ -6012,7 +6013,7 @@ impl fmt::Display for Format {
             1000054005 => Some(&"PVRTC1_4BPP_SRGB_BLOCK_IMG"),
             1000054006 => Some(&"PVRTC2_2BPP_SRGB_BLOCK_IMG"),
             1000054007 => Some(&"PVRTC2_4BPP_SRGB_BLOCK_IMG"),
-            1000464000 => Some(&"R16G16_S10_5_NV"),
+            1000464000 => Some(&"R16G16_SFIXED5_NV"),
             1000470000 => Some(&"A1B5G5R5_UNORM_PACK16_KHR"),
             1000470001 => Some(&"A8_UNORM_KHR"),
             _ => None,
