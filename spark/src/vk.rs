@@ -8283,6 +8283,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV: Self = Self(1000555000);
     /// Added by extension VK_NV_shader_atomic_float16_vector.
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV: Self = Self(1000563000);
+    /// Added by extension VK_EXT_shader_replicated_composites.
+    pub const PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT: Self = Self(1000564000);
     /// Added by extension VK_NV_ray_tracing_validation.
     pub const PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV: Self = Self(1000568000);
     /// Added by extension VK_MESA_image_alignment_control.
@@ -9105,6 +9107,7 @@ impl fmt::Display for StructureType {
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
             1000555000 => Some(&"PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV"),
             1000563000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV"),
+            1000564000 => Some(&"PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT"),
             1000568000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV"),
             1000575000 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA"),
             1000575001 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA"),
@@ -11635,6 +11638,8 @@ impl fmt::Display for OutOfBandQueueTypeNV {
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VendorId(pub(crate) i32);
 impl VendorId {
+    /// Khronos vendor ID
+    pub const KHRONOS: Self = Self(65536);
     /// Vivante vendor ID
     pub const VIV: Self = Self(65537);
     /// VeriSilicon vendor ID
@@ -11653,6 +11658,7 @@ impl VendorId {
 impl fmt::Display for VendorId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
+            65536 => Some(&"KHRONOS"),
             65537 => Some(&"VIV"),
             65538 => Some(&"VSI"),
             65539 => Some(&"KAZAN"),
@@ -11725,6 +11731,8 @@ impl DriverId {
     pub const IMAGINATION_OPEN_SOURCE_MESA: Self = Self(25);
     /// Mesa open source project
     pub const MESA_AGXV: Self = Self(26);
+    /// Reserved for undisclosed driver project
+    pub const RESERVED_27: Self = Self(27);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -11767,6 +11775,7 @@ impl fmt::Display for DriverId {
             24 => Some(&"MESA_NVK"),
             25 => Some(&"IMAGINATION_OPEN_SOURCE_MESA"),
             26 => Some(&"MESA_AGXV"),
+            27 => Some(&"RESERVED_27"),
             _ => None,
         };
         if let Some(name) = name {
@@ -45256,6 +45265,33 @@ impl fmt::Debug for ImageAlignmentControlCreateInfoMESA {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("maximum_requested_alignment", &self.maximum_requested_alignment)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_replicated_composites: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {}
+impl Default for PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_replicated_composites: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderReplicatedCompositesFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_replicated_composites", &self.shader_replicated_composites)
             .finish()
     }
 }

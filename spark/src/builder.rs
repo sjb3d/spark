@@ -12396,33 +12396,6 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceScalarBlockLayoutFeaturesBuil
 impl DeviceCreateInfoNext for PhysicalDeviceScalarBlockLayoutFeaturesBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceScalarBlockLayoutFeatures {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceScalarBlockLayoutFeatures {}
-impl Builder<'_> for vk::SurfaceProtectedCapabilitiesKHR {
-    type Type = SurfaceProtectedCapabilitiesKHRBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct SurfaceProtectedCapabilitiesKHRBuilder {
-    inner: vk::SurfaceProtectedCapabilitiesKHR,
-}
-impl SurfaceProtectedCapabilitiesKHRBuilder {
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn supports_protected(mut self, supports_protected: bool) -> Self {
-        self.inner.supports_protected = if supports_protected { vk::TRUE } else { vk::FALSE };
-        self
-    }
-}
-impl Deref for SurfaceProtectedCapabilitiesKHRBuilder {
-    type Target = vk::SurfaceProtectedCapabilitiesKHR;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl SurfaceCapabilities2KHRNext for SurfaceProtectedCapabilitiesKHRBuilder {}
 impl SurfaceCapabilities2KHRNext for vk::SurfaceProtectedCapabilitiesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceUniformBufferStandardLayoutFeatures {
     type Type = PhysicalDeviceUniformBufferStandardLayoutFeaturesBuilder;
@@ -13204,37 +13177,6 @@ impl PhysicalDeviceSurfaceInfo2KHRNext for SurfaceFullScreenExclusiveWin32InfoEX
 impl SwapchainCreateInfoKHRNext for SurfaceFullScreenExclusiveWin32InfoEXTBuilder {}
 impl PhysicalDeviceSurfaceInfo2KHRNext for vk::SurfaceFullScreenExclusiveWin32InfoEXT {}
 impl SwapchainCreateInfoKHRNext for vk::SurfaceFullScreenExclusiveWin32InfoEXT {}
-impl Builder<'_> for vk::SurfaceCapabilitiesFullScreenExclusiveEXT {
-    type Type = SurfaceCapabilitiesFullScreenExclusiveEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct SurfaceCapabilitiesFullScreenExclusiveEXTBuilder {
-    inner: vk::SurfaceCapabilitiesFullScreenExclusiveEXT,
-}
-impl SurfaceCapabilitiesFullScreenExclusiveEXTBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn full_screen_exclusive_supported(mut self, full_screen_exclusive_supported: bool) -> Self {
-        self.inner.full_screen_exclusive_supported = if full_screen_exclusive_supported {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-}
-impl Deref for SurfaceCapabilitiesFullScreenExclusiveEXTBuilder {
-    type Target = vk::SurfaceCapabilitiesFullScreenExclusiveEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl SurfaceCapabilities2KHRNext for SurfaceCapabilitiesFullScreenExclusiveEXTBuilder {}
 impl SurfaceCapabilities2KHRNext for vk::SurfaceCapabilitiesFullScreenExclusiveEXT {}
 impl Builder<'_> for vk::PhysicalDevicePresentBarrierFeaturesNV {
     type Type = PhysicalDevicePresentBarrierFeaturesNVBuilder;
@@ -13266,33 +13208,6 @@ impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentBarrierFeaturesNVBuild
 impl DeviceCreateInfoNext for PhysicalDevicePresentBarrierFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentBarrierFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePresentBarrierFeaturesNV {}
-impl Builder<'_> for vk::SurfaceCapabilitiesPresentBarrierNV {
-    type Type = SurfaceCapabilitiesPresentBarrierNVBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct SurfaceCapabilitiesPresentBarrierNVBuilder {
-    inner: vk::SurfaceCapabilitiesPresentBarrierNV,
-}
-impl SurfaceCapabilitiesPresentBarrierNVBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn present_barrier_supported(mut self, present_barrier_supported: bool) -> Self {
-        self.inner.present_barrier_supported = if present_barrier_supported { vk::TRUE } else { vk::FALSE };
-        self
-    }
-}
-impl Deref for SurfaceCapabilitiesPresentBarrierNVBuilder {
-    type Target = vk::SurfaceCapabilitiesPresentBarrierNV;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl SurfaceCapabilities2KHRNext for SurfaceCapabilitiesPresentBarrierNVBuilder {}
 impl SurfaceCapabilities2KHRNext for vk::SurfaceCapabilitiesPresentBarrierNV {}
 impl Builder<'_> for vk::SwapchainPresentBarrierCreateInfoNV {
     type Type = SwapchainPresentBarrierCreateInfoNVBuilder;
@@ -23573,49 +23488,6 @@ impl Deref for SurfacePresentModeEXTBuilder {
 }
 impl PhysicalDeviceSurfaceInfo2KHRNext for SurfacePresentModeEXTBuilder {}
 impl PhysicalDeviceSurfaceInfo2KHRNext for vk::SurfacePresentModeEXT {}
-impl Builder<'_> for vk::SurfacePresentScalingCapabilitiesEXT {
-    type Type = SurfacePresentScalingCapabilitiesEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct SurfacePresentScalingCapabilitiesEXTBuilder {
-    inner: vk::SurfacePresentScalingCapabilitiesEXT,
-}
-impl SurfacePresentScalingCapabilitiesEXTBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn supported_present_scaling(mut self, supported_present_scaling: vk::PresentScalingFlagsEXT) -> Self {
-        self.inner.supported_present_scaling = supported_present_scaling;
-        self
-    }
-    pub fn supported_present_gravity_x(mut self, supported_present_gravity_x: vk::PresentGravityFlagsEXT) -> Self {
-        self.inner.supported_present_gravity_x = supported_present_gravity_x;
-        self
-    }
-    pub fn supported_present_gravity_y(mut self, supported_present_gravity_y: vk::PresentGravityFlagsEXT) -> Self {
-        self.inner.supported_present_gravity_y = supported_present_gravity_y;
-        self
-    }
-    pub fn min_scaled_image_extent(mut self, min_scaled_image_extent: vk::Extent2D) -> Self {
-        self.inner.min_scaled_image_extent = min_scaled_image_extent;
-        self
-    }
-    pub fn max_scaled_image_extent(mut self, max_scaled_image_extent: vk::Extent2D) -> Self {
-        self.inner.max_scaled_image_extent = max_scaled_image_extent;
-        self
-    }
-}
-impl Deref for SurfacePresentScalingCapabilitiesEXTBuilder {
-    type Target = vk::SurfacePresentScalingCapabilitiesEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl SurfaceCapabilities2KHRNext for SurfacePresentScalingCapabilitiesEXTBuilder {}
 impl SurfaceCapabilities2KHRNext for vk::SurfacePresentScalingCapabilitiesEXT {}
 impl Builder<'_> for vk::SurfacePresentModeCompatibilityEXT {
     type Type = SurfacePresentModeCompatibilityEXTBuilder;
@@ -26335,3 +26207,37 @@ impl Deref for ImageAlignmentControlCreateInfoMESABuilder {
 }
 impl ImageCreateInfoNext for ImageAlignmentControlCreateInfoMESABuilder {}
 impl ImageCreateInfoNext for vk::ImageAlignmentControlCreateInfoMESA {}
+impl Builder<'_> for vk::PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {
+    type Type = PhysicalDeviceShaderReplicatedCompositesFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderReplicatedCompositesFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderReplicatedCompositesFeaturesEXT,
+}
+impl PhysicalDeviceShaderReplicatedCompositesFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_replicated_composites(mut self, shader_replicated_composites: bool) -> Self {
+        self.inner.shader_replicated_composites = if shader_replicated_composites {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderReplicatedCompositesFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderReplicatedCompositesFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderReplicatedCompositesFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderReplicatedCompositesFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {}

@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 285
+//! Generated from vk.xml with `VK_HEADER_VERSION` 286
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -5273,6 +5273,7 @@ pub struct DeviceExtensions {
     pub nv_descriptor_pool_overallocation: bool,
     pub nv_raw_access_chains: bool,
     pub nv_shader_atomic_float16_vector: bool,
+    pub ext_shader_replicated_composites: bool,
     pub nv_ray_tracing_validation: bool,
     pub mesa_image_alignment_control: bool,
 }
@@ -5601,6 +5602,7 @@ impl DeviceExtensions {
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
             b"VK_NV_raw_access_chains" => self.nv_raw_access_chains = true,
             b"VK_NV_shader_atomic_float16_vector" => self.nv_shader_atomic_float16_vector = true,
+            b"VK_EXT_shader_replicated_composites" => self.ext_shader_replicated_composites = true,
             b"VK_NV_ray_tracing_validation" => self.nv_ray_tracing_validation = true,
             b"VK_MESA_image_alignment_control" => self.mesa_image_alignment_control = true,
             _ => {}
@@ -5929,6 +5931,7 @@ impl DeviceExtensions {
             nv_descriptor_pool_overallocation: false,
             nv_raw_access_chains: false,
             nv_shader_atomic_float16_vector: false,
+            ext_shader_replicated_composites: false,
             nv_ray_tracing_validation: false,
             mesa_image_alignment_control: false,
         }
@@ -8411,6 +8414,12 @@ impl DeviceExtensions {
     pub fn enable_nv_shader_atomic_float16_vector(&mut self) {
         self.nv_shader_atomic_float16_vector = true;
     }
+    pub fn supports_ext_shader_replicated_composites(&self) -> bool {
+        self.ext_shader_replicated_composites
+    }
+    pub fn enable_ext_shader_replicated_composites(&mut self) {
+        self.ext_shader_replicated_composites = true;
+    }
     pub fn supports_nv_ray_tracing_validation(&self) -> bool {
         self.nv_ray_tracing_validation
     }
@@ -9386,6 +9395,9 @@ impl DeviceExtensions {
         }
         if self.nv_shader_atomic_float16_vector {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_atomic_float16_vector\0") })
+        }
+        if self.ext_shader_replicated_composites {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_replicated_composites\0") })
         }
         if self.nv_ray_tracing_validation {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing_validation\0") })
