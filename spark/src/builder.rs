@@ -17951,6 +17951,40 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceExternalMemoryRDMAFeaturesNVB
 impl DeviceCreateInfoNext for PhysicalDeviceExternalMemoryRDMAFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceExternalMemoryRDMAFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceExternalMemoryRDMAFeaturesNV {}
+impl Builder<'_> for vk::PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR {
+    type Type = PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR,
+}
+impl PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_relaxed_extended_instruction(mut self, shader_relaxed_extended_instruction: bool) -> Self {
+        self.inner.shader_relaxed_extended_instruction = if shader_relaxed_extended_instruction {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR {}
 impl Builder<'_> for vk::VertexInputBindingDescription2EXT {
     type Type = VertexInputBindingDescription2EXTBuilder;
     fn builder() -> Self::Type {

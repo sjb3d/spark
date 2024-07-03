@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 287
+//! Generated from vk.xml with `VK_HEADER_VERSION` 288
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -5272,6 +5272,7 @@ pub struct DeviceExtensions {
     pub khr_maintenance6: bool,
     pub nv_descriptor_pool_overallocation: bool,
     pub nv_raw_access_chains: bool,
+    pub khr_shader_relaxed_extended_instruction: bool,
     pub nv_shader_atomic_float16_vector: bool,
     pub ext_shader_replicated_composites: bool,
     pub nv_ray_tracing_validation: bool,
@@ -5601,6 +5602,7 @@ impl DeviceExtensions {
             b"VK_KHR_maintenance6" => self.khr_maintenance6 = true,
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
             b"VK_NV_raw_access_chains" => self.nv_raw_access_chains = true,
+            b"VK_KHR_shader_relaxed_extended_instruction" => self.khr_shader_relaxed_extended_instruction = true,
             b"VK_NV_shader_atomic_float16_vector" => self.nv_shader_atomic_float16_vector = true,
             b"VK_EXT_shader_replicated_composites" => self.ext_shader_replicated_composites = true,
             b"VK_NV_ray_tracing_validation" => self.nv_ray_tracing_validation = true,
@@ -5930,6 +5932,7 @@ impl DeviceExtensions {
             khr_maintenance6: false,
             nv_descriptor_pool_overallocation: false,
             nv_raw_access_chains: false,
+            khr_shader_relaxed_extended_instruction: false,
             nv_shader_atomic_float16_vector: false,
             ext_shader_replicated_composites: false,
             nv_ray_tracing_validation: false,
@@ -8408,6 +8411,12 @@ impl DeviceExtensions {
     pub fn enable_nv_raw_access_chains(&mut self) {
         self.nv_raw_access_chains = true;
     }
+    pub fn supports_khr_shader_relaxed_extended_instruction(&self) -> bool {
+        self.khr_shader_relaxed_extended_instruction
+    }
+    pub fn enable_khr_shader_relaxed_extended_instruction(&mut self) {
+        self.khr_shader_relaxed_extended_instruction = true;
+    }
     pub fn supports_nv_shader_atomic_float16_vector(&self) -> bool {
         self.nv_shader_atomic_float16_vector
     }
@@ -9392,6 +9401,9 @@ impl DeviceExtensions {
         }
         if self.nv_raw_access_chains {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_raw_access_chains\0") })
+        }
+        if self.khr_shader_relaxed_extended_instruction {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_relaxed_extended_instruction\0") })
         }
         if self.nv_shader_atomic_float16_vector {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_atomic_float16_vector\0") })

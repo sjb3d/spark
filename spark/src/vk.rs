@@ -8281,6 +8281,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV: Self = Self(1000546000);
     /// Added by extension VK_NV_raw_access_chains.
     pub const PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV: Self = Self(1000555000);
+    /// Added by extension VK_KHR_shader_relaxed_extended_instruction.
+    pub const PHYSICAL_DEVICE_SHADER_RELAXED_EXTENDED_INSTRUCTION_FEATURES_KHR: Self = Self(1000558000);
     /// Added by extension VK_NV_shader_atomic_float16_vector.
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV: Self = Self(1000563000);
     /// Added by extension VK_EXT_shader_replicated_composites.
@@ -9106,6 +9108,7 @@ impl fmt::Display for StructureType {
             1000545008 => Some(&"BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT"),
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
             1000555000 => Some(&"PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV"),
+            1000558000 => Some(&"PHYSICAL_DEVICE_SHADER_RELAXED_EXTENDED_INSTRUCTION_FEATURES_KHR"),
             1000563000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV"),
             1000564000 => Some(&"PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT"),
             1000568000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV"),
@@ -14942,7 +14945,7 @@ impl fmt::Debug for RenderPassBeginInfo {
             .finish()
     }
 }
-///  Union allowing specification of floating point, integer, or unsigned integer color data. Actual value selected is based on image/attachment being cleared.
+///  Union allowing specification of floating-point, integer, or unsigned integer color data. Actual value selected is based on image/attachment being cleared.
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union ClearColorValue {
@@ -15295,7 +15298,7 @@ pub struct PhysicalDeviceFeatures {
     pub fragment_stores_and_atomics: Bool32,
     /// tessellation and geometry stages can export point size
     pub shader_tessellation_and_geometry_point_size: Bool32,
-    /// image gather with run-time values and independent offsets
+    /// image gather with runtime values and independent offsets
     pub shader_image_gather_extended: Bool32,
     /// the extended set of formats can be used for storage images
     pub shader_storage_image_extended_formats: Bool32,
@@ -16857,7 +16860,7 @@ pub struct DebugReportCallbackCreateInfoEXT {
     pub flags: DebugReportFlagsEXT,
     /// Function pointer of a callback function
     pub pfn_callback: Option<FnDebugReportCallbackEXT>,
-    /// User data provided to callback function
+    /// Data provided to callback function
     pub p_user_data: *mut c_void,
 }
 unsafe impl Send for DebugReportCallbackCreateInfoEXT {}
@@ -35532,6 +35535,36 @@ impl fmt::Debug for PhysicalDeviceExternalMemoryRDMAFeaturesNV {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("external_memory_rdma", &self.external_memory_rdma)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_relaxed_extended_instruction: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR {}
+impl Default for PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_RELAXED_EXTENDED_INSTRUCTION_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_relaxed_extended_instruction: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "shader_relaxed_extended_instruction",
+                &self.shader_relaxed_extended_instruction,
+            )
             .finish()
     }
 }
