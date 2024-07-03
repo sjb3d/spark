@@ -11730,7 +11730,7 @@ impl DriverId {
     /// Imagination Technologies
     pub const IMAGINATION_OPEN_SOURCE_MESA: Self = Self(25);
     /// Mesa open source project
-    pub const MESA_AGXV: Self = Self(26);
+    pub const MESA_HONEYKRISP: Self = Self(26);
     /// Reserved for undisclosed driver project
     pub const RESERVED_27: Self = Self(27);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
@@ -11774,7 +11774,7 @@ impl fmt::Display for DriverId {
             23 => Some(&"MESA_DOZEN"),
             24 => Some(&"MESA_NVK"),
             25 => Some(&"IMAGINATION_OPEN_SOURCE_MESA"),
-            26 => Some(&"MESA_AGXV"),
+            26 => Some(&"MESA_HONEYKRISP"),
             27 => Some(&"RESERVED_27"),
             _ => None,
         };
@@ -48087,5 +48087,5 @@ pub type FnCmdSetRenderingAttachmentLocationsKHR = unsafe extern "system" fn(
 );
 pub type FnCmdSetRenderingInputAttachmentIndicesKHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    p_location_info: *const RenderingInputAttachmentIndexInfoKHR,
+    p_input_attachment_index_info: *const RenderingInputAttachmentIndexInfoKHR,
 );

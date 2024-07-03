@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 286
+//! Generated from vk.xml with `VK_HEADER_VERSION` 287
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -22420,12 +22420,12 @@ impl Device {
     pub unsafe fn cmd_set_rendering_input_attachment_indices_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_location_info: &vk::RenderingInputAttachmentIndexInfoKHR,
+        p_input_attachment_index_info: &vk::RenderingInputAttachmentIndexInfoKHR,
     ) {
         let fp = self
             .fp_cmd_set_rendering_input_attachment_indices_khr
             .expect("vkCmdSetRenderingInputAttachmentIndicesKHR is not loaded");
-        (fp)(Some(command_buffer), p_location_info);
+        (fp)(Some(command_buffer), p_input_attachment_index_info);
     }
 }
 

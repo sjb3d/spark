@@ -3412,7 +3412,11 @@ impl<'a> Deref for ValidationFeaturesEXTBuilder<'a> {
     }
 }
 impl<'a> InstanceCreateInfoNext for ValidationFeaturesEXTBuilder<'a> {}
+impl<'a> ShaderModuleCreateInfoNext for ValidationFeaturesEXTBuilder<'a> {}
+impl<'a> ShaderCreateInfoEXTNext for ValidationFeaturesEXTBuilder<'a> {}
 impl InstanceCreateInfoNext for vk::ValidationFeaturesEXT {}
+impl ShaderModuleCreateInfoNext for vk::ValidationFeaturesEXT {}
+impl ShaderCreateInfoEXTNext for vk::ValidationFeaturesEXT {}
 impl<'a> Builder<'a> for vk::LayerSettingsCreateInfoEXT {
     type Type = LayerSettingsCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
