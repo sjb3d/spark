@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 288
+//! Generated from vk.xml with `VK_HEADER_VERSION` 289
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -5273,6 +5273,7 @@ pub struct DeviceExtensions {
     pub nv_descriptor_pool_overallocation: bool,
     pub nv_raw_access_chains: bool,
     pub khr_shader_relaxed_extended_instruction: bool,
+    pub khr_maintenance7: bool,
     pub nv_shader_atomic_float16_vector: bool,
     pub ext_shader_replicated_composites: bool,
     pub nv_ray_tracing_validation: bool,
@@ -5603,6 +5604,7 @@ impl DeviceExtensions {
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
             b"VK_NV_raw_access_chains" => self.nv_raw_access_chains = true,
             b"VK_KHR_shader_relaxed_extended_instruction" => self.khr_shader_relaxed_extended_instruction = true,
+            b"VK_KHR_maintenance7" => self.khr_maintenance7 = true,
             b"VK_NV_shader_atomic_float16_vector" => self.nv_shader_atomic_float16_vector = true,
             b"VK_EXT_shader_replicated_composites" => self.ext_shader_replicated_composites = true,
             b"VK_NV_ray_tracing_validation" => self.nv_ray_tracing_validation = true,
@@ -5933,6 +5935,7 @@ impl DeviceExtensions {
             nv_descriptor_pool_overallocation: false,
             nv_raw_access_chains: false,
             khr_shader_relaxed_extended_instruction: false,
+            khr_maintenance7: false,
             nv_shader_atomic_float16_vector: false,
             ext_shader_replicated_composites: false,
             nv_ray_tracing_validation: false,
@@ -8417,6 +8420,13 @@ impl DeviceExtensions {
     pub fn enable_khr_shader_relaxed_extended_instruction(&mut self) {
         self.khr_shader_relaxed_extended_instruction = true;
     }
+    pub fn supports_khr_maintenance7(&self) -> bool {
+        self.khr_maintenance7 && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_khr_maintenance7(&mut self) {
+        self.khr_maintenance7 = true;
+        debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
+    }
     pub fn supports_nv_shader_atomic_float16_vector(&self) -> bool {
         self.nv_shader_atomic_float16_vector
     }
@@ -9404,6 +9414,9 @@ impl DeviceExtensions {
         }
         if self.khr_shader_relaxed_extended_instruction {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_relaxed_extended_instruction\0") })
+        }
+        if self.khr_maintenance7 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance7\0") })
         }
         if self.nv_shader_atomic_float16_vector {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_atomic_float16_vector\0") })

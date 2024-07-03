@@ -2779,10 +2779,12 @@ impl RenderingFlags {
     pub const SUSPENDING_KHR: Self = Self::SUSPENDING;
     pub const RESUMING: Self = Self(0x4);
     pub const RESUMING_KHR: Self = Self::RESUMING;
-    /// Added by extension VK_EXT_nested_command_buffer.
-    pub const CONTENTS_INLINE_EXT: Self = Self(0x10);
+    pub const CONTENTS_INLINE_EXT: Self = Self::CONTENTS_INLINE_KHR;
     /// Added by extension VK_EXT_legacy_dithering.
     pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x8);
+    /// Promoted from extension 452
+    /// Added by extension VK_KHR_maintenance7.
+    pub const CONTENTS_INLINE_KHR: Self = Self(0x10);
 }
 impl_bitmask!(RenderingFlags, 0x1f);
 impl fmt::Display for RenderingFlags {
@@ -2793,8 +2795,8 @@ impl fmt::Display for RenderingFlags {
                 (0x1, "CONTENTS_SECONDARY_COMMAND_BUFFERS"),
                 (0x2, "SUSPENDING"),
                 (0x4, "RESUMING"),
-                (0x10, "CONTENTS_INLINE_EXT"),
                 (0x8, "ENABLE_LEGACY_DITHERING_EXT"),
+                (0x10, "CONTENTS_INLINE_KHR"),
             ],
             f,
         )
@@ -6471,15 +6473,15 @@ pub struct SubpassContents(pub(crate) i32);
 impl SubpassContents {
     pub const INLINE: Self = Self(0);
     pub const SECONDARY_COMMAND_BUFFERS: Self = Self(1);
-    /// Added by extension VK_EXT_nested_command_buffer.
-    pub const INLINE_AND_SECONDARY_COMMAND_BUFFERS_EXT: Self = Self(1000451000);
+    pub const INLINE_AND_SECONDARY_COMMAND_BUFFERS_EXT: Self = Self::INLINE_AND_SECONDARY_COMMAND_BUFFERS_KHR;
+    pub const INLINE_AND_SECONDARY_COMMAND_BUFFERS_KHR: Self = Self(1000451000);
 }
 impl fmt::Display for SubpassContents {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"INLINE"),
             1 => Some(&"SECONDARY_COMMAND_BUFFERS"),
-            1000451000 => Some(&"INLINE_AND_SECONDARY_COMMAND_BUFFERS_EXT"),
+            1000451000 => Some(&"INLINE_AND_SECONDARY_COMMAND_BUFFERS_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -8283,6 +8285,16 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV: Self = Self(1000555000);
     /// Added by extension VK_KHR_shader_relaxed_extended_instruction.
     pub const PHYSICAL_DEVICE_SHADER_RELAXED_EXTENDED_INSTRUCTION_FEATURES_KHR: Self = Self(1000558000);
+    /// Added by extension VK_KHR_maintenance7.
+    pub const PHYSICAL_DEVICE_MAINTENANCE_7_FEATURES_KHR: Self = Self(1000562000);
+    /// Added by extension VK_KHR_maintenance7.
+    pub const PHYSICAL_DEVICE_MAINTENANCE_7_PROPERTIES_KHR: Self = Self(1000562001);
+    /// Added by extension VK_KHR_maintenance7.
+    pub const PHYSICAL_DEVICE_LAYERED_API_PROPERTIES_LIST_KHR: Self = Self(1000562002);
+    /// Added by extension VK_KHR_maintenance7.
+    pub const PHYSICAL_DEVICE_LAYERED_API_PROPERTIES_KHR: Self = Self(1000562003);
+    /// Added by extension VK_KHR_maintenance7.
+    pub const PHYSICAL_DEVICE_LAYERED_API_VULKAN_PROPERTIES_KHR: Self = Self(1000562004);
     /// Added by extension VK_NV_shader_atomic_float16_vector.
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV: Self = Self(1000563000);
     /// Added by extension VK_EXT_shader_replicated_composites.
@@ -9109,6 +9121,11 @@ impl fmt::Display for StructureType {
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
             1000555000 => Some(&"PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV"),
             1000558000 => Some(&"PHYSICAL_DEVICE_SHADER_RELAXED_EXTENDED_INSTRUCTION_FEATURES_KHR"),
+            1000562000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_7_FEATURES_KHR"),
+            1000562001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_7_PROPERTIES_KHR"),
+            1000562002 => Some(&"PHYSICAL_DEVICE_LAYERED_API_PROPERTIES_LIST_KHR"),
+            1000562003 => Some(&"PHYSICAL_DEVICE_LAYERED_API_PROPERTIES_KHR"),
+            1000562004 => Some(&"PHYSICAL_DEVICE_LAYERED_API_VULKAN_PROPERTIES_KHR"),
             1000563000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV"),
             1000564000 => Some(&"PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT"),
             1000568000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV"),
@@ -10800,6 +10817,33 @@ impl fmt::Display for LayeredDriverUnderlyingApiMSFT {
         let name = match self.0 {
             0 => Some(&"NONE"),
             1 => Some(&"D3D12"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PhysicalDeviceLayeredApiKHR(pub(crate) i32);
+impl PhysicalDeviceLayeredApiKHR {
+    pub const VULKAN: Self = Self(0);
+    pub const D3D12: Self = Self(1);
+    pub const METAL: Self = Self(2);
+    pub const OPENGL: Self = Self(3);
+    pub const OPENGLES: Self = Self(4);
+}
+impl fmt::Display for PhysicalDeviceLayeredApiKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"VULKAN"),
+            1 => Some(&"D3D12"),
+            2 => Some(&"METAL"),
+            3 => Some(&"OPENGL"),
+            4 => Some(&"OPENGLES"),
             _ => None,
         };
         if let Some(name) = name {
@@ -23437,6 +23481,199 @@ impl fmt::Debug for PhysicalDeviceMaintenance6PropertiesKHR {
                 "fragment_shading_rate_clamp_combiner_inputs",
                 &self.fragment_shading_rate_clamp_combiner_inputs,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance7FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub maintenance7: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMaintenance7FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance7FeaturesKHR {}
+impl Default for PhysicalDeviceMaintenance7FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_7_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            maintenance7: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance7FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance7FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("maintenance7", &self.maintenance7)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance7PropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub robust_fragment_shading_rate_attachment_access: Bool32,
+    pub separate_depth_stencil_attachment_access: Bool32,
+    pub max_descriptor_set_total_uniform_buffers_dynamic: u32,
+    pub max_descriptor_set_total_storage_buffers_dynamic: u32,
+    pub max_descriptor_set_total_buffers_dynamic: u32,
+    pub max_descriptor_set_update_after_bind_total_uniform_buffers_dynamic: u32,
+    pub max_descriptor_set_update_after_bind_total_storage_buffers_dynamic: u32,
+    pub max_descriptor_set_update_after_bind_total_buffers_dynamic: u32,
+}
+unsafe impl Send for PhysicalDeviceMaintenance7PropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance7PropertiesKHR {}
+impl Default for PhysicalDeviceMaintenance7PropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_7_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            robust_fragment_shading_rate_attachment_access: Default::default(),
+            separate_depth_stencil_attachment_access: Default::default(),
+            max_descriptor_set_total_uniform_buffers_dynamic: Default::default(),
+            max_descriptor_set_total_storage_buffers_dynamic: Default::default(),
+            max_descriptor_set_total_buffers_dynamic: Default::default(),
+            max_descriptor_set_update_after_bind_total_uniform_buffers_dynamic: Default::default(),
+            max_descriptor_set_update_after_bind_total_storage_buffers_dynamic: Default::default(),
+            max_descriptor_set_update_after_bind_total_buffers_dynamic: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance7PropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance7PropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "robust_fragment_shading_rate_attachment_access",
+                &self.robust_fragment_shading_rate_attachment_access,
+            )
+            .field(
+                "separate_depth_stencil_attachment_access",
+                &self.separate_depth_stencil_attachment_access,
+            )
+            .field(
+                "max_descriptor_set_total_uniform_buffers_dynamic",
+                &self.max_descriptor_set_total_uniform_buffers_dynamic,
+            )
+            .field(
+                "max_descriptor_set_total_storage_buffers_dynamic",
+                &self.max_descriptor_set_total_storage_buffers_dynamic,
+            )
+            .field(
+                "max_descriptor_set_total_buffers_dynamic",
+                &self.max_descriptor_set_total_buffers_dynamic,
+            )
+            .field(
+                "max_descriptor_set_update_after_bind_total_uniform_buffers_dynamic",
+                &self.max_descriptor_set_update_after_bind_total_uniform_buffers_dynamic,
+            )
+            .field(
+                "max_descriptor_set_update_after_bind_total_storage_buffers_dynamic",
+                &self.max_descriptor_set_update_after_bind_total_storage_buffers_dynamic,
+            )
+            .field(
+                "max_descriptor_set_update_after_bind_total_buffers_dynamic",
+                &self.max_descriptor_set_update_after_bind_total_buffers_dynamic,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceLayeredApiPropertiesListKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub layered_api_count: u32,
+    /// Output list of layered implementations underneath the physical device
+    pub p_layered_apis: *mut PhysicalDeviceLayeredApiPropertiesKHR,
+}
+unsafe impl Send for PhysicalDeviceLayeredApiPropertiesListKHR {}
+unsafe impl Sync for PhysicalDeviceLayeredApiPropertiesListKHR {}
+impl Default for PhysicalDeviceLayeredApiPropertiesListKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_LAYERED_API_PROPERTIES_LIST_KHR,
+            p_next: ptr::null_mut(),
+            layered_api_count: Default::default(),
+            p_layered_apis: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceLayeredApiPropertiesListKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceLayeredApiPropertiesListKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("layered_api_count", &self.layered_api_count)
+            .field("p_layered_apis", &self.p_layered_apis)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceLayeredApiPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub vendor_id: u32,
+    pub device_id: u32,
+    pub layered_api: PhysicalDeviceLayeredApiKHR,
+    pub device_name: [c_char; MAX_PHYSICAL_DEVICE_NAME_SIZE],
+}
+unsafe impl Send for PhysicalDeviceLayeredApiPropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceLayeredApiPropertiesKHR {}
+impl Default for PhysicalDeviceLayeredApiPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_LAYERED_API_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            vendor_id: Default::default(),
+            device_id: Default::default(),
+            layered_api: Default::default(),
+            device_name: [Default::default(); MAX_PHYSICAL_DEVICE_NAME_SIZE],
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceLayeredApiPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceLayeredApiPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("vendor_id", &self.vendor_id)
+            .field("device_id", &self.device_id)
+            .field("layered_api", &self.layered_api)
+            .field("device_name", &unsafe { CStr::from_ptr(self.device_name.as_ptr()) })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceLayeredApiVulkanPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub properties: PhysicalDeviceProperties2,
+}
+unsafe impl Send for PhysicalDeviceLayeredApiVulkanPropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceLayeredApiVulkanPropertiesKHR {}
+impl Default for PhysicalDeviceLayeredApiVulkanPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_LAYERED_API_VULKAN_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            properties: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceLayeredApiVulkanPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceLayeredApiVulkanPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("properties", &self.properties)
             .finish()
     }
 }

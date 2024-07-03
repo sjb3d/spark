@@ -8378,6 +8378,96 @@ impl DeviceCreateInfoNext for PhysicalDeviceMaintenance6FeaturesKHRBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMaintenance6FeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceMaintenance6FeaturesKHR {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMaintenance6PropertiesKHR {}
+impl Builder<'_> for vk::PhysicalDeviceMaintenance7FeaturesKHR {
+    type Type = PhysicalDeviceMaintenance7FeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMaintenance7FeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceMaintenance7FeaturesKHR,
+}
+impl PhysicalDeviceMaintenance7FeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn maintenance7(mut self, maintenance7: bool) -> Self {
+        self.inner.maintenance7 = if maintenance7 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMaintenance7FeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceMaintenance7FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMaintenance7FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMaintenance7FeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMaintenance7FeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMaintenance7FeaturesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMaintenance7PropertiesKHR {}
+impl Builder<'_> for vk::PhysicalDeviceLayeredApiPropertiesListKHR {
+    type Type = PhysicalDeviceLayeredApiPropertiesListKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceLayeredApiPropertiesListKHRBuilder {
+    inner: vk::PhysicalDeviceLayeredApiPropertiesListKHR,
+}
+impl PhysicalDeviceLayeredApiPropertiesListKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn layered_api_count(mut self, layered_api_count: u32) -> Self {
+        self.inner.layered_api_count = layered_api_count;
+        self
+    }
+    pub fn p_layered_apis(mut self, p_layered_apis: *mut vk::PhysicalDeviceLayeredApiPropertiesKHR) -> Self {
+        self.inner.p_layered_apis = p_layered_apis;
+        self
+    }
+}
+impl Deref for PhysicalDeviceLayeredApiPropertiesListKHRBuilder {
+    type Target = vk::PhysicalDeviceLayeredApiPropertiesListKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceLayeredApiPropertiesListKHRBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceLayeredApiPropertiesListKHR {}
+impl<'a> Builder<'a> for vk::PhysicalDeviceLayeredApiPropertiesKHR {
+    type Type = PhysicalDeviceLayeredApiPropertiesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait PhysicalDeviceLayeredApiPropertiesKHRNext {}
+#[derive(Default)]
+pub struct PhysicalDeviceLayeredApiPropertiesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceLayeredApiPropertiesKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PhysicalDeviceLayeredApiPropertiesKHRBuilder<'a> {
+    pub fn insert_next<T: PhysicalDeviceLayeredApiPropertiesKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceLayeredApiPropertiesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceLayeredApiPropertiesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceLayeredApiPropertiesKHRNext for vk::PhysicalDeviceLayeredApiVulkanPropertiesKHR {}
 impl<'a> Builder<'a> for vk::RenderingAreaInfoKHR {
     type Type = RenderingAreaInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
