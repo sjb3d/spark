@@ -15531,7 +15531,7 @@ pub struct PhysicalDeviceLimits {
     pub max_image_dimension_2d: u32,
     /// max 3D image dimension
     pub max_image_dimension_3d: u32,
-    /// max cubemap image dimension
+    /// max cube map image dimension
     pub max_image_dimension_cube: u32,
     /// max layers for image arrays
     pub max_image_array_layers: u32,
@@ -16374,7 +16374,7 @@ pub struct DisplaySurfaceCreateInfoKHR {
     pub transform: SurfaceTransformFlagsKHR,
     /// Global alpha value.  Must be between 0 and 1, inclusive.  Ignored if alphaMode is not VK_DISPLAY_PLANE_ALPHA_GLOBAL_BIT_KHR
     pub global_alpha: f32,
-    /// What type of alpha blending to use.  Must be a bit from vkGetDisplayPlanePropertiesKHR::supportedAlpha.
+    /// The type of alpha blending to use. Must be one of the bits from VkDisplayPlaneCapabilitiesKHR::supportedAlpha for this display plane
     pub alpha_mode: DisplayPlaneAlphaFlagsKHR,
     /// size of the images to use with this surface
     pub image_extent: Extent2D,
@@ -19833,11 +19833,11 @@ impl fmt::Debug for FenceGetFdInfoKHR {
 pub struct PhysicalDeviceMultiviewFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
-    /// Multiple views in a renderpass
+    /// Multiple views in a render pass
     pub multiview: Bool32,
-    /// Multiple views in a renderpass w/ geometry shader
+    /// Multiple views in a render pass w/ geometry shader
     pub multiview_geometry_shader: Bool32,
-    /// Multiple views in a renderpass w/ tessellation shader
+    /// Multiple views in a render pass w/ tessellation shader
     pub multiview_tessellation_shader: Bool32,
 }
 unsafe impl Send for PhysicalDeviceMultiviewFeatures {}
@@ -31710,11 +31710,11 @@ pub struct PhysicalDeviceVulkan11Features {
     pub storage_push_constant16: Bool32,
     /// 16-bit integer/floating-point variables supported in shader inputs and outputs
     pub storage_input_output16: Bool32,
-    /// Multiple views in a renderpass
+    /// Multiple views in a render pass
     pub multiview: Bool32,
-    /// Multiple views in a renderpass w/ geometry shader
+    /// Multiple views in a render pass w/ geometry shader
     pub multiview_geometry_shader: Bool32,
-    /// Multiple views in a renderpass w/ tessellation shader
+    /// Multiple views in a render pass w/ tessellation shader
     pub multiview_tessellation_shader: Bool32,
     pub variable_pointers_storage_buffer: Bool32,
     pub variable_pointers: Bool32,

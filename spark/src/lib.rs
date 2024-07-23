@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 289
+//! Generated from vk.xml with `VK_HEADER_VERSION` 290
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
