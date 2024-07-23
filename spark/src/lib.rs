@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 290
+//! Generated from vk.xml with `VK_HEADER_VERSION` 291
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -5240,6 +5240,7 @@ pub struct DeviceExtensions {
     pub ext_pipeline_protected_access: bool,
     pub android_external_format_resolve: bool,
     pub khr_maintenance5: bool,
+    pub amd_anti_lag: bool,
     pub khr_ray_tracing_position_fetch: bool,
     pub ext_shader_object: bool,
     pub qcom_tile_properties: bool,
@@ -5571,6 +5572,7 @@ impl DeviceExtensions {
             b"VK_EXT_pipeline_protected_access" => self.ext_pipeline_protected_access = true,
             b"VK_ANDROID_external_format_resolve" => self.android_external_format_resolve = true,
             b"VK_KHR_maintenance5" => self.khr_maintenance5 = true,
+            b"VK_AMD_anti_lag" => self.amd_anti_lag = true,
             b"VK_KHR_ray_tracing_position_fetch" => self.khr_ray_tracing_position_fetch = true,
             b"VK_EXT_shader_object" => self.ext_shader_object = true,
             b"VK_QCOM_tile_properties" => self.qcom_tile_properties = true,
@@ -5902,6 +5904,7 @@ impl DeviceExtensions {
             ext_pipeline_protected_access: false,
             android_external_format_resolve: false,
             khr_maintenance5: false,
+            amd_anti_lag: false,
             khr_ray_tracing_position_fetch: false,
             ext_shader_object: false,
             qcom_tile_properties: false,
@@ -8186,6 +8189,12 @@ impl DeviceExtensions {
             self.enable_khr_dynamic_rendering();
         }
     }
+    pub fn supports_amd_anti_lag(&self) -> bool {
+        self.amd_anti_lag
+    }
+    pub fn enable_amd_anti_lag(&mut self) {
+        self.amd_anti_lag = true;
+    }
     pub fn supports_khr_ray_tracing_position_fetch(&self) -> bool {
         self.khr_ray_tracing_position_fetch && self.supports_khr_acceleration_structure()
     }
@@ -9316,6 +9325,9 @@ impl DeviceExtensions {
         if self.khr_maintenance5 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance5\0") })
         }
+        if self.amd_anti_lag {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_anti_lag\0") })
+        }
         if self.khr_ray_tracing_position_fetch {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_ray_tracing_position_fetch\0") })
         }
@@ -9769,6 +9781,7 @@ pub struct Device {
     pub fp_deferred_operation_join_khr: Option<vk::FnDeferredOperationJoinKHR>,
     pub fp_get_pipeline_indirect_memory_requirements_nv: Option<vk::FnGetPipelineIndirectMemoryRequirementsNV>,
     pub fp_get_pipeline_indirect_device_address_nv: Option<vk::FnGetPipelineIndirectDeviceAddressNV>,
+    pub fp_anti_lag_update_amd: Option<vk::FnAntiLagUpdateAMD>,
     pub fp_cmd_set_cull_mode: Option<vk::FnCmdSetCullMode>,
     pub fp_cmd_set_front_face: Option<vk::FnCmdSetFrontFace>,
     pub fp_cmd_set_primitive_topology: Option<vk::FnCmdSetPrimitiveTopology>,
@@ -12518,6 +12531,12 @@ impl Device {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPipelineIndirectDeviceAddressNV\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_anti_lag_update_amd: if extensions.amd_anti_lag {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkAntiLagUpdateAMD\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -19737,6 +19756,10 @@ impl Device {
             .fp_get_pipeline_indirect_device_address_nv
             .expect("vkGetPipelineIndirectDeviceAddressNV is not loaded");
         (fp)(Some(self.handle), p_info)
+    }
+    pub unsafe fn anti_lag_update_amd(&self, p_data: &vk::AntiLagDataAMD) {
+        let fp = self.fp_anti_lag_update_amd.expect("vkAntiLagUpdateAMD is not loaded");
+        (fp)(Some(self.handle), p_data);
     }
     pub unsafe fn cmd_set_cull_mode(&self, command_buffer: vk::CommandBuffer, cull_mode: vk::CullModeFlags) {
         let fp = self.fp_cmd_set_cull_mode.expect("vkCmdSetCullMode is not loaded");

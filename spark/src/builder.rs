@@ -24672,6 +24672,101 @@ impl Deref for ExecutionGraphPipelineScratchSizeAMDXBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceAntiLagFeaturesAMD {
+    type Type = PhysicalDeviceAntiLagFeaturesAMDBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceAntiLagFeaturesAMDBuilder {
+    inner: vk::PhysicalDeviceAntiLagFeaturesAMD,
+}
+impl PhysicalDeviceAntiLagFeaturesAMDBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn anti_lag(mut self, anti_lag: bool) -> Self {
+        self.inner.anti_lag = if anti_lag { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceAntiLagFeaturesAMDBuilder {
+    type Target = vk::PhysicalDeviceAntiLagFeaturesAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceAntiLagFeaturesAMDBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceAntiLagFeaturesAMDBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceAntiLagFeaturesAMD {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceAntiLagFeaturesAMD {}
+impl<'a> Builder<'a> for vk::AntiLagDataAMD {
+    type Type = AntiLagDataAMDBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AntiLagDataAMDBuilder<'a> {
+    inner: vk::AntiLagDataAMD,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> AntiLagDataAMDBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn mode(mut self, mode: vk::AntiLagModeAMD) -> Self {
+        self.inner.mode = mode;
+        self
+    }
+    pub fn max_fps(mut self, max_fps: u32) -> Self {
+        self.inner.max_fps = max_fps;
+        self
+    }
+    pub fn p_presentation_info(mut self, p_presentation_info: Option<&'a vk::AntiLagPresentationInfoAMD>) -> Self {
+        self.inner.p_presentation_info = p_presentation_info.map_or(ptr::null(), |p| p);
+        self
+    }
+}
+impl<'a> Deref for AntiLagDataAMDBuilder<'a> {
+    type Target = vk::AntiLagDataAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::AntiLagPresentationInfoAMD {
+    type Type = AntiLagPresentationInfoAMDBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AntiLagPresentationInfoAMDBuilder {
+    inner: vk::AntiLagPresentationInfoAMD,
+}
+impl AntiLagPresentationInfoAMDBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stage(mut self, stage: vk::AntiLagStageAMD) -> Self {
+        self.inner.stage = stage;
+        self
+    }
+    pub fn frame_index(mut self, frame_index: u64) -> Self {
+        self.inner.frame_index = frame_index;
+        self
+    }
+}
+impl Deref for AntiLagPresentationInfoAMDBuilder {
+    type Target = vk::AntiLagPresentationInfoAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::BindMemoryStatusKHR {
     type Type = BindMemoryStatusKHRBuilder;
     fn builder() -> Self::Type {

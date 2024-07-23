@@ -8152,6 +8152,12 @@ impl StructureType {
     pub const PIPELINE_CREATE_FLAGS_2_CREATE_INFO_KHR: Self = Self(1000470005);
     /// Added by extension VK_KHR_maintenance5.
     pub const BUFFER_USAGE_FLAGS_2_CREATE_INFO_KHR: Self = Self(1000470006);
+    /// Added by extension VK_AMD_anti_lag.
+    pub const PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD: Self = Self(1000476000);
+    /// Added by extension VK_AMD_anti_lag.
+    pub const ANTI_LAG_DATA_AMD: Self = Self(1000476001);
+    /// Added by extension VK_AMD_anti_lag.
+    pub const ANTI_LAG_PRESENTATION_INFO_AMD: Self = Self(1000476002);
     /// Added by extension VK_KHR_ray_tracing_position_fetch.
     pub const PHYSICAL_DEVICE_RAY_TRACING_POSITION_FETCH_FEATURES_KHR: Self = Self(1000481000);
     /// Added by extension VK_EXT_shader_object.
@@ -9051,6 +9057,9 @@ impl fmt::Display for StructureType {
             1000338003 => Some(&"IMAGE_SUBRESOURCE_2_KHR"),
             1000470005 => Some(&"PIPELINE_CREATE_FLAGS_2_CREATE_INFO_KHR"),
             1000470006 => Some(&"BUFFER_USAGE_FLAGS_2_CREATE_INFO_KHR"),
+            1000476000 => Some(&"PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD"),
+            1000476001 => Some(&"ANTI_LAG_DATA_AMD"),
+            1000476002 => Some(&"ANTI_LAG_PRESENTATION_INFO_AMD"),
             1000481000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_POSITION_FETCH_FEATURES_KHR"),
             1000482000 => Some(&"PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT"),
             1000482001 => Some(&"PHYSICAL_DEVICE_SHADER_OBJECT_PROPERTIES_EXT"),
@@ -10625,6 +10634,50 @@ impl fmt::Display for DirectDriverLoadingModeLUNARG {
         let name = match self.0 {
             0 => Some(&"EXCLUSIVE"),
             1 => Some(&"INCLUSIVE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct AntiLagModeAMD(pub(crate) i32);
+impl AntiLagModeAMD {
+    pub const DRIVER_CONTROL: Self = Self(0);
+    pub const ON: Self = Self(1);
+    pub const OFF: Self = Self(2);
+}
+impl fmt::Display for AntiLagModeAMD {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DRIVER_CONTROL"),
+            1 => Some(&"ON"),
+            2 => Some(&"OFF"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct AntiLagStageAMD(pub(crate) i32);
+impl AntiLagStageAMD {
+    pub const INPUT: Self = Self(0);
+    pub const PRESENT: Self = Self(1);
+}
+impl fmt::Display for AntiLagStageAMD {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"INPUT"),
+            1 => Some(&"PRESENT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -43779,6 +43832,96 @@ impl fmt::Debug for DispatchGraphCountInfoAMDX {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceAntiLagFeaturesAMD {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub anti_lag: Bool32,
+}
+unsafe impl Send for PhysicalDeviceAntiLagFeaturesAMD {}
+unsafe impl Sync for PhysicalDeviceAntiLagFeaturesAMD {}
+impl Default for PhysicalDeviceAntiLagFeaturesAMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD,
+            p_next: ptr::null_mut(),
+            anti_lag: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceAntiLagFeaturesAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceAntiLagFeaturesAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("anti_lag", &self.anti_lag)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AntiLagDataAMD {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub mode: AntiLagModeAMD,
+    pub max_fps: u32,
+    pub p_presentation_info: *const AntiLagPresentationInfoAMD,
+}
+unsafe impl Send for AntiLagDataAMD {}
+unsafe impl Sync for AntiLagDataAMD {}
+impl Default for AntiLagDataAMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ANTI_LAG_DATA_AMD,
+            p_next: ptr::null(),
+            mode: Default::default(),
+            max_fps: Default::default(),
+            p_presentation_info: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for AntiLagDataAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AntiLagDataAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("mode", &self.mode)
+            .field("max_fps", &self.max_fps)
+            .field("p_presentation_info", &self.p_presentation_info)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AntiLagPresentationInfoAMD {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub stage: AntiLagStageAMD,
+    pub frame_index: u64,
+}
+unsafe impl Send for AntiLagPresentationInfoAMD {}
+unsafe impl Sync for AntiLagPresentationInfoAMD {}
+impl Default for AntiLagPresentationInfoAMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ANTI_LAG_PRESENTATION_INFO_AMD,
+            p_next: ptr::null_mut(),
+            stage: Default::default(),
+            frame_index: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AntiLagPresentationInfoAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AntiLagPresentationInfoAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stage", &self.stage)
+            .field("frame_index", &self.frame_index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct BindMemoryStatusKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -47629,6 +47772,7 @@ pub type FnGetPipelineIndirectDeviceAddressNV = unsafe extern "system" fn(
     device: Option<Device>,
     p_info: *const PipelineIndirectDeviceAddressInfoNV,
 ) -> DeviceAddress;
+pub type FnAntiLagUpdateAMD = unsafe extern "system" fn(device: Option<Device>, p_data: *const AntiLagDataAMD);
 pub type FnCmdSetCullMode = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, cull_mode: CullModeFlags);
 pub type FnCmdSetFrontFace = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, front_face: FrontFace);
 pub type FnCmdSetPrimitiveTopology =
