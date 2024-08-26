@@ -19521,7 +19521,7 @@ impl<'a> DescriptorBufferBindingInfoEXTBuilder<'a> {
         }
         self
     }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -19551,7 +19551,7 @@ pub struct DescriptorBufferBindingPushDescriptorBufferHandleEXTBuilder {
     inner: vk::DescriptorBufferBindingPushDescriptorBufferHandleEXT,
 }
 impl DescriptorBufferBindingPushDescriptorBufferHandleEXTBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }

@@ -37554,7 +37554,7 @@ impl fmt::Debug for DescriptorAddressInfoEXT {
 #[derive(Copy, Clone)]
 pub struct DescriptorBufferBindingInfoEXT {
     pub s_type: StructureType,
-    pub p_next: *mut c_void,
+    pub p_next: *const c_void,
     pub address: DeviceAddress,
     pub usage: BufferUsageFlags,
 }
@@ -37564,7 +37564,7 @@ impl Default for DescriptorBufferBindingInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DESCRIPTOR_BUFFER_BINDING_INFO_EXT,
-            p_next: ptr::null_mut(),
+            p_next: ptr::null(),
             address: Default::default(),
             usage: Default::default(),
         }
@@ -37584,7 +37584,7 @@ impl fmt::Debug for DescriptorBufferBindingInfoEXT {
 #[derive(Copy, Clone)]
 pub struct DescriptorBufferBindingPushDescriptorBufferHandleEXT {
     pub s_type: StructureType,
-    pub p_next: *mut c_void,
+    pub p_next: *const c_void,
     pub buffer: Option<Buffer>,
 }
 unsafe impl Send for DescriptorBufferBindingPushDescriptorBufferHandleEXT {}
@@ -37593,7 +37593,7 @@ impl Default for DescriptorBufferBindingPushDescriptorBufferHandleEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DESCRIPTOR_BUFFER_BINDING_PUSH_DESCRIPTOR_BUFFER_HANDLE_EXT,
-            p_next: ptr::null_mut(),
+            p_next: ptr::null(),
             buffer: Default::default(),
         }
     }
