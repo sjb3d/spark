@@ -2114,22 +2114,23 @@ impl<'a> Generator<'a> {
                                         )?;
                                     }
                                     for slice_info in slice_infos {
-                                        assert!(!slice_info.is_generic()); // TODO
-                                        write!(
-                                            w,
-                                            "pub fn {0}(mut self, {0}: &'a [{1}]) -> Self {{",
-                                            slice_info.name, slice_info.type_name
-                                        )?;
-                                        write!(
-                                            w,
-                                            "self.inner.{} = {}.len() as {};",
-                                            rparam.name, slice_info.name, len_type_name
-                                        )?;
-                                        writeln!(
-                                            w,
-                                            "self.inner.{0} = {0}.first().map_or(ptr::null(), |s| s as *const _); self }}",
-                                            slice_info.name
-                                        )?;
+                                        if !slice_info.is_generic() {
+                                            write!(
+                                                w,
+                                                "pub fn {0}(mut self, {0}: &'a [{1}]) -> Self {{",
+                                                slice_info.name, slice_info.type_name
+                                            )?;
+                                            write!(
+                                                w,
+                                                "self.inner.{} = {}.len() as {};",
+                                                rparam.name, slice_info.name, len_type_name
+                                            )?;
+                                            writeln!(
+                                                w,
+                                                "self.inner.{0} = {0}.first().map_or(ptr::null(), |s| s as *const _); self }}",
+                                                slice_info.name
+                                            )?;
+                                        }
                                     }
                                 }
                                 LibParamType::Ref {
