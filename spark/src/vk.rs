@@ -8291,6 +8291,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV: Self = Self(1000555000);
     /// Added by extension VK_KHR_shader_relaxed_extended_instruction.
     pub const PHYSICAL_DEVICE_SHADER_RELAXED_EXTENDED_INSTRUCTION_FEATURES_KHR: Self = Self(1000558000);
+    /// Added by extension VK_NV_command_buffer_inheritance.
+    pub const PHYSICAL_DEVICE_COMMAND_BUFFER_INHERITANCE_FEATURES_NV: Self = Self(1000559000);
     /// Added by extension VK_KHR_maintenance7.
     pub const PHYSICAL_DEVICE_MAINTENANCE_7_FEATURES_KHR: Self = Self(1000562000);
     /// Added by extension VK_KHR_maintenance7.
@@ -9130,6 +9132,7 @@ impl fmt::Display for StructureType {
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
             1000555000 => Some(&"PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV"),
             1000558000 => Some(&"PHYSICAL_DEVICE_SHADER_RELAXED_EXTENDED_INSTRUCTION_FEATURES_KHR"),
+            1000559000 => Some(&"PHYSICAL_DEVICE_COMMAND_BUFFER_INHERITANCE_FEATURES_NV"),
             1000562000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_7_FEATURES_KHR"),
             1000562001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_7_PROPERTIES_KHR"),
             1000562002 => Some(&"PHYSICAL_DEVICE_LAYERED_API_PROPERTIES_LIST_KHR"),
@@ -45597,6 +45600,33 @@ impl fmt::Debug for PhysicalDeviceRawAccessChainsFeaturesNV {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_raw_access_chains", &self.shader_raw_access_chains)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCommandBufferInheritanceFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub command_buffer_inheritance: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCommandBufferInheritanceFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceCommandBufferInheritanceFeaturesNV {}
+impl Default for PhysicalDeviceCommandBufferInheritanceFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COMMAND_BUFFER_INHERITANCE_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            command_buffer_inheritance: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCommandBufferInheritanceFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCommandBufferInheritanceFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("command_buffer_inheritance", &self.command_buffer_inheritance)
             .finish()
     }
 }

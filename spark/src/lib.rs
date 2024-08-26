@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 292
+//! Generated from vk.xml with `VK_HEADER_VERSION` 293
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -5274,6 +5274,7 @@ pub struct DeviceExtensions {
     pub nv_descriptor_pool_overallocation: bool,
     pub nv_raw_access_chains: bool,
     pub khr_shader_relaxed_extended_instruction: bool,
+    pub nv_command_buffer_inheritance: bool,
     pub khr_maintenance7: bool,
     pub nv_shader_atomic_float16_vector: bool,
     pub ext_shader_replicated_composites: bool,
@@ -5606,6 +5607,7 @@ impl DeviceExtensions {
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
             b"VK_NV_raw_access_chains" => self.nv_raw_access_chains = true,
             b"VK_KHR_shader_relaxed_extended_instruction" => self.khr_shader_relaxed_extended_instruction = true,
+            b"VK_NV_command_buffer_inheritance" => self.nv_command_buffer_inheritance = true,
             b"VK_KHR_maintenance7" => self.khr_maintenance7 = true,
             b"VK_NV_shader_atomic_float16_vector" => self.nv_shader_atomic_float16_vector = true,
             b"VK_EXT_shader_replicated_composites" => self.ext_shader_replicated_composites = true,
@@ -5938,6 +5940,7 @@ impl DeviceExtensions {
             nv_descriptor_pool_overallocation: false,
             nv_raw_access_chains: false,
             khr_shader_relaxed_extended_instruction: false,
+            nv_command_buffer_inheritance: false,
             khr_maintenance7: false,
             nv_shader_atomic_float16_vector: false,
             ext_shader_replicated_composites: false,
@@ -8429,6 +8432,12 @@ impl DeviceExtensions {
     pub fn enable_khr_shader_relaxed_extended_instruction(&mut self) {
         self.khr_shader_relaxed_extended_instruction = true;
     }
+    pub fn supports_nv_command_buffer_inheritance(&self) -> bool {
+        self.nv_command_buffer_inheritance
+    }
+    pub fn enable_nv_command_buffer_inheritance(&mut self) {
+        self.nv_command_buffer_inheritance = true;
+    }
     pub fn supports_khr_maintenance7(&self) -> bool {
         self.khr_maintenance7 && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
@@ -9426,6 +9435,9 @@ impl DeviceExtensions {
         }
         if self.khr_shader_relaxed_extended_instruction {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_relaxed_extended_instruction\0") })
+        }
+        if self.nv_command_buffer_inheritance {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_command_buffer_inheritance\0") })
         }
         if self.khr_maintenance7 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance7\0") })
@@ -11371,8 +11383,8 @@ impl Device {
                 None
             },
             fp_cmd_push_descriptor_set_with_template_khr: if (extensions.khr_push_descriptor
-                && version >= vk::Version::from_raw_parts(1, 1, 0))
-                || (extensions.khr_push_descriptor && extensions.khr_descriptor_update_template)
+                && (version >= vk::Version::from_raw_parts(1, 1, 0) || extensions.khr_descriptor_update_template))
+                || (extensions.khr_descriptor_update_template && extensions.khr_push_descriptor)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdPushDescriptorSetWithTemplateKHR\0",
@@ -12200,9 +12212,8 @@ impl Device {
             } else {
                 None
             },
-            fp_get_device_group_surface_present_modes2_ext: if (extensions.ext_full_screen_exclusive
-                && extensions.khr_device_group)
-                || (extensions.ext_full_screen_exclusive && version >= vk::Version::from_raw_parts(1, 1, 0))
+            fp_get_device_group_surface_present_modes2_ext: if extensions.ext_full_screen_exclusive
+                && (extensions.khr_device_group || version >= vk::Version::from_raw_parts(1, 1, 0))
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetDeviceGroupSurfacePresentModes2EXT\0",

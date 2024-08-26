@@ -3471,11 +3471,6 @@ impl<'a> LayerSettingEXTBuilder<'a> {
         self.inner.ty = ty;
         self
     }
-    pub fn p_values<T>(mut self, p_values: &'a [T]) -> Self {
-        self.inner.value_count = mem::size_of_val(p_values) as u32;
-        self.inner.p_values = p_values.first().map_or(ptr::null(), |s| s as *const _) as *const _;
-        self
-    }
 }
 impl<'a> Deref for LayerSettingEXTBuilder<'a> {
     type Target = vk::LayerSettingEXT;
@@ -26344,6 +26339,40 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceRawAccessChainsFeaturesNVBuil
 impl DeviceCreateInfoNext for PhysicalDeviceRawAccessChainsFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRawAccessChainsFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceRawAccessChainsFeaturesNV {}
+impl Builder<'_> for vk::PhysicalDeviceCommandBufferInheritanceFeaturesNV {
+    type Type = PhysicalDeviceCommandBufferInheritanceFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceCommandBufferInheritanceFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceCommandBufferInheritanceFeaturesNV,
+}
+impl PhysicalDeviceCommandBufferInheritanceFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn command_buffer_inheritance(mut self, command_buffer_inheritance: bool) -> Self {
+        self.inner.command_buffer_inheritance = if command_buffer_inheritance {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCommandBufferInheritanceFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceCommandBufferInheritanceFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCommandBufferInheritanceFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCommandBufferInheritanceFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCommandBufferInheritanceFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCommandBufferInheritanceFeaturesNV {}
 impl Builder<'_> for vk::PhysicalDeviceImageAlignmentControlFeaturesMESA {
     type Type = PhysicalDeviceImageAlignmentControlFeaturesMESABuilder;
     fn builder() -> Self::Type {
