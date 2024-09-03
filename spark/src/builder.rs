@@ -1391,6 +1391,8 @@ impl<'a> Deref for ComputePipelineCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PipelineCreateInfoKHRNext for ComputePipelineCreateInfoBuilder<'a> {}
+impl PipelineCreateInfoKHRNext for vk::ComputePipelineCreateInfo {}
 impl Builder<'_> for vk::ComputePipelineIndirectBufferInfoNV {
     type Type = ComputePipelineIndirectBufferInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -2035,6 +2037,8 @@ impl<'a> Deref for GraphicsPipelineCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PipelineCreateInfoKHRNext for GraphicsPipelineCreateInfoBuilder<'a> {}
+impl PipelineCreateInfoKHRNext for vk::GraphicsPipelineCreateInfo {}
 impl<'a> Builder<'a> for vk::PipelineCacheCreateInfo {
     type Type = PipelineCacheCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -2063,6 +2067,269 @@ impl<'a> PipelineCacheCreateInfoBuilder<'a> {
 }
 impl<'a> Deref for PipelineCacheCreateInfoBuilder<'a> {
     type Target = vk::PipelineCacheCreateInfo;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PipelineBinaryCreateInfoKHR {
+    type Type = PipelineBinaryCreateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineBinaryCreateInfoKHRBuilder<'a> {
+    inner: vk::PipelineBinaryCreateInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PipelineBinaryCreateInfoKHRBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_keys_and_data_info(mut self, p_keys_and_data_info: Option<&'a vk::PipelineBinaryKeysAndDataKHR>) -> Self {
+        self.inner.p_keys_and_data_info = p_keys_and_data_info.map_or(ptr::null(), |p| p);
+        self
+    }
+    pub fn pipeline(mut self, pipeline: Option<vk::Pipeline>) -> Self {
+        self.inner.pipeline = pipeline;
+        self
+    }
+    pub fn p_pipeline_create_info(mut self, p_pipeline_create_info: Option<&'a vk::PipelineCreateInfoKHR>) -> Self {
+        self.inner.p_pipeline_create_info = p_pipeline_create_info.map_or(ptr::null(), |p| p);
+        self
+    }
+}
+impl<'a> Deref for PipelineBinaryCreateInfoKHRBuilder<'a> {
+    type Target = vk::PipelineBinaryCreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PipelineBinaryHandlesInfoKHR {
+    type Type = PipelineBinaryHandlesInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineBinaryHandlesInfoKHRBuilder {
+    inner: vk::PipelineBinaryHandlesInfoKHR,
+}
+impl PipelineBinaryHandlesInfoKHRBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_binary_count(mut self, pipeline_binary_count: u32) -> Self {
+        self.inner.pipeline_binary_count = pipeline_binary_count;
+        self
+    }
+    pub fn p_pipeline_binaries(mut self, p_pipeline_binaries: *mut vk::PipelineBinaryKHR) -> Self {
+        self.inner.p_pipeline_binaries = p_pipeline_binaries;
+        self
+    }
+}
+impl Deref for PipelineBinaryHandlesInfoKHRBuilder {
+    type Target = vk::PipelineBinaryHandlesInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PipelineBinaryDataKHR {
+    type Type = PipelineBinaryDataKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineBinaryDataKHRBuilder {
+    inner: vk::PipelineBinaryDataKHR,
+}
+impl PipelineBinaryDataKHRBuilder {
+    pub fn data_size(mut self, data_size: usize) -> Self {
+        self.inner.data_size = data_size;
+        self
+    }
+    pub fn p_data(mut self, p_data: *mut c_void) -> Self {
+        self.inner.p_data = p_data;
+        self
+    }
+}
+impl Deref for PipelineBinaryDataKHRBuilder {
+    type Target = vk::PipelineBinaryDataKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PipelineBinaryKeysAndDataKHR {
+    type Type = PipelineBinaryKeysAndDataKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineBinaryKeysAndDataKHRBuilder<'a> {
+    inner: vk::PipelineBinaryKeysAndDataKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PipelineBinaryKeysAndDataKHRBuilder<'a> {
+    pub fn p_pipeline_binary_keys(
+        mut self,
+        p_pipeline_binary_keys: &'a [vk::PipelineBinaryKeyKHR],
+        p_pipeline_binary_data: &'a [vk::PipelineBinaryDataKHR],
+    ) -> Self {
+        self.inner.binary_count = p_pipeline_binary_keys.len() as u32;
+        assert_eq!(self.inner.binary_count, p_pipeline_binary_data.len() as u32);
+        self.inner.p_pipeline_binary_keys = p_pipeline_binary_keys.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_pipeline_binary_data = p_pipeline_binary_data.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for PipelineBinaryKeysAndDataKHRBuilder<'a> {
+    type Target = vk::PipelineBinaryKeysAndDataKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PipelineBinaryKeyKHR {
+    type Type = PipelineBinaryKeyKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineBinaryKeyKHRBuilder {
+    inner: vk::PipelineBinaryKeyKHR,
+}
+impl PipelineBinaryKeyKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn key_size(mut self, key_size: u32) -> Self {
+        self.inner.key_size = key_size;
+        self
+    }
+}
+impl Deref for PipelineBinaryKeyKHRBuilder {
+    type Target = vk::PipelineBinaryKeyKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PipelineBinaryInfoKHR {
+    type Type = PipelineBinaryInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineBinaryInfoKHRBuilder<'a> {
+    inner: vk::PipelineBinaryInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PipelineBinaryInfoKHRBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_pipeline_binaries(mut self, p_pipeline_binaries: &'a [vk::PipelineBinaryKHR]) -> Self {
+        self.inner.binary_count = p_pipeline_binaries.len() as u32;
+        self.inner.p_pipeline_binaries = p_pipeline_binaries.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for PipelineBinaryInfoKHRBuilder<'a> {
+    type Target = vk::PipelineBinaryInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> GraphicsPipelineCreateInfoNext for PipelineBinaryInfoKHRBuilder<'a> {}
+impl<'a> ComputePipelineCreateInfoNext for PipelineBinaryInfoKHRBuilder<'a> {}
+impl<'a> RayTracingPipelineCreateInfoKHRNext for PipelineBinaryInfoKHRBuilder<'a> {}
+impl GraphicsPipelineCreateInfoNext for vk::PipelineBinaryInfoKHR {}
+impl ComputePipelineCreateInfoNext for vk::PipelineBinaryInfoKHR {}
+impl RayTracingPipelineCreateInfoKHRNext for vk::PipelineBinaryInfoKHR {}
+impl Builder<'_> for vk::ReleaseCapturedPipelineDataInfoKHR {
+    type Type = ReleaseCapturedPipelineDataInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ReleaseCapturedPipelineDataInfoKHRBuilder {
+    inner: vk::ReleaseCapturedPipelineDataInfoKHR,
+}
+impl ReleaseCapturedPipelineDataInfoKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline(mut self, pipeline: vk::Pipeline) -> Self {
+        self.inner.pipeline = Some(pipeline);
+        self
+    }
+}
+impl Deref for ReleaseCapturedPipelineDataInfoKHRBuilder {
+    type Target = vk::ReleaseCapturedPipelineDataInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PipelineBinaryDataInfoKHR {
+    type Type = PipelineBinaryDataInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineBinaryDataInfoKHRBuilder {
+    inner: vk::PipelineBinaryDataInfoKHR,
+}
+impl PipelineBinaryDataInfoKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_binary(mut self, pipeline_binary: vk::PipelineBinaryKHR) -> Self {
+        self.inner.pipeline_binary = Some(pipeline_binary);
+        self
+    }
+}
+impl Deref for PipelineBinaryDataInfoKHRBuilder {
+    type Target = vk::PipelineBinaryDataInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PipelineCreateInfoKHR {
+    type Type = PipelineCreateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait PipelineCreateInfoKHRNext {}
+#[derive(Default)]
+pub struct PipelineCreateInfoKHRBuilder<'a> {
+    inner: vk::PipelineCreateInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PipelineCreateInfoKHRBuilder<'a> {
+    pub fn insert_next<T: PipelineCreateInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+}
+impl<'a> Deref for PipelineCreateInfoKHRBuilder<'a> {
+    type Target = vk::PipelineCreateInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -11481,6 +11748,8 @@ impl<'a> Deref for RayTracingPipelineCreateInfoNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PipelineCreateInfoKHRNext for RayTracingPipelineCreateInfoNVBuilder<'a> {}
+impl PipelineCreateInfoKHRNext for vk::RayTracingPipelineCreateInfoNV {}
 impl<'a> Builder<'a> for vk::RayTracingPipelineCreateInfoKHR {
     type Type = RayTracingPipelineCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11556,6 +11825,8 @@ impl<'a> Deref for RayTracingPipelineCreateInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PipelineCreateInfoKHRNext for RayTracingPipelineCreateInfoKHRBuilder<'a> {}
+impl PipelineCreateInfoKHRNext for vk::RayTracingPipelineCreateInfoKHR {}
 impl Builder<'_> for vk::GeometryTrianglesNV {
     type Type = GeometryTrianglesNVBuilder;
     fn builder() -> Self::Type {
@@ -21031,6 +21302,131 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceGraphicsPipelineLibraryFeatur
 impl DeviceCreateInfoNext for PhysicalDeviceGraphicsPipelineLibraryFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDevicePipelineBinaryFeaturesKHR {
+    type Type = PhysicalDevicePipelineBinaryFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePipelineBinaryFeaturesKHRBuilder {
+    inner: vk::PhysicalDevicePipelineBinaryFeaturesKHR,
+}
+impl PhysicalDevicePipelineBinaryFeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_binaries(mut self, pipeline_binaries: bool) -> Self {
+        self.inner.pipeline_binaries = if pipeline_binaries { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePipelineBinaryFeaturesKHRBuilder {
+    type Target = vk::PhysicalDevicePipelineBinaryFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineBinaryFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePipelineBinaryFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineBinaryFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineBinaryFeaturesKHR {}
+impl Builder<'_> for vk::DevicePipelineBinaryInternalCacheControlKHR {
+    type Type = DevicePipelineBinaryInternalCacheControlKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DevicePipelineBinaryInternalCacheControlKHRBuilder {
+    inner: vk::DevicePipelineBinaryInternalCacheControlKHR,
+}
+impl DevicePipelineBinaryInternalCacheControlKHRBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn disable_internal_cache(mut self, disable_internal_cache: bool) -> Self {
+        self.inner.disable_internal_cache = if disable_internal_cache { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for DevicePipelineBinaryInternalCacheControlKHRBuilder {
+    type Target = vk::DevicePipelineBinaryInternalCacheControlKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DeviceCreateInfoNext for DevicePipelineBinaryInternalCacheControlKHRBuilder {}
+impl DeviceCreateInfoNext for vk::DevicePipelineBinaryInternalCacheControlKHR {}
+impl Builder<'_> for vk::PhysicalDevicePipelineBinaryPropertiesKHR {
+    type Type = PhysicalDevicePipelineBinaryPropertiesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePipelineBinaryPropertiesKHRBuilder {
+    inner: vk::PhysicalDevicePipelineBinaryPropertiesKHR,
+}
+impl PhysicalDevicePipelineBinaryPropertiesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_binary_internal_cache(mut self, pipeline_binary_internal_cache: bool) -> Self {
+        self.inner.pipeline_binary_internal_cache = if pipeline_binary_internal_cache {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn pipeline_binary_internal_cache_control(mut self, pipeline_binary_internal_cache_control: bool) -> Self {
+        self.inner.pipeline_binary_internal_cache_control = if pipeline_binary_internal_cache_control {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn pipeline_binary_prefers_internal_cache(mut self, pipeline_binary_prefers_internal_cache: bool) -> Self {
+        self.inner.pipeline_binary_prefers_internal_cache = if pipeline_binary_prefers_internal_cache {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn pipeline_binary_precompiled_internal_cache(
+        mut self,
+        pipeline_binary_precompiled_internal_cache: bool,
+    ) -> Self {
+        self.inner.pipeline_binary_precompiled_internal_cache = if pipeline_binary_precompiled_internal_cache {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn pipeline_binary_compressed_data(mut self, pipeline_binary_compressed_data: bool) -> Self {
+        self.inner.pipeline_binary_compressed_data = if pipeline_binary_compressed_data {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDevicePipelineBinaryPropertiesKHRBuilder {
+    type Target = vk::PhysicalDevicePipelineBinaryPropertiesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDevicePipelineBinaryPropertiesKHRBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePipelineBinaryPropertiesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT {
     type Type = PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder;
     fn builder() -> Self::Type {
@@ -24608,6 +25004,8 @@ impl<'a> Deref for ExecutionGraphPipelineCreateInfoAMDXBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PipelineCreateInfoKHRNext for ExecutionGraphPipelineCreateInfoAMDXBuilder<'a> {}
+impl PipelineCreateInfoKHRNext for vk::ExecutionGraphPipelineCreateInfoAMDX {}
 impl<'a> Builder<'a> for vk::PipelineShaderStageNodeCreateInfoAMDX {
     type Type = PipelineShaderStageNodeCreateInfoAMDXBuilder<'a>;
     fn builder() -> Self::Type {

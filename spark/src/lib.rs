@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 293
+//! Generated from vk.xml with `VK_HEADER_VERSION` 294
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2387,6 +2387,12 @@ impl InstanceExtensions {
             }
             self.enable_khr_dynamic_rendering();
         }
+    }
+    pub fn supports_khr_pipeline_binary(&self) -> bool {
+        self.supports_khr_maintenance5()
+    }
+    pub fn enable_khr_pipeline_binary(&mut self) {
+        self.enable_khr_maintenance5();
     }
     pub fn supports_qcom_tile_properties(&self) -> bool {
         self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -5243,6 +5249,7 @@ pub struct DeviceExtensions {
     pub amd_anti_lag: bool,
     pub khr_ray_tracing_position_fetch: bool,
     pub ext_shader_object: bool,
+    pub khr_pipeline_binary: bool,
     pub qcom_tile_properties: bool,
     pub sec_amigo_profiling: bool,
     pub qcom_multiview_per_view_viewports: bool,
@@ -5576,6 +5583,7 @@ impl DeviceExtensions {
             b"VK_AMD_anti_lag" => self.amd_anti_lag = true,
             b"VK_KHR_ray_tracing_position_fetch" => self.khr_ray_tracing_position_fetch = true,
             b"VK_EXT_shader_object" => self.ext_shader_object = true,
+            b"VK_KHR_pipeline_binary" => self.khr_pipeline_binary = true,
             b"VK_QCOM_tile_properties" => self.qcom_tile_properties = true,
             b"VK_SEC_amigo_profiling" => self.sec_amigo_profiling = true,
             b"VK_QCOM_multiview_per_view_viewports" => self.qcom_multiview_per_view_viewports = true,
@@ -5909,6 +5917,7 @@ impl DeviceExtensions {
             amd_anti_lag: false,
             khr_ray_tracing_position_fetch: false,
             ext_shader_object: false,
+            khr_pipeline_binary: false,
             qcom_tile_properties: false,
             sec_amigo_profiling: false,
             qcom_multiview_per_view_viewports: false,
@@ -8215,6 +8224,13 @@ impl DeviceExtensions {
             self.enable_khr_dynamic_rendering();
         }
     }
+    pub fn supports_khr_pipeline_binary(&self) -> bool {
+        self.khr_pipeline_binary && self.supports_khr_maintenance5()
+    }
+    pub fn enable_khr_pipeline_binary(&mut self) {
+        self.khr_pipeline_binary = true;
+        self.enable_khr_maintenance5();
+    }
     pub fn supports_qcom_tile_properties(&self) -> bool {
         self.qcom_tile_properties
     }
@@ -9343,6 +9359,9 @@ impl DeviceExtensions {
         if self.ext_shader_object {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_object\0") })
         }
+        if self.khr_pipeline_binary {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_pipeline_binary\0") })
+        }
         if self.qcom_tile_properties {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_tile_properties\0") })
         }
@@ -9510,6 +9529,11 @@ pub struct Device {
     pub fp_destroy_pipeline_cache: Option<vk::FnDestroyPipelineCache>,
     pub fp_get_pipeline_cache_data: Option<vk::FnGetPipelineCacheData>,
     pub fp_merge_pipeline_caches: Option<vk::FnMergePipelineCaches>,
+    pub fp_create_pipeline_binaries_khr: Option<vk::FnCreatePipelineBinariesKHR>,
+    pub fp_destroy_pipeline_binary_khr: Option<vk::FnDestroyPipelineBinaryKHR>,
+    pub fp_get_pipeline_key_khr: Option<vk::FnGetPipelineKeyKHR>,
+    pub fp_get_pipeline_binary_data_khr: Option<vk::FnGetPipelineBinaryDataKHR>,
+    pub fp_release_captured_pipeline_data_khr: Option<vk::FnReleaseCapturedPipelineDataKHR>,
     pub fp_create_graphics_pipelines: Option<vk::FnCreateGraphicsPipelines>,
     pub fp_create_compute_pipelines: Option<vk::FnCreateComputePipelines>,
     pub fp_get_device_subpass_shading_max_workgroup_size_huawei:
@@ -10340,6 +10364,38 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkMergePipelineCaches".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
+            },
+            fp_create_pipeline_binaries_khr: if extensions.khr_pipeline_binary {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreatePipelineBinariesKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_pipeline_binary_khr: if extensions.khr_pipeline_binary {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyPipelineBinaryKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_pipeline_key_khr: if extensions.khr_pipeline_binary {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetPipelineKeyKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_pipeline_binary_data_khr: if extensions.khr_pipeline_binary {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetPipelineBinaryDataKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_release_captured_pipeline_data_khr: if extensions.khr_pipeline_binary {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkReleaseCapturedPipelineDataKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
             },
             fp_create_graphics_pipelines: {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateGraphicsPipelines\0"));
@@ -14587,6 +14643,92 @@ impl Device {
             src_cache_count,
             p_src_caches.first().map_or(ptr::null(), |s| s as *const _),
         );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn create_pipeline_binaries_khr(
+        &self,
+        p_create_info: &vk::PipelineBinaryCreateInfoKHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+        p_binaries: &mut vk::PipelineBinaryHandlesInfoKHR,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_create_pipeline_binaries_khr
+            .expect("vkCreatePipelineBinariesKHR is not loaded");
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            p_binaries,
+        );
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE | vk::Result::PIPELINE_BINARY_MISSING_KHR => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_pipeline_binary_khr(
+        &self,
+        pipeline_binary: Option<vk::PipelineBinaryKHR>,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_pipeline_binary_khr
+            .expect("vkDestroyPipelineBinaryKHR is not loaded");
+        (fp)(
+            Some(self.handle),
+            pipeline_binary,
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn get_pipeline_key_khr(
+        &self,
+        p_pipeline_create_info: Option<&vk::PipelineCreateInfoKHR>,
+        p_pipeline_key: &mut vk::PipelineBinaryKeyKHR,
+    ) -> Result<()> {
+        let fp = self.fp_get_pipeline_key_khr.expect("vkGetPipelineKeyKHR is not loaded");
+        let err = (fp)(
+            Some(self.handle),
+            p_pipeline_create_info.map_or(ptr::null(), |r| r),
+            p_pipeline_key,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_pipeline_binary_data_khr(
+        &self,
+        p_info: &vk::PipelineBinaryDataInfoKHR,
+        p_pipeline_binary_key: &mut vk::PipelineBinaryKeyKHR,
+        p_pipeline_binary_data_size: *mut usize,
+        p_pipeline_binary_data: *mut c_void,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_pipeline_binary_data_khr
+            .expect("vkGetPipelineBinaryDataKHR is not loaded");
+        let err = (fp)(
+            Some(self.handle),
+            p_info,
+            p_pipeline_binary_key,
+            p_pipeline_binary_data_size,
+            p_pipeline_binary_data,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn release_captured_pipeline_data_khr(
+        &self,
+        p_info: &vk::ReleaseCapturedPipelineDataInfoKHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<()> {
+        let fp = self
+            .fp_release_captured_pipeline_data_khr
+            .expect("vkReleaseCapturedPipelineDataKHR is not loaded");
+        let err = (fp)(Some(self.handle), p_info, p_allocator.map_or(ptr::null(), |r| r));
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),

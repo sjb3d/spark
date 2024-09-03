@@ -231,6 +231,7 @@ pub const SHADER_UNUSED_NV: u32 = SHADER_UNUSED_KHR;
 pub const MAX_GLOBAL_PRIORITY_SIZE_KHR: usize = 16;
 pub const MAX_GLOBAL_PRIORITY_SIZE_EXT: usize = MAX_GLOBAL_PRIORITY_SIZE_KHR;
 pub const MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT: usize = 32;
+pub const MAX_PIPELINE_BINARY_KEY_SIZE_KHR: usize = 32;
 pub const MAX_VIDEO_AV1_REFERENCES_PER_FRAME_KHR: usize = 7;
 pub const SHADER_INDEX_UNUSED_AMDX: u32 = 0xffffffff;
 pub type SampleMask = u32;
@@ -2924,8 +2925,10 @@ impl PipelineCreateFlags2KHR {
     pub const RAY_TRACING_DISPLACEMENT_MICROMAP_NV: Self = Self(0x10000000);
     /// Added by extension VK_KHR_maintenance5.
     pub const DESCRIPTOR_BUFFER_EXT: Self = Self(0x20000000);
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const CAPTURE_DATA: Self = Self(0x80000000);
 }
-impl_bitmask!(PipelineCreateFlags2KHR, 0x47fffffff);
+impl_bitmask!(PipelineCreateFlags2KHR, 0x4ffffffff);
 impl fmt::Display for PipelineCreateFlags2KHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2963,6 +2966,7 @@ impl fmt::Display for PipelineCreateFlags2KHR {
                 (0x40000000, "PROTECTED_ACCESS_ONLY_EXT"),
                 (0x10000000, "RAY_TRACING_DISPLACEMENT_MICROMAP_NV"),
                 (0x20000000, "DESCRIPTOR_BUFFER_EXT"),
+                (0x80000000, "CAPTURE_DATA"),
             ],
             f,
         )
@@ -4552,6 +4556,14 @@ impl RenderPass {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineCache(num::NonZeroU64);
 impl PipelineCache {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PipelineBinaryKHR(num::NonZeroU64);
+impl PipelineBinaryKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
         num::NonZeroU64::new(x).map(Self)
     }
@@ -6578,6 +6590,10 @@ impl Result {
     /// Added by extension VK_EXT_shader_object.
     pub const INCOMPATIBLE_SHADER_BINARY_EXT: Self = Self(1000482000);
     pub const ERROR_INCOMPATIBLE_SHADER_BINARY_EXT: Self = Self::INCOMPATIBLE_SHADER_BINARY_EXT;
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const PIPELINE_BINARY_MISSING_KHR: Self = Self(1000483000);
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const ERROR_NOT_ENOUGH_SPACE_KHR: Self = Self(-1000483000);
 }
 impl fmt::Display for Result {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6622,6 +6638,8 @@ impl fmt::Display for Result {
             1000268003 => Some(&"OPERATION_NOT_DEFERRED_KHR"),
             -1000338000 => Some(&"ERROR_COMPRESSION_EXHAUSTED_EXT"),
             1000482000 => Some(&"INCOMPATIBLE_SHADER_BINARY_EXT"),
+            1000483000 => Some(&"PIPELINE_BINARY_MISSING_KHR"),
+            -1000483000 => Some(&"ERROR_NOT_ENOUGH_SPACE_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -8168,6 +8186,26 @@ impl StructureType {
     pub const SHADER_CREATE_INFO_EXT: Self = Self(1000482002);
     pub const SHADER_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT: Self =
         Self::PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO;
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const PHYSICAL_DEVICE_PIPELINE_BINARY_FEATURES_KHR: Self = Self(1000483000);
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const PIPELINE_BINARY_CREATE_INFO_KHR: Self = Self(1000483001);
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const PIPELINE_BINARY_INFO_KHR: Self = Self(1000483002);
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const PIPELINE_BINARY_KEY_KHR: Self = Self(1000483003);
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const PHYSICAL_DEVICE_PIPELINE_BINARY_PROPERTIES_KHR: Self = Self(1000483004);
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const RELEASE_CAPTURED_PIPELINE_DATA_INFO_KHR: Self = Self(1000483005);
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const PIPELINE_BINARY_DATA_INFO_KHR: Self = Self(1000483006);
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const PIPELINE_CREATE_INFO_KHR: Self = Self(1000483007);
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const DEVICE_PIPELINE_BINARY_INTERNAL_CACHE_CONTROL_KHR: Self = Self(1000483008);
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const PIPELINE_BINARY_HANDLES_INFO_KHR: Self = Self(1000483009);
     /// Added by extension VK_QCOM_tile_properties.
     pub const PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM: Self = Self(1000484000);
     /// Added by extension VK_QCOM_tile_properties.
@@ -9066,6 +9104,16 @@ impl fmt::Display for StructureType {
             1000482000 => Some(&"PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT"),
             1000482001 => Some(&"PHYSICAL_DEVICE_SHADER_OBJECT_PROPERTIES_EXT"),
             1000482002 => Some(&"SHADER_CREATE_INFO_EXT"),
+            1000483000 => Some(&"PHYSICAL_DEVICE_PIPELINE_BINARY_FEATURES_KHR"),
+            1000483001 => Some(&"PIPELINE_BINARY_CREATE_INFO_KHR"),
+            1000483002 => Some(&"PIPELINE_BINARY_INFO_KHR"),
+            1000483003 => Some(&"PIPELINE_BINARY_KEY_KHR"),
+            1000483004 => Some(&"PHYSICAL_DEVICE_PIPELINE_BINARY_PROPERTIES_KHR"),
+            1000483005 => Some(&"RELEASE_CAPTURED_PIPELINE_DATA_INFO_KHR"),
+            1000483006 => Some(&"PIPELINE_BINARY_DATA_INFO_KHR"),
+            1000483007 => Some(&"PIPELINE_CREATE_INFO_KHR"),
+            1000483008 => Some(&"DEVICE_PIPELINE_BINARY_INTERNAL_CACHE_CONTROL_KHR"),
+            1000483009 => Some(&"PIPELINE_BINARY_HANDLES_INFO_KHR"),
             1000484000 => Some(&"PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM"),
             1000484001 => Some(&"TILE_PROPERTIES_QCOM"),
             1000485000 => Some(&"PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC"),
@@ -9374,6 +9422,8 @@ impl ObjectType {
     pub const OPTICAL_FLOW_SESSION_NV: Self = Self(1000464000);
     /// Added by extension VK_EXT_shader_object.
     pub const SHADER_EXT: Self = Self(1000482000);
+    /// Added by extension VK_KHR_pipeline_binary.
+    pub const PIPELINE_BINARY_KHR: Self = Self(1000483000);
 }
 impl fmt::Display for ObjectType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9427,6 +9477,7 @@ impl fmt::Display for ObjectType {
             1000396000 => Some(&"MICROMAP_EXT"),
             1000464000 => Some(&"OPTICAL_FLOW_SESSION_NV"),
             1000482000 => Some(&"SHADER_EXT"),
+            1000483000 => Some(&"PIPELINE_BINARY_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -14742,6 +14793,258 @@ impl fmt::Debug for PushConstantRange {
             .field("stage_flags", &self.stage_flags)
             .field("offset", &self.offset)
             .field("size", &self.size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineBinaryCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_keys_and_data_info: *const PipelineBinaryKeysAndDataKHR,
+    pub pipeline: Option<Pipeline>,
+    pub p_pipeline_create_info: *const PipelineCreateInfoKHR,
+}
+unsafe impl Send for PipelineBinaryCreateInfoKHR {}
+unsafe impl Sync for PipelineBinaryCreateInfoKHR {}
+impl Default for PipelineBinaryCreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_BINARY_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            p_keys_and_data_info: ptr::null(),
+            pipeline: Default::default(),
+            p_pipeline_create_info: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PipelineBinaryCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineBinaryCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_keys_and_data_info", &self.p_keys_and_data_info)
+            .field("pipeline", &self.pipeline)
+            .field("p_pipeline_create_info", &self.p_pipeline_create_info)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineBinaryHandlesInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub pipeline_binary_count: u32,
+    pub p_pipeline_binaries: *mut PipelineBinaryKHR,
+}
+unsafe impl Send for PipelineBinaryHandlesInfoKHR {}
+unsafe impl Sync for PipelineBinaryHandlesInfoKHR {}
+impl Default for PipelineBinaryHandlesInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_BINARY_HANDLES_INFO_KHR,
+            p_next: ptr::null(),
+            pipeline_binary_count: Default::default(),
+            p_pipeline_binaries: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for PipelineBinaryHandlesInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineBinaryHandlesInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_binary_count", &self.pipeline_binary_count)
+            .field("p_pipeline_binaries", &self.p_pipeline_binaries)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineBinaryDataKHR {
+    pub data_size: usize,
+    pub p_data: *mut c_void,
+}
+unsafe impl Send for PipelineBinaryDataKHR {}
+unsafe impl Sync for PipelineBinaryDataKHR {}
+impl Default for PipelineBinaryDataKHR {
+    fn default() -> Self {
+        Self {
+            data_size: Default::default(),
+            p_data: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for PipelineBinaryDataKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineBinaryDataKHR")
+            .field("data_size", &self.data_size)
+            .field("p_data", &self.p_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineBinaryKeysAndDataKHR {
+    pub binary_count: u32,
+    pub p_pipeline_binary_keys: *const PipelineBinaryKeyKHR,
+    pub p_pipeline_binary_data: *const PipelineBinaryDataKHR,
+}
+unsafe impl Send for PipelineBinaryKeysAndDataKHR {}
+unsafe impl Sync for PipelineBinaryKeysAndDataKHR {}
+impl Default for PipelineBinaryKeysAndDataKHR {
+    fn default() -> Self {
+        Self {
+            binary_count: Default::default(),
+            p_pipeline_binary_keys: ptr::null(),
+            p_pipeline_binary_data: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PipelineBinaryKeysAndDataKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineBinaryKeysAndDataKHR")
+            .field("binary_count", &self.binary_count)
+            .field("p_pipeline_binary_keys", &self.p_pipeline_binary_keys)
+            .field("p_pipeline_binary_data", &self.p_pipeline_binary_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineBinaryKeyKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub key_size: u32,
+    pub key: [u8; MAX_PIPELINE_BINARY_KEY_SIZE_KHR],
+}
+unsafe impl Send for PipelineBinaryKeyKHR {}
+unsafe impl Sync for PipelineBinaryKeyKHR {}
+impl Default for PipelineBinaryKeyKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_BINARY_KEY_KHR,
+            p_next: ptr::null_mut(),
+            key_size: Default::default(),
+            key: [Default::default(); MAX_PIPELINE_BINARY_KEY_SIZE_KHR],
+        }
+    }
+}
+impl fmt::Debug for PipelineBinaryKeyKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineBinaryKeyKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("key_size", &self.key_size)
+            .field("key", &self.key)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineBinaryInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub binary_count: u32,
+    pub p_pipeline_binaries: *const PipelineBinaryKHR,
+}
+unsafe impl Send for PipelineBinaryInfoKHR {}
+unsafe impl Sync for PipelineBinaryInfoKHR {}
+impl Default for PipelineBinaryInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_BINARY_INFO_KHR,
+            p_next: ptr::null(),
+            binary_count: Default::default(),
+            p_pipeline_binaries: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PipelineBinaryInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineBinaryInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("binary_count", &self.binary_count)
+            .field("p_pipeline_binaries", &self.p_pipeline_binaries)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ReleaseCapturedPipelineDataInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline: Option<Pipeline>,
+}
+unsafe impl Send for ReleaseCapturedPipelineDataInfoKHR {}
+unsafe impl Sync for ReleaseCapturedPipelineDataInfoKHR {}
+impl Default for ReleaseCapturedPipelineDataInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RELEASE_CAPTURED_PIPELINE_DATA_INFO_KHR,
+            p_next: ptr::null_mut(),
+            pipeline: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ReleaseCapturedPipelineDataInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ReleaseCapturedPipelineDataInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline", &self.pipeline)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineBinaryDataInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_binary: Option<PipelineBinaryKHR>,
+}
+unsafe impl Send for PipelineBinaryDataInfoKHR {}
+unsafe impl Sync for PipelineBinaryDataInfoKHR {}
+impl Default for PipelineBinaryDataInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_BINARY_DATA_INFO_KHR,
+            p_next: ptr::null_mut(),
+            pipeline_binary: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineBinaryDataInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineBinaryDataInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_binary", &self.pipeline_binary)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+}
+unsafe impl Send for PipelineCreateInfoKHR {}
+unsafe impl Sync for PipelineCreateInfoKHR {}
+impl Default for PipelineCreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_CREATE_INFO_KHR,
+            p_next: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for PipelineCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
             .finish()
     }
 }
@@ -39641,6 +39944,108 @@ impl fmt::Debug for PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDevicePipelineBinaryFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_binaries: Bool32,
+}
+unsafe impl Send for PhysicalDevicePipelineBinaryFeaturesKHR {}
+unsafe impl Sync for PhysicalDevicePipelineBinaryFeaturesKHR {}
+impl Default for PhysicalDevicePipelineBinaryFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_BINARY_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            pipeline_binaries: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePipelineBinaryFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePipelineBinaryFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_binaries", &self.pipeline_binaries)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DevicePipelineBinaryInternalCacheControlKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub disable_internal_cache: Bool32,
+}
+unsafe impl Send for DevicePipelineBinaryInternalCacheControlKHR {}
+unsafe impl Sync for DevicePipelineBinaryInternalCacheControlKHR {}
+impl Default for DevicePipelineBinaryInternalCacheControlKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_PIPELINE_BINARY_INTERNAL_CACHE_CONTROL_KHR,
+            p_next: ptr::null(),
+            disable_internal_cache: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DevicePipelineBinaryInternalCacheControlKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DevicePipelineBinaryInternalCacheControlKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("disable_internal_cache", &self.disable_internal_cache)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePipelineBinaryPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_binary_internal_cache: Bool32,
+    pub pipeline_binary_internal_cache_control: Bool32,
+    pub pipeline_binary_prefers_internal_cache: Bool32,
+    pub pipeline_binary_precompiled_internal_cache: Bool32,
+    pub pipeline_binary_compressed_data: Bool32,
+}
+unsafe impl Send for PhysicalDevicePipelineBinaryPropertiesKHR {}
+unsafe impl Sync for PhysicalDevicePipelineBinaryPropertiesKHR {}
+impl Default for PhysicalDevicePipelineBinaryPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_BINARY_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            pipeline_binary_internal_cache: Default::default(),
+            pipeline_binary_internal_cache_control: Default::default(),
+            pipeline_binary_prefers_internal_cache: Default::default(),
+            pipeline_binary_precompiled_internal_cache: Default::default(),
+            pipeline_binary_compressed_data: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePipelineBinaryPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePipelineBinaryPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_binary_internal_cache", &self.pipeline_binary_internal_cache)
+            .field(
+                "pipeline_binary_internal_cache_control",
+                &self.pipeline_binary_internal_cache_control,
+            )
+            .field(
+                "pipeline_binary_prefers_internal_cache",
+                &self.pipeline_binary_prefers_internal_cache,
+            )
+            .field(
+                "pipeline_binary_precompiled_internal_cache",
+                &self.pipeline_binary_precompiled_internal_cache,
+            )
+            .field("pipeline_binary_compressed_data", &self.pipeline_binary_compressed_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -46040,6 +46445,34 @@ pub type FnMergePipelineCaches = unsafe extern "system" fn(
     dst_cache: Option<PipelineCache>,
     src_cache_count: u32,
     p_src_caches: *const PipelineCache,
+) -> Result;
+pub type FnCreatePipelineBinariesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const PipelineBinaryCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_binaries: *mut PipelineBinaryHandlesInfoKHR,
+) -> Result;
+pub type FnDestroyPipelineBinaryKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline_binary: Option<PipelineBinaryKHR>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnGetPipelineKeyKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_pipeline_create_info: *const PipelineCreateInfoKHR,
+    p_pipeline_key: *mut PipelineBinaryKeyKHR,
+) -> Result;
+pub type FnGetPipelineBinaryDataKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const PipelineBinaryDataInfoKHR,
+    p_pipeline_binary_key: *mut PipelineBinaryKeyKHR,
+    p_pipeline_binary_data_size: *mut usize,
+    p_pipeline_binary_data: *mut c_void,
+) -> Result;
+pub type FnReleaseCapturedPipelineDataKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const ReleaseCapturedPipelineDataInfoKHR,
+    p_allocator: *const AllocationCallbacks,
 ) -> Result;
 pub type FnCreateGraphicsPipelines = unsafe extern "system" fn(
     device: Option<Device>,
