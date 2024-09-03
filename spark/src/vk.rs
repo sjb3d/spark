@@ -7425,8 +7425,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES_KHR: Self =
         Self::PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES;
     pub const SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE_KHR: Self = Self::SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE;
-    /// Added by extension VK_NV_compute_shader_derivatives.
-    pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV: Self = Self(1000201000);
+    pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV: Self =
+        Self::PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_KHR;
     /// Added by extension VK_NV_mesh_shader.
     pub const PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV: Self = Self(1000202000);
     /// Added by extension VK_NV_mesh_shader.
@@ -8268,6 +8268,9 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM: Self = Self(1000510000);
     /// Added by extension VK_QCOM_multiview_per_view_render_areas.
     pub const MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM: Self = Self(1000510001);
+    pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_KHR: Self = Self(1000201000);
+    /// Added by extension VK_KHR_compute_shader_derivatives.
+    pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_PROPERTIES_KHR: Self = Self(1000511000);
     /// Added by extension VK_NV_per_stage_descriptor_set.
     pub const PHYSICAL_DEVICE_PER_STAGE_DESCRIPTOR_SET_FEATURES_NV: Self = Self(1000516000);
     /// Added by extension VK_QCOM_image_processing2.
@@ -8773,7 +8776,6 @@ impl fmt::Display for StructureType {
             1000388001 => Some(&"QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR"),
             1000189000 => Some(&"DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD"),
             1000190000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT"),
-            1000201000 => Some(&"PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV"),
             1000202000 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV"),
             1000202001 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV"),
             1000204000 => Some(&"PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV"),
@@ -9146,6 +9148,8 @@ impl fmt::Display for StructureType {
             1000506002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_KHR"),
             1000510000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM"),
             1000510001 => Some(&"MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM"),
+            1000201000 => Some(&"PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_KHR"),
+            1000511000 => Some(&"PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_PROPERTIES_KHR"),
             1000516000 => Some(&"PHYSICAL_DEVICE_PER_STAGE_DESCRIPTOR_SET_FEATURES_NV"),
             1000518000 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_2_FEATURES_QCOM"),
             1000518001 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_2_PROPERTIES_QCOM"),
@@ -27164,31 +27168,62 @@ impl fmt::Debug for PhysicalDeviceCornerSampledImageFeaturesNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceComputeShaderDerivativesFeaturesNV {
+pub struct PhysicalDeviceComputeShaderDerivativesFeaturesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub compute_derivative_group_quads: Bool32,
     pub compute_derivative_group_linear: Bool32,
 }
-unsafe impl Send for PhysicalDeviceComputeShaderDerivativesFeaturesNV {}
-unsafe impl Sync for PhysicalDeviceComputeShaderDerivativesFeaturesNV {}
-impl Default for PhysicalDeviceComputeShaderDerivativesFeaturesNV {
+unsafe impl Send for PhysicalDeviceComputeShaderDerivativesFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceComputeShaderDerivativesFeaturesKHR {}
+impl Default for PhysicalDeviceComputeShaderDerivativesFeaturesKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV,
+            s_type: StructureType::PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_KHR,
             p_next: ptr::null_mut(),
             compute_derivative_group_quads: Default::default(),
             compute_derivative_group_linear: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceComputeShaderDerivativesFeaturesNV {
+impl fmt::Debug for PhysicalDeviceComputeShaderDerivativesFeaturesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceComputeShaderDerivativesFeaturesNV")
+        fmt.debug_struct("PhysicalDeviceComputeShaderDerivativesFeaturesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("compute_derivative_group_quads", &self.compute_derivative_group_quads)
             .field("compute_derivative_group_linear", &self.compute_derivative_group_linear)
+            .finish()
+    }
+}
+pub type PhysicalDeviceComputeShaderDerivativesFeaturesNV = PhysicalDeviceComputeShaderDerivativesFeaturesKHR;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceComputeShaderDerivativesPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub mesh_and_task_shader_derivatives: Bool32,
+}
+unsafe impl Send for PhysicalDeviceComputeShaderDerivativesPropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceComputeShaderDerivativesPropertiesKHR {}
+impl Default for PhysicalDeviceComputeShaderDerivativesPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            mesh_and_task_shader_derivatives: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceComputeShaderDerivativesPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceComputeShaderDerivativesPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "mesh_and_task_shader_derivatives",
+                &self.mesh_and_task_shader_derivatives,
+            )
             .finish()
     }
 }

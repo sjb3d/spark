@@ -1391,8 +1391,6 @@ impl<'a> Deref for ComputePipelineCreateInfoBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> PipelineCreateInfoKHRNext for ComputePipelineCreateInfoBuilder<'a> {}
-impl PipelineCreateInfoKHRNext for vk::ComputePipelineCreateInfo {}
 impl Builder<'_> for vk::ComputePipelineIndirectBufferInfoNV {
     type Type = ComputePipelineIndirectBufferInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -2037,8 +2035,6 @@ impl<'a> Deref for GraphicsPipelineCreateInfoBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> PipelineCreateInfoKHRNext for GraphicsPipelineCreateInfoBuilder<'a> {}
-impl PipelineCreateInfoKHRNext for vk::GraphicsPipelineCreateInfo {}
 impl<'a> Builder<'a> for vk::PipelineCacheCreateInfo {
     type Type = PipelineCacheCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -2304,31 +2300,23 @@ impl Deref for PipelineBinaryDataInfoKHRBuilder {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::PipelineCreateInfoKHR {
-    type Type = PipelineCreateInfoKHRBuilder<'a>;
+impl Builder<'_> for vk::PipelineCreateInfoKHR {
+    type Type = PipelineCreateInfoKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-pub trait PipelineCreateInfoKHRNext {}
 #[derive(Default)]
-pub struct PipelineCreateInfoKHRBuilder<'a> {
+pub struct PipelineCreateInfoKHRBuilder {
     inner: vk::PipelineCreateInfoKHR,
-    phantom: PhantomData<&'a vk::Never>,
 }
-impl<'a> PipelineCreateInfoKHRBuilder<'a> {
-    pub fn insert_next<T: PipelineCreateInfoKHRNext>(mut self, next: &'a mut T) -> Self {
-        unsafe {
-            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
-        }
-        self
-    }
+impl PipelineCreateInfoKHRBuilder {
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
 }
-impl<'a> Deref for PipelineCreateInfoKHRBuilder<'a> {
+impl Deref for PipelineCreateInfoKHRBuilder {
     type Target = vk::PipelineCreateInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -11145,17 +11133,17 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceCornerSampledImageFeaturesNVB
 impl DeviceCreateInfoNext for PhysicalDeviceCornerSampledImageFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCornerSampledImageFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceCornerSampledImageFeaturesNV {}
-impl Builder<'_> for vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV {
-    type Type = PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder;
+impl Builder<'_> for vk::PhysicalDeviceComputeShaderDerivativesFeaturesKHR {
+    type Type = PhysicalDeviceComputeShaderDerivativesFeaturesKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder {
-    inner: vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV,
+pub struct PhysicalDeviceComputeShaderDerivativesFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceComputeShaderDerivativesFeaturesKHR,
 }
-impl PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder {
+impl PhysicalDeviceComputeShaderDerivativesFeaturesKHRBuilder {
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11177,16 +11165,17 @@ impl PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder {
         self
     }
 }
-impl Deref for PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder {
-    type Target = vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV;
+impl Deref for PhysicalDeviceComputeShaderDerivativesFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceComputeShaderDerivativesFeaturesKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceFeatures2Next for PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder {}
-impl DeviceCreateInfoNext for PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder {}
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV {}
-impl DeviceCreateInfoNext for vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceComputeShaderDerivativesFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceComputeShaderDerivativesFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceComputeShaderDerivativesFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceComputeShaderDerivativesFeaturesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceComputeShaderDerivativesPropertiesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceShaderImageFootprintFeaturesNV {
     type Type = PhysicalDeviceShaderImageFootprintFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -11748,8 +11737,6 @@ impl<'a> Deref for RayTracingPipelineCreateInfoNVBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> PipelineCreateInfoKHRNext for RayTracingPipelineCreateInfoNVBuilder<'a> {}
-impl PipelineCreateInfoKHRNext for vk::RayTracingPipelineCreateInfoNV {}
 impl<'a> Builder<'a> for vk::RayTracingPipelineCreateInfoKHR {
     type Type = RayTracingPipelineCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11825,8 +11812,6 @@ impl<'a> Deref for RayTracingPipelineCreateInfoKHRBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> PipelineCreateInfoKHRNext for RayTracingPipelineCreateInfoKHRBuilder<'a> {}
-impl PipelineCreateInfoKHRNext for vk::RayTracingPipelineCreateInfoKHR {}
 impl Builder<'_> for vk::GeometryTrianglesNV {
     type Type = GeometryTrianglesNVBuilder;
     fn builder() -> Self::Type {
@@ -25004,8 +24989,6 @@ impl<'a> Deref for ExecutionGraphPipelineCreateInfoAMDXBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> PipelineCreateInfoKHRNext for ExecutionGraphPipelineCreateInfoAMDXBuilder<'a> {}
-impl PipelineCreateInfoKHRNext for vk::ExecutionGraphPipelineCreateInfoAMDX {}
 impl<'a> Builder<'a> for vk::PipelineShaderStageNodeCreateInfoAMDX {
     type Type = PipelineShaderStageNodeCreateInfoAMDXBuilder<'a>;
     fn builder() -> Self::Type {

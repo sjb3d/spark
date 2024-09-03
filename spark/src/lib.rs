@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 294
+//! Generated from vk.xml with `VK_HEADER_VERSION` 295
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2485,6 +2485,12 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+    pub fn supports_khr_compute_shader_derivatives(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_compute_shader_derivatives(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_qcom_image_processing2(&self) -> bool {
         self.supports_qcom_image_processing()
@@ -5263,6 +5269,7 @@ pub struct DeviceExtensions {
     pub nv_low_latency2: bool,
     pub khr_cooperative_matrix: bool,
     pub qcom_multiview_per_view_render_areas: bool,
+    pub khr_compute_shader_derivatives: bool,
     pub nv_per_stage_descriptor_set: bool,
     pub qcom_image_processing2: bool,
     pub qcom_filter_cubic_weights: bool,
@@ -5597,6 +5604,7 @@ impl DeviceExtensions {
             b"VK_NV_low_latency2" => self.nv_low_latency2 = true,
             b"VK_KHR_cooperative_matrix" => self.khr_cooperative_matrix = true,
             b"VK_QCOM_multiview_per_view_render_areas" => self.qcom_multiview_per_view_render_areas = true,
+            b"VK_KHR_compute_shader_derivatives" => self.khr_compute_shader_derivatives = true,
             b"VK_NV_per_stage_descriptor_set" => self.nv_per_stage_descriptor_set = true,
             b"VK_QCOM_image_processing2" => self.qcom_image_processing2 = true,
             b"VK_QCOM_filter_cubic_weights" => self.qcom_filter_cubic_weights = true,
@@ -5931,6 +5939,7 @@ impl DeviceExtensions {
             nv_low_latency2: false,
             khr_cooperative_matrix: false,
             qcom_multiview_per_view_render_areas: false,
+            khr_compute_shader_derivatives: false,
             nv_per_stage_descriptor_set: false,
             qcom_image_processing2: false,
             qcom_filter_cubic_weights: false,
@@ -8324,6 +8333,12 @@ impl DeviceExtensions {
     pub fn enable_qcom_multiview_per_view_render_areas(&mut self) {
         self.qcom_multiview_per_view_render_areas = true;
     }
+    pub fn supports_khr_compute_shader_derivatives(&self) -> bool {
+        self.khr_compute_shader_derivatives
+    }
+    pub fn enable_khr_compute_shader_derivatives(&mut self) {
+        self.khr_compute_shader_derivatives = true;
+    }
     pub fn supports_nv_per_stage_descriptor_set(&self) -> bool {
         self.nv_per_stage_descriptor_set && self.supports_khr_maintenance6()
     }
@@ -9400,6 +9415,9 @@ impl DeviceExtensions {
         }
         if self.qcom_multiview_per_view_render_areas {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_multiview_per_view_render_areas\0") })
+        }
+        if self.khr_compute_shader_derivatives {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_compute_shader_derivatives\0") })
         }
         if self.nv_per_stage_descriptor_set {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_per_stage_descriptor_set\0") })
