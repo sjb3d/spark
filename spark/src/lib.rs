@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 297
+//! Generated from vk.xml with `VK_HEADER_VERSION` 298
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -922,20 +922,19 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_amdx_shader_enqueue(&self) -> bool {
-        (((self.supports_khr_get_physical_device_properties2()
-            || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
-            && self.supports_khr_synchronization2())
-            || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
+        ((self.supports_khr_synchronization2()
             && self.supports_khr_spirv_1_4()
+            && self.supports_ext_extended_dynamic_state())
+            || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
+            && self.supports_khr_maintenance5()
     }
     pub fn enable_amdx_shader_enqueue(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
-            if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
-                self.enable_khr_get_physical_device_properties2();
-            }
             self.enable_khr_synchronization2();
+            self.enable_khr_spirv_1_4();
+            self.enable_ext_extended_dynamic_state();
         }
-        self.enable_khr_spirv_1_4();
+        self.enable_khr_maintenance5();
     }
     pub fn supports_ext_inline_uniform_block(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -6610,17 +6609,22 @@ impl DeviceExtensions {
     }
     pub fn supports_amdx_shader_enqueue(&self) -> bool {
         self.amdx_shader_enqueue
-            && (self.supports_khr_synchronization2() || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
+            && ((self.supports_khr_synchronization2()
+                && self.supports_khr_spirv_1_4()
+                && self.supports_ext_extended_dynamic_state())
+                || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
+            && self.supports_khr_maintenance5()
             && self.supports_khr_pipeline_library()
-            && self.supports_khr_spirv_1_4()
     }
     pub fn enable_amdx_shader_enqueue(&mut self) {
         self.amdx_shader_enqueue = true;
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             self.enable_khr_synchronization2();
+            self.enable_khr_spirv_1_4();
+            self.enable_ext_extended_dynamic_state();
         }
+        self.enable_khr_maintenance5();
         self.enable_khr_pipeline_library();
-        self.enable_khr_spirv_1_4();
     }
     pub fn supports_amd_mixed_attachment_samples(&self) -> bool {
         self.amd_mixed_attachment_samples
@@ -22762,45 +22766,50 @@ impl Device {
     pub unsafe fn cmd_initialize_graph_scratch_memory_amdx(
         &self,
         command_buffer: vk::CommandBuffer,
+        execution_graph: vk::Pipeline,
         scratch: vk::DeviceAddress,
+        scratch_size: vk::DeviceSize,
     ) {
         let fp = self
             .fp_cmd_initialize_graph_scratch_memory_amdx
             .expect("vkCmdInitializeGraphScratchMemoryAMDX is not loaded");
-        (fp)(Some(command_buffer), scratch);
+        (fp)(Some(command_buffer), Some(execution_graph), scratch, scratch_size);
     }
     pub unsafe fn cmd_dispatch_graph_amdx(
         &self,
         command_buffer: vk::CommandBuffer,
         scratch: vk::DeviceAddress,
+        scratch_size: vk::DeviceSize,
         p_count_info: &vk::DispatchGraphCountInfoAMDX,
     ) {
         let fp = self
             .fp_cmd_dispatch_graph_amdx
             .expect("vkCmdDispatchGraphAMDX is not loaded");
-        (fp)(Some(command_buffer), scratch, p_count_info);
+        (fp)(Some(command_buffer), scratch, scratch_size, p_count_info);
     }
     pub unsafe fn cmd_dispatch_graph_indirect_amdx(
         &self,
         command_buffer: vk::CommandBuffer,
         scratch: vk::DeviceAddress,
+        scratch_size: vk::DeviceSize,
         p_count_info: &vk::DispatchGraphCountInfoAMDX,
     ) {
         let fp = self
             .fp_cmd_dispatch_graph_indirect_amdx
             .expect("vkCmdDispatchGraphIndirectAMDX is not loaded");
-        (fp)(Some(command_buffer), scratch, p_count_info);
+        (fp)(Some(command_buffer), scratch, scratch_size, p_count_info);
     }
     pub unsafe fn cmd_dispatch_graph_indirect_count_amdx(
         &self,
         command_buffer: vk::CommandBuffer,
         scratch: vk::DeviceAddress,
+        scratch_size: vk::DeviceSize,
         count_info: vk::DeviceAddress,
     ) {
         let fp = self
             .fp_cmd_dispatch_graph_indirect_count_amdx
             .expect("vkCmdDispatchGraphIndirectCountAMDX is not loaded");
-        (fp)(Some(command_buffer), scratch, count_info);
+        (fp)(Some(command_buffer), scratch, scratch_size, count_info);
     }
     pub unsafe fn cmd_bind_descriptor_sets2_khr(
         &self,

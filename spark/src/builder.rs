@@ -18322,7 +18322,7 @@ impl<'a> GeneratedCommandsMemoryRequirementsInfoEXTBuilder<'a> {
         }
         self
     }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -25457,6 +25457,10 @@ impl PhysicalDeviceShaderEnqueuePropertiesAMDXBuilder {
         self.inner.execution_graph_dispatch_address_alignment = execution_graph_dispatch_address_alignment;
         self
     }
+    pub fn max_execution_graph_workgroups(mut self, max_execution_graph_workgroups: u32) -> Self {
+        self.inner.max_execution_graph_workgroups = max_execution_graph_workgroups;
+        self
+    }
 }
 impl Deref for PhysicalDeviceShaderEnqueuePropertiesAMDXBuilder {
     type Target = vk::PhysicalDeviceShaderEnqueuePropertiesAMDX;
@@ -25483,6 +25487,10 @@ impl PhysicalDeviceShaderEnqueueFeaturesAMDXBuilder {
     }
     pub fn shader_enqueue(mut self, shader_enqueue: bool) -> Self {
         self.inner.shader_enqueue = if shader_enqueue { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn shader_mesh_enqueue(mut self, shader_mesh_enqueue: bool) -> Self {
+        self.inner.shader_mesh_enqueue = if shader_mesh_enqueue { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -25599,8 +25607,16 @@ impl ExecutionGraphPipelineScratchSizeAMDXBuilder {
         self.inner.p_next = p_next;
         self
     }
-    pub fn size(mut self, size: vk::DeviceSize) -> Self {
-        self.inner.size = size;
+    pub fn min_size(mut self, min_size: vk::DeviceSize) -> Self {
+        self.inner.min_size = min_size;
+        self
+    }
+    pub fn max_size(mut self, max_size: vk::DeviceSize) -> Self {
+        self.inner.max_size = max_size;
+        self
+    }
+    pub fn size_granularity(mut self, size_granularity: vk::DeviceSize) -> Self {
+        self.inner.size_granularity = size_granularity;
         self
     }
 }

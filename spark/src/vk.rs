@@ -2907,6 +2907,8 @@ impl PipelineCreateFlags2KHR {
     pub const DISABLE_OPTIMIZATION: Self = Self(0x1);
     pub const ALLOW_DERIVATIVES: Self = Self(0x2);
     pub const DERIVATIVE: Self = Self(0x4);
+    /// Added by extension VK_AMDX_shader_enqueue.
+    pub const EXECUTION_GRAPH_AMDX: Self = Self(0x100000000);
     /// Added by extension VK_EXT_legacy_dithering.
     pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x400000000);
     /// Added by extension VK_KHR_maintenance5.
@@ -2970,7 +2972,7 @@ impl PipelineCreateFlags2KHR {
     /// Added by extension VK_EXT_device_generated_commands.
     pub const INDIRECT_BINDABLE_EXT: Self = Self(0x4000000000);
 }
-impl_bitmask!(PipelineCreateFlags2KHR, 0x44ffffffff);
+impl_bitmask!(PipelineCreateFlags2KHR, 0x45ffffffff);
 impl fmt::Display for PipelineCreateFlags2KHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2979,6 +2981,7 @@ impl fmt::Display for PipelineCreateFlags2KHR {
                 (0x1, "DISABLE_OPTIMIZATION"),
                 (0x2, "ALLOW_DERIVATIVES"),
                 (0x4, "DERIVATIVE"),
+                (0x100000000, "EXECUTION_GRAPH_AMDX"),
                 (0x400000000, "ENABLE_LEGACY_DITHERING_EXT"),
                 (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
                 (0x10, "DISPATCH_BASE"),
@@ -36494,7 +36497,7 @@ impl fmt::Debug for GeneratedCommandsShaderInfoEXT {
 #[derive(Copy, Clone)]
 pub struct GeneratedCommandsMemoryRequirementsInfoEXT {
     pub s_type: StructureType,
-    pub p_next: *mut c_void,
+    pub p_next: *const c_void,
     pub indirect_execution_set: Option<IndirectExecutionSetEXT>,
     pub indirect_commands_layout: Option<IndirectCommandsLayoutEXT>,
     pub max_sequence_count: u32,
@@ -36506,7 +36509,7 @@ impl Default for GeneratedCommandsMemoryRequirementsInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_EXT,
-            p_next: ptr::null_mut(),
+            p_next: ptr::null(),
             indirect_execution_set: Default::default(),
             indirect_commands_layout: Default::default(),
             max_sequence_count: Default::default(),
@@ -45029,6 +45032,8 @@ pub struct PhysicalDeviceShaderEnqueuePropertiesAMDX {
     pub max_execution_graph_shader_payload_size: u32,
     pub max_execution_graph_shader_payload_count: u32,
     pub execution_graph_dispatch_address_alignment: u32,
+    pub max_execution_graph_workgroup_count: [u32; 3],
+    pub max_execution_graph_workgroups: u32,
 }
 unsafe impl Send for PhysicalDeviceShaderEnqueuePropertiesAMDX {}
 unsafe impl Sync for PhysicalDeviceShaderEnqueuePropertiesAMDX {}
@@ -45042,6 +45047,8 @@ impl Default for PhysicalDeviceShaderEnqueuePropertiesAMDX {
             max_execution_graph_shader_payload_size: Default::default(),
             max_execution_graph_shader_payload_count: Default::default(),
             execution_graph_dispatch_address_alignment: Default::default(),
+            max_execution_graph_workgroup_count: [Default::default(); 3],
+            max_execution_graph_workgroups: Default::default(),
         }
     }
 }
@@ -45067,6 +45074,11 @@ impl fmt::Debug for PhysicalDeviceShaderEnqueuePropertiesAMDX {
                 "execution_graph_dispatch_address_alignment",
                 &self.execution_graph_dispatch_address_alignment,
             )
+            .field(
+                "max_execution_graph_workgroup_count",
+                &self.max_execution_graph_workgroup_count,
+            )
+            .field("max_execution_graph_workgroups", &self.max_execution_graph_workgroups)
             .finish()
     }
 }
@@ -45076,6 +45088,7 @@ pub struct PhysicalDeviceShaderEnqueueFeaturesAMDX {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub shader_enqueue: Bool32,
+    pub shader_mesh_enqueue: Bool32,
 }
 unsafe impl Send for PhysicalDeviceShaderEnqueueFeaturesAMDX {}
 unsafe impl Sync for PhysicalDeviceShaderEnqueueFeaturesAMDX {}
@@ -45085,6 +45098,7 @@ impl Default for PhysicalDeviceShaderEnqueueFeaturesAMDX {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_ENQUEUE_FEATURES_AMDX,
             p_next: ptr::null_mut(),
             shader_enqueue: Default::default(),
+            shader_mesh_enqueue: Default::default(),
         }
     }
 }
@@ -45094,6 +45108,7 @@ impl fmt::Debug for PhysicalDeviceShaderEnqueueFeaturesAMDX {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_enqueue", &self.shader_enqueue)
+            .field("shader_mesh_enqueue", &self.shader_mesh_enqueue)
             .finish()
     }
 }
@@ -45177,7 +45192,9 @@ impl fmt::Debug for PipelineShaderStageNodeCreateInfoAMDX {
 pub struct ExecutionGraphPipelineScratchSizeAMDX {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
-    pub size: DeviceSize,
+    pub min_size: DeviceSize,
+    pub max_size: DeviceSize,
+    pub size_granularity: DeviceSize,
 }
 unsafe impl Send for ExecutionGraphPipelineScratchSizeAMDX {}
 unsafe impl Sync for ExecutionGraphPipelineScratchSizeAMDX {}
@@ -45186,7 +45203,9 @@ impl Default for ExecutionGraphPipelineScratchSizeAMDX {
         Self {
             s_type: StructureType::EXECUTION_GRAPH_PIPELINE_SCRATCH_SIZE_AMDX,
             p_next: ptr::null_mut(),
-            size: Default::default(),
+            min_size: Default::default(),
+            max_size: Default::default(),
+            size_granularity: Default::default(),
         }
     }
 }
@@ -45195,7 +45214,9 @@ impl fmt::Debug for ExecutionGraphPipelineScratchSizeAMDX {
         fmt.debug_struct("ExecutionGraphPipelineScratchSizeAMDX")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("size", &self.size)
+            .field("min_size", &self.min_size)
+            .field("max_size", &self.max_size)
+            .field("size_granularity", &self.size_granularity)
             .finish()
     }
 }
@@ -49983,20 +50004,30 @@ pub type FnCreateExecutionGraphPipelinesAMDX = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_pipelines: *mut Pipeline,
 ) -> Result;
-pub type FnCmdInitializeGraphScratchMemoryAMDX =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, scratch: DeviceAddress);
+pub type FnCmdInitializeGraphScratchMemoryAMDX = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    execution_graph: Option<Pipeline>,
+    scratch: DeviceAddress,
+    scratch_size: DeviceSize,
+);
 pub type FnCmdDispatchGraphAMDX = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     scratch: DeviceAddress,
+    scratch_size: DeviceSize,
     p_count_info: *const DispatchGraphCountInfoAMDX,
 );
 pub type FnCmdDispatchGraphIndirectAMDX = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     scratch: DeviceAddress,
+    scratch_size: DeviceSize,
     p_count_info: *const DispatchGraphCountInfoAMDX,
 );
-pub type FnCmdDispatchGraphIndirectCountAMDX =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, scratch: DeviceAddress, count_info: DeviceAddress);
+pub type FnCmdDispatchGraphIndirectCountAMDX = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    scratch: DeviceAddress,
+    scratch_size: DeviceSize,
+    count_info: DeviceAddress,
+);
 pub type FnCmdBindDescriptorSets2KHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_bind_descriptor_sets_info: *const BindDescriptorSetsInfoKHR,
