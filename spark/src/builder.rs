@@ -2365,12 +2365,14 @@ impl<'a> PushDescriptorSetInfoKHRNext for PipelineLayoutCreateInfoBuilder<'a> {}
 impl<'a> PushDescriptorSetWithTemplateInfoKHRNext for PipelineLayoutCreateInfoBuilder<'a> {}
 impl<'a> SetDescriptorBufferOffsetsInfoEXTNext for PipelineLayoutCreateInfoBuilder<'a> {}
 impl<'a> BindDescriptorBufferEmbeddedSamplersInfoEXTNext for PipelineLayoutCreateInfoBuilder<'a> {}
+impl<'a> IndirectCommandsLayoutCreateInfoEXTNext for PipelineLayoutCreateInfoBuilder<'a> {}
 impl BindDescriptorSetsInfoKHRNext for vk::PipelineLayoutCreateInfo {}
 impl PushConstantsInfoKHRNext for vk::PipelineLayoutCreateInfo {}
 impl PushDescriptorSetInfoKHRNext for vk::PipelineLayoutCreateInfo {}
 impl PushDescriptorSetWithTemplateInfoKHRNext for vk::PipelineLayoutCreateInfo {}
 impl SetDescriptorBufferOffsetsInfoEXTNext for vk::PipelineLayoutCreateInfo {}
 impl BindDescriptorBufferEmbeddedSamplersInfoEXTNext for vk::PipelineLayoutCreateInfo {}
+impl IndirectCommandsLayoutCreateInfoEXTNext for vk::PipelineLayoutCreateInfo {}
 impl<'a> Builder<'a> for vk::SamplerCreateInfo {
     type Type = SamplerCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -18200,6 +18202,503 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceDepthClipControlFeaturesEXTBu
 impl DeviceCreateInfoNext for PhysicalDeviceDepthClipControlFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDepthClipControlFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceDepthClipControlFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT {
+    type Type = PhysicalDeviceDeviceGeneratedCommandsFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDeviceGeneratedCommandsFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT,
+}
+impl PhysicalDeviceDeviceGeneratedCommandsFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn device_generated_commands(mut self, device_generated_commands: bool) -> Self {
+        self.inner.device_generated_commands = if device_generated_commands { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn dynamic_generated_pipeline_layout(mut self, dynamic_generated_pipeline_layout: bool) -> Self {
+        self.inner.dynamic_generated_pipeline_layout = if dynamic_generated_pipeline_layout {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDeviceGeneratedCommandsFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDeviceGeneratedCommandsFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDeviceGeneratedCommandsFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDeviceGeneratedCommandsPropertiesEXT {}
+impl Builder<'_> for vk::GeneratedCommandsPipelineInfoEXT {
+    type Type = GeneratedCommandsPipelineInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct GeneratedCommandsPipelineInfoEXTBuilder {
+    inner: vk::GeneratedCommandsPipelineInfoEXT,
+}
+impl GeneratedCommandsPipelineInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline(mut self, pipeline: vk::Pipeline) -> Self {
+        self.inner.pipeline = Some(pipeline);
+        self
+    }
+}
+impl Deref for GeneratedCommandsPipelineInfoEXTBuilder {
+    type Target = vk::GeneratedCommandsPipelineInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl GeneratedCommandsInfoEXTNext for GeneratedCommandsPipelineInfoEXTBuilder {}
+impl GeneratedCommandsMemoryRequirementsInfoEXTNext for GeneratedCommandsPipelineInfoEXTBuilder {}
+impl GeneratedCommandsInfoEXTNext for vk::GeneratedCommandsPipelineInfoEXT {}
+impl GeneratedCommandsMemoryRequirementsInfoEXTNext for vk::GeneratedCommandsPipelineInfoEXT {}
+impl<'a> Builder<'a> for vk::GeneratedCommandsShaderInfoEXT {
+    type Type = GeneratedCommandsShaderInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct GeneratedCommandsShaderInfoEXTBuilder<'a> {
+    inner: vk::GeneratedCommandsShaderInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> GeneratedCommandsShaderInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_shaders(mut self, p_shaders: &'a [vk::ShaderEXT]) -> Self {
+        self.inner.shader_count = p_shaders.len() as u32;
+        self.inner.p_shaders = p_shaders.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for GeneratedCommandsShaderInfoEXTBuilder<'a> {
+    type Target = vk::GeneratedCommandsShaderInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> GeneratedCommandsInfoEXTNext for GeneratedCommandsShaderInfoEXTBuilder<'a> {}
+impl<'a> GeneratedCommandsMemoryRequirementsInfoEXTNext for GeneratedCommandsShaderInfoEXTBuilder<'a> {}
+impl GeneratedCommandsInfoEXTNext for vk::GeneratedCommandsShaderInfoEXT {}
+impl GeneratedCommandsMemoryRequirementsInfoEXTNext for vk::GeneratedCommandsShaderInfoEXT {}
+impl<'a> Builder<'a> for vk::GeneratedCommandsMemoryRequirementsInfoEXT {
+    type Type = GeneratedCommandsMemoryRequirementsInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait GeneratedCommandsMemoryRequirementsInfoEXTNext {}
+#[derive(Default)]
+pub struct GeneratedCommandsMemoryRequirementsInfoEXTBuilder<'a> {
+    inner: vk::GeneratedCommandsMemoryRequirementsInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> GeneratedCommandsMemoryRequirementsInfoEXTBuilder<'a> {
+    pub fn insert_next<T: GeneratedCommandsMemoryRequirementsInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn indirect_execution_set(mut self, indirect_execution_set: Option<vk::IndirectExecutionSetEXT>) -> Self {
+        self.inner.indirect_execution_set = indirect_execution_set;
+        self
+    }
+    pub fn indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutEXT) -> Self {
+        self.inner.indirect_commands_layout = Some(indirect_commands_layout);
+        self
+    }
+    pub fn max_sequence_count(mut self, max_sequence_count: u32) -> Self {
+        self.inner.max_sequence_count = max_sequence_count;
+        self
+    }
+    pub fn max_draw_count(mut self, max_draw_count: u32) -> Self {
+        self.inner.max_draw_count = max_draw_count;
+        self
+    }
+}
+impl<'a> Deref for GeneratedCommandsMemoryRequirementsInfoEXTBuilder<'a> {
+    type Target = vk::GeneratedCommandsMemoryRequirementsInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::IndirectExecutionSetPipelineInfoEXT {
+    type Type = IndirectExecutionSetPipelineInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct IndirectExecutionSetPipelineInfoEXTBuilder {
+    inner: vk::IndirectExecutionSetPipelineInfoEXT,
+}
+impl IndirectExecutionSetPipelineInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn initial_pipeline(mut self, initial_pipeline: vk::Pipeline) -> Self {
+        self.inner.initial_pipeline = Some(initial_pipeline);
+        self
+    }
+    pub fn max_pipeline_count(mut self, max_pipeline_count: u32) -> Self {
+        self.inner.max_pipeline_count = max_pipeline_count;
+        self
+    }
+}
+impl Deref for IndirectExecutionSetPipelineInfoEXTBuilder {
+    type Target = vk::IndirectExecutionSetPipelineInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::IndirectExecutionSetShaderLayoutInfoEXT {
+    type Type = IndirectExecutionSetShaderLayoutInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct IndirectExecutionSetShaderLayoutInfoEXTBuilder<'a> {
+    inner: vk::IndirectExecutionSetShaderLayoutInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> IndirectExecutionSetShaderLayoutInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_set_layouts(mut self, p_set_layouts: &'a [vk::DescriptorSetLayout]) -> Self {
+        self.inner.set_layout_count = p_set_layouts.len() as u32;
+        self.inner.p_set_layouts = p_set_layouts.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for IndirectExecutionSetShaderLayoutInfoEXTBuilder<'a> {
+    type Target = vk::IndirectExecutionSetShaderLayoutInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::IndirectExecutionSetShaderInfoEXT {
+    type Type = IndirectExecutionSetShaderInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct IndirectExecutionSetShaderInfoEXTBuilder<'a> {
+    inner: vk::IndirectExecutionSetShaderInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> IndirectExecutionSetShaderInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_initial_shaders(
+        mut self,
+        p_initial_shaders: &'a [vk::ShaderEXT],
+        p_set_layout_infos: Option<&'a [vk::IndirectExecutionSetShaderLayoutInfoEXT]>,
+    ) -> Self {
+        self.inner.shader_count = p_initial_shaders.len() as u32;
+        if let Some(s) = p_set_layout_infos {
+            assert_eq!(self.inner.shader_count, s.len() as u32);
+        }
+        self.inner.p_initial_shaders = p_initial_shaders.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_set_layout_infos = p_set_layout_infos
+            .and_then(|s| s.first())
+            .map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn max_shader_count(mut self, max_shader_count: u32) -> Self {
+        self.inner.max_shader_count = max_shader_count;
+        self
+    }
+    pub fn p_push_constant_ranges(mut self, p_push_constant_ranges: &'a [vk::PushConstantRange]) -> Self {
+        self.inner.push_constant_range_count = p_push_constant_ranges.len() as u32;
+        self.inner.p_push_constant_ranges = p_push_constant_ranges.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for IndirectExecutionSetShaderInfoEXTBuilder<'a> {
+    type Target = vk::IndirectExecutionSetShaderInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::IndirectExecutionSetCreateInfoEXT {
+    type Type = IndirectExecutionSetCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct IndirectExecutionSetCreateInfoEXTBuilder {
+    inner: vk::IndirectExecutionSetCreateInfoEXT,
+}
+impl IndirectExecutionSetCreateInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::IndirectExecutionSetInfoTypeEXT) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn info(mut self, info: vk::IndirectExecutionSetInfoEXT) -> Self {
+        self.inner.info = info;
+        self
+    }
+}
+impl Deref for IndirectExecutionSetCreateInfoEXTBuilder {
+    type Target = vk::IndirectExecutionSetCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::GeneratedCommandsInfoEXT {
+    type Type = GeneratedCommandsInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait GeneratedCommandsInfoEXTNext {}
+#[derive(Default)]
+pub struct GeneratedCommandsInfoEXTBuilder<'a> {
+    inner: vk::GeneratedCommandsInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> GeneratedCommandsInfoEXTBuilder<'a> {
+    pub fn insert_next<T: GeneratedCommandsInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_stages(mut self, shader_stages: vk::ShaderStageFlags) -> Self {
+        self.inner.shader_stages = shader_stages;
+        self
+    }
+    pub fn indirect_execution_set(mut self, indirect_execution_set: Option<vk::IndirectExecutionSetEXT>) -> Self {
+        self.inner.indirect_execution_set = indirect_execution_set;
+        self
+    }
+    pub fn indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutEXT) -> Self {
+        self.inner.indirect_commands_layout = Some(indirect_commands_layout);
+        self
+    }
+    pub fn indirect_address(mut self, indirect_address: vk::DeviceAddress) -> Self {
+        self.inner.indirect_address = indirect_address;
+        self
+    }
+    pub fn indirect_address_size(mut self, indirect_address_size: vk::DeviceSize) -> Self {
+        self.inner.indirect_address_size = indirect_address_size;
+        self
+    }
+    pub fn preprocess_address(mut self, preprocess_address: vk::DeviceAddress) -> Self {
+        self.inner.preprocess_address = preprocess_address;
+        self
+    }
+    pub fn preprocess_size(mut self, preprocess_size: vk::DeviceSize) -> Self {
+        self.inner.preprocess_size = preprocess_size;
+        self
+    }
+    pub fn max_sequence_count(mut self, max_sequence_count: u32) -> Self {
+        self.inner.max_sequence_count = max_sequence_count;
+        self
+    }
+    pub fn sequence_count_address(mut self, sequence_count_address: vk::DeviceAddress) -> Self {
+        self.inner.sequence_count_address = sequence_count_address;
+        self
+    }
+    pub fn max_draw_count(mut self, max_draw_count: u32) -> Self {
+        self.inner.max_draw_count = max_draw_count;
+        self
+    }
+}
+impl<'a> Deref for GeneratedCommandsInfoEXTBuilder<'a> {
+    type Target = vk::GeneratedCommandsInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::WriteIndirectExecutionSetPipelineEXT {
+    type Type = WriteIndirectExecutionSetPipelineEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct WriteIndirectExecutionSetPipelineEXTBuilder {
+    inner: vk::WriteIndirectExecutionSetPipelineEXT,
+}
+impl WriteIndirectExecutionSetPipelineEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn index(mut self, index: u32) -> Self {
+        self.inner.index = index;
+        self
+    }
+    pub fn pipeline(mut self, pipeline: vk::Pipeline) -> Self {
+        self.inner.pipeline = Some(pipeline);
+        self
+    }
+}
+impl Deref for WriteIndirectExecutionSetPipelineEXTBuilder {
+    type Target = vk::WriteIndirectExecutionSetPipelineEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::WriteIndirectExecutionSetShaderEXT {
+    type Type = WriteIndirectExecutionSetShaderEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct WriteIndirectExecutionSetShaderEXTBuilder {
+    inner: vk::WriteIndirectExecutionSetShaderEXT,
+}
+impl WriteIndirectExecutionSetShaderEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn index(mut self, index: u32) -> Self {
+        self.inner.index = index;
+        self
+    }
+    pub fn shader(mut self, shader: vk::ShaderEXT) -> Self {
+        self.inner.shader = Some(shader);
+        self
+    }
+}
+impl Deref for WriteIndirectExecutionSetShaderEXTBuilder {
+    type Target = vk::WriteIndirectExecutionSetShaderEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::IndirectCommandsLayoutCreateInfoEXT {
+    type Type = IndirectCommandsLayoutCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait IndirectCommandsLayoutCreateInfoEXTNext {}
+#[derive(Default)]
+pub struct IndirectCommandsLayoutCreateInfoEXTBuilder<'a> {
+    inner: vk::IndirectCommandsLayoutCreateInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> IndirectCommandsLayoutCreateInfoEXTBuilder<'a> {
+    pub fn insert_next<T: IndirectCommandsLayoutCreateInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::IndirectCommandsLayoutUsageFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn shader_stages(mut self, shader_stages: vk::ShaderStageFlags) -> Self {
+        self.inner.shader_stages = shader_stages;
+        self
+    }
+    pub fn indirect_stride(mut self, indirect_stride: u32) -> Self {
+        self.inner.indirect_stride = indirect_stride;
+        self
+    }
+    pub fn pipeline_layout(mut self, pipeline_layout: Option<vk::PipelineLayout>) -> Self {
+        self.inner.pipeline_layout = pipeline_layout;
+        self
+    }
+    pub fn p_tokens(mut self, p_tokens: &'a [vk::IndirectCommandsLayoutTokenEXT]) -> Self {
+        self.inner.token_count = p_tokens.len() as u32;
+        self.inner.p_tokens = p_tokens.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for IndirectCommandsLayoutCreateInfoEXTBuilder<'a> {
+    type Target = vk::IndirectCommandsLayoutCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::IndirectCommandsLayoutTokenEXT {
+    type Type = IndirectCommandsLayoutTokenEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct IndirectCommandsLayoutTokenEXTBuilder {
+    inner: vk::IndirectCommandsLayoutTokenEXT,
+}
+impl IndirectCommandsLayoutTokenEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::IndirectCommandsTokenTypeEXT) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn data(mut self, data: vk::IndirectCommandsTokenDataEXT) -> Self {
+        self.inner.data = data;
+        self
+    }
+    pub fn offset(mut self, offset: u32) -> Self {
+        self.inner.offset = offset;
+        self
+    }
+}
+impl Deref for IndirectCommandsLayoutTokenEXTBuilder {
+    type Target = vk::IndirectCommandsLayoutTokenEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::PipelineViewportDepthClipControlCreateInfoEXT {
     type Type = PipelineViewportDepthClipControlCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -18228,6 +18727,69 @@ impl Deref for PipelineViewportDepthClipControlCreateInfoEXTBuilder {
 }
 impl PipelineViewportStateCreateInfoNext for PipelineViewportDepthClipControlCreateInfoEXTBuilder {}
 impl PipelineViewportStateCreateInfoNext for vk::PipelineViewportDepthClipControlCreateInfoEXT {}
+impl Builder<'_> for vk::PhysicalDeviceDepthClampControlFeaturesEXT {
+    type Type = PhysicalDeviceDepthClampControlFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDepthClampControlFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceDepthClampControlFeaturesEXT,
+}
+impl PhysicalDeviceDepthClampControlFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn depth_clamp_control(mut self, depth_clamp_control: bool) -> Self {
+        self.inner.depth_clamp_control = if depth_clamp_control { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDepthClampControlFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceDepthClampControlFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDepthClampControlFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDepthClampControlFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDepthClampControlFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDepthClampControlFeaturesEXT {}
+impl<'a> Builder<'a> for vk::PipelineViewportDepthClampControlCreateInfoEXT {
+    type Type = PipelineViewportDepthClampControlCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineViewportDepthClampControlCreateInfoEXTBuilder<'a> {
+    inner: vk::PipelineViewportDepthClampControlCreateInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PipelineViewportDepthClampControlCreateInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn depth_clamp_mode(mut self, depth_clamp_mode: vk::DepthClampModeEXT) -> Self {
+        self.inner.depth_clamp_mode = depth_clamp_mode;
+        self
+    }
+    pub fn p_depth_clamp_range(mut self, p_depth_clamp_range: Option<&'a vk::DepthClampRangeEXT>) -> Self {
+        self.inner.p_depth_clamp_range = p_depth_clamp_range.map_or(ptr::null(), |p| p);
+        self
+    }
+}
+impl<'a> Deref for PipelineViewportDepthClampControlCreateInfoEXTBuilder<'a> {
+    type Target = vk::PipelineViewportDepthClampControlCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> PipelineViewportStateCreateInfoNext for PipelineViewportDepthClampControlCreateInfoEXTBuilder<'a> {}
+impl PipelineViewportStateCreateInfoNext for vk::PipelineViewportDepthClampControlCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
     type Type = PhysicalDeviceVertexInputDynamicStateFeaturesEXTBuilder;
     fn builder() -> Self::Type {

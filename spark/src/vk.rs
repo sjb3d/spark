@@ -706,6 +706,8 @@ impl AccessFlags {
     /// Added by extension VK_NV_device_generated_commands.
     pub const COMMAND_PREPROCESS_WRITE_NV: Self = Self(0x40000);
     pub const NONE_KHR: Self = Self::NONE;
+    pub const COMMAND_PREPROCESS_READ_EXT: Self = Self::COMMAND_PREPROCESS_READ_NV;
+    pub const COMMAND_PREPROCESS_WRITE_EXT: Self = Self::COMMAND_PREPROCESS_WRITE_NV;
 }
 impl_bitmask!(AccessFlags, 0xfffffff);
 impl fmt::Display for AccessFlags {
@@ -1776,6 +1778,7 @@ impl PipelineStageFlags {
     pub const TASK_SHADER_EXT: Self = Self(0x80000);
     /// Added by extension VK_EXT_mesh_shader.
     pub const MESH_SHADER_EXT: Self = Self(0x100000);
+    pub const COMMAND_PREPROCESS_EXT: Self = Self::COMMAND_PREPROCESS_NV;
 }
 impl_bitmask!(PipelineStageFlags, 0x3ffffff);
 impl fmt::Display for PipelineStageFlags {
@@ -2381,6 +2384,8 @@ impl AccessFlags2 {
     pub const COMMAND_PREPROCESS_READ_NV: Self = Self(0x20000);
     /// Added by extension VK_KHR_synchronization2.
     pub const COMMAND_PREPROCESS_WRITE_NV: Self = Self(0x40000);
+    pub const COMMAND_PREPROCESS_READ_EXT: Self = Self::COMMAND_PREPROCESS_READ_NV;
+    pub const COMMAND_PREPROCESS_WRITE_EXT: Self = Self::COMMAND_PREPROCESS_WRITE_NV;
     /// Added by extension VK_KHR_synchronization2.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_READ_KHR: Self = Self(0x800000);
     pub const SHADING_RATE_IMAGE_READ_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT_READ_KHR;
@@ -2522,6 +2527,7 @@ impl PipelineStageFlags2 {
     pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x40000);
     /// Added by extension VK_KHR_synchronization2.
     pub const COMMAND_PREPROCESS_NV: Self = Self(0x20000);
+    pub const COMMAND_PREPROCESS_EXT: Self = Self::COMMAND_PREPROCESS_NV;
     /// Added by extension VK_KHR_synchronization2.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x400000);
     pub const SHADING_RATE_IMAGE_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT_KHR;
@@ -2852,6 +2858,40 @@ impl fmt::Display for MicromapCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct IndirectCommandsLayoutUsageFlagsEXT(pub(crate) u32);
+impl IndirectCommandsLayoutUsageFlagsEXT {
+    pub const EXPLICIT_PREPROCESS: Self = Self(0x1);
+    pub const UNORDERED_SEQUENCES: Self = Self(0x2);
+}
+impl_bitmask!(IndirectCommandsLayoutUsageFlagsEXT, 0x3);
+impl fmt::Display for IndirectCommandsLayoutUsageFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "EXPLICIT_PREPROCESS"), (0x2, "UNORDERED_SEQUENCES")],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct IndirectCommandsInputModeFlagsEXT(pub(crate) u32);
+impl IndirectCommandsInputModeFlagsEXT {
+    pub const VULKAN_INDEX_BUFFER: Self = Self(0x1);
+    pub const DXGI_INDEX_BUFFER: Self = Self(0x2);
+}
+impl_bitmask!(IndirectCommandsInputModeFlagsEXT, 0x3);
+impl fmt::Display for IndirectCommandsInputModeFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "VULKAN_INDEX_BUFFER"), (0x2, "DXGI_INDEX_BUFFER")],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DirectDriverLoadingFlagsLUNARG(pub(crate) u32);
 impl DirectDriverLoadingFlagsLUNARG {}
 impl_bitmask!(DirectDriverLoadingFlagsLUNARG, 0x0);
@@ -2927,8 +2967,10 @@ impl PipelineCreateFlags2KHR {
     pub const DESCRIPTOR_BUFFER_EXT: Self = Self(0x20000000);
     /// Added by extension VK_KHR_pipeline_binary.
     pub const CAPTURE_DATA: Self = Self(0x80000000);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const INDIRECT_BINDABLE_EXT: Self = Self(0x4000000000);
 }
-impl_bitmask!(PipelineCreateFlags2KHR, 0x4ffffffff);
+impl_bitmask!(PipelineCreateFlags2KHR, 0x44ffffffff);
 impl fmt::Display for PipelineCreateFlags2KHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2967,6 +3009,7 @@ impl fmt::Display for PipelineCreateFlags2KHR {
                 (0x10000000, "RAY_TRACING_DISPLACEMENT_MICROMAP_NV"),
                 (0x20000000, "DESCRIPTOR_BUFFER_EXT"),
                 (0x80000000, "CAPTURE_DATA"),
+                (0x4000000000, "INDIRECT_BINDABLE_EXT"),
             ],
             f,
         )
@@ -3020,8 +3063,10 @@ impl BufferUsageFlags2KHR {
     pub const MICROMAP_BUILD_INPUT_READ_ONLY_EXT: Self = Self(0x800000);
     /// Added by extension VK_KHR_maintenance5.
     pub const MICROMAP_STORAGE_EXT: Self = Self(0x1000000);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const PREPROCESS_BUFFER_EXT: Self = Self(0x80000000);
 }
-impl_bitmask!(BufferUsageFlags2KHR, 0x7fbffff);
+impl_bitmask!(BufferUsageFlags2KHR, 0x87fbffff);
 impl fmt::Display for BufferUsageFlags2KHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -3053,6 +3098,7 @@ impl fmt::Display for BufferUsageFlags2KHR {
                 (0x4000000, "PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT"),
                 (0x800000, "MICROMAP_BUILD_INPUT_READ_ONLY_EXT"),
                 (0x1000000, "MICROMAP_STORAGE_EXT"),
+                (0x80000000, "PREPROCESS_BUFFER_EXT"),
             ],
             f,
         )
@@ -4329,8 +4375,10 @@ impl ShaderCreateFlagsEXT {
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x20);
     /// Added by extension VK_EXT_shader_object.
     pub const FRAGMENT_DENSITY_MAP_ATTACHMENT: Self = Self(0x40);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const INDIRECT_BINDABLE: Self = Self(0x80);
 }
-impl_bitmask!(ShaderCreateFlagsEXT, 0x7f);
+impl_bitmask!(ShaderCreateFlagsEXT, 0xff);
 impl fmt::Display for ShaderCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -4343,6 +4391,7 @@ impl fmt::Display for ShaderCreateFlagsEXT {
                 (0x10, "DISPATCH_BASE"),
                 (0x20, "FRAGMENT_SHADING_RATE_ATTACHMENT"),
                 (0x40, "FRAGMENT_DENSITY_MAP_ATTACHMENT"),
+                (0x80, "INDIRECT_BINDABLE"),
             ],
             f,
         )
@@ -4572,6 +4621,22 @@ impl PipelineBinaryKHR {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct IndirectCommandsLayoutNV(num::NonZeroU64);
 impl IndirectCommandsLayoutNV {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct IndirectCommandsLayoutEXT(num::NonZeroU64);
+impl IndirectCommandsLayoutEXT {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct IndirectExecutionSetEXT(num::NonZeroU64);
+impl IndirectExecutionSetEXT {
     pub fn from_raw(x: u64) -> Option<Self> {
         num::NonZeroU64::new(x).map(Self)
     }
@@ -5348,6 +5413,8 @@ impl DynamicState {
     /// Added by extension VK_EXT_attachment_feedback_loop_dynamic_state.
     pub const ATTACHMENT_FEEDBACK_LOOP_ENABLE_EXT: Self = Self(1000524000);
     pub const LINE_STIPPLE_KHR: Self = Self(1000259000);
+    /// Added by extension VK_EXT_depth_clamp_control.
+    pub const DEPTH_CLAMP_RANGE_EXT: Self = Self(1000582000);
 }
 impl fmt::Display for DynamicState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5424,6 +5491,7 @@ impl fmt::Display for DynamicState {
             1000455032 => Some(&"COVERAGE_REDUCTION_MODE_NV"),
             1000524000 => Some(&"ATTACHMENT_FEEDBACK_LOOP_ENABLE_EXT"),
             1000259000 => Some(&"LINE_STIPPLE_KHR"),
+            1000582000 => Some(&"DEPTH_CLAMP_RANGE_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -6218,6 +6286,58 @@ impl fmt::Display for ImageViewType {
             4 => Some(&"N1D_ARRAY"),
             5 => Some(&"N2D_ARRAY"),
             6 => Some(&"CUBE_ARRAY"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct IndirectCommandsTokenTypeEXT(pub(crate) i32);
+impl IndirectCommandsTokenTypeEXT {
+    pub const EXECUTION_SET: Self = Self(0);
+    pub const PUSH_CONSTANT: Self = Self(1);
+    pub const SEQUENCE_INDEX: Self = Self(2);
+    pub const INDEX_BUFFER: Self = Self(3);
+    pub const VERTEX_BUFFER: Self = Self(4);
+    pub const DRAW_INDEXED: Self = Self(5);
+    pub const DRAW: Self = Self(6);
+    pub const DRAW_INDEXED_COUNT: Self = Self(7);
+    pub const DRAW_COUNT: Self = Self(8);
+    pub const DISPATCH: Self = Self(9);
+    /// Added by extension VK_NV_mesh_shader.
+    pub const DRAW_MESH_TASKS_NV: Self = Self(1000202002);
+    /// Added by extension VK_NV_mesh_shader.
+    pub const DRAW_MESH_TASKS_COUNT_NV: Self = Self(1000202003);
+    /// Added by extension VK_EXT_mesh_shader.
+    pub const DRAW_MESH_TASKS: Self = Self(1000328000);
+    /// Added by extension VK_EXT_mesh_shader.
+    pub const DRAW_MESH_TASKS_COUNT: Self = Self(1000328001);
+    /// Added by extension VK_KHR_ray_tracing_maintenance1.
+    pub const TRACE_RAYS2: Self = Self(1000386004);
+}
+impl fmt::Display for IndirectCommandsTokenTypeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"EXECUTION_SET"),
+            1 => Some(&"PUSH_CONSTANT"),
+            2 => Some(&"SEQUENCE_INDEX"),
+            3 => Some(&"INDEX_BUFFER"),
+            4 => Some(&"VERTEX_BUFFER"),
+            5 => Some(&"DRAW_INDEXED"),
+            6 => Some(&"DRAW"),
+            7 => Some(&"DRAW_INDEXED_COUNT"),
+            8 => Some(&"DRAW_COUNT"),
+            9 => Some(&"DISPATCH"),
+            1000202002 => Some(&"DRAW_MESH_TASKS_NV"),
+            1000202003 => Some(&"DRAW_MESH_TASKS_COUNT_NV"),
+            1000328000 => Some(&"DRAW_MESH_TASKS"),
+            1000328001 => Some(&"DRAW_MESH_TASKS_COUNT"),
+            1000386004 => Some(&"TRACE_RAYS2"),
             _ => None,
         };
         if let Some(name) = name {
@@ -8350,12 +8470,44 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT: Self = Self(1000564000);
     /// Added by extension VK_NV_ray_tracing_validation.
     pub const PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV: Self = Self(1000568000);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_EXT: Self = Self(1000572000);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_EXT: Self = Self(1000572001);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_EXT: Self = Self(1000572002);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const INDIRECT_EXECUTION_SET_CREATE_INFO_EXT: Self = Self(1000572003);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const GENERATED_COMMANDS_INFO_EXT: Self = Self(1000572004);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_EXT: Self = Self(1000572006);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const INDIRECT_COMMANDS_LAYOUT_TOKEN_EXT: Self = Self(1000572007);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const WRITE_INDIRECT_EXECUTION_SET_PIPELINE_EXT: Self = Self(1000572008);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const WRITE_INDIRECT_EXECUTION_SET_SHADER_EXT: Self = Self(1000572009);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const INDIRECT_EXECUTION_SET_PIPELINE_INFO_EXT: Self = Self(1000572010);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const INDIRECT_EXECUTION_SET_SHADER_INFO_EXT: Self = Self(1000572011);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const INDIRECT_EXECUTION_SET_SHADER_LAYOUT_INFO_EXT: Self = Self(1000572012);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const GENERATED_COMMANDS_PIPELINE_INFO_EXT: Self = Self(1000572013);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const GENERATED_COMMANDS_SHADER_INFO_EXT: Self = Self(1000572014);
     /// Added by extension VK_MESA_image_alignment_control.
     pub const PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA: Self = Self(1000575000);
     /// Added by extension VK_MESA_image_alignment_control.
     pub const PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA: Self = Self(1000575001);
     /// Added by extension VK_MESA_image_alignment_control.
     pub const IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA: Self = Self(1000575002);
+    /// Added by extension VK_EXT_depth_clamp_control.
+    pub const PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT: Self = Self(1000582000);
+    /// Added by extension VK_EXT_depth_clamp_control.
+    pub const PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT: Self = Self(1000582001);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9193,9 +9345,25 @@ impl fmt::Display for StructureType {
             1000563000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV"),
             1000564000 => Some(&"PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT"),
             1000568000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV"),
+            1000572000 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_EXT"),
+            1000572001 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_EXT"),
+            1000572002 => Some(&"GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_EXT"),
+            1000572003 => Some(&"INDIRECT_EXECUTION_SET_CREATE_INFO_EXT"),
+            1000572004 => Some(&"GENERATED_COMMANDS_INFO_EXT"),
+            1000572006 => Some(&"INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_EXT"),
+            1000572007 => Some(&"INDIRECT_COMMANDS_LAYOUT_TOKEN_EXT"),
+            1000572008 => Some(&"WRITE_INDIRECT_EXECUTION_SET_PIPELINE_EXT"),
+            1000572009 => Some(&"WRITE_INDIRECT_EXECUTION_SET_SHADER_EXT"),
+            1000572010 => Some(&"INDIRECT_EXECUTION_SET_PIPELINE_INFO_EXT"),
+            1000572011 => Some(&"INDIRECT_EXECUTION_SET_SHADER_INFO_EXT"),
+            1000572012 => Some(&"INDIRECT_EXECUTION_SET_SHADER_LAYOUT_INFO_EXT"),
+            1000572013 => Some(&"GENERATED_COMMANDS_PIPELINE_INFO_EXT"),
+            1000572014 => Some(&"GENERATED_COMMANDS_SHADER_INFO_EXT"),
             1000575000 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA"),
             1000575001 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA"),
             1000575002 => Some(&"IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA"),
+            1000582000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT"),
+            1000582001 => Some(&"PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -9428,6 +9596,10 @@ impl ObjectType {
     pub const SHADER_EXT: Self = Self(1000482000);
     /// Added by extension VK_KHR_pipeline_binary.
     pub const PIPELINE_BINARY_KHR: Self = Self(1000483000);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const INDIRECT_COMMANDS_LAYOUT_EXT: Self = Self(1000572000);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const INDIRECT_EXECUTION_SET_EXT: Self = Self(1000572001);
 }
 impl fmt::Display for ObjectType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9482,6 +9654,8 @@ impl fmt::Display for ObjectType {
             1000464000 => Some(&"OPTICAL_FLOW_SESSION_NV"),
             1000482000 => Some(&"SHADER_EXT"),
             1000483000 => Some(&"PIPELINE_BINARY_KHR"),
+            1000572000 => Some(&"INDIRECT_COMMANDS_LAYOUT_EXT"),
+            1000572001 => Some(&"INDIRECT_EXECUTION_SET_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10659,6 +10833,27 @@ impl fmt::Display for DeviceFaultVendorBinaryHeaderVersionEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct IndirectExecutionSetInfoTypeEXT(pub(crate) i32);
+impl IndirectExecutionSetInfoTypeEXT {
+    pub const PIPELINES: Self = Self(0);
+    pub const SHADER_OBJECTS: Self = Self(1);
+}
+impl fmt::Display for IndirectExecutionSetInfoTypeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"PIPELINES"),
+            1 => Some(&"SHADER_OBJECTS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DepthBiasRepresentationEXT(pub(crate) i32);
 impl DepthBiasRepresentationEXT {
     pub const LEAST_REPRESENTABLE_VALUE_FORMAT: Self = Self(0);
@@ -10955,6 +11150,27 @@ impl fmt::Display for PhysicalDeviceLayeredApiKHR {
             2 => Some(&"METAL"),
             3 => Some(&"OPENGL"),
             4 => Some(&"OPENGLES"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DepthClampModeEXT(pub(crate) i32);
+impl DepthClampModeEXT {
+    pub const VIEWPORT_RANGE: Self = Self(0);
+    pub const USER_DEFINED_RANGE: Self = Self(1);
+}
+impl fmt::Display for DepthClampModeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"VIEWPORT_RANGE"),
+            1 => Some(&"USER_DEFINED_RANGE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -36090,6 +36306,687 @@ impl fmt::Debug for PhysicalDeviceDepthClipControlFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub device_generated_commands: Bool32,
+    pub dynamic_generated_pipeline_layout: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT {}
+impl Default for PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            device_generated_commands: Default::default(),
+            dynamic_generated_pipeline_layout: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("device_generated_commands", &self.device_generated_commands)
+            .field(
+                "dynamic_generated_pipeline_layout",
+                &self.dynamic_generated_pipeline_layout,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDeviceGeneratedCommandsPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_indirect_pipeline_count: u32,
+    pub max_indirect_shader_object_count: u32,
+    pub max_indirect_sequence_count: u32,
+    pub max_indirect_commands_token_count: u32,
+    pub max_indirect_commands_token_offset: u32,
+    pub max_indirect_commands_indirect_stride: u32,
+    pub supported_indirect_commands_input_modes: IndirectCommandsInputModeFlagsEXT,
+    pub supported_indirect_commands_shader_stages: ShaderStageFlags,
+    pub supported_indirect_commands_shader_stages_pipeline_binding: ShaderStageFlags,
+    pub supported_indirect_commands_shader_stages_shader_binding: ShaderStageFlags,
+    pub device_generated_commands_transform_feedback: Bool32,
+    pub device_generated_commands_multi_draw_indirect_count: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDeviceGeneratedCommandsPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceDeviceGeneratedCommandsPropertiesEXT {}
+impl Default for PhysicalDeviceDeviceGeneratedCommandsPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            max_indirect_pipeline_count: Default::default(),
+            max_indirect_shader_object_count: Default::default(),
+            max_indirect_sequence_count: Default::default(),
+            max_indirect_commands_token_count: Default::default(),
+            max_indirect_commands_token_offset: Default::default(),
+            max_indirect_commands_indirect_stride: Default::default(),
+            supported_indirect_commands_input_modes: Default::default(),
+            supported_indirect_commands_shader_stages: Default::default(),
+            supported_indirect_commands_shader_stages_pipeline_binding: Default::default(),
+            supported_indirect_commands_shader_stages_shader_binding: Default::default(),
+            device_generated_commands_transform_feedback: Default::default(),
+            device_generated_commands_multi_draw_indirect_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDeviceGeneratedCommandsPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDeviceGeneratedCommandsPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_indirect_pipeline_count", &self.max_indirect_pipeline_count)
+            .field(
+                "max_indirect_shader_object_count",
+                &self.max_indirect_shader_object_count,
+            )
+            .field("max_indirect_sequence_count", &self.max_indirect_sequence_count)
+            .field(
+                "max_indirect_commands_token_count",
+                &self.max_indirect_commands_token_count,
+            )
+            .field(
+                "max_indirect_commands_token_offset",
+                &self.max_indirect_commands_token_offset,
+            )
+            .field(
+                "max_indirect_commands_indirect_stride",
+                &self.max_indirect_commands_indirect_stride,
+            )
+            .field(
+                "supported_indirect_commands_input_modes",
+                &self.supported_indirect_commands_input_modes,
+            )
+            .field(
+                "supported_indirect_commands_shader_stages",
+                &self.supported_indirect_commands_shader_stages,
+            )
+            .field(
+                "supported_indirect_commands_shader_stages_pipeline_binding",
+                &self.supported_indirect_commands_shader_stages_pipeline_binding,
+            )
+            .field(
+                "supported_indirect_commands_shader_stages_shader_binding",
+                &self.supported_indirect_commands_shader_stages_shader_binding,
+            )
+            .field(
+                "device_generated_commands_transform_feedback",
+                &self.device_generated_commands_transform_feedback,
+            )
+            .field(
+                "device_generated_commands_multi_draw_indirect_count",
+                &self.device_generated_commands_multi_draw_indirect_count,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct GeneratedCommandsPipelineInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline: Option<Pipeline>,
+}
+unsafe impl Send for GeneratedCommandsPipelineInfoEXT {}
+unsafe impl Sync for GeneratedCommandsPipelineInfoEXT {}
+impl Default for GeneratedCommandsPipelineInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::GENERATED_COMMANDS_PIPELINE_INFO_EXT,
+            p_next: ptr::null_mut(),
+            pipeline: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for GeneratedCommandsPipelineInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("GeneratedCommandsPipelineInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline", &self.pipeline)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct GeneratedCommandsShaderInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_count: u32,
+    pub p_shaders: *const ShaderEXT,
+}
+unsafe impl Send for GeneratedCommandsShaderInfoEXT {}
+unsafe impl Sync for GeneratedCommandsShaderInfoEXT {}
+impl Default for GeneratedCommandsShaderInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::GENERATED_COMMANDS_SHADER_INFO_EXT,
+            p_next: ptr::null_mut(),
+            shader_count: Default::default(),
+            p_shaders: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for GeneratedCommandsShaderInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("GeneratedCommandsShaderInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_count", &self.shader_count)
+            .field("p_shaders", &self.p_shaders)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct GeneratedCommandsMemoryRequirementsInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub indirect_execution_set: Option<IndirectExecutionSetEXT>,
+    pub indirect_commands_layout: Option<IndirectCommandsLayoutEXT>,
+    pub max_sequence_count: u32,
+    pub max_draw_count: u32,
+}
+unsafe impl Send for GeneratedCommandsMemoryRequirementsInfoEXT {}
+unsafe impl Sync for GeneratedCommandsMemoryRequirementsInfoEXT {}
+impl Default for GeneratedCommandsMemoryRequirementsInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_EXT,
+            p_next: ptr::null_mut(),
+            indirect_execution_set: Default::default(),
+            indirect_commands_layout: Default::default(),
+            max_sequence_count: Default::default(),
+            max_draw_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for GeneratedCommandsMemoryRequirementsInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("GeneratedCommandsMemoryRequirementsInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("indirect_execution_set", &self.indirect_execution_set)
+            .field("indirect_commands_layout", &self.indirect_commands_layout)
+            .field("max_sequence_count", &self.max_sequence_count)
+            .field("max_draw_count", &self.max_draw_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct IndirectExecutionSetPipelineInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub initial_pipeline: Option<Pipeline>,
+    pub max_pipeline_count: u32,
+}
+unsafe impl Send for IndirectExecutionSetPipelineInfoEXT {}
+unsafe impl Sync for IndirectExecutionSetPipelineInfoEXT {}
+impl Default for IndirectExecutionSetPipelineInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::INDIRECT_EXECUTION_SET_PIPELINE_INFO_EXT,
+            p_next: ptr::null(),
+            initial_pipeline: Default::default(),
+            max_pipeline_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for IndirectExecutionSetPipelineInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectExecutionSetPipelineInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("initial_pipeline", &self.initial_pipeline)
+            .field("max_pipeline_count", &self.max_pipeline_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct IndirectExecutionSetShaderLayoutInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub set_layout_count: u32,
+    pub p_set_layouts: *const DescriptorSetLayout,
+}
+unsafe impl Send for IndirectExecutionSetShaderLayoutInfoEXT {}
+unsafe impl Sync for IndirectExecutionSetShaderLayoutInfoEXT {}
+impl Default for IndirectExecutionSetShaderLayoutInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::INDIRECT_EXECUTION_SET_SHADER_LAYOUT_INFO_EXT,
+            p_next: ptr::null(),
+            set_layout_count: Default::default(),
+            p_set_layouts: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for IndirectExecutionSetShaderLayoutInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectExecutionSetShaderLayoutInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("set_layout_count", &self.set_layout_count)
+            .field("p_set_layouts", &self.p_set_layouts)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct IndirectExecutionSetShaderInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub shader_count: u32,
+    pub p_initial_shaders: *const ShaderEXT,
+    pub p_set_layout_infos: *const IndirectExecutionSetShaderLayoutInfoEXT,
+    pub max_shader_count: u32,
+    pub push_constant_range_count: u32,
+    pub p_push_constant_ranges: *const PushConstantRange,
+}
+unsafe impl Send for IndirectExecutionSetShaderInfoEXT {}
+unsafe impl Sync for IndirectExecutionSetShaderInfoEXT {}
+impl Default for IndirectExecutionSetShaderInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::INDIRECT_EXECUTION_SET_SHADER_INFO_EXT,
+            p_next: ptr::null(),
+            shader_count: Default::default(),
+            p_initial_shaders: ptr::null(),
+            p_set_layout_infos: ptr::null(),
+            max_shader_count: Default::default(),
+            push_constant_range_count: Default::default(),
+            p_push_constant_ranges: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for IndirectExecutionSetShaderInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectExecutionSetShaderInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_count", &self.shader_count)
+            .field("p_initial_shaders", &self.p_initial_shaders)
+            .field("p_set_layout_infos", &self.p_set_layout_infos)
+            .field("max_shader_count", &self.max_shader_count)
+            .field("push_constant_range_count", &self.push_constant_range_count)
+            .field("p_push_constant_ranges", &self.p_push_constant_ranges)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union IndirectExecutionSetInfoEXT {
+    pub p_pipeline_info: *const IndirectExecutionSetPipelineInfoEXT,
+    pub p_shader_info: *const IndirectExecutionSetShaderInfoEXT,
+}
+unsafe impl Send for IndirectExecutionSetInfoEXT {}
+unsafe impl Sync for IndirectExecutionSetInfoEXT {}
+impl Default for IndirectExecutionSetInfoEXT {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for IndirectExecutionSetInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectExecutionSetInfoEXT")
+            .field("p_pipeline_info", unsafe { &self.p_pipeline_info })
+            .field("p_shader_info", unsafe { &self.p_shader_info })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct IndirectExecutionSetCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub ty: IndirectExecutionSetInfoTypeEXT,
+    pub info: IndirectExecutionSetInfoEXT,
+}
+unsafe impl Send for IndirectExecutionSetCreateInfoEXT {}
+unsafe impl Sync for IndirectExecutionSetCreateInfoEXT {}
+impl Default for IndirectExecutionSetCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::INDIRECT_EXECUTION_SET_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            ty: Default::default(),
+            info: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for IndirectExecutionSetCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectExecutionSetCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ty", &self.ty)
+            .field("info", &self.info)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct GeneratedCommandsInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub shader_stages: ShaderStageFlags,
+    pub indirect_execution_set: Option<IndirectExecutionSetEXT>,
+    pub indirect_commands_layout: Option<IndirectCommandsLayoutEXT>,
+    pub indirect_address: DeviceAddress,
+    pub indirect_address_size: DeviceSize,
+    pub preprocess_address: DeviceAddress,
+    pub preprocess_size: DeviceSize,
+    pub max_sequence_count: u32,
+    pub sequence_count_address: DeviceAddress,
+    pub max_draw_count: u32,
+}
+unsafe impl Send for GeneratedCommandsInfoEXT {}
+unsafe impl Sync for GeneratedCommandsInfoEXT {}
+impl Default for GeneratedCommandsInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::GENERATED_COMMANDS_INFO_EXT,
+            p_next: ptr::null(),
+            shader_stages: Default::default(),
+            indirect_execution_set: Default::default(),
+            indirect_commands_layout: Default::default(),
+            indirect_address: Default::default(),
+            indirect_address_size: Default::default(),
+            preprocess_address: Default::default(),
+            preprocess_size: Default::default(),
+            max_sequence_count: Default::default(),
+            sequence_count_address: Default::default(),
+            max_draw_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for GeneratedCommandsInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("GeneratedCommandsInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_stages", &self.shader_stages)
+            .field("indirect_execution_set", &self.indirect_execution_set)
+            .field("indirect_commands_layout", &self.indirect_commands_layout)
+            .field("indirect_address", &self.indirect_address)
+            .field("indirect_address_size", &self.indirect_address_size)
+            .field("preprocess_address", &self.preprocess_address)
+            .field("preprocess_size", &self.preprocess_size)
+            .field("max_sequence_count", &self.max_sequence_count)
+            .field("sequence_count_address", &self.sequence_count_address)
+            .field("max_draw_count", &self.max_draw_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct WriteIndirectExecutionSetPipelineEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub index: u32,
+    pub pipeline: Option<Pipeline>,
+}
+unsafe impl Send for WriteIndirectExecutionSetPipelineEXT {}
+unsafe impl Sync for WriteIndirectExecutionSetPipelineEXT {}
+impl Default for WriteIndirectExecutionSetPipelineEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::WRITE_INDIRECT_EXECUTION_SET_PIPELINE_EXT,
+            p_next: ptr::null(),
+            index: Default::default(),
+            pipeline: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for WriteIndirectExecutionSetPipelineEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("WriteIndirectExecutionSetPipelineEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("index", &self.index)
+            .field("pipeline", &self.pipeline)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct WriteIndirectExecutionSetShaderEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub index: u32,
+    pub shader: Option<ShaderEXT>,
+}
+unsafe impl Send for WriteIndirectExecutionSetShaderEXT {}
+unsafe impl Sync for WriteIndirectExecutionSetShaderEXT {}
+impl Default for WriteIndirectExecutionSetShaderEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::WRITE_INDIRECT_EXECUTION_SET_SHADER_EXT,
+            p_next: ptr::null(),
+            index: Default::default(),
+            shader: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for WriteIndirectExecutionSetShaderEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("WriteIndirectExecutionSetShaderEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("index", &self.index)
+            .field("shader", &self.shader)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct IndirectCommandsLayoutCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: IndirectCommandsLayoutUsageFlagsEXT,
+    pub shader_stages: ShaderStageFlags,
+    pub indirect_stride: u32,
+    pub pipeline_layout: Option<PipelineLayout>,
+    pub token_count: u32,
+    pub p_tokens: *const IndirectCommandsLayoutTokenEXT,
+}
+unsafe impl Send for IndirectCommandsLayoutCreateInfoEXT {}
+unsafe impl Sync for IndirectCommandsLayoutCreateInfoEXT {}
+impl Default for IndirectCommandsLayoutCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            shader_stages: Default::default(),
+            indirect_stride: Default::default(),
+            pipeline_layout: Default::default(),
+            token_count: Default::default(),
+            p_tokens: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for IndirectCommandsLayoutCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectCommandsLayoutCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("shader_stages", &self.shader_stages)
+            .field("indirect_stride", &self.indirect_stride)
+            .field("pipeline_layout", &self.pipeline_layout)
+            .field("token_count", &self.token_count)
+            .field("p_tokens", &self.p_tokens)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct IndirectCommandsLayoutTokenEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub ty: IndirectCommandsTokenTypeEXT,
+    pub data: IndirectCommandsTokenDataEXT,
+    pub offset: u32,
+}
+unsafe impl Send for IndirectCommandsLayoutTokenEXT {}
+unsafe impl Sync for IndirectCommandsLayoutTokenEXT {}
+impl Default for IndirectCommandsLayoutTokenEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::INDIRECT_COMMANDS_LAYOUT_TOKEN_EXT,
+            p_next: ptr::null(),
+            ty: Default::default(),
+            data: Default::default(),
+            offset: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for IndirectCommandsLayoutTokenEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectCommandsLayoutTokenEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ty", &self.ty)
+            .field("data", &self.data)
+            .field("offset", &self.offset)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DrawIndirectCountIndirectCommandEXT {
+    pub buffer_address: DeviceAddress,
+    pub stride: u32,
+    pub command_count: u32,
+}
+impl fmt::Debug for DrawIndirectCountIndirectCommandEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DrawIndirectCountIndirectCommandEXT")
+            .field("buffer_address", &self.buffer_address)
+            .field("stride", &self.stride)
+            .field("command_count", &self.command_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct IndirectCommandsVertexBufferTokenEXT {
+    pub vertex_binding_unit: u32,
+}
+impl fmt::Debug for IndirectCommandsVertexBufferTokenEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectCommandsVertexBufferTokenEXT")
+            .field("vertex_binding_unit", &self.vertex_binding_unit)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct BindVertexBufferIndirectCommandEXT {
+    pub buffer_address: DeviceAddress,
+    pub size: u32,
+    pub stride: u32,
+}
+impl fmt::Debug for BindVertexBufferIndirectCommandEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindVertexBufferIndirectCommandEXT")
+            .field("buffer_address", &self.buffer_address)
+            .field("size", &self.size)
+            .field("stride", &self.stride)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct IndirectCommandsIndexBufferTokenEXT {
+    pub mode: IndirectCommandsInputModeFlagsEXT,
+}
+impl fmt::Debug for IndirectCommandsIndexBufferTokenEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectCommandsIndexBufferTokenEXT")
+            .field("mode", &self.mode)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct BindIndexBufferIndirectCommandEXT {
+    pub buffer_address: DeviceAddress,
+    pub size: u32,
+    pub index_type: IndexType,
+}
+impl fmt::Debug for BindIndexBufferIndirectCommandEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindIndexBufferIndirectCommandEXT")
+            .field("buffer_address", &self.buffer_address)
+            .field("size", &self.size)
+            .field("index_type", &self.index_type)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct IndirectCommandsPushConstantTokenEXT {
+    pub update_range: PushConstantRange,
+}
+impl fmt::Debug for IndirectCommandsPushConstantTokenEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectCommandsPushConstantTokenEXT")
+            .field("update_range", &self.update_range)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct IndirectCommandsExecutionSetTokenEXT {
+    pub ty: IndirectExecutionSetInfoTypeEXT,
+    pub shader_stages: ShaderStageFlags,
+}
+impl fmt::Debug for IndirectCommandsExecutionSetTokenEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectCommandsExecutionSetTokenEXT")
+            .field("ty", &self.ty)
+            .field("shader_stages", &self.shader_stages)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union IndirectCommandsTokenDataEXT {
+    pub p_push_constant: *const IndirectCommandsPushConstantTokenEXT,
+    pub p_vertex_buffer: *const IndirectCommandsVertexBufferTokenEXT,
+    pub p_index_buffer: *const IndirectCommandsIndexBufferTokenEXT,
+    pub p_execution_set: *const IndirectCommandsExecutionSetTokenEXT,
+}
+unsafe impl Send for IndirectCommandsTokenDataEXT {}
+unsafe impl Sync for IndirectCommandsTokenDataEXT {}
+impl Default for IndirectCommandsTokenDataEXT {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for IndirectCommandsTokenDataEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectCommandsTokenDataEXT")
+            .field("p_push_constant", unsafe { &self.p_push_constant })
+            .field("p_vertex_buffer", unsafe { &self.p_vertex_buffer })
+            .field("p_index_buffer", unsafe { &self.p_index_buffer })
+            .field("p_execution_set", unsafe { &self.p_execution_set })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PipelineViewportDepthClipControlCreateInfoEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -36112,6 +37009,63 @@ impl fmt::Debug for PipelineViewportDepthClipControlCreateInfoEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("negative_one_to_one", &self.negative_one_to_one)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDepthClampControlFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub depth_clamp_control: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDepthClampControlFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceDepthClampControlFeaturesEXT {}
+impl Default for PhysicalDeviceDepthClampControlFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            depth_clamp_control: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDepthClampControlFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDepthClampControlFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("depth_clamp_control", &self.depth_clamp_control)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineViewportDepthClampControlCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub depth_clamp_mode: DepthClampModeEXT,
+    pub p_depth_clamp_range: *const DepthClampRangeEXT,
+}
+unsafe impl Send for PipelineViewportDepthClampControlCreateInfoEXT {}
+unsafe impl Sync for PipelineViewportDepthClampControlCreateInfoEXT {}
+impl Default for PipelineViewportDepthClampControlCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            depth_clamp_mode: Default::default(),
+            p_depth_clamp_range: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PipelineViewportDepthClampControlCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineViewportDepthClampControlCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("depth_clamp_mode", &self.depth_clamp_mode)
+            .field("p_depth_clamp_range", &self.p_depth_clamp_range)
             .finish()
     }
 }
@@ -46178,6 +47132,20 @@ impl fmt::Debug for PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone, Default)]
+pub struct DepthClampRangeEXT {
+    pub min_depth_clamp: f32,
+    pub max_depth_clamp: f32,
+}
+impl fmt::Debug for DepthClampRangeEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DepthClampRangeEXT")
+            .field("min_depth_clamp", &self.min_depth_clamp)
+            .field("max_depth_clamp", &self.max_depth_clamp)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -47236,6 +48204,55 @@ pub type FnDestroyIndirectCommandsLayoutNV = unsafe extern "system" fn(
     device: Option<Device>,
     indirect_commands_layout: Option<IndirectCommandsLayoutNV>,
     p_allocator: *const AllocationCallbacks,
+);
+pub type FnCmdExecuteGeneratedCommandsEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    is_preprocessed: Bool32,
+    p_generated_commands_info: *const GeneratedCommandsInfoEXT,
+);
+pub type FnCmdPreprocessGeneratedCommandsEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_generated_commands_info: *const GeneratedCommandsInfoEXT,
+    state_command_buffer: Option<CommandBuffer>,
+);
+pub type FnGetGeneratedCommandsMemoryRequirementsEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const GeneratedCommandsMemoryRequirementsInfoEXT,
+    p_memory_requirements: *mut MemoryRequirements2,
+);
+pub type FnCreateIndirectCommandsLayoutEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const IndirectCommandsLayoutCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_indirect_commands_layout: *mut IndirectCommandsLayoutEXT,
+) -> Result;
+pub type FnDestroyIndirectCommandsLayoutEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    indirect_commands_layout: Option<IndirectCommandsLayoutEXT>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnCreateIndirectExecutionSetEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const IndirectExecutionSetCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_indirect_execution_set: *mut IndirectExecutionSetEXT,
+) -> Result;
+pub type FnDestroyIndirectExecutionSetEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    indirect_execution_set: Option<IndirectExecutionSetEXT>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnUpdateIndirectExecutionSetPipelineEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    indirect_execution_set: Option<IndirectExecutionSetEXT>,
+    execution_set_write_count: u32,
+    p_execution_set_writes: *const WriteIndirectExecutionSetPipelineEXT,
+);
+pub type FnUpdateIndirectExecutionSetShaderEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    indirect_execution_set: Option<IndirectExecutionSetEXT>,
+    execution_set_write_count: u32,
+    p_execution_set_writes: *const WriteIndirectExecutionSetShaderEXT,
 );
 pub type FnGetPhysicalDeviceFeatures2 =
     unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, p_features: *mut PhysicalDeviceFeatures2);
@@ -49000,4 +50017,9 @@ pub type FnCmdSetRenderingAttachmentLocationsKHR = unsafe extern "system" fn(
 pub type FnCmdSetRenderingInputAttachmentIndicesKHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_input_attachment_index_info: *const RenderingInputAttachmentIndexInfoKHR,
+);
+pub type FnCmdSetDepthClampRangeEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    depth_clamp_mode: DepthClampModeEXT,
+    p_depth_clamp_range: *const DepthClampRangeEXT,
 );
