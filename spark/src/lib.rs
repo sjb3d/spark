@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 298
+//! Generated from vk.xml with `VK_HEADER_VERSION` 299
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -13511,14 +13511,16 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_write_buffer_marker2_amd: if extensions.khr_synchronization2 && extensions.amd_buffer_marker {
+            fp_cmd_write_buffer_marker2_amd: if extensions.amd_buffer_marker
+                && (version >= vk::Version::from_raw_parts(1, 3, 0) || extensions.khr_synchronization2)
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdWriteBufferMarker2AMD\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_get_queue_checkpoint_data2_nv: if extensions.khr_synchronization2
-                && extensions.nv_device_diagnostic_checkpoints
+            fp_get_queue_checkpoint_data2_nv: if extensions.nv_device_diagnostic_checkpoints
+                && (version >= vk::Version::from_raw_parts(1, 3, 0) || extensions.khr_synchronization2)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetQueueCheckpointData2NV\0"));
                 fp.map(|f| mem::transmute(f))
