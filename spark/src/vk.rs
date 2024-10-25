@@ -8028,6 +8028,8 @@ impl StructureType {
     /// Added by extension VK_EXT_primitive_topology_list_restart.
     pub const PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT: Self = Self(1000356000);
     pub const FORMAT_PROPERTIES_3_KHR: Self = Self::FORMAT_PROPERTIES_3;
+    /// Added by extension VK_EXT_present_mode_fifo_latest_ready.
+    pub const PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_EXT: Self = Self(1000361000);
     /// Added by extension VK_FUCHSIA_external_memory.
     pub const IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000364000);
     /// Added by extension VK_FUCHSIA_external_memory.
@@ -9123,6 +9125,7 @@ impl fmt::Display for StructureType {
             1000355000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT"),
             1000355001 => Some(&"PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT"),
             1000356000 => Some(&"PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT"),
+            1000361000 => Some(&"PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_EXT"),
             1000364000 => Some(&"IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000364001 => Some(&"MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA"),
             1000364002 => Some(&"MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
@@ -11258,6 +11261,8 @@ impl PresentModeKHR {
     pub const SHARED_DEMAND_REFRESH: Self = Self(1000111000);
     /// Added by extension VK_KHR_shared_presentable_image.
     pub const SHARED_CONTINUOUS_REFRESH: Self = Self(1000111001);
+    /// Added by extension VK_EXT_present_mode_fifo_latest_ready.
+    pub const FIFO_LATEST_READY_EXT: Self = Self(1000361000);
 }
 impl fmt::Display for PresentModeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -11268,6 +11273,7 @@ impl fmt::Display for PresentModeKHR {
             3 => Some(&"FIFO_RELAXED"),
             1000111000 => Some(&"SHARED_DEMAND_REFRESH"),
             1000111001 => Some(&"SHARED_CONTINUOUS_REFRESH"),
+            1000361000 => Some(&"FIFO_LATEST_READY_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -47129,6 +47135,33 @@ impl fmt::Debug for PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_replicated_composites", &self.shader_replicated_composites)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_mode_fifo_latest_ready: Bool32,
+}
+unsafe impl Send for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {}
+unsafe impl Sync for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {}
+impl Default for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            present_mode_fifo_latest_ready: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_mode_fifo_latest_ready", &self.present_mode_fifo_latest_ready)
             .finish()
     }
 }

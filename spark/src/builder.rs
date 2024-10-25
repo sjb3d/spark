@@ -27436,3 +27436,37 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderReplicatedCompositesFea
 impl DeviceCreateInfoNext for PhysicalDeviceShaderReplicatedCompositesFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {
+    type Type = PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder {
+    inner: vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT,
+}
+impl PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_mode_fifo_latest_ready(mut self, present_mode_fifo_latest_ready: bool) -> Self {
+        self.inner.present_mode_fifo_latest_ready = if present_mode_fifo_latest_ready {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder {
+    type Target = vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {}

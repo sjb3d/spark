@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 296
+//! Generated from vk.xml with `VK_HEADER_VERSION` 297
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1954,6 +1954,12 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+    pub fn supports_ext_present_mode_fifo_latest_ready(&self) -> bool {
+        self.supports_khr_swapchain()
+    }
+    pub fn enable_ext_present_mode_fifo_latest_ready(&mut self) {
+        self.enable_khr_swapchain();
     }
     pub fn supports_fuchsia_external_memory(&self) -> bool {
         (self.supports_khr_external_memory_capabilities() && self.supports_khr_external_memory())
@@ -5215,6 +5221,7 @@ pub struct DeviceExtensions {
     pub ext_depth_clip_control: bool,
     pub ext_primitive_topology_list_restart: bool,
     pub khr_format_feature_flags2: bool,
+    pub ext_present_mode_fifo_latest_ready: bool,
     pub fuchsia_external_memory: bool,
     pub fuchsia_external_semaphore: bool,
     pub fuchsia_buffer_collection: bool,
@@ -5552,6 +5559,7 @@ impl DeviceExtensions {
             b"VK_EXT_depth_clip_control" => self.ext_depth_clip_control = true,
             b"VK_EXT_primitive_topology_list_restart" => self.ext_primitive_topology_list_restart = true,
             b"VK_KHR_format_feature_flags2" => self.khr_format_feature_flags2 = true,
+            b"VK_EXT_present_mode_fifo_latest_ready" => self.ext_present_mode_fifo_latest_ready = true,
             b"VK_FUCHSIA_external_memory" => self.fuchsia_external_memory = true,
             b"VK_FUCHSIA_external_semaphore" => self.fuchsia_external_semaphore = true,
             b"VK_FUCHSIA_buffer_collection" => self.fuchsia_buffer_collection = true,
@@ -5889,6 +5897,7 @@ impl DeviceExtensions {
             ext_depth_clip_control: false,
             ext_primitive_topology_list_restart: false,
             khr_format_feature_flags2: false,
+            ext_present_mode_fifo_latest_ready: false,
             fuchsia_external_memory: false,
             fuchsia_external_semaphore: false,
             fuchsia_buffer_collection: false,
@@ -7811,6 +7820,13 @@ impl DeviceExtensions {
             self.khr_format_feature_flags2 = true;
         }
     }
+    pub fn supports_ext_present_mode_fifo_latest_ready(&self) -> bool {
+        self.ext_present_mode_fifo_latest_ready && self.supports_khr_swapchain()
+    }
+    pub fn enable_ext_present_mode_fifo_latest_ready(&mut self) {
+        self.ext_present_mode_fifo_latest_ready = true;
+        self.enable_khr_swapchain();
+    }
     pub fn supports_fuchsia_external_memory(&self) -> bool {
         self.fuchsia_external_memory
             && (self.supports_khr_external_memory() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
@@ -9245,6 +9261,9 @@ impl DeviceExtensions {
         }
         if self.khr_format_feature_flags2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_format_feature_flags2\0") })
+        }
+        if self.ext_present_mode_fifo_latest_ready {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_present_mode_fifo_latest_ready\0") })
         }
         if self.fuchsia_external_memory {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_external_memory\0") })
