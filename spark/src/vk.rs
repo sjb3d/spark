@@ -8511,6 +8511,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT: Self = Self(1000582000);
     /// Added by extension VK_EXT_depth_clamp_control.
     pub const PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT: Self = Self(1000582001);
+    /// Added by extension VK_HUAWEI_hdr_vivid.
+    pub const PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI: Self = Self(1000590000);
+    /// Added by extension VK_HUAWEI_hdr_vivid.
+    pub const HDR_VIVID_DYNAMIC_METADATA_HUAWEI: Self = Self(1000590001);
     /// Added by extension VK_NV_cooperative_matrix2.
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV: Self = Self(1000593000);
     /// Added by extension VK_NV_cooperative_matrix2.
@@ -9374,6 +9378,8 @@ impl fmt::Display for StructureType {
             1000575002 => Some(&"IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA"),
             1000582000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT"),
             1000582001 => Some(&"PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT"),
+            1000590000 => Some(&"PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI"),
+            1000590001 => Some(&"HDR_VIVID_DYNAMIC_METADATA_HUAWEI"),
             1000593000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV"),
             1000593001 => Some(&"COOPERATIVE_MATRIX_FLEXIBLE_DIMENSIONS_PROPERTIES_NV"),
             1000593002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV"),
@@ -10067,7 +10073,9 @@ pub struct CopyAccelerationStructureModeKHR(pub(crate) i32);
 impl CopyAccelerationStructureModeKHR {
     pub const CLONE: Self = Self(0);
     pub const COMPACT: Self = Self(1);
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const SERIALIZE: Self = Self(2);
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const DESERIALIZE: Self = Self(3);
     pub const CLONE_NV: Self = Self::CLONE;
     pub const COMPACT_NV: Self = Self::COMPACT;
@@ -21507,6 +21515,38 @@ impl fmt::Debug for HdrMetadataEXT {
             .field("min_luminance", &self.min_luminance)
             .field("max_content_light_level", &self.max_content_light_level)
             .field("max_frame_average_light_level", &self.max_frame_average_light_level)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct HdrVividDynamicMetadataHUAWEI {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Specified in bytes
+    pub dynamic_metadata_size: usize,
+    /// Binary code of size dynamicMetadataSize
+    pub p_dynamic_metadata: *const c_void,
+}
+unsafe impl Send for HdrVividDynamicMetadataHUAWEI {}
+unsafe impl Sync for HdrVividDynamicMetadataHUAWEI {}
+impl Default for HdrVividDynamicMetadataHUAWEI {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::HDR_VIVID_DYNAMIC_METADATA_HUAWEI,
+            p_next: ptr::null(),
+            dynamic_metadata_size: Default::default(),
+            p_dynamic_metadata: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for HdrVividDynamicMetadataHUAWEI {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("HdrVividDynamicMetadataHUAWEI")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("dynamic_metadata_size", &self.dynamic_metadata_size)
+            .field("p_dynamic_metadata", &self.p_dynamic_metadata)
             .finish()
     }
 }
@@ -47357,6 +47397,33 @@ impl fmt::Debug for CooperativeMatrixFlexibleDimensionsPropertiesNV {
             .field("saturating_accumulation", &self.saturating_accumulation)
             .field("scope", &self.scope)
             .field("workgroup_invocations", &self.workgroup_invocations)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceHdrVividFeaturesHUAWEI {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub hdr_vivid: Bool32,
+}
+unsafe impl Send for PhysicalDeviceHdrVividFeaturesHUAWEI {}
+unsafe impl Sync for PhysicalDeviceHdrVividFeaturesHUAWEI {}
+impl Default for PhysicalDeviceHdrVividFeaturesHUAWEI {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI,
+            p_next: ptr::null_mut(),
+            hdr_vivid: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceHdrVividFeaturesHUAWEI {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceHdrVividFeaturesHUAWEI")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("hdr_vivid", &self.hdr_vivid)
             .finish()
     }
 }

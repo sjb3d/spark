@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 300
+//! Generated from vk.xml with `VK_HEADER_VERSION` 301
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2599,6 +2599,19 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+    pub fn supports_huawei_hdr_vivid(&self) -> bool {
+        (self.supports_khr_get_physical_device_properties2()
+            || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+            && self.supports_khr_swapchain()
+            && self.supports_ext_hdr_metadata()
+    }
+    pub fn enable_huawei_hdr_vivid(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+        self.enable_khr_swapchain();
+        self.enable_ext_hdr_metadata();
     }
     pub fn supports_nv_cooperative_matrix2(&self) -> bool {
         self.supports_khr_cooperative_matrix()
@@ -5323,6 +5336,7 @@ pub struct DeviceExtensions {
     pub ext_device_generated_commands: bool,
     pub mesa_image_alignment_control: bool,
     pub ext_depth_clamp_control: bool,
+    pub huawei_hdr_vivid: bool,
     pub nv_cooperative_matrix2: bool,
 }
 impl DeviceExtensions {
@@ -5662,6 +5676,7 @@ impl DeviceExtensions {
             b"VK_EXT_device_generated_commands" => self.ext_device_generated_commands = true,
             b"VK_MESA_image_alignment_control" => self.mesa_image_alignment_control = true,
             b"VK_EXT_depth_clamp_control" => self.ext_depth_clamp_control = true,
+            b"VK_HUAWEI_hdr_vivid" => self.huawei_hdr_vivid = true,
             b"VK_NV_cooperative_matrix2" => self.nv_cooperative_matrix2 = true,
             _ => {}
         }
@@ -6001,6 +6016,7 @@ impl DeviceExtensions {
             ext_device_generated_commands: false,
             mesa_image_alignment_control: false,
             ext_depth_clamp_control: false,
+            huawei_hdr_vivid: false,
             nv_cooperative_matrix2: false,
         }
     }
@@ -8566,6 +8582,14 @@ impl DeviceExtensions {
     pub fn enable_ext_depth_clamp_control(&mut self) {
         self.ext_depth_clamp_control = true;
     }
+    pub fn supports_huawei_hdr_vivid(&self) -> bool {
+        self.huawei_hdr_vivid && self.supports_khr_swapchain() && self.supports_ext_hdr_metadata()
+    }
+    pub fn enable_huawei_hdr_vivid(&mut self) {
+        self.huawei_hdr_vivid = true;
+        self.enable_khr_swapchain();
+        self.enable_ext_hdr_metadata();
+    }
     pub fn supports_nv_cooperative_matrix2(&self) -> bool {
         self.nv_cooperative_matrix2 && self.supports_khr_cooperative_matrix()
     }
@@ -9572,6 +9596,9 @@ impl DeviceExtensions {
         }
         if self.ext_depth_clamp_control {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_clamp_control\0") })
+        }
+        if self.huawei_hdr_vivid {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_HUAWEI_hdr_vivid\0") })
         }
         if self.nv_cooperative_matrix2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cooperative_matrix2\0") })

@@ -6843,17 +6843,25 @@ impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentWaitFeaturesKHRBuilder
 impl DeviceCreateInfoNext for PhysicalDevicePresentWaitFeaturesKHRBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentWaitFeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePresentWaitFeaturesKHR {}
-impl Builder<'_> for vk::HdrMetadataEXT {
-    type Type = HdrMetadataEXTBuilder;
+impl<'a> Builder<'a> for vk::HdrMetadataEXT {
+    type Type = HdrMetadataEXTBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait HdrMetadataEXTNext {}
 #[derive(Default)]
-pub struct HdrMetadataEXTBuilder {
+pub struct HdrMetadataEXTBuilder<'a> {
     inner: vk::HdrMetadataEXT,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl HdrMetadataEXTBuilder {
+impl<'a> HdrMetadataEXTBuilder<'a> {
+    pub fn insert_next<T: HdrMetadataEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6891,12 +6899,42 @@ impl HdrMetadataEXTBuilder {
         self
     }
 }
-impl Deref for HdrMetadataEXTBuilder {
+impl<'a> Deref for HdrMetadataEXTBuilder<'a> {
     type Target = vk::HdrMetadataEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::HdrVividDynamicMetadataHUAWEI {
+    type Type = HdrVividDynamicMetadataHUAWEIBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct HdrVividDynamicMetadataHUAWEIBuilder<'a> {
+    inner: vk::HdrVividDynamicMetadataHUAWEI,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> HdrVividDynamicMetadataHUAWEIBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_dynamic_metadata<T>(mut self, p_dynamic_metadata: &'a [T]) -> Self {
+        self.inner.dynamic_metadata_size = mem::size_of_val(p_dynamic_metadata) as usize;
+        self.inner.p_dynamic_metadata = p_dynamic_metadata.first().map_or(ptr::null(), |s| s as *const _) as *const _;
+        self
+    }
+}
+impl<'a> Deref for HdrVividDynamicMetadataHUAWEIBuilder<'a> {
+    type Target = vk::HdrVividDynamicMetadataHUAWEI;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> HdrMetadataEXTNext for HdrVividDynamicMetadataHUAWEIBuilder<'a> {}
+impl HdrMetadataEXTNext for vk::HdrVividDynamicMetadataHUAWEI {}
 impl SurfaceCapabilities2KHRNext for vk::DisplayNativeHdrSurfaceCapabilitiesAMD {}
 impl Builder<'_> for vk::SwapchainDisplayNativeHdrCreateInfoAMD {
     type Type = SwapchainDisplayNativeHdrCreateInfoAMDBuilder;
@@ -27572,3 +27610,33 @@ impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrix2FeaturesNVBuilder 
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCooperativeMatrix2FeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrix2FeaturesNV {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCooperativeMatrix2PropertiesNV {}
+impl Builder<'_> for vk::PhysicalDeviceHdrVividFeaturesHUAWEI {
+    type Type = PhysicalDeviceHdrVividFeaturesHUAWEIBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceHdrVividFeaturesHUAWEIBuilder {
+    inner: vk::PhysicalDeviceHdrVividFeaturesHUAWEI,
+}
+impl PhysicalDeviceHdrVividFeaturesHUAWEIBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn hdr_vivid(mut self, hdr_vivid: bool) -> Self {
+        self.inner.hdr_vivid = if hdr_vivid { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceHdrVividFeaturesHUAWEIBuilder {
+    type Target = vk::PhysicalDeviceHdrVividFeaturesHUAWEI;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceHdrVividFeaturesHUAWEIBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceHdrVividFeaturesHUAWEIBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceHdrVividFeaturesHUAWEI {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceHdrVividFeaturesHUAWEI {}
