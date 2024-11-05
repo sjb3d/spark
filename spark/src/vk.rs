@@ -8511,6 +8511,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT: Self = Self(1000582000);
     /// Added by extension VK_EXT_depth_clamp_control.
     pub const PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT: Self = Self(1000582001);
+    /// Added by extension VK_NV_cooperative_matrix2.
+    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV: Self = Self(1000593000);
+    /// Added by extension VK_NV_cooperative_matrix2.
+    pub const COOPERATIVE_MATRIX_FLEXIBLE_DIMENSIONS_PROPERTIES_NV: Self = Self(1000593001);
+    /// Added by extension VK_NV_cooperative_matrix2.
+    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV: Self = Self(1000593002);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9368,6 +9374,9 @@ impl fmt::Display for StructureType {
             1000575002 => Some(&"IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA"),
             1000582000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT"),
             1000582001 => Some(&"PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT"),
+            1000593000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV"),
+            1000593001 => Some(&"COOPERATIVE_MATRIX_FLEXIBLE_DIMENSIONS_PROPERTIES_NV"),
+            1000593002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -47198,6 +47207,159 @@ impl fmt::Debug for DepthClampRangeEXT {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCooperativeMatrix2FeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cooperative_matrix_workgroup_scope: Bool32,
+    pub cooperative_matrix_flexible_dimensions: Bool32,
+    pub cooperative_matrix_reductions: Bool32,
+    pub cooperative_matrix_conversions: Bool32,
+    pub cooperative_matrix_per_element_operations: Bool32,
+    pub cooperative_matrix_tensor_addressing: Bool32,
+    pub cooperative_matrix_block_loads: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCooperativeMatrix2FeaturesNV {}
+unsafe impl Sync for PhysicalDeviceCooperativeMatrix2FeaturesNV {}
+impl Default for PhysicalDeviceCooperativeMatrix2FeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            cooperative_matrix_workgroup_scope: Default::default(),
+            cooperative_matrix_flexible_dimensions: Default::default(),
+            cooperative_matrix_reductions: Default::default(),
+            cooperative_matrix_conversions: Default::default(),
+            cooperative_matrix_per_element_operations: Default::default(),
+            cooperative_matrix_tensor_addressing: Default::default(),
+            cooperative_matrix_block_loads: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCooperativeMatrix2FeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCooperativeMatrix2FeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "cooperative_matrix_workgroup_scope",
+                &self.cooperative_matrix_workgroup_scope,
+            )
+            .field(
+                "cooperative_matrix_flexible_dimensions",
+                &self.cooperative_matrix_flexible_dimensions,
+            )
+            .field("cooperative_matrix_reductions", &self.cooperative_matrix_reductions)
+            .field("cooperative_matrix_conversions", &self.cooperative_matrix_conversions)
+            .field(
+                "cooperative_matrix_per_element_operations",
+                &self.cooperative_matrix_per_element_operations,
+            )
+            .field(
+                "cooperative_matrix_tensor_addressing",
+                &self.cooperative_matrix_tensor_addressing,
+            )
+            .field("cooperative_matrix_block_loads", &self.cooperative_matrix_block_loads)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCooperativeMatrix2PropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cooperative_matrix_workgroup_scope_max_workgroup_size: u32,
+    pub cooperative_matrix_flexible_dimensions_max_dimension: u32,
+    pub cooperative_matrix_workgroup_scope_reserved_shared_memory: u32,
+}
+unsafe impl Send for PhysicalDeviceCooperativeMatrix2PropertiesNV {}
+unsafe impl Sync for PhysicalDeviceCooperativeMatrix2PropertiesNV {}
+impl Default for PhysicalDeviceCooperativeMatrix2PropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            cooperative_matrix_workgroup_scope_max_workgroup_size: Default::default(),
+            cooperative_matrix_flexible_dimensions_max_dimension: Default::default(),
+            cooperative_matrix_workgroup_scope_reserved_shared_memory: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCooperativeMatrix2PropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCooperativeMatrix2PropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "cooperative_matrix_workgroup_scope_max_workgroup_size",
+                &self.cooperative_matrix_workgroup_scope_max_workgroup_size,
+            )
+            .field(
+                "cooperative_matrix_flexible_dimensions_max_dimension",
+                &self.cooperative_matrix_flexible_dimensions_max_dimension,
+            )
+            .field(
+                "cooperative_matrix_workgroup_scope_reserved_shared_memory",
+                &self.cooperative_matrix_workgroup_scope_reserved_shared_memory,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CooperativeMatrixFlexibleDimensionsPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub m_granularity: u32,
+    pub n_granularity: u32,
+    pub k_granularity: u32,
+    pub a_type: ComponentTypeKHR,
+    pub b_type: ComponentTypeKHR,
+    pub c_type: ComponentTypeKHR,
+    pub result_type: ComponentTypeKHR,
+    pub saturating_accumulation: Bool32,
+    pub scope: ScopeKHR,
+    pub workgroup_invocations: u32,
+}
+unsafe impl Send for CooperativeMatrixFlexibleDimensionsPropertiesNV {}
+unsafe impl Sync for CooperativeMatrixFlexibleDimensionsPropertiesNV {}
+impl Default for CooperativeMatrixFlexibleDimensionsPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COOPERATIVE_MATRIX_FLEXIBLE_DIMENSIONS_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            m_granularity: Default::default(),
+            n_granularity: Default::default(),
+            k_granularity: Default::default(),
+            a_type: Default::default(),
+            b_type: Default::default(),
+            c_type: Default::default(),
+            result_type: Default::default(),
+            saturating_accumulation: Default::default(),
+            scope: Default::default(),
+            workgroup_invocations: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for CooperativeMatrixFlexibleDimensionsPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CooperativeMatrixFlexibleDimensionsPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("m_granularity", &self.m_granularity)
+            .field("n_granularity", &self.n_granularity)
+            .field("k_granularity", &self.k_granularity)
+            .field("a_type", &self.a_type)
+            .field("b_type", &self.b_type)
+            .field("c_type", &self.c_type)
+            .field("result_type", &self.result_type)
+            .field("saturating_accumulation", &self.saturating_accumulation)
+            .field("scope", &self.scope)
+            .field("workgroup_invocations", &self.workgroup_invocations)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -50085,3 +50247,8 @@ pub type FnCmdSetDepthClampRangeEXT = unsafe extern "system" fn(
     depth_clamp_mode: DepthClampModeEXT,
     p_depth_clamp_range: *const DepthClampRangeEXT,
 );
+pub type FnGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut CooperativeMatrixFlexibleDimensionsPropertiesNV,
+) -> Result;

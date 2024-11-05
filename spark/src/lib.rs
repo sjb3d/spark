@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 299
+//! Generated from vk.xml with `VK_HEADER_VERSION` 300
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2599,6 +2599,12 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+    pub fn supports_nv_cooperative_matrix2(&self) -> bool {
+        self.supports_khr_cooperative_matrix()
+    }
+    pub fn enable_nv_cooperative_matrix2(&mut self) {
+        self.enable_khr_cooperative_matrix();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -5317,6 +5323,7 @@ pub struct DeviceExtensions {
     pub ext_device_generated_commands: bool,
     pub mesa_image_alignment_control: bool,
     pub ext_depth_clamp_control: bool,
+    pub nv_cooperative_matrix2: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -5655,6 +5662,7 @@ impl DeviceExtensions {
             b"VK_EXT_device_generated_commands" => self.ext_device_generated_commands = true,
             b"VK_MESA_image_alignment_control" => self.mesa_image_alignment_control = true,
             b"VK_EXT_depth_clamp_control" => self.ext_depth_clamp_control = true,
+            b"VK_NV_cooperative_matrix2" => self.nv_cooperative_matrix2 = true,
             _ => {}
         }
     }
@@ -5993,6 +6001,7 @@ impl DeviceExtensions {
             ext_device_generated_commands: false,
             mesa_image_alignment_control: false,
             ext_depth_clamp_control: false,
+            nv_cooperative_matrix2: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -8557,6 +8566,13 @@ impl DeviceExtensions {
     pub fn enable_ext_depth_clamp_control(&mut self) {
         self.ext_depth_clamp_control = true;
     }
+    pub fn supports_nv_cooperative_matrix2(&self) -> bool {
+        self.nv_cooperative_matrix2 && self.supports_khr_cooperative_matrix()
+    }
+    pub fn enable_nv_cooperative_matrix2(&mut self) {
+        self.nv_cooperative_matrix2 = true;
+        self.enable_khr_cooperative_matrix();
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -9557,6 +9573,9 @@ impl DeviceExtensions {
         if self.ext_depth_clamp_control {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_clamp_control\0") })
         }
+        if self.nv_cooperative_matrix2 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cooperative_matrix2\0") })
+        }
         v
     }
 }
@@ -10083,6 +10102,8 @@ pub struct Device {
     pub fp_cmd_set_rendering_attachment_locations_khr: Option<vk::FnCmdSetRenderingAttachmentLocationsKHR>,
     pub fp_cmd_set_rendering_input_attachment_indices_khr: Option<vk::FnCmdSetRenderingInputAttachmentIndicesKHR>,
     pub fp_cmd_set_depth_clamp_range_ext: Option<vk::FnCmdSetDepthClampRangeEXT>,
+    pub fp_get_physical_device_cooperative_matrix_flexible_dimensions_properties_nv:
+        Option<vk::FnGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -14206,6 +14227,16 @@ impl Device {
                 || extensions.ext_depth_clamp_control
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthClampRangeEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_cooperative_matrix_flexible_dimensions_properties_nv: if extensions
+                .nv_cooperative_matrix2
+            {
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -22963,6 +22994,27 @@ impl Device {
             depth_clamp_mode,
             p_depth_clamp_range.map_or(ptr::null(), |r| r),
         );
+    }
+    pub unsafe fn get_physical_device_cooperative_matrix_flexible_dimensions_properties_nv_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::CooperativeMatrixFlexibleDimensionsPropertiesNV>> {
+        let fp = self
+            .fp_get_physical_device_cooperative_matrix_flexible_dimensions_properties_nv
+            .expect("vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        }
     }
 }
 

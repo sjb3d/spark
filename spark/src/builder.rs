@@ -27486,3 +27486,89 @@ impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentModeFifoLatestReadyFea
 impl DeviceCreateInfoNext for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceCooperativeMatrix2FeaturesNV {
+    type Type = PhysicalDeviceCooperativeMatrix2FeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceCooperativeMatrix2FeaturesNVBuilder {
+    inner: vk::PhysicalDeviceCooperativeMatrix2FeaturesNV,
+}
+impl PhysicalDeviceCooperativeMatrix2FeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cooperative_matrix_workgroup_scope(mut self, cooperative_matrix_workgroup_scope: bool) -> Self {
+        self.inner.cooperative_matrix_workgroup_scope = if cooperative_matrix_workgroup_scope {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn cooperative_matrix_flexible_dimensions(mut self, cooperative_matrix_flexible_dimensions: bool) -> Self {
+        self.inner.cooperative_matrix_flexible_dimensions = if cooperative_matrix_flexible_dimensions {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn cooperative_matrix_reductions(mut self, cooperative_matrix_reductions: bool) -> Self {
+        self.inner.cooperative_matrix_reductions = if cooperative_matrix_reductions {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn cooperative_matrix_conversions(mut self, cooperative_matrix_conversions: bool) -> Self {
+        self.inner.cooperative_matrix_conversions = if cooperative_matrix_conversions {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn cooperative_matrix_per_element_operations(
+        mut self,
+        cooperative_matrix_per_element_operations: bool,
+    ) -> Self {
+        self.inner.cooperative_matrix_per_element_operations = if cooperative_matrix_per_element_operations {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn cooperative_matrix_tensor_addressing(mut self, cooperative_matrix_tensor_addressing: bool) -> Self {
+        self.inner.cooperative_matrix_tensor_addressing = if cooperative_matrix_tensor_addressing {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn cooperative_matrix_block_loads(mut self, cooperative_matrix_block_loads: bool) -> Self {
+        self.inner.cooperative_matrix_block_loads = if cooperative_matrix_block_loads {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCooperativeMatrix2FeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceCooperativeMatrix2FeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCooperativeMatrix2FeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrix2FeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCooperativeMatrix2FeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrix2FeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCooperativeMatrix2PropertiesNV {}
