@@ -17,6 +17,7 @@ pub enum DependencyExpr<'a> {
     Always,
     Version((u16, u16)),
     Extension(&'a str),
+    Feature((&'a str, &'a str)),
     And(Vec<DependencyExpr<'a>>),
     Or(Vec<DependencyExpr<'a>>),
 }
@@ -32,7 +33,7 @@ impl<'a> DependencyExpr<'a> {
 
     pub fn visit_leaves(&mut self, f: &impl Fn(&mut DependencyExpr)) {
         match self {
-            Self::Never | Self::Always | Self::Version(_) | Self::Extension(_) => f(self),
+            Self::Never | Self::Always | Self::Version(_) | Self::Extension(_) | Self::Feature(_) => f(self),
             Self::And(v) | Self::Or(v) => {
                 for dep in v.iter_mut() {
                     dep.visit_leaves(f)
@@ -47,6 +48,7 @@ impl<'a> DependencyExpr<'a> {
             (Self::Always, Self::Always) => true,
             (Self::Version(a), Self::Version(b)) => a == b,
             (Self::Extension(a), Self::Extension(b)) => a == b,
+            (Self::Feature(a), Self::Feature(b)) => a == b,
             (Self::And(ref a), Self::And(ref b)) | (Self::Or(ref a), Self::Or(ref b)) => match (a.len(), b.len()) {
                 (0, 0) => true,
                 (1, 1) => a[0].matches(&b[0]),
@@ -93,6 +95,7 @@ impl<'a> DependencyExpr<'a> {
                 }
             }
             Self::Extension(_) => {}
+            Self::Feature(_) => {}
             Self::And(v) => {
                 let mut tmp = Vec::new();
                 for mut dep in v.drain(..) {
@@ -315,6 +318,7 @@ fn depends_expr_inner(i: &str) -> Res<DependencyExpr> {
     alt((
         delimited(char('('), depends_expr, char(')')),
         map(version, DependencyExpr::Version),
+        map(separated_pair(take_while1(is_ident), tag("::"), take_while1(is_ident)), DependencyExpr::Feature),
         map(take_while1(is_ident), DependencyExpr::Extension),
     ))(i)
 }

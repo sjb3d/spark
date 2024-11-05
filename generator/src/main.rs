@@ -3138,6 +3138,9 @@ impl<'a> Generator<'a> {
             DependencyExpr::Version(v) => {
                 write!(w, "version >= vk::Version::from_raw_parts({}, {}, 0)", v.0, v.1)?;
             }
+            DependencyExpr::Feature(_) => {
+                unimplemented!("feature dependencies not implement yet");
+            }
             DependencyExpr::Extension(name) => {
                 let ext = self
                     .extension_by_name
@@ -3202,6 +3205,9 @@ impl<'a> Generator<'a> {
                     write!(w, "self.supports_{}()", rust_name)?;
                 }
             }
+            DependencyExpr::Feature(_) => {
+                unimplemented!("feature dependencies not implement yet");
+            }
             DependencyExpr::And(v) => {
                 for (i, dep) in v.iter().enumerate() {
                     if i != 0 {
@@ -3253,6 +3259,9 @@ impl<'a> Generator<'a> {
                 } else {
                     writeln!(w, "self.enable_{}();", rust_name)?;
                 }
+            }
+            DependencyExpr::Feature(_) => {
+                unimplemented!("feature dependencies not implement yet");
             }
             DependencyExpr::And(deps) => {
                 for dep in deps.iter() {
