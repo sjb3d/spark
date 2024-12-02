@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 302
+//! Generated from vk.xml with `VK_HEADER_VERSION` 303
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -555,7 +555,7 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_ext_pipeline_robustness(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_pipeline_robustness(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
@@ -651,7 +651,7 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_push_descriptor(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_push_descriptor(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
@@ -1107,7 +1107,7 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_global_priority(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_global_priority(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
@@ -1312,7 +1312,7 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_dynamic_rendering_local_read(&self) -> bool {
-        self.supports_khr_dynamic_rendering() || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+        self.core_version >= vk::Version::from_raw_parts(1, 3, 0) || self.supports_khr_dynamic_rendering()
     }
     pub fn enable_khr_dynamic_rendering_local_read(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
@@ -1542,11 +1542,11 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_ext_host_image_copy(&self) -> bool {
-        ((self.supports_khr_get_physical_device_properties2()
-            || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
-            && self.supports_khr_copy_commands2()
-            && self.supports_khr_format_feature_flags2())
-            || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+        self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+            || ((self.supports_khr_get_physical_device_properties2()
+                || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+                && self.supports_khr_copy_commands2()
+                && self.supports_khr_format_feature_flags2())
     }
     pub fn enable_ext_host_image_copy(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
@@ -2353,7 +2353,7 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_ext_pipeline_protected_access(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_pipeline_protected_access(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
@@ -2367,8 +2367,8 @@ impl InstanceExtensions {
         self.enable_android_external_memory_android_hardware_buffer();
     }
     pub fn supports_khr_maintenance5(&self) -> bool {
-        (self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_dynamic_rendering())
-            || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+        self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+            || (self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_dynamic_rendering())
     }
     pub fn enable_khr_maintenance5(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
@@ -2526,7 +2526,7 @@ impl InstanceExtensions {
         self.enable_ext_attachment_feedback_loop_layout();
     }
     pub fn supports_khr_vertex_attribute_divisor(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_vertex_attribute_divisor(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
@@ -2534,11 +2534,14 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_shader_float_controls2(&self) -> bool {
-        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_shader_float_controls()
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+            || (self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_shader_float_controls())
     }
     pub fn enable_khr_shader_float_controls2(&mut self) {
-        debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
-        self.enable_khr_shader_float_controls();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
+            self.enable_khr_shader_float_controls();
+        }
     }
     pub fn supports_msft_layered_driver(&self) -> bool {
         self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -2549,7 +2552,7 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_index_type_uint8(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_index_type_uint8(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
@@ -2557,7 +2560,7 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_line_rasterization(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_line_rasterization(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
@@ -2573,7 +2576,7 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_shader_expect_assume(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_shader_expect_assume(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
@@ -6279,10 +6282,12 @@ impl DeviceExtensions {
         self.ext_astc_decode_mode = true;
     }
     pub fn supports_ext_pipeline_robustness(&self) -> bool {
-        self.ext_pipeline_robustness
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.ext_pipeline_robustness
     }
     pub fn enable_ext_pipeline_robustness(&mut self) {
-        self.ext_pipeline_robustness = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.ext_pipeline_robustness = true;
+        }
     }
     pub fn supports_khr_maintenance1(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.khr_maintenance1
@@ -6353,10 +6358,12 @@ impl DeviceExtensions {
         }
     }
     pub fn supports_khr_push_descriptor(&self) -> bool {
-        self.khr_push_descriptor
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.khr_push_descriptor
     }
     pub fn enable_khr_push_descriptor(&mut self) {
-        self.khr_push_descriptor = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_push_descriptor = true;
+        }
     }
     pub fn supports_ext_conditional_rendering(&self) -> bool {
         self.ext_conditional_rendering
@@ -7005,10 +7012,12 @@ impl DeviceExtensions {
         self.amd_shader_core_properties = true;
     }
     pub fn supports_khr_global_priority(&self) -> bool {
-        self.khr_global_priority
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.khr_global_priority
     }
     pub fn enable_khr_global_priority(&mut self) {
-        self.khr_global_priority = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_global_priority = true;
+        }
     }
     pub fn supports_amd_memory_overallocation_behavior(&self) -> bool {
         self.amd_memory_overallocation_behavior
@@ -7228,13 +7237,16 @@ impl DeviceExtensions {
         self.amd_device_coherent_memory = true;
     }
     pub fn supports_khr_dynamic_rendering_local_read(&self) -> bool {
-        self.khr_dynamic_rendering_local_read
-            && (self.supports_khr_dynamic_rendering() || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+            || (self.khr_dynamic_rendering_local_read
+                && (self.supports_khr_dynamic_rendering() || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)))
     }
     pub fn enable_khr_dynamic_rendering_local_read(&mut self) {
-        self.khr_dynamic_rendering_local_read = true;
-        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
-            self.enable_khr_dynamic_rendering();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_dynamic_rendering_local_read = true;
+            if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+                self.enable_khr_dynamic_rendering();
+            }
         }
     }
     pub fn supports_ext_shader_image_atomic_int64(&self) -> bool {
@@ -7445,29 +7457,37 @@ impl DeviceExtensions {
         self.khr_pipeline_executable_properties = true;
     }
     pub fn supports_ext_host_image_copy(&self) -> bool {
-        self.ext_host_image_copy
-            && ((self.supports_khr_copy_commands2() && self.supports_khr_format_feature_flags2())
-                || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+            || (self.ext_host_image_copy
+                && ((self.supports_khr_copy_commands2() && self.supports_khr_format_feature_flags2())
+                    || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)))
     }
     pub fn enable_ext_host_image_copy(&mut self) {
-        self.ext_host_image_copy = true;
-        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
-            self.enable_khr_copy_commands2();
-            self.enable_khr_format_feature_flags2();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.ext_host_image_copy = true;
+            if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+                self.enable_khr_copy_commands2();
+                self.enable_khr_format_feature_flags2();
+            }
         }
     }
     pub fn supports_khr_map_memory2(&self) -> bool {
-        self.khr_map_memory2
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.khr_map_memory2
     }
     pub fn enable_khr_map_memory2(&mut self) {
-        self.khr_map_memory2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_map_memory2 = true;
+        }
     }
     pub fn supports_ext_map_memory_placed(&self) -> bool {
-        self.ext_map_memory_placed && self.supports_khr_map_memory2()
+        self.ext_map_memory_placed
+            && (self.supports_khr_map_memory2() || self.core_version >= vk::Version::from_raw_parts(1, 4, 0))
     }
     pub fn enable_ext_map_memory_placed(&mut self) {
         self.ext_map_memory_placed = true;
-        self.enable_khr_map_memory2();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.enable_khr_map_memory2();
+        }
     }
     pub fn supports_ext_shader_atomic_float2(&self) -> bool {
         self.ext_shader_atomic_float2 && self.supports_ext_shader_atomic_float()
@@ -8091,10 +8111,12 @@ impl DeviceExtensions {
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
     pub fn supports_khr_shader_subgroup_rotate(&self) -> bool {
-        self.khr_shader_subgroup_rotate
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.khr_shader_subgroup_rotate
     }
     pub fn enable_khr_shader_subgroup_rotate(&mut self) {
-        self.khr_shader_subgroup_rotate = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_shader_subgroup_rotate = true;
+        }
     }
     pub fn supports_arm_scheduling_controls(&self) -> bool {
         self.arm_scheduling_controls && self.supports_arm_shader_core_builtins()
@@ -8269,10 +8291,12 @@ impl DeviceExtensions {
         self.ext_legacy_dithering = true;
     }
     pub fn supports_ext_pipeline_protected_access(&self) -> bool {
-        self.ext_pipeline_protected_access
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.ext_pipeline_protected_access
     }
     pub fn enable_ext_pipeline_protected_access(&mut self) {
-        self.ext_pipeline_protected_access = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.ext_pipeline_protected_access = true;
+        }
     }
     pub fn supports_android_external_format_resolve(&self) -> bool {
         self.android_external_format_resolve && self.supports_android_external_memory_android_hardware_buffer()
@@ -8282,15 +8306,19 @@ impl DeviceExtensions {
         self.enable_android_external_memory_android_hardware_buffer();
     }
     pub fn supports_khr_maintenance5(&self) -> bool {
-        self.khr_maintenance5
-            && ((self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_dynamic_rendering())
-                || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+            || (self.khr_maintenance5
+                && ((self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+                    && self.supports_khr_dynamic_rendering())
+                    || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)))
     }
     pub fn enable_khr_maintenance5(&mut self) {
-        self.khr_maintenance5 = true;
-        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
-            debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
-            self.enable_khr_dynamic_rendering();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_maintenance5 = true;
+            if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+                debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
+                self.enable_khr_dynamic_rendering();
+            }
         }
     }
     pub fn supports_amd_anti_lag(&self) -> bool {
@@ -8423,11 +8451,14 @@ impl DeviceExtensions {
         self.khr_compute_shader_derivatives = true;
     }
     pub fn supports_nv_per_stage_descriptor_set(&self) -> bool {
-        self.nv_per_stage_descriptor_set && self.supports_khr_maintenance6()
+        self.nv_per_stage_descriptor_set
+            && (self.supports_khr_maintenance6() || self.core_version >= vk::Version::from_raw_parts(1, 4, 0))
     }
     pub fn enable_nv_per_stage_descriptor_set(&mut self) {
         self.nv_per_stage_descriptor_set = true;
-        self.enable_khr_maintenance6();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.enable_khr_maintenance6();
+        }
     }
     pub fn supports_qcom_image_processing2(&self) -> bool {
         self.qcom_image_processing2 && self.supports_qcom_image_processing()
@@ -8469,26 +8500,33 @@ impl DeviceExtensions {
         self.enable_ext_attachment_feedback_loop_layout();
     }
     pub fn supports_khr_vertex_attribute_divisor(&self) -> bool {
-        self.khr_vertex_attribute_divisor
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.khr_vertex_attribute_divisor
     }
     pub fn enable_khr_vertex_attribute_divisor(&mut self) {
-        self.khr_vertex_attribute_divisor = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_vertex_attribute_divisor = true;
+        }
     }
     pub fn supports_khr_load_store_op_none(&self) -> bool {
-        self.khr_load_store_op_none
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.khr_load_store_op_none
     }
     pub fn enable_khr_load_store_op_none(&mut self) {
-        self.khr_load_store_op_none = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_load_store_op_none = true;
+        }
     }
     pub fn supports_khr_shader_float_controls2(&self) -> bool {
-        self.khr_shader_float_controls2
-            && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
-            && self.supports_khr_shader_float_controls()
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+            || (self.khr_shader_float_controls2
+                && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+                && self.supports_khr_shader_float_controls())
     }
     pub fn enable_khr_shader_float_controls2(&mut self) {
-        self.khr_shader_float_controls2 = true;
-        debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
-        self.enable_khr_shader_float_controls();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_shader_float_controls2 = true;
+            debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
+            self.enable_khr_shader_float_controls();
+        }
     }
     pub fn supports_msft_layered_driver(&self) -> bool {
         self.msft_layered_driver
@@ -8497,16 +8535,20 @@ impl DeviceExtensions {
         self.msft_layered_driver = true;
     }
     pub fn supports_khr_index_type_uint8(&self) -> bool {
-        self.khr_index_type_uint8
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.khr_index_type_uint8
     }
     pub fn enable_khr_index_type_uint8(&mut self) {
-        self.khr_index_type_uint8 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_index_type_uint8 = true;
+        }
     }
     pub fn supports_khr_line_rasterization(&self) -> bool {
-        self.khr_line_rasterization
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.khr_line_rasterization
     }
     pub fn enable_khr_line_rasterization(&mut self) {
-        self.khr_line_rasterization = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_line_rasterization = true;
+        }
     }
     pub fn supports_khr_calibrated_timestamps(&self) -> bool {
         self.khr_calibrated_timestamps
@@ -8515,17 +8557,22 @@ impl DeviceExtensions {
         self.khr_calibrated_timestamps = true;
     }
     pub fn supports_khr_shader_expect_assume(&self) -> bool {
-        self.khr_shader_expect_assume
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.khr_shader_expect_assume
     }
     pub fn enable_khr_shader_expect_assume(&mut self) {
-        self.khr_shader_expect_assume = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_shader_expect_assume = true;
+        }
     }
     pub fn supports_khr_maintenance6(&self) -> bool {
-        self.khr_maintenance6 && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+            || (self.khr_maintenance6 && self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
     }
     pub fn enable_khr_maintenance6(&mut self) {
-        self.khr_maintenance6 = true;
-        debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.khr_maintenance6 = true;
+            debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
+        }
     }
     pub fn supports_nv_descriptor_pool_overallocation(&self) -> bool {
         self.nv_descriptor_pool_overallocation && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -9712,7 +9759,7 @@ pub struct Device {
     pub fp_create_render_pass: Option<vk::FnCreateRenderPass>,
     pub fp_destroy_render_pass: Option<vk::FnDestroyRenderPass>,
     pub fp_get_render_area_granularity: Option<vk::FnGetRenderAreaGranularity>,
-    pub fp_get_rendering_area_granularity_khr: Option<vk::FnGetRenderingAreaGranularityKHR>,
+    pub fp_get_rendering_area_granularity: Option<vk::FnGetRenderingAreaGranularity>,
     pub fp_create_command_pool: Option<vk::FnCreateCommandPool>,
     pub fp_destroy_command_pool: Option<vk::FnDestroyCommandPool>,
     pub fp_reset_command_pool: Option<vk::FnResetCommandPool>,
@@ -9803,7 +9850,7 @@ pub struct Device {
     pub fp_destroy_indirect_execution_set_ext: Option<vk::FnDestroyIndirectExecutionSetEXT>,
     pub fp_update_indirect_execution_set_pipeline_ext: Option<vk::FnUpdateIndirectExecutionSetPipelineEXT>,
     pub fp_update_indirect_execution_set_shader_ext: Option<vk::FnUpdateIndirectExecutionSetShaderEXT>,
-    pub fp_cmd_push_descriptor_set_khr: Option<vk::FnCmdPushDescriptorSetKHR>,
+    pub fp_cmd_push_descriptor_set: Option<vk::FnCmdPushDescriptorSet>,
     pub fp_trim_command_pool: Option<vk::FnTrimCommandPool>,
     pub fp_get_memory_win32_handle_khr: Option<vk::FnGetMemoryWin32HandleKHR>,
     pub fp_get_memory_win32_handle_properties_khr: Option<vk::FnGetMemoryWin32HandlePropertiesKHR>,
@@ -9840,7 +9887,7 @@ pub struct Device {
     pub fp_create_descriptor_update_template: Option<vk::FnCreateDescriptorUpdateTemplate>,
     pub fp_destroy_descriptor_update_template: Option<vk::FnDestroyDescriptorUpdateTemplate>,
     pub fp_update_descriptor_set_with_template: Option<vk::FnUpdateDescriptorSetWithTemplate>,
-    pub fp_cmd_push_descriptor_set_with_template_khr: Option<vk::FnCmdPushDescriptorSetWithTemplateKHR>,
+    pub fp_cmd_push_descriptor_set_with_template: Option<vk::FnCmdPushDescriptorSetWithTemplate>,
     pub fp_set_hdr_metadata_ext: Option<vk::FnSetHdrMetadataEXT>,
     pub fp_get_swapchain_status_khr: Option<vk::FnGetSwapchainStatusKHR>,
     pub fp_get_refresh_cycle_duration_google: Option<vk::FnGetRefreshCycleDurationGOOGLE>,
@@ -9969,7 +10016,7 @@ pub struct Device {
     pub fp_get_pipeline_executable_statistics_khr: Option<vk::FnGetPipelineExecutableStatisticsKHR>,
     pub fp_get_pipeline_executable_internal_representations_khr:
         Option<vk::FnGetPipelineExecutableInternalRepresentationsKHR>,
-    pub fp_cmd_set_line_stipple_khr: Option<vk::FnCmdSetLineStippleKHR>,
+    pub fp_cmd_set_line_stipple: Option<vk::FnCmdSetLineStipple>,
     pub fp_get_physical_device_tool_properties: Option<vk::FnGetPhysicalDeviceToolProperties>,
     pub fp_create_acceleration_structure_khr: Option<vk::FnCreateAccelerationStructureKHR>,
     pub fp_cmd_build_acceleration_structures_khr: Option<vk::FnCmdBuildAccelerationStructuresKHR>,
@@ -9989,7 +10036,7 @@ pub struct Device {
     pub fp_cmd_set_primitive_topology: Option<vk::FnCmdSetPrimitiveTopology>,
     pub fp_cmd_set_viewport_with_count: Option<vk::FnCmdSetViewportWithCount>,
     pub fp_cmd_set_scissor_with_count: Option<vk::FnCmdSetScissorWithCount>,
-    pub fp_cmd_bind_index_buffer2_khr: Option<vk::FnCmdBindIndexBuffer2KHR>,
+    pub fp_cmd_bind_index_buffer2: Option<vk::FnCmdBindIndexBuffer2>,
     pub fp_cmd_bind_vertex_buffers2: Option<vk::FnCmdBindVertexBuffers2>,
     pub fp_cmd_set_depth_test_enable: Option<vk::FnCmdSetDepthTestEnable>,
     pub fp_cmd_set_depth_write_enable: Option<vk::FnCmdSetDepthWriteEnable>,
@@ -10057,10 +10104,10 @@ pub struct Device {
     pub fp_cmd_write_timestamp2: Option<vk::FnCmdWriteTimestamp2>,
     pub fp_cmd_write_buffer_marker2_amd: Option<vk::FnCmdWriteBufferMarker2AMD>,
     pub fp_get_queue_checkpoint_data2_nv: Option<vk::FnGetQueueCheckpointData2NV>,
-    pub fp_copy_memory_to_image_ext: Option<vk::FnCopyMemoryToImageEXT>,
-    pub fp_copy_image_to_memory_ext: Option<vk::FnCopyImageToMemoryEXT>,
-    pub fp_copy_image_to_image_ext: Option<vk::FnCopyImageToImageEXT>,
-    pub fp_transition_image_layout_ext: Option<vk::FnTransitionImageLayoutEXT>,
+    pub fp_copy_memory_to_image: Option<vk::FnCopyMemoryToImage>,
+    pub fp_copy_image_to_memory: Option<vk::FnCopyImageToMemory>,
+    pub fp_copy_image_to_image: Option<vk::FnCopyImageToImage>,
+    pub fp_transition_image_layout: Option<vk::FnTransitionImageLayout>,
     pub fp_cmd_decompress_memory_nv: Option<vk::FnCmdDecompressMemoryNV>,
     pub fp_cmd_decompress_memory_indirect_count_nv: Option<vk::FnCmdDecompressMemoryIndirectCountNV>,
     pub fp_create_cu_module_nvx: Option<vk::FnCreateCuModuleNVX>,
@@ -10113,7 +10160,7 @@ pub struct Device {
     pub fp_get_micromap_build_sizes_ext: Option<vk::FnGetMicromapBuildSizesEXT>,
     pub fp_get_shader_module_identifier_ext: Option<vk::FnGetShaderModuleIdentifierEXT>,
     pub fp_get_shader_module_create_info_identifier_ext: Option<vk::FnGetShaderModuleCreateInfoIdentifierEXT>,
-    pub fp_get_image_subresource_layout2_khr: Option<vk::FnGetImageSubresourceLayout2KHR>,
+    pub fp_get_image_subresource_layout2: Option<vk::FnGetImageSubresourceLayout2>,
     pub fp_get_pipeline_properties_ext: Option<vk::FnGetPipelinePropertiesEXT>,
     pub fp_export_metal_objects_ext: Option<vk::FnExportMetalObjectsEXT>,
     pub fp_get_framebuffer_tile_properties_qcom: Option<vk::FnGetFramebufferTilePropertiesQCOM>,
@@ -10126,9 +10173,9 @@ pub struct Device {
     pub fp_get_device_fault_info_ext: Option<vk::FnGetDeviceFaultInfoEXT>,
     pub fp_cmd_set_depth_bias2_ext: Option<vk::FnCmdSetDepthBias2EXT>,
     pub fp_release_swapchain_images_ext: Option<vk::FnReleaseSwapchainImagesEXT>,
-    pub fp_get_device_image_subresource_layout_khr: Option<vk::FnGetDeviceImageSubresourceLayoutKHR>,
-    pub fp_map_memory2_khr: Option<vk::FnMapMemory2KHR>,
-    pub fp_unmap_memory2_khr: Option<vk::FnUnmapMemory2KHR>,
+    pub fp_get_device_image_subresource_layout: Option<vk::FnGetDeviceImageSubresourceLayout>,
+    pub fp_map_memory2: Option<vk::FnMapMemory2>,
+    pub fp_unmap_memory2: Option<vk::FnUnmapMemory2>,
     pub fp_create_shaders_ext: Option<vk::FnCreateShadersEXT>,
     pub fp_destroy_shader_ext: Option<vk::FnDestroyShaderEXT>,
     pub fp_get_shader_binary_data_ext: Option<vk::FnGetShaderBinaryDataEXT>,
@@ -10142,10 +10189,10 @@ pub struct Device {
     pub fp_cmd_dispatch_graph_amdx: Option<vk::FnCmdDispatchGraphAMDX>,
     pub fp_cmd_dispatch_graph_indirect_amdx: Option<vk::FnCmdDispatchGraphIndirectAMDX>,
     pub fp_cmd_dispatch_graph_indirect_count_amdx: Option<vk::FnCmdDispatchGraphIndirectCountAMDX>,
-    pub fp_cmd_bind_descriptor_sets2_khr: Option<vk::FnCmdBindDescriptorSets2KHR>,
-    pub fp_cmd_push_constants2_khr: Option<vk::FnCmdPushConstants2KHR>,
-    pub fp_cmd_push_descriptor_set2_khr: Option<vk::FnCmdPushDescriptorSet2KHR>,
-    pub fp_cmd_push_descriptor_set_with_template2_khr: Option<vk::FnCmdPushDescriptorSetWithTemplate2KHR>,
+    pub fp_cmd_bind_descriptor_sets2: Option<vk::FnCmdBindDescriptorSets2>,
+    pub fp_cmd_push_constants2: Option<vk::FnCmdPushConstants2>,
+    pub fp_cmd_push_descriptor_set2: Option<vk::FnCmdPushDescriptorSet2>,
+    pub fp_cmd_push_descriptor_set_with_template2: Option<vk::FnCmdPushDescriptorSetWithTemplate2>,
     pub fp_cmd_set_descriptor_buffer_offsets2_ext: Option<vk::FnCmdSetDescriptorBufferOffsets2EXT>,
     pub fp_cmd_bind_descriptor_buffer_embedded_samplers2_ext: Option<vk::FnCmdBindDescriptorBufferEmbeddedSamplers2EXT>,
     pub fp_set_latency_sleep_mode_nv: Option<vk::FnSetLatencySleepModeNV>,
@@ -10153,8 +10200,8 @@ pub struct Device {
     pub fp_set_latency_marker_nv: Option<vk::FnSetLatencyMarkerNV>,
     pub fp_get_latency_timings_nv: Option<vk::FnGetLatencyTimingsNV>,
     pub fp_queue_notify_out_of_band_nv: Option<vk::FnQueueNotifyOutOfBandNV>,
-    pub fp_cmd_set_rendering_attachment_locations_khr: Option<vk::FnCmdSetRenderingAttachmentLocationsKHR>,
-    pub fp_cmd_set_rendering_input_attachment_indices_khr: Option<vk::FnCmdSetRenderingInputAttachmentIndicesKHR>,
+    pub fp_cmd_set_rendering_attachment_locations: Option<vk::FnCmdSetRenderingAttachmentLocations>,
+    pub fp_cmd_set_rendering_input_attachment_indices: Option<vk::FnCmdSetRenderingInputAttachmentIndices>,
     pub fp_cmd_set_depth_clamp_range_ext: Option<vk::FnCmdSetDepthClampRangeEXT>,
     pub fp_get_physical_device_cooperative_matrix_flexible_dimensions_properties_nv:
         Option<vk::FnGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV>,
@@ -10714,7 +10761,13 @@ impl Device {
                 }
                 fp.map(|f| mem::transmute(f))
             },
-            fp_get_rendering_area_granularity_khr: if extensions.khr_maintenance5 {
+            fp_get_rendering_area_granularity: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetRenderingAreaGranularity\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkGetRenderingAreaGranularity".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_maintenance5 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetRenderingAreaGranularityKHR\0",
                 ));
@@ -11352,7 +11405,13 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_push_descriptor_set_khr: if extensions.khr_push_descriptor {
+            fp_cmd_push_descriptor_set: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPushDescriptorSet\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCmdPushDescriptorSet".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_push_descriptor {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPushDescriptorSetKHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11679,7 +11738,17 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_push_descriptor_set_with_template_khr: if (extensions.khr_push_descriptor
+            fp_cmd_push_descriptor_set_with_template: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdPushDescriptorSetWithTemplate\0",
+                ));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol(
+                        "vkCmdPushDescriptorSetWithTemplate".to_string(),
+                    ));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if (extensions.khr_push_descriptor
                 && (version >= vk::Version::from_raw_parts(1, 1, 0) || extensions.khr_descriptor_update_template))
                 || (extensions.khr_descriptor_update_template && extensions.khr_push_descriptor)
             {
@@ -12732,7 +12801,13 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_line_stipple_khr: if extensions.khr_line_rasterization {
+            fp_cmd_set_line_stipple: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLineStipple\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCmdSetLineStipple".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_line_rasterization {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLineStippleKHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else if extensions.ext_line_rasterization {
@@ -12915,7 +12990,13 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_bind_index_buffer2_khr: if extensions.khr_maintenance5 {
+            fp_cmd_bind_index_buffer2: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindIndexBuffer2\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCmdBindIndexBuffer2".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_maintenance5 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindIndexBuffer2KHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -13608,25 +13689,49 @@ impl Device {
             } else {
                 None
             },
-            fp_copy_memory_to_image_ext: if extensions.ext_host_image_copy {
+            fp_copy_memory_to_image: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyMemoryToImage\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCopyMemoryToImage".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.ext_host_image_copy {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyMemoryToImageEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_copy_image_to_memory_ext: if extensions.ext_host_image_copy {
+            fp_copy_image_to_memory: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyImageToMemory\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCopyImageToMemory".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.ext_host_image_copy {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyImageToMemoryEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_copy_image_to_image_ext: if extensions.ext_host_image_copy {
+            fp_copy_image_to_image: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyImageToImage\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCopyImageToImage".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.ext_host_image_copy {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyImageToImageEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_transition_image_layout_ext: if extensions.ext_host_image_copy {
+            fp_transition_image_layout: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkTransitionImageLayout\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkTransitionImageLayout".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.ext_host_image_copy {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkTransitionImageLayoutEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -13992,7 +14097,13 @@ impl Device {
             } else {
                 None
             },
-            fp_get_image_subresource_layout2_khr: if extensions.khr_maintenance5 {
+            fp_get_image_subresource_layout2: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetImageSubresourceLayout2\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkGetImageSubresourceLayout2".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_maintenance5 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetImageSubresourceLayout2KHR\0",
                 ));
@@ -14085,7 +14196,17 @@ impl Device {
             } else {
                 None
             },
-            fp_get_device_image_subresource_layout_khr: if extensions.khr_maintenance5 {
+            fp_get_device_image_subresource_layout: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceImageSubresourceLayout\0",
+                ));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol(
+                        "vkGetDeviceImageSubresourceLayout".to_string(),
+                    ));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_maintenance5 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetDeviceImageSubresourceLayoutKHR\0",
                 ));
@@ -14093,13 +14214,25 @@ impl Device {
             } else {
                 None
             },
-            fp_map_memory2_khr: if extensions.khr_map_memory2 {
+            fp_map_memory2: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkMapMemory2\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkMapMemory2".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_map_memory2 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkMapMemory2KHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_unmap_memory2_khr: if extensions.khr_map_memory2 {
+            fp_unmap_memory2: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkUnmapMemory2\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkUnmapMemory2".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_map_memory2 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkUnmapMemory2KHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -14189,27 +14322,53 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_bind_descriptor_sets2_khr: if extensions.khr_maintenance6 {
+            fp_cmd_bind_descriptor_sets2: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindDescriptorSets2\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCmdBindDescriptorSets2".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_maintenance6 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindDescriptorSets2KHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_push_constants2_khr: if extensions.khr_maintenance6 {
+            fp_cmd_push_constants2: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPushConstants2\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCmdPushConstants2".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_maintenance6 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPushConstants2KHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_push_descriptor_set2_khr: if extensions.khr_maintenance6 && extensions.khr_push_descriptor {
+            fp_cmd_push_descriptor_set2: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPushDescriptorSet2\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCmdPushDescriptorSet2".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_maintenance6 && extensions.khr_push_descriptor {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPushDescriptorSet2KHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_push_descriptor_set_with_template2_khr: if extensions.khr_maintenance6
-                && extensions.khr_push_descriptor
-            {
+            fp_cmd_push_descriptor_set_with_template2: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdPushDescriptorSetWithTemplate2\0",
+                ));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol(
+                        "vkCmdPushDescriptorSetWithTemplate2".to_string(),
+                    ));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_maintenance6 && extensions.khr_push_descriptor {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdPushDescriptorSetWithTemplate2KHR\0",
                 ));
@@ -14267,7 +14426,17 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_rendering_attachment_locations_khr: if extensions.khr_dynamic_rendering_local_read {
+            fp_cmd_set_rendering_attachment_locations: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetRenderingAttachmentLocations\0",
+                ));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol(
+                        "vkCmdSetRenderingAttachmentLocations".to_string(),
+                    ));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_dynamic_rendering_local_read {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetRenderingAttachmentLocationsKHR\0",
                 ));
@@ -14275,7 +14444,17 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_rendering_input_attachment_indices_khr: if extensions.khr_dynamic_rendering_local_read {
+            fp_cmd_set_rendering_input_attachment_indices: if version >= vk::Version::from_raw_parts(1, 4, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetRenderingInputAttachmentIndices\0",
+                ));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol(
+                        "vkCmdSetRenderingInputAttachmentIndices".to_string(),
+                    ));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.khr_dynamic_rendering_local_read {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetRenderingInputAttachmentIndicesKHR\0",
                 ));
@@ -15511,12 +15690,20 @@ impl Device {
         (fp)(Some(self.handle), Some(render_pass), res.as_mut_ptr());
         res.assume_init()
     }
+    pub unsafe fn get_rendering_area_granularity(&self, p_rendering_area_info: &vk::RenderingAreaInfo) -> vk::Extent2D {
+        let fp = self
+            .fp_get_rendering_area_granularity
+            .expect("vkGetRenderingAreaGranularity is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), p_rendering_area_info, res.as_mut_ptr());
+        res.assume_init()
+    }
     pub unsafe fn get_rendering_area_granularity_khr(
         &self,
-        p_rendering_area_info: &vk::RenderingAreaInfoKHR,
+        p_rendering_area_info: &vk::RenderingAreaInfo,
     ) -> vk::Extent2D {
         let fp = self
-            .fp_get_rendering_area_granularity_khr
+            .fp_get_rendering_area_granularity
             .expect("vkGetRenderingAreaGranularityKHR is not loaded");
         let mut res = MaybeUninit::<_>::uninit();
         (fp)(Some(self.handle), p_rendering_area_info, res.as_mut_ptr());
@@ -16916,6 +17103,27 @@ impl Device {
             p_execution_set_writes.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
+    pub unsafe fn cmd_push_descriptor_set(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        pipeline_bind_point: vk::PipelineBindPoint,
+        layout: vk::PipelineLayout,
+        set: u32,
+        p_descriptor_writes: &[vk::WriteDescriptorSet],
+    ) {
+        let fp = self
+            .fp_cmd_push_descriptor_set
+            .expect("vkCmdPushDescriptorSet is not loaded");
+        let descriptor_write_count = p_descriptor_writes.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            pipeline_bind_point,
+            Some(layout),
+            set,
+            descriptor_write_count,
+            p_descriptor_writes.first().map_or(ptr::null(), |s| s as *const _),
+        );
+    }
     pub unsafe fn cmd_push_descriptor_set_khr(
         &self,
         command_buffer: vk::CommandBuffer,
@@ -16925,7 +17133,7 @@ impl Device {
         p_descriptor_writes: &[vk::WriteDescriptorSet],
     ) {
         let fp = self
-            .fp_cmd_push_descriptor_set_khr
+            .fp_cmd_push_descriptor_set
             .expect("vkCmdPushDescriptorSetKHR is not loaded");
         let descriptor_write_count = p_descriptor_writes.len() as u32;
         (fp)(
@@ -17573,6 +17781,25 @@ impl Device {
             p_data,
         );
     }
+    pub unsafe fn cmd_push_descriptor_set_with_template(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        descriptor_update_template: vk::DescriptorUpdateTemplate,
+        layout: vk::PipelineLayout,
+        set: u32,
+        p_data: *const c_void,
+    ) {
+        let fp = self
+            .fp_cmd_push_descriptor_set_with_template
+            .expect("vkCmdPushDescriptorSetWithTemplate is not loaded");
+        (fp)(
+            Some(command_buffer),
+            Some(descriptor_update_template),
+            Some(layout),
+            set,
+            p_data,
+        );
+    }
     pub unsafe fn cmd_push_descriptor_set_with_template_khr(
         &self,
         command_buffer: vk::CommandBuffer,
@@ -17582,7 +17809,7 @@ impl Device {
         p_data: *const c_void,
     ) {
         let fp = self
-            .fp_cmd_push_descriptor_set_with_template_khr
+            .fp_cmd_push_descriptor_set_with_template
             .expect("vkCmdPushDescriptorSetWithTemplateKHR is not loaded");
         (fp)(
             Some(command_buffer),
@@ -20088,6 +20315,15 @@ impl Device {
             _ => Err(v_err),
         }
     }
+    pub unsafe fn cmd_set_line_stipple(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        line_stipple_factor: u32,
+        line_stipple_pattern: u16,
+    ) {
+        let fp = self.fp_cmd_set_line_stipple.expect("vkCmdSetLineStipple is not loaded");
+        (fp)(Some(command_buffer), line_stipple_factor, line_stipple_pattern);
+    }
     pub unsafe fn cmd_set_line_stipple_khr(
         &self,
         command_buffer: vk::CommandBuffer,
@@ -20095,7 +20331,7 @@ impl Device {
         line_stipple_pattern: u16,
     ) {
         let fp = self
-            .fp_cmd_set_line_stipple_khr
+            .fp_cmd_set_line_stipple
             .expect("vkCmdSetLineStippleKHR is not loaded");
         (fp)(Some(command_buffer), line_stipple_factor, line_stipple_pattern);
     }
@@ -20106,7 +20342,7 @@ impl Device {
         line_stipple_pattern: u16,
     ) {
         let fp = self
-            .fp_cmd_set_line_stipple_khr
+            .fp_cmd_set_line_stipple
             .expect("vkCmdSetLineStippleEXT is not loaded");
         (fp)(Some(command_buffer), line_stipple_factor, line_stipple_pattern);
     }
@@ -20411,6 +20647,19 @@ impl Device {
             p_scissors.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
+    pub unsafe fn cmd_bind_index_buffer2(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        buffer: Option<vk::Buffer>,
+        offset: vk::DeviceSize,
+        size: vk::DeviceSize,
+        index_type: vk::IndexType,
+    ) {
+        let fp = self
+            .fp_cmd_bind_index_buffer2
+            .expect("vkCmdBindIndexBuffer2 is not loaded");
+        (fp)(Some(command_buffer), buffer, offset, size, index_type);
+    }
     pub unsafe fn cmd_bind_index_buffer2_khr(
         &self,
         command_buffer: vk::CommandBuffer,
@@ -20420,7 +20669,7 @@ impl Device {
         index_type: vk::IndexType,
     ) {
         let fp = self
-            .fp_cmd_bind_index_buffer2_khr
+            .fp_cmd_bind_index_buffer2
             .expect("vkCmdBindIndexBuffer2KHR is not loaded");
         (fp)(Some(command_buffer), buffer, offset, size, index_type);
     }
@@ -21597,12 +21846,20 @@ impl Device {
         v.set_len(len as usize);
         v
     }
+    pub unsafe fn copy_memory_to_image(&self, p_copy_memory_to_image_info: &vk::CopyMemoryToImageInfo) -> Result<()> {
+        let fp = self.fp_copy_memory_to_image.expect("vkCopyMemoryToImage is not loaded");
+        let err = (fp)(Some(self.handle), p_copy_memory_to_image_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
     pub unsafe fn copy_memory_to_image_ext(
         &self,
-        p_copy_memory_to_image_info: &vk::CopyMemoryToImageInfoEXT,
+        p_copy_memory_to_image_info: &vk::CopyMemoryToImageInfo,
     ) -> Result<()> {
         let fp = self
-            .fp_copy_memory_to_image_ext
+            .fp_copy_memory_to_image
             .expect("vkCopyMemoryToImageEXT is not loaded");
         let err = (fp)(Some(self.handle), p_copy_memory_to_image_info);
         match err {
@@ -21610,12 +21867,20 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn copy_image_to_memory(&self, p_copy_image_to_memory_info: &vk::CopyImageToMemoryInfo) -> Result<()> {
+        let fp = self.fp_copy_image_to_memory.expect("vkCopyImageToMemory is not loaded");
+        let err = (fp)(Some(self.handle), p_copy_image_to_memory_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
     pub unsafe fn copy_image_to_memory_ext(
         &self,
-        p_copy_image_to_memory_info: &vk::CopyImageToMemoryInfoEXT,
+        p_copy_image_to_memory_info: &vk::CopyImageToMemoryInfo,
     ) -> Result<()> {
         let fp = self
-            .fp_copy_image_to_memory_ext
+            .fp_copy_image_to_memory
             .expect("vkCopyImageToMemoryEXT is not loaded");
         let err = (fp)(Some(self.handle), p_copy_image_to_memory_info);
         match err {
@@ -21623,12 +21888,17 @@ impl Device {
             _ => Err(err),
         }
     }
-    pub unsafe fn copy_image_to_image_ext(
-        &self,
-        p_copy_image_to_image_info: &vk::CopyImageToImageInfoEXT,
-    ) -> Result<()> {
+    pub unsafe fn copy_image_to_image(&self, p_copy_image_to_image_info: &vk::CopyImageToImageInfo) -> Result<()> {
+        let fp = self.fp_copy_image_to_image.expect("vkCopyImageToImage is not loaded");
+        let err = (fp)(Some(self.handle), p_copy_image_to_image_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn copy_image_to_image_ext(&self, p_copy_image_to_image_info: &vk::CopyImageToImageInfo) -> Result<()> {
         let fp = self
-            .fp_copy_image_to_image_ext
+            .fp_copy_image_to_image
             .expect("vkCopyImageToImageEXT is not loaded");
         let err = (fp)(Some(self.handle), p_copy_image_to_image_info);
         match err {
@@ -21636,12 +21906,27 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn transition_image_layout(&self, p_transitions: &[vk::HostImageLayoutTransitionInfo]) -> Result<()> {
+        let fp = self
+            .fp_transition_image_layout
+            .expect("vkTransitionImageLayout is not loaded");
+        let transition_count = p_transitions.len() as u32;
+        let err = (fp)(
+            Some(self.handle),
+            transition_count,
+            p_transitions.first().map_or(ptr::null(), |s| s as *const _),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
     pub unsafe fn transition_image_layout_ext(
         &self,
-        p_transitions: &[vk::HostImageLayoutTransitionInfoEXT],
+        p_transitions: &[vk::HostImageLayoutTransitionInfo],
     ) -> Result<()> {
         let fp = self
-            .fp_transition_image_layout_ext
+            .fp_transition_image_layout
             .expect("vkTransitionImageLayoutEXT is not loaded");
         let transition_count = p_transitions.len() as u32;
         let err = (fp)(
@@ -22358,25 +22643,36 @@ impl Device {
             .expect("vkGetShaderModuleCreateInfoIdentifierEXT is not loaded");
         (fp)(Some(self.handle), p_create_info, p_identifier);
     }
+    pub unsafe fn get_image_subresource_layout2(
+        &self,
+        image: vk::Image,
+        p_subresource: &vk::ImageSubresource2,
+        p_layout: &mut vk::SubresourceLayout2,
+    ) {
+        let fp = self
+            .fp_get_image_subresource_layout2
+            .expect("vkGetImageSubresourceLayout2 is not loaded");
+        (fp)(Some(self.handle), Some(image), p_subresource, p_layout);
+    }
     pub unsafe fn get_image_subresource_layout2_khr(
         &self,
         image: vk::Image,
-        p_subresource: &vk::ImageSubresource2KHR,
-        p_layout: &mut vk::SubresourceLayout2KHR,
+        p_subresource: &vk::ImageSubresource2,
+        p_layout: &mut vk::SubresourceLayout2,
     ) {
         let fp = self
-            .fp_get_image_subresource_layout2_khr
+            .fp_get_image_subresource_layout2
             .expect("vkGetImageSubresourceLayout2KHR is not loaded");
         (fp)(Some(self.handle), Some(image), p_subresource, p_layout);
     }
     pub unsafe fn get_image_subresource_layout2_ext(
         &self,
         image: vk::Image,
-        p_subresource: &vk::ImageSubresource2KHR,
-        p_layout: &mut vk::SubresourceLayout2KHR,
+        p_subresource: &vk::ImageSubresource2,
+        p_layout: &mut vk::SubresourceLayout2,
     ) {
         let fp = self
-            .fp_get_image_subresource_layout2_khr
+            .fp_get_image_subresource_layout2
             .expect("vkGetImageSubresourceLayout2EXT is not loaded");
         (fp)(Some(self.handle), Some(image), p_subresource, p_layout);
     }
@@ -22565,18 +22861,28 @@ impl Device {
             _ => Err(err),
         }
     }
-    pub unsafe fn get_device_image_subresource_layout_khr(
+    pub unsafe fn get_device_image_subresource_layout(
         &self,
-        p_info: &vk::DeviceImageSubresourceInfoKHR,
-        p_layout: &mut vk::SubresourceLayout2KHR,
+        p_info: &vk::DeviceImageSubresourceInfo,
+        p_layout: &mut vk::SubresourceLayout2,
     ) {
         let fp = self
-            .fp_get_device_image_subresource_layout_khr
+            .fp_get_device_image_subresource_layout
+            .expect("vkGetDeviceImageSubresourceLayout is not loaded");
+        (fp)(Some(self.handle), p_info, p_layout);
+    }
+    pub unsafe fn get_device_image_subresource_layout_khr(
+        &self,
+        p_info: &vk::DeviceImageSubresourceInfo,
+        p_layout: &mut vk::SubresourceLayout2,
+    ) {
+        let fp = self
+            .fp_get_device_image_subresource_layout
             .expect("vkGetDeviceImageSubresourceLayoutKHR is not loaded");
         (fp)(Some(self.handle), p_info, p_layout);
     }
-    pub unsafe fn map_memory2_khr(&self, p_memory_map_info: &vk::MemoryMapInfoKHR) -> Result<*mut c_void> {
-        let fp = self.fp_map_memory2_khr.expect("vkMapMemory2KHR is not loaded");
+    pub unsafe fn map_memory2(&self, p_memory_map_info: &vk::MemoryMapInfo) -> Result<*mut c_void> {
+        let fp = self.fp_map_memory2.expect("vkMapMemory2 is not loaded");
         let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(Some(self.handle), p_memory_map_info, res.as_mut_ptr());
         match err {
@@ -22584,8 +22890,25 @@ impl Device {
             _ => Err(err),
         }
     }
-    pub unsafe fn unmap_memory2_khr(&self, p_memory_unmap_info: &vk::MemoryUnmapInfoKHR) -> Result<()> {
-        let fp = self.fp_unmap_memory2_khr.expect("vkUnmapMemory2KHR is not loaded");
+    pub unsafe fn map_memory2_khr(&self, p_memory_map_info: &vk::MemoryMapInfo) -> Result<*mut c_void> {
+        let fp = self.fp_map_memory2.expect("vkMapMemory2KHR is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_memory_map_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn unmap_memory2(&self, p_memory_unmap_info: &vk::MemoryUnmapInfo) -> Result<()> {
+        let fp = self.fp_unmap_memory2.expect("vkUnmapMemory2 is not loaded");
+        let err = (fp)(Some(self.handle), p_memory_unmap_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn unmap_memory2_khr(&self, p_memory_unmap_info: &vk::MemoryUnmapInfo) -> Result<()> {
+        let fp = self.fp_unmap_memory2.expect("vkUnmapMemory2KHR is not loaded");
         let err = (fp)(Some(self.handle), p_memory_unmap_info);
         match err {
             vk::Result::SUCCESS => Ok(()),
@@ -22910,43 +23233,81 @@ impl Device {
             .expect("vkCmdDispatchGraphIndirectCountAMDX is not loaded");
         (fp)(Some(command_buffer), scratch, scratch_size, count_info);
     }
+    pub unsafe fn cmd_bind_descriptor_sets2(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_bind_descriptor_sets_info: &vk::BindDescriptorSetsInfo,
+    ) {
+        let fp = self
+            .fp_cmd_bind_descriptor_sets2
+            .expect("vkCmdBindDescriptorSets2 is not loaded");
+        (fp)(Some(command_buffer), p_bind_descriptor_sets_info);
+    }
     pub unsafe fn cmd_bind_descriptor_sets2_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_bind_descriptor_sets_info: &vk::BindDescriptorSetsInfoKHR,
+        p_bind_descriptor_sets_info: &vk::BindDescriptorSetsInfo,
     ) {
         let fp = self
-            .fp_cmd_bind_descriptor_sets2_khr
+            .fp_cmd_bind_descriptor_sets2
             .expect("vkCmdBindDescriptorSets2KHR is not loaded");
         (fp)(Some(command_buffer), p_bind_descriptor_sets_info);
+    }
+    pub unsafe fn cmd_push_constants2(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_push_constants_info: &vk::PushConstantsInfo,
+    ) {
+        let fp = self.fp_cmd_push_constants2.expect("vkCmdPushConstants2 is not loaded");
+        (fp)(Some(command_buffer), p_push_constants_info);
     }
     pub unsafe fn cmd_push_constants2_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_push_constants_info: &vk::PushConstantsInfoKHR,
+        p_push_constants_info: &vk::PushConstantsInfo,
     ) {
         let fp = self
-            .fp_cmd_push_constants2_khr
+            .fp_cmd_push_constants2
             .expect("vkCmdPushConstants2KHR is not loaded");
         (fp)(Some(command_buffer), p_push_constants_info);
+    }
+    pub unsafe fn cmd_push_descriptor_set2(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_push_descriptor_set_info: &vk::PushDescriptorSetInfo,
+    ) {
+        let fp = self
+            .fp_cmd_push_descriptor_set2
+            .expect("vkCmdPushDescriptorSet2 is not loaded");
+        (fp)(Some(command_buffer), p_push_descriptor_set_info);
     }
     pub unsafe fn cmd_push_descriptor_set2_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_push_descriptor_set_info: &vk::PushDescriptorSetInfoKHR,
+        p_push_descriptor_set_info: &vk::PushDescriptorSetInfo,
     ) {
         let fp = self
-            .fp_cmd_push_descriptor_set2_khr
+            .fp_cmd_push_descriptor_set2
             .expect("vkCmdPushDescriptorSet2KHR is not loaded");
         (fp)(Some(command_buffer), p_push_descriptor_set_info);
+    }
+    pub unsafe fn cmd_push_descriptor_set_with_template2(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_push_descriptor_set_with_template_info: &vk::PushDescriptorSetWithTemplateInfo,
+    ) {
+        let fp = self
+            .fp_cmd_push_descriptor_set_with_template2
+            .expect("vkCmdPushDescriptorSetWithTemplate2 is not loaded");
+        (fp)(Some(command_buffer), p_push_descriptor_set_with_template_info);
     }
     pub unsafe fn cmd_push_descriptor_set_with_template2_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_push_descriptor_set_with_template_info: &vk::PushDescriptorSetWithTemplateInfoKHR,
+        p_push_descriptor_set_with_template_info: &vk::PushDescriptorSetWithTemplateInfo,
     ) {
         let fp = self
-            .fp_cmd_push_descriptor_set_with_template2_khr
+            .fp_cmd_push_descriptor_set_with_template2
             .expect("vkCmdPushDescriptorSetWithTemplate2KHR is not loaded");
         (fp)(Some(command_buffer), p_push_descriptor_set_with_template_info);
     }
@@ -23026,23 +23387,43 @@ impl Device {
             .expect("vkQueueNotifyOutOfBandNV is not loaded");
         (fp)(Some(queue), p_queue_type_info);
     }
+    pub unsafe fn cmd_set_rendering_attachment_locations(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_location_info: &vk::RenderingAttachmentLocationInfo,
+    ) {
+        let fp = self
+            .fp_cmd_set_rendering_attachment_locations
+            .expect("vkCmdSetRenderingAttachmentLocations is not loaded");
+        (fp)(Some(command_buffer), p_location_info);
+    }
     pub unsafe fn cmd_set_rendering_attachment_locations_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_location_info: &vk::RenderingAttachmentLocationInfoKHR,
+        p_location_info: &vk::RenderingAttachmentLocationInfo,
     ) {
         let fp = self
-            .fp_cmd_set_rendering_attachment_locations_khr
+            .fp_cmd_set_rendering_attachment_locations
             .expect("vkCmdSetRenderingAttachmentLocationsKHR is not loaded");
         (fp)(Some(command_buffer), p_location_info);
+    }
+    pub unsafe fn cmd_set_rendering_input_attachment_indices(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_input_attachment_index_info: &vk::RenderingInputAttachmentIndexInfo,
+    ) {
+        let fp = self
+            .fp_cmd_set_rendering_input_attachment_indices
+            .expect("vkCmdSetRenderingInputAttachmentIndices is not loaded");
+        (fp)(Some(command_buffer), p_input_attachment_index_info);
     }
     pub unsafe fn cmd_set_rendering_input_attachment_indices_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_input_attachment_index_info: &vk::RenderingInputAttachmentIndexInfoKHR,
+        p_input_attachment_index_info: &vk::RenderingInputAttachmentIndexInfo,
     ) {
         let fp = self
-            .fp_cmd_set_rendering_input_attachment_indices_khr
+            .fp_cmd_set_rendering_input_attachment_indices
             .expect("vkCmdSetRenderingInputAttachmentIndicesKHR is not loaded");
         (fp)(Some(command_buffer), p_input_attachment_index_info);
     }

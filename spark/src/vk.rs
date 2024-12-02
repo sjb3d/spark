@@ -202,7 +202,6 @@ macro_rules! impl_bitmask {
 pub const MAX_PHYSICAL_DEVICE_NAME_SIZE: usize = 256;
 pub const UUID_SIZE: usize = 16;
 pub const LUID_SIZE: usize = 8;
-pub const LUID_SIZE_KHR: usize = LUID_SIZE;
 pub const MAX_EXTENSION_NAME_SIZE: usize = 256;
 pub const MAX_DESCRIPTION_SIZE: usize = 256;
 pub const MAX_MEMORY_TYPES: usize = 32;
@@ -217,19 +216,13 @@ pub const TRUE: Bool32 = 1;
 pub const FALSE: Bool32 = 0;
 pub const QUEUE_FAMILY_IGNORED: u32 = 0xffffffff;
 pub const QUEUE_FAMILY_EXTERNAL: u32 = 0xfffffffe;
-pub const QUEUE_FAMILY_EXTERNAL_KHR: u32 = QUEUE_FAMILY_EXTERNAL;
 pub const QUEUE_FAMILY_FOREIGN_EXT: u32 = 0xfffffffd;
 pub const SUBPASS_EXTERNAL: u32 = 0xffffffff;
 pub const MAX_DEVICE_GROUP_SIZE: usize = 32;
-pub const MAX_DEVICE_GROUP_SIZE_KHR: usize = MAX_DEVICE_GROUP_SIZE;
 pub const MAX_DRIVER_NAME_SIZE: usize = 256;
-pub const MAX_DRIVER_NAME_SIZE_KHR: usize = MAX_DRIVER_NAME_SIZE;
 pub const MAX_DRIVER_INFO_SIZE: usize = 256;
-pub const MAX_DRIVER_INFO_SIZE_KHR: usize = MAX_DRIVER_INFO_SIZE;
 pub const SHADER_UNUSED_KHR: u32 = 0xffffffff;
-pub const SHADER_UNUSED_NV: u32 = SHADER_UNUSED_KHR;
-pub const MAX_GLOBAL_PRIORITY_SIZE_KHR: usize = 16;
-pub const MAX_GLOBAL_PRIORITY_SIZE_EXT: usize = MAX_GLOBAL_PRIORITY_SIZE_KHR;
+pub const MAX_GLOBAL_PRIORITY_SIZE: usize = 16;
 pub const MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT: usize = 32;
 pub const MAX_PIPELINE_BINARY_KEY_SIZE_KHR: usize = 32;
 pub const MAX_VIDEO_AV1_REFERENCES_PER_FRAME_KHR: usize = 7;
@@ -467,9 +460,8 @@ impl fmt::Display for PipelineShaderStageCreateFlags {
 pub struct DescriptorSetLayoutCreateFlags(pub(crate) u32);
 impl DescriptorSetLayoutCreateFlags {
     pub const UPDATE_AFTER_BIND_POOL: Self = Self(0x2);
-    /// Descriptors are pushed via flink:vkCmdPushDescriptorSetKHR
-    /// Added by extension VK_KHR_push_descriptor.
-    pub const PUSH_DESCRIPTOR_KHR: Self = Self(0x1);
+    pub const PUSH_DESCRIPTOR: Self = Self(0x1);
+    pub const PUSH_DESCRIPTOR_KHR: Self = Self::PUSH_DESCRIPTOR;
     pub const UPDATE_AFTER_BIND_POOL_EXT: Self = Self::UPDATE_AFTER_BIND_POOL;
     /// Added by extension VK_EXT_descriptor_buffer.
     pub const DESCRIPTOR_BUFFER_EXT: Self = Self(0x10);
@@ -490,7 +482,7 @@ impl fmt::Display for DescriptorSetLayoutCreateFlags {
             self.0 as _,
             &[
                 (0x2, "UPDATE_AFTER_BIND_POOL"),
-                (0x1, "PUSH_DESCRIPTOR_KHR"),
+                (0x1, "PUSH_DESCRIPTOR"),
                 (0x10, "DESCRIPTOR_BUFFER_EXT"),
                 (0x20, "EMBEDDED_IMMUTABLE_SAMPLERS_EXT"),
                 (0x80, "INDIRECT_BINDABLE_NV"),
@@ -958,14 +950,13 @@ impl ImageUsageFlags {
     pub const TRANSIENT_ATTACHMENT: Self = Self(0x40);
     /// Can be used as framebuffer input attachment
     pub const INPUT_ATTACHMENT: Self = Self(0x80);
+    pub const HOST_TRANSFER: Self = Self(0x400000);
     pub const SHADING_RATE_IMAGE_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT_KHR;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x200);
     /// Added by extension VK_KHR_fragment_shading_rate.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x100);
-    /// Can be used with host image copies
-    /// Added by extension VK_EXT_host_image_copy.
-    pub const HOST_TRANSFER_EXT: Self = Self(0x400000);
+    pub const HOST_TRANSFER_EXT: Self = Self::HOST_TRANSFER;
     /// Added by extension VK_EXT_attachment_feedback_loop_layout.
     pub const ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x80000);
     /// Added by extension VK_HUAWEI_invocation_mask.
@@ -989,9 +980,9 @@ impl fmt::Display for ImageUsageFlags {
                 (0x20, "DEPTH_STENCIL_ATTACHMENT"),
                 (0x40, "TRANSIENT_ATTACHMENT"),
                 (0x80, "INPUT_ATTACHMENT"),
+                (0x400000, "HOST_TRANSFER"),
                 (0x200, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x100, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
-                (0x400000, "HOST_TRANSFER_EXT"),
                 (0x80000, "ATTACHMENT_FEEDBACK_LOOP_EXT"),
                 (0x40000, "INVOCATION_MASK_HUAWEI"),
                 (0x100000, "SAMPLE_WEIGHT_QCOM"),
@@ -1113,6 +1104,8 @@ impl PipelineCreateFlags {
     pub const DISPATCH_BASE: Self = Self(0x10);
     pub const FAIL_ON_PIPELINE_COMPILE_REQUIRED: Self = Self(0x100);
     pub const EARLY_RETURN_ON_FAILURE: Self = Self(0x200);
+    pub const NO_PROTECTED_ACCESS: Self = Self(0x8000000);
+    pub const PROTECTED_ACCESS_ONLY: Self = Self(0x40000000);
     pub const VIEW_INDEX_FROM_DEVICE_INDEX_KHR: Self = Self::VIEW_INDEX_FROM_DEVICE_INDEX;
     pub const DISPATCH_BASE_KHR: Self = Self::DISPATCH_BASE;
     /// Added by extension VK_KHR_ray_tracing_pipeline.
@@ -1165,10 +1158,8 @@ impl PipelineCreateFlags {
     pub const RAY_TRACING_OPACITY_MICROMAP_EXT: Self = Self(0x1000000);
     /// Added by extension VK_NV_displacement_micromap.
     pub const RAY_TRACING_DISPLACEMENT_MICROMAP_NV: Self = Self(0x10000000);
-    /// Added by extension VK_EXT_pipeline_protected_access.
-    pub const NO_PROTECTED_ACCESS_EXT: Self = Self(0x8000000);
-    /// Added by extension VK_EXT_pipeline_protected_access.
-    pub const PROTECTED_ACCESS_ONLY_EXT: Self = Self(0x40000000);
+    pub const NO_PROTECTED_ACCESS_EXT: Self = Self::NO_PROTECTED_ACCESS;
+    pub const PROTECTED_ACCESS_ONLY_EXT: Self = Self::PROTECTED_ACCESS_ONLY;
 }
 impl_bitmask!(PipelineCreateFlags, 0x7fffffff);
 impl fmt::Display for PipelineCreateFlags {
@@ -1183,6 +1174,8 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x10, "DISPATCH_BASE"),
                 (0x100, "FAIL_ON_PIPELINE_COMPILE_REQUIRED"),
                 (0x200, "EARLY_RETURN_ON_FAILURE"),
+                (0x8000000, "NO_PROTECTED_ACCESS"),
+                (0x40000000, "PROTECTED_ACCESS_ONLY"),
                 (0x4000, "RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_KHR"),
                 (0x8000, "RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_KHR"),
                 (0x10000, "RAY_TRACING_NO_NULL_MISS_SHADERS_KHR"),
@@ -1205,8 +1198,6 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x4000000, "DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT"),
                 (0x1000000, "RAY_TRACING_OPACITY_MICROMAP_EXT"),
                 (0x10000000, "RAY_TRACING_DISPLACEMENT_MICROMAP_NV"),
-                (0x8000000, "NO_PROTECTED_ACCESS_EXT"),
-                (0x40000000, "PROTECTED_ACCESS_ONLY_EXT"),
             ],
             f,
         )
@@ -1572,17 +1563,18 @@ impl fmt::Display for MemoryMapFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct MemoryUnmapFlagsKHR(pub(crate) u32);
-impl MemoryUnmapFlagsKHR {
+pub struct MemoryUnmapFlags(pub(crate) u32);
+impl MemoryUnmapFlags {
     /// Added by extension VK_EXT_map_memory_placed.
     pub const RESERVE_EXT: Self = Self(0x1);
 }
-impl_bitmask!(MemoryUnmapFlagsKHR, 0x1);
-impl fmt::Display for MemoryUnmapFlagsKHR {
+impl_bitmask!(MemoryUnmapFlags, 0x1);
+impl fmt::Display for MemoryUnmapFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "RESERVE_EXT")], f)
     }
 }
+pub type MemoryUnmapFlagsKHR = MemoryUnmapFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageAspectFlags(pub(crate) u32);
@@ -1999,12 +1991,12 @@ impl SubgroupFeatureFlags {
     pub const CLUSTERED: Self = Self(0x40);
     /// Quad subgroup operations
     pub const QUAD: Self = Self(0x80);
+    pub const ROTATE: Self = Self(0x200);
+    pub const ROTATE_CLUSTERED: Self = Self(0x400);
     /// Added by extension VK_NV_shader_subgroup_partitioned.
     pub const PARTITIONED_NV: Self = Self(0x100);
-    /// Added by extension VK_KHR_shader_subgroup_rotate.
-    pub const ROTATE_KHR: Self = Self(0x200);
-    /// Added by extension VK_KHR_shader_subgroup_rotate.
-    pub const ROTATE_CLUSTERED_KHR: Self = Self(0x400);
+    pub const ROTATE_KHR: Self = Self::ROTATE;
+    pub const ROTATE_CLUSTERED_KHR: Self = Self::ROTATE_CLUSTERED;
 }
 impl_bitmask!(SubgroupFeatureFlags, 0x7ff);
 impl fmt::Display for SubgroupFeatureFlags {
@@ -2020,9 +2012,9 @@ impl fmt::Display for SubgroupFeatureFlags {
                 (0x20, "SHUFFLE_RELATIVE"),
                 (0x40, "CLUSTERED"),
                 (0x80, "QUAD"),
+                (0x200, "ROTATE"),
+                (0x400, "ROTATE_CLUSTERED"),
                 (0x100, "PARTITIONED_NV"),
-                (0x200, "ROTATE_KHR"),
-                (0x400, "ROTATE_CLUSTERED_KHR"),
             ],
             f,
         )
@@ -2219,10 +2211,10 @@ pub type DescriptorUpdateTemplateCreateFlagsKHR = DescriptorUpdateTemplateCreate
 pub struct PipelineCreationFeedbackFlags(pub(crate) u32);
 impl PipelineCreationFeedbackFlags {
     pub const VALID: Self = Self(0x1);
-    pub const VALID_EXT: Self = Self::VALID;
     pub const APPLICATION_PIPELINE_CACHE_HIT: Self = Self(0x2);
-    pub const APPLICATION_PIPELINE_CACHE_HIT_EXT: Self = Self::APPLICATION_PIPELINE_CACHE_HIT;
     pub const BASE_PIPELINE_ACCELERATION: Self = Self(0x4);
+    pub const VALID_EXT: Self = Self::VALID;
+    pub const APPLICATION_PIPELINE_CACHE_HIT_EXT: Self = Self::APPLICATION_PIPELINE_CACHE_HIT;
     pub const BASE_PIPELINE_ACCELERATION_EXT: Self = Self::BASE_PIPELINE_ACCELERATION;
 }
 impl_bitmask!(PipelineCreationFeedbackFlags, 0x7);
@@ -2330,46 +2322,46 @@ impl fmt::Display for DeviceDiagnosticsConfigFlagsNV {
 pub struct AccessFlags2(pub(crate) u64);
 impl AccessFlags2 {
     pub const NONE: Self = Self(0x0);
-    pub const NONE_KHR: Self = Self::NONE;
     pub const INDIRECT_COMMAND_READ: Self = Self(0x1);
-    pub const INDIRECT_COMMAND_READ_KHR: Self = Self::INDIRECT_COMMAND_READ;
     pub const INDEX_READ: Self = Self(0x2);
-    pub const INDEX_READ_KHR: Self = Self::INDEX_READ;
     pub const VERTEX_ATTRIBUTE_READ: Self = Self(0x4);
-    pub const VERTEX_ATTRIBUTE_READ_KHR: Self = Self::VERTEX_ATTRIBUTE_READ;
     pub const UNIFORM_READ: Self = Self(0x8);
-    pub const UNIFORM_READ_KHR: Self = Self::UNIFORM_READ;
     pub const INPUT_ATTACHMENT_READ: Self = Self(0x10);
-    pub const INPUT_ATTACHMENT_READ_KHR: Self = Self::INPUT_ATTACHMENT_READ;
     pub const SHADER_READ: Self = Self(0x20);
-    pub const SHADER_READ_KHR: Self = Self::SHADER_READ;
     pub const SHADER_WRITE: Self = Self(0x40);
-    pub const SHADER_WRITE_KHR: Self = Self::SHADER_WRITE;
     pub const COLOR_ATTACHMENT_READ: Self = Self(0x80);
-    pub const COLOR_ATTACHMENT_READ_KHR: Self = Self::COLOR_ATTACHMENT_READ;
     pub const COLOR_ATTACHMENT_WRITE: Self = Self(0x100);
-    pub const COLOR_ATTACHMENT_WRITE_KHR: Self = Self::COLOR_ATTACHMENT_WRITE;
     pub const DEPTH_STENCIL_ATTACHMENT_READ: Self = Self(0x200);
-    pub const DEPTH_STENCIL_ATTACHMENT_READ_KHR: Self = Self::DEPTH_STENCIL_ATTACHMENT_READ;
     pub const DEPTH_STENCIL_ATTACHMENT_WRITE: Self = Self(0x400);
-    pub const DEPTH_STENCIL_ATTACHMENT_WRITE_KHR: Self = Self::DEPTH_STENCIL_ATTACHMENT_WRITE;
     pub const TRANSFER_READ: Self = Self(0x800);
-    pub const TRANSFER_READ_KHR: Self = Self::TRANSFER_READ;
     pub const TRANSFER_WRITE: Self = Self(0x1000);
-    pub const TRANSFER_WRITE_KHR: Self = Self::TRANSFER_WRITE;
     pub const HOST_READ: Self = Self(0x2000);
-    pub const HOST_READ_KHR: Self = Self::HOST_READ;
     pub const HOST_WRITE: Self = Self(0x4000);
-    pub const HOST_WRITE_KHR: Self = Self::HOST_WRITE;
     pub const MEMORY_READ: Self = Self(0x8000);
-    pub const MEMORY_READ_KHR: Self = Self::MEMORY_READ;
     pub const MEMORY_WRITE: Self = Self(0x10000);
-    pub const MEMORY_WRITE_KHR: Self = Self::MEMORY_WRITE;
     pub const SHADER_SAMPLED_READ: Self = Self(0x100000000);
-    pub const SHADER_SAMPLED_READ_KHR: Self = Self::SHADER_SAMPLED_READ;
     pub const SHADER_STORAGE_READ: Self = Self(0x200000000);
-    pub const SHADER_STORAGE_READ_KHR: Self = Self::SHADER_STORAGE_READ;
     pub const SHADER_STORAGE_WRITE: Self = Self(0x400000000);
+    pub const NONE_KHR: Self = Self::NONE;
+    pub const INDIRECT_COMMAND_READ_KHR: Self = Self::INDIRECT_COMMAND_READ;
+    pub const INDEX_READ_KHR: Self = Self::INDEX_READ;
+    pub const VERTEX_ATTRIBUTE_READ_KHR: Self = Self::VERTEX_ATTRIBUTE_READ;
+    pub const UNIFORM_READ_KHR: Self = Self::UNIFORM_READ;
+    pub const INPUT_ATTACHMENT_READ_KHR: Self = Self::INPUT_ATTACHMENT_READ;
+    pub const SHADER_READ_KHR: Self = Self::SHADER_READ;
+    pub const SHADER_WRITE_KHR: Self = Self::SHADER_WRITE;
+    pub const COLOR_ATTACHMENT_READ_KHR: Self = Self::COLOR_ATTACHMENT_READ;
+    pub const COLOR_ATTACHMENT_WRITE_KHR: Self = Self::COLOR_ATTACHMENT_WRITE;
+    pub const DEPTH_STENCIL_ATTACHMENT_READ_KHR: Self = Self::DEPTH_STENCIL_ATTACHMENT_READ;
+    pub const DEPTH_STENCIL_ATTACHMENT_WRITE_KHR: Self = Self::DEPTH_STENCIL_ATTACHMENT_WRITE;
+    pub const TRANSFER_READ_KHR: Self = Self::TRANSFER_READ;
+    pub const TRANSFER_WRITE_KHR: Self = Self::TRANSFER_WRITE;
+    pub const HOST_READ_KHR: Self = Self::HOST_READ;
+    pub const HOST_WRITE_KHR: Self = Self::HOST_WRITE;
+    pub const MEMORY_READ_KHR: Self = Self::MEMORY_READ;
+    pub const MEMORY_WRITE_KHR: Self = Self::MEMORY_WRITE;
+    pub const SHADER_SAMPLED_READ_KHR: Self = Self::SHADER_SAMPLED_READ;
+    pub const SHADER_STORAGE_READ_KHR: Self = Self::SHADER_STORAGE_READ;
     pub const SHADER_STORAGE_WRITE_KHR: Self = Self::SHADER_STORAGE_WRITE;
     /// Added by extension VK_KHR_synchronization2.
     pub const TRANSFORM_FEEDBACK_WRITE_EXT: Self = Self(0x2000000);
@@ -2469,56 +2461,56 @@ pub type AccessFlags2KHR = AccessFlags2;
 pub struct PipelineStageFlags2(pub(crate) u64);
 impl PipelineStageFlags2 {
     pub const NONE: Self = Self(0x0);
-    pub const NONE_KHR: Self = Self::NONE;
     pub const TOP_OF_PIPE: Self = Self(0x1);
-    pub const TOP_OF_PIPE_KHR: Self = Self::TOP_OF_PIPE;
     pub const DRAW_INDIRECT: Self = Self(0x2);
-    pub const DRAW_INDIRECT_KHR: Self = Self::DRAW_INDIRECT;
     pub const VERTEX_INPUT: Self = Self(0x4);
-    pub const VERTEX_INPUT_KHR: Self = Self::VERTEX_INPUT;
     pub const VERTEX_SHADER: Self = Self(0x8);
-    pub const VERTEX_SHADER_KHR: Self = Self::VERTEX_SHADER;
     pub const TESSELLATION_CONTROL_SHADER: Self = Self(0x10);
-    pub const TESSELLATION_CONTROL_SHADER_KHR: Self = Self::TESSELLATION_CONTROL_SHADER;
     pub const TESSELLATION_EVALUATION_SHADER: Self = Self(0x20);
-    pub const TESSELLATION_EVALUATION_SHADER_KHR: Self = Self::TESSELLATION_EVALUATION_SHADER;
     pub const GEOMETRY_SHADER: Self = Self(0x40);
-    pub const GEOMETRY_SHADER_KHR: Self = Self::GEOMETRY_SHADER;
     pub const FRAGMENT_SHADER: Self = Self(0x80);
-    pub const FRAGMENT_SHADER_KHR: Self = Self::FRAGMENT_SHADER;
     pub const EARLY_FRAGMENT_TESTS: Self = Self(0x100);
-    pub const EARLY_FRAGMENT_TESTS_KHR: Self = Self::EARLY_FRAGMENT_TESTS;
     pub const LATE_FRAGMENT_TESTS: Self = Self(0x200);
-    pub const LATE_FRAGMENT_TESTS_KHR: Self = Self::LATE_FRAGMENT_TESTS;
     pub const COLOR_ATTACHMENT_OUTPUT: Self = Self(0x400);
-    pub const COLOR_ATTACHMENT_OUTPUT_KHR: Self = Self::COLOR_ATTACHMENT_OUTPUT;
     pub const COMPUTE_SHADER: Self = Self(0x800);
-    pub const COMPUTE_SHADER_KHR: Self = Self::COMPUTE_SHADER;
     pub const ALL_TRANSFER: Self = Self(0x1000);
-    pub const ALL_TRANSFER_KHR: Self = Self::ALL_TRANSFER;
-    pub const TRANSFER: Self = Self::ALL_TRANSFER_KHR;
-    pub const TRANSFER_KHR: Self = Self::ALL_TRANSFER;
+    pub const TRANSFER: Self = Self::ALL_TRANSFER;
     pub const BOTTOM_OF_PIPE: Self = Self(0x2000);
-    pub const BOTTOM_OF_PIPE_KHR: Self = Self::BOTTOM_OF_PIPE;
     pub const HOST: Self = Self(0x4000);
-    pub const HOST_KHR: Self = Self::HOST;
     pub const ALL_GRAPHICS: Self = Self(0x8000);
-    pub const ALL_GRAPHICS_KHR: Self = Self::ALL_GRAPHICS;
     pub const ALL_COMMANDS: Self = Self(0x10000);
-    pub const ALL_COMMANDS_KHR: Self = Self::ALL_COMMANDS;
     pub const COPY: Self = Self(0x100000000);
-    pub const COPY_KHR: Self = Self::COPY;
     pub const RESOLVE: Self = Self(0x200000000);
-    pub const RESOLVE_KHR: Self = Self::RESOLVE;
     pub const BLIT: Self = Self(0x400000000);
-    pub const BLIT_KHR: Self = Self::BLIT;
     pub const CLEAR: Self = Self(0x800000000);
-    pub const CLEAR_KHR: Self = Self::CLEAR;
     pub const INDEX_INPUT: Self = Self(0x1000000000);
-    pub const INDEX_INPUT_KHR: Self = Self::INDEX_INPUT;
     pub const VERTEX_ATTRIBUTE_INPUT: Self = Self(0x2000000000);
-    pub const VERTEX_ATTRIBUTE_INPUT_KHR: Self = Self::VERTEX_ATTRIBUTE_INPUT;
     pub const PRE_RASTERIZATION_SHADERS: Self = Self(0x4000000000);
+    pub const NONE_KHR: Self = Self::NONE;
+    pub const TOP_OF_PIPE_KHR: Self = Self::TOP_OF_PIPE;
+    pub const DRAW_INDIRECT_KHR: Self = Self::DRAW_INDIRECT;
+    pub const VERTEX_INPUT_KHR: Self = Self::VERTEX_INPUT;
+    pub const VERTEX_SHADER_KHR: Self = Self::VERTEX_SHADER;
+    pub const TESSELLATION_CONTROL_SHADER_KHR: Self = Self::TESSELLATION_CONTROL_SHADER;
+    pub const TESSELLATION_EVALUATION_SHADER_KHR: Self = Self::TESSELLATION_EVALUATION_SHADER;
+    pub const GEOMETRY_SHADER_KHR: Self = Self::GEOMETRY_SHADER;
+    pub const FRAGMENT_SHADER_KHR: Self = Self::FRAGMENT_SHADER;
+    pub const EARLY_FRAGMENT_TESTS_KHR: Self = Self::EARLY_FRAGMENT_TESTS;
+    pub const LATE_FRAGMENT_TESTS_KHR: Self = Self::LATE_FRAGMENT_TESTS;
+    pub const COLOR_ATTACHMENT_OUTPUT_KHR: Self = Self::COLOR_ATTACHMENT_OUTPUT;
+    pub const COMPUTE_SHADER_KHR: Self = Self::COMPUTE_SHADER;
+    pub const ALL_TRANSFER_KHR: Self = Self::ALL_TRANSFER;
+    pub const TRANSFER_KHR: Self = Self::ALL_TRANSFER;
+    pub const BOTTOM_OF_PIPE_KHR: Self = Self::BOTTOM_OF_PIPE;
+    pub const HOST_KHR: Self = Self::HOST;
+    pub const ALL_GRAPHICS_KHR: Self = Self::ALL_GRAPHICS;
+    pub const ALL_COMMANDS_KHR: Self = Self::ALL_COMMANDS;
+    pub const COPY_KHR: Self = Self::COPY;
+    pub const RESOLVE_KHR: Self = Self::RESOLVE;
+    pub const BLIT_KHR: Self = Self::BLIT;
+    pub const CLEAR_KHR: Self = Self::CLEAR;
+    pub const INDEX_INPUT_KHR: Self = Self::INDEX_INPUT;
+    pub const VERTEX_ATTRIBUTE_INPUT_KHR: Self = Self::VERTEX_ATTRIBUTE_INPUT;
     pub const PRE_RASTERIZATION_SHADERS_KHR: Self = Self::PRE_RASTERIZATION_SHADERS;
     /// Added by extension VK_KHR_synchronization2.
     pub const TRANSFORM_FEEDBACK_EXT: Self = Self(0x1000000);
@@ -2635,72 +2627,72 @@ impl fmt::Display for AccelerationStructureMotionInstanceFlagsNV {
 pub struct FormatFeatureFlags2(pub(crate) u64);
 impl FormatFeatureFlags2 {
     pub const SAMPLED_IMAGE: Self = Self(0x1);
-    pub const SAMPLED_IMAGE_KHR: Self = Self::SAMPLED_IMAGE;
     pub const STORAGE_IMAGE: Self = Self(0x2);
-    pub const STORAGE_IMAGE_KHR: Self = Self::STORAGE_IMAGE;
     pub const STORAGE_IMAGE_ATOMIC: Self = Self(0x4);
-    pub const STORAGE_IMAGE_ATOMIC_KHR: Self = Self::STORAGE_IMAGE_ATOMIC;
     pub const UNIFORM_TEXEL_BUFFER: Self = Self(0x8);
-    pub const UNIFORM_TEXEL_BUFFER_KHR: Self = Self::UNIFORM_TEXEL_BUFFER;
     pub const STORAGE_TEXEL_BUFFER: Self = Self(0x10);
-    pub const STORAGE_TEXEL_BUFFER_KHR: Self = Self::STORAGE_TEXEL_BUFFER;
     pub const STORAGE_TEXEL_BUFFER_ATOMIC: Self = Self(0x20);
-    pub const STORAGE_TEXEL_BUFFER_ATOMIC_KHR: Self = Self::STORAGE_TEXEL_BUFFER_ATOMIC;
     pub const VERTEX_BUFFER: Self = Self(0x40);
-    pub const VERTEX_BUFFER_KHR: Self = Self::VERTEX_BUFFER;
     pub const COLOR_ATTACHMENT: Self = Self(0x80);
-    pub const COLOR_ATTACHMENT_KHR: Self = Self::COLOR_ATTACHMENT;
     pub const COLOR_ATTACHMENT_BLEND: Self = Self(0x100);
-    pub const COLOR_ATTACHMENT_BLEND_KHR: Self = Self::COLOR_ATTACHMENT_BLEND;
     pub const DEPTH_STENCIL_ATTACHMENT: Self = Self(0x200);
-    pub const DEPTH_STENCIL_ATTACHMENT_KHR: Self = Self::DEPTH_STENCIL_ATTACHMENT;
     pub const BLIT_SRC: Self = Self(0x400);
-    pub const BLIT_SRC_KHR: Self = Self::BLIT_SRC;
     pub const BLIT_DST: Self = Self(0x800);
-    pub const BLIT_DST_KHR: Self = Self::BLIT_DST;
     pub const SAMPLED_IMAGE_FILTER_LINEAR: Self = Self(0x1000);
-    pub const SAMPLED_IMAGE_FILTER_LINEAR_KHR: Self = Self::SAMPLED_IMAGE_FILTER_LINEAR;
-    pub const SAMPLED_IMAGE_FILTER_CUBIC: Self = Self(0x2000);
-    pub const SAMPLED_IMAGE_FILTER_CUBIC_EXT: Self = Self::SAMPLED_IMAGE_FILTER_CUBIC;
     pub const TRANSFER_SRC: Self = Self(0x4000);
-    pub const TRANSFER_SRC_KHR: Self = Self::TRANSFER_SRC;
     pub const TRANSFER_DST: Self = Self(0x8000);
-    pub const TRANSFER_DST_KHR: Self = Self::TRANSFER_DST;
     pub const SAMPLED_IMAGE_FILTER_MINMAX: Self = Self(0x10000);
-    pub const SAMPLED_IMAGE_FILTER_MINMAX_KHR: Self = Self::SAMPLED_IMAGE_FILTER_MINMAX;
     pub const MIDPOINT_CHROMA_SAMPLES: Self = Self(0x20000);
-    pub const MIDPOINT_CHROMA_SAMPLES_KHR: Self = Self::MIDPOINT_CHROMA_SAMPLES;
     pub const SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER: Self = Self(0x40000);
-    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_KHR: Self =
-        Self::SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER;
     pub const SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER: Self = Self(0x80000);
-    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_KHR: Self =
-        Self::SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER;
     pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT: Self = Self(0x100000);
-    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_KHR: Self =
-        Self::SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT;
     pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE: Self = Self(0x200000);
-    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_KHR: Self =
-        Self::SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE;
     pub const DISJOINT: Self = Self(0x400000);
-    pub const DISJOINT_KHR: Self = Self::DISJOINT;
     pub const COSITED_CHROMA_SAMPLES: Self = Self(0x800000);
-    pub const COSITED_CHROMA_SAMPLES_KHR: Self = Self::COSITED_CHROMA_SAMPLES;
     pub const STORAGE_READ_WITHOUT_FORMAT: Self = Self(0x80000000);
-    pub const STORAGE_READ_WITHOUT_FORMAT_KHR: Self = Self::STORAGE_READ_WITHOUT_FORMAT;
     pub const STORAGE_WRITE_WITHOUT_FORMAT: Self = Self(0x100000000);
-    pub const STORAGE_WRITE_WITHOUT_FORMAT_KHR: Self = Self::STORAGE_WRITE_WITHOUT_FORMAT;
     pub const SAMPLED_IMAGE_DEPTH_COMPARISON: Self = Self(0x200000000);
-    pub const SAMPLED_IMAGE_DEPTH_COMPARISON_KHR: Self = Self::SAMPLED_IMAGE_DEPTH_COMPARISON;
+    /// This is an interaction with EXT_filter_cubic, though not tagged that way
+    pub const SAMPLED_IMAGE_FILTER_CUBIC: Self = Self(0x2000);
+    pub const HOST_IMAGE_TRANSFER: Self = Self(0x400000000000);
     /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_VERTEX_BUFFER_KHR: Self = Self(0x20000000);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x1000000);
     /// Added by extension VK_KHR_fragment_shading_rate.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x40000000);
-    /// Host image copies are supported
-    /// Added by extension VK_EXT_host_image_copy.
-    pub const HOST_IMAGE_TRANSFER_EXT: Self = Self(0x400000000000);
+    pub const HOST_IMAGE_TRANSFER_EXT: Self = Self::HOST_IMAGE_TRANSFER;
+    pub const SAMPLED_IMAGE_KHR: Self = Self::SAMPLED_IMAGE;
+    pub const STORAGE_IMAGE_KHR: Self = Self::STORAGE_IMAGE;
+    pub const STORAGE_IMAGE_ATOMIC_KHR: Self = Self::STORAGE_IMAGE_ATOMIC;
+    pub const UNIFORM_TEXEL_BUFFER_KHR: Self = Self::UNIFORM_TEXEL_BUFFER;
+    pub const STORAGE_TEXEL_BUFFER_KHR: Self = Self::STORAGE_TEXEL_BUFFER;
+    pub const STORAGE_TEXEL_BUFFER_ATOMIC_KHR: Self = Self::STORAGE_TEXEL_BUFFER_ATOMIC;
+    pub const VERTEX_BUFFER_KHR: Self = Self::VERTEX_BUFFER;
+    pub const COLOR_ATTACHMENT_KHR: Self = Self::COLOR_ATTACHMENT;
+    pub const COLOR_ATTACHMENT_BLEND_KHR: Self = Self::COLOR_ATTACHMENT_BLEND;
+    pub const DEPTH_STENCIL_ATTACHMENT_KHR: Self = Self::DEPTH_STENCIL_ATTACHMENT;
+    pub const BLIT_SRC_KHR: Self = Self::BLIT_SRC;
+    pub const BLIT_DST_KHR: Self = Self::BLIT_DST;
+    pub const SAMPLED_IMAGE_FILTER_LINEAR_KHR: Self = Self::SAMPLED_IMAGE_FILTER_LINEAR;
+    pub const TRANSFER_SRC_KHR: Self = Self::TRANSFER_SRC;
+    pub const TRANSFER_DST_KHR: Self = Self::TRANSFER_DST;
+    pub const MIDPOINT_CHROMA_SAMPLES_KHR: Self = Self::MIDPOINT_CHROMA_SAMPLES;
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_KHR: Self =
+        Self::SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER;
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_KHR: Self =
+        Self::SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER;
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_KHR: Self =
+        Self::SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT;
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_KHR: Self =
+        Self::SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE;
+    pub const DISJOINT_KHR: Self = Self::DISJOINT;
+    pub const COSITED_CHROMA_SAMPLES_KHR: Self = Self::COSITED_CHROMA_SAMPLES;
+    pub const STORAGE_READ_WITHOUT_FORMAT_KHR: Self = Self::STORAGE_READ_WITHOUT_FORMAT;
+    pub const STORAGE_WRITE_WITHOUT_FORMAT_KHR: Self = Self::STORAGE_WRITE_WITHOUT_FORMAT;
+    pub const SAMPLED_IMAGE_DEPTH_COMPARISON_KHR: Self = Self::SAMPLED_IMAGE_DEPTH_COMPARISON;
+    pub const SAMPLED_IMAGE_FILTER_MINMAX_KHR: Self = Self::SAMPLED_IMAGE_FILTER_MINMAX;
+    pub const SAMPLED_IMAGE_FILTER_CUBIC_EXT: Self = Self::SAMPLED_IMAGE_FILTER_CUBIC;
     /// Format support linear image as render target, it cannot be mixed with non linear attachment
     /// Added by extension VK_NV_linear_color_attachment.
     pub const LINEAR_COLOR_ATTACHMENT_NV: Self = Self(0x4000000000);
@@ -2738,7 +2730,6 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x400, "BLIT_SRC"),
                 (0x800, "BLIT_DST"),
                 (0x1000, "SAMPLED_IMAGE_FILTER_LINEAR"),
-                (0x2000, "SAMPLED_IMAGE_FILTER_CUBIC"),
                 (0x4000, "TRANSFER_SRC"),
                 (0x8000, "TRANSFER_DST"),
                 (0x10000, "SAMPLED_IMAGE_FILTER_MINMAX"),
@@ -2758,10 +2749,11 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x80000000, "STORAGE_READ_WITHOUT_FORMAT"),
                 (0x100000000, "STORAGE_WRITE_WITHOUT_FORMAT"),
                 (0x200000000, "SAMPLED_IMAGE_DEPTH_COMPARISON"),
+                (0x2000, "SAMPLED_IMAGE_FILTER_CUBIC"),
+                (0x400000000000, "HOST_IMAGE_TRANSFER"),
                 (0x20000000, "ACCELERATION_STRUCTURE_VERTEX_BUFFER_KHR"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x40000000, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
-                (0x400000000000, "HOST_IMAGE_TRANSFER_EXT"),
                 (0x4000000000, "LINEAR_COLOR_ATTACHMENT_NV"),
                 (0x400000000, "WEIGHT_IMAGE_QCOM"),
                 (0x800000000, "WEIGHT_SAMPLED_IMAGE_QCOM"),
@@ -2781,10 +2773,10 @@ pub type FormatFeatureFlags2KHR = FormatFeatureFlags2;
 pub struct RenderingFlags(pub(crate) u32);
 impl RenderingFlags {
     pub const CONTENTS_SECONDARY_COMMAND_BUFFERS: Self = Self(0x1);
-    pub const CONTENTS_SECONDARY_COMMAND_BUFFERS_KHR: Self = Self::CONTENTS_SECONDARY_COMMAND_BUFFERS;
     pub const SUSPENDING: Self = Self(0x2);
-    pub const SUSPENDING_KHR: Self = Self::SUSPENDING;
     pub const RESUMING: Self = Self(0x4);
+    pub const CONTENTS_SECONDARY_COMMAND_BUFFERS_KHR: Self = Self::CONTENTS_SECONDARY_COMMAND_BUFFERS;
+    pub const SUSPENDING_KHR: Self = Self::SUSPENDING;
     pub const RESUMING_KHR: Self = Self::RESUMING;
     pub const CONTENTS_INLINE_EXT: Self = Self::CONTENTS_INLINE_KHR;
     /// Added by extension VK_EXT_legacy_dithering.
@@ -2902,55 +2894,60 @@ impl fmt::Display for DirectDriverLoadingFlagsLUNARG {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineCreateFlags2KHR(pub(crate) u64);
-impl PipelineCreateFlags2KHR {
+pub struct PipelineCreateFlags2(pub(crate) u64);
+impl PipelineCreateFlags2 {
     pub const DISABLE_OPTIMIZATION: Self = Self(0x1);
     pub const ALLOW_DERIVATIVES: Self = Self(0x2);
     pub const DERIVATIVE: Self = Self(0x4);
+    pub const VIEW_INDEX_FROM_DEVICE_INDEX: Self = Self(0x8);
+    pub const DISPATCH_BASE: Self = Self(0x10);
+    pub const FAIL_ON_PIPELINE_COMPILE_REQUIRED: Self = Self(0x100);
+    pub const EARLY_RETURN_ON_FAILURE: Self = Self(0x200);
+    pub const NO_PROTECTED_ACCESS: Self = Self(0x8000000);
+    pub const PROTECTED_ACCESS_ONLY: Self = Self(0x40000000);
     /// Added by extension VK_AMDX_shader_enqueue.
     pub const EXECUTION_GRAPH_AMDX: Self = Self(0x100000000);
     /// Added by extension VK_EXT_legacy_dithering.
     pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x400000000);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const VIEW_INDEX_FROM_DEVICE_INDEX: Self = Self(0x8);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const DISPATCH_BASE: Self = Self(0x10);
+    pub const DISABLE_OPTIMIZATION_KHR: Self = Self::DISABLE_OPTIMIZATION;
+    pub const ALLOW_DERIVATIVES_KHR: Self = Self::ALLOW_DERIVATIVES;
+    pub const DERIVATIVE_KHR: Self = Self::DERIVATIVE;
+    pub const VIEW_INDEX_FROM_DEVICE_INDEX_KHR: Self = Self::VIEW_INDEX_FROM_DEVICE_INDEX;
+    pub const DISPATCH_BASE_KHR: Self = Self::DISPATCH_BASE;
     /// Added by extension VK_KHR_maintenance5.
     pub const DEFER_COMPILE_NV: Self = Self(0x20);
     /// Added by extension VK_KHR_maintenance5.
-    pub const CAPTURE_STATISTICS: Self = Self(0x40);
+    pub const CAPTURE_STATISTICS_KHR: Self = Self(0x40);
     /// Added by extension VK_KHR_maintenance5.
-    pub const CAPTURE_INTERNAL_REPRESENTATIONS: Self = Self(0x80);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const FAIL_ON_PIPELINE_COMPILE_REQUIRED: Self = Self(0x100);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const EARLY_RETURN_ON_FAILURE: Self = Self(0x200);
+    pub const CAPTURE_INTERNAL_REPRESENTATIONS_KHR: Self = Self(0x80);
+    pub const FAIL_ON_PIPELINE_COMPILE_REQUIRED_KHR: Self = Self::FAIL_ON_PIPELINE_COMPILE_REQUIRED;
+    pub const EARLY_RETURN_ON_FAILURE_KHR: Self = Self::EARLY_RETURN_ON_FAILURE;
     /// Added by extension VK_KHR_maintenance5.
     pub const LINK_TIME_OPTIMIZATION_EXT: Self = Self(0x400);
     /// Added by extension VK_KHR_maintenance5.
     pub const RETAIN_LINK_TIME_OPTIMIZATION_INFO_EXT: Self = Self(0x800000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const LIBRARY: Self = Self(0x800);
+    pub const LIBRARY_KHR: Self = Self(0x800);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RAY_TRACING_SKIP_TRIANGLES: Self = Self(0x1000);
+    pub const RAY_TRACING_SKIP_TRIANGLES_KHR: Self = Self(0x1000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RAY_TRACING_SKIP_AABBS: Self = Self(0x2000);
+    pub const RAY_TRACING_SKIP_AABBS_KHR: Self = Self(0x2000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RAY_TRACING_NO_NULL_ANY_HIT_SHADERS: Self = Self(0x4000);
+    pub const RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_KHR: Self = Self(0x4000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS: Self = Self(0x8000);
+    pub const RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_KHR: Self = Self(0x8000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RAY_TRACING_NO_NULL_MISS_SHADERS: Self = Self(0x10000);
+    pub const RAY_TRACING_NO_NULL_MISS_SHADERS_KHR: Self = Self(0x10000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RAY_TRACING_NO_NULL_INTERSECTION_SHADERS: Self = Self(0x20000);
+    pub const RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_KHR: Self = Self(0x20000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY: Self = Self(0x80000);
+    pub const RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_KHR: Self = Self(0x80000);
     /// Added by extension VK_KHR_maintenance5.
     pub const INDIRECT_BINDABLE_NV: Self = Self(0x40000);
     /// Added by extension VK_KHR_maintenance5.
     pub const RAY_TRACING_ALLOW_MOTION_NV: Self = Self(0x100000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x200000);
+    pub const RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x200000);
     /// Added by extension VK_KHR_maintenance5.
     pub const RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT: Self = Self(0x400000);
     /// Added by extension VK_KHR_maintenance5.
@@ -2959,21 +2956,19 @@ impl PipelineCreateFlags2KHR {
     pub const COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x2000000);
     /// Added by extension VK_KHR_maintenance5.
     pub const DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x4000000);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const NO_PROTECTED_ACCESS_EXT: Self = Self(0x8000000);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const PROTECTED_ACCESS_ONLY_EXT: Self = Self(0x40000000);
+    pub const NO_PROTECTED_ACCESS_EXT: Self = Self::NO_PROTECTED_ACCESS;
+    pub const PROTECTED_ACCESS_ONLY_EXT: Self = Self::PROTECTED_ACCESS_ONLY;
     /// Added by extension VK_KHR_maintenance5.
     pub const RAY_TRACING_DISPLACEMENT_MICROMAP_NV: Self = Self(0x10000000);
     /// Added by extension VK_KHR_maintenance5.
     pub const DESCRIPTOR_BUFFER_EXT: Self = Self(0x20000000);
     /// Added by extension VK_KHR_pipeline_binary.
-    pub const CAPTURE_DATA: Self = Self(0x80000000);
+    pub const CAPTURE_DATA_KHR: Self = Self(0x80000000);
     /// Added by extension VK_EXT_device_generated_commands.
     pub const INDIRECT_BINDABLE_EXT: Self = Self(0x4000000000);
 }
-impl_bitmask!(PipelineCreateFlags2KHR, 0x45ffffffff);
-impl fmt::Display for PipelineCreateFlags2KHR {
+impl_bitmask!(PipelineCreateFlags2, 0x45ffffffff);
+impl fmt::Display for PipelineCreateFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0 as _,
@@ -2981,47 +2976,48 @@ impl fmt::Display for PipelineCreateFlags2KHR {
                 (0x1, "DISABLE_OPTIMIZATION"),
                 (0x2, "ALLOW_DERIVATIVES"),
                 (0x4, "DERIVATIVE"),
-                (0x100000000, "EXECUTION_GRAPH_AMDX"),
-                (0x400000000, "ENABLE_LEGACY_DITHERING_EXT"),
                 (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
                 (0x10, "DISPATCH_BASE"),
-                (0x20, "DEFER_COMPILE_NV"),
-                (0x40, "CAPTURE_STATISTICS"),
-                (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS"),
                 (0x100, "FAIL_ON_PIPELINE_COMPILE_REQUIRED"),
                 (0x200, "EARLY_RETURN_ON_FAILURE"),
+                (0x8000000, "NO_PROTECTED_ACCESS"),
+                (0x40000000, "PROTECTED_ACCESS_ONLY"),
+                (0x100000000, "EXECUTION_GRAPH_AMDX"),
+                (0x400000000, "ENABLE_LEGACY_DITHERING_EXT"),
+                (0x20, "DEFER_COMPILE_NV"),
+                (0x40, "CAPTURE_STATISTICS_KHR"),
+                (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS_KHR"),
                 (0x400, "LINK_TIME_OPTIMIZATION_EXT"),
                 (0x800000, "RETAIN_LINK_TIME_OPTIMIZATION_INFO_EXT"),
-                (0x800, "LIBRARY"),
-                (0x1000, "RAY_TRACING_SKIP_TRIANGLES"),
-                (0x2000, "RAY_TRACING_SKIP_AABBS"),
-                (0x4000, "RAY_TRACING_NO_NULL_ANY_HIT_SHADERS"),
-                (0x8000, "RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS"),
-                (0x10000, "RAY_TRACING_NO_NULL_MISS_SHADERS"),
-                (0x20000, "RAY_TRACING_NO_NULL_INTERSECTION_SHADERS"),
-                (0x80000, "RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY"),
+                (0x800, "LIBRARY_KHR"),
+                (0x1000, "RAY_TRACING_SKIP_TRIANGLES_KHR"),
+                (0x2000, "RAY_TRACING_SKIP_AABBS_KHR"),
+                (0x4000, "RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_KHR"),
+                (0x8000, "RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_KHR"),
+                (0x10000, "RAY_TRACING_NO_NULL_MISS_SHADERS_KHR"),
+                (0x20000, "RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_KHR"),
+                (0x80000, "RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_KHR"),
                 (0x40000, "INDIRECT_BINDABLE_NV"),
                 (0x100000, "RAY_TRACING_ALLOW_MOTION_NV"),
-                (0x200000, "RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT"),
+                (0x200000, "RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
                 (0x400000, "RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT"),
                 (0x1000000, "RAY_TRACING_OPACITY_MICROMAP_EXT"),
                 (0x2000000, "COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT"),
                 (0x4000000, "DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT"),
-                (0x8000000, "NO_PROTECTED_ACCESS_EXT"),
-                (0x40000000, "PROTECTED_ACCESS_ONLY_EXT"),
                 (0x10000000, "RAY_TRACING_DISPLACEMENT_MICROMAP_NV"),
                 (0x20000000, "DESCRIPTOR_BUFFER_EXT"),
-                (0x80000000, "CAPTURE_DATA"),
+                (0x80000000, "CAPTURE_DATA_KHR"),
                 (0x4000000000, "INDIRECT_BINDABLE_EXT"),
             ],
             f,
         )
     }
 }
+pub type PipelineCreateFlags2KHR = PipelineCreateFlags2;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct BufferUsageFlags2KHR(pub(crate) u64);
-impl BufferUsageFlags2KHR {
+pub struct BufferUsageFlags2(pub(crate) u64);
+impl BufferUsageFlags2 {
     pub const TRANSFER_SRC: Self = Self(0x1);
     pub const TRANSFER_DST: Self = Self(0x2);
     pub const UNIFORM_TEXEL_BUFFER: Self = Self(0x4);
@@ -3031,31 +3027,40 @@ impl BufferUsageFlags2KHR {
     pub const INDEX_BUFFER: Self = Self(0x40);
     pub const VERTEX_BUFFER: Self = Self(0x80);
     pub const INDIRECT_BUFFER: Self = Self(0x100);
+    pub const SHADER_DEVICE_ADDRESS: Self = Self(0x20000);
     /// Added by extension VK_AMDX_shader_enqueue.
     pub const EXECUTION_GRAPH_SCRATCH_AMDX: Self = Self(0x2000000);
+    pub const TRANSFER_SRC_KHR: Self = Self::TRANSFER_SRC;
+    pub const TRANSFER_DST_KHR: Self = Self::TRANSFER_DST;
+    pub const UNIFORM_TEXEL_BUFFER_KHR: Self = Self::UNIFORM_TEXEL_BUFFER;
+    pub const STORAGE_TEXEL_BUFFER_KHR: Self = Self::STORAGE_TEXEL_BUFFER;
+    pub const UNIFORM_BUFFER_KHR: Self = Self::UNIFORM_BUFFER;
+    pub const STORAGE_BUFFER_KHR: Self = Self::STORAGE_BUFFER;
+    pub const INDEX_BUFFER_KHR: Self = Self::INDEX_BUFFER;
+    pub const VERTEX_BUFFER_KHR: Self = Self::VERTEX_BUFFER;
+    pub const INDIRECT_BUFFER_KHR: Self = Self::INDIRECT_BUFFER;
     /// Added by extension VK_KHR_maintenance5.
     pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x200);
     /// Added by extension VK_KHR_maintenance5.
-    pub const SHADER_BINDING_TABLE: Self = Self(0x400);
-    pub const RAY_TRACING_NV: Self = Self::SHADER_BINDING_TABLE;
+    pub const SHADER_BINDING_TABLE_KHR: Self = Self(0x400);
+    pub const RAY_TRACING_NV: Self = Self::SHADER_BINDING_TABLE_KHR;
     /// Added by extension VK_KHR_maintenance5.
     pub const TRANSFORM_FEEDBACK_BUFFER_EXT: Self = Self(0x800);
     /// Added by extension VK_KHR_maintenance5.
     pub const TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT: Self = Self(0x1000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const VIDEO_DECODE_SRC: Self = Self(0x2000);
+    pub const VIDEO_DECODE_SRC_KHR: Self = Self(0x2000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const VIDEO_DECODE_DST: Self = Self(0x4000);
+    pub const VIDEO_DECODE_DST_KHR: Self = Self(0x4000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const VIDEO_ENCODE_DST: Self = Self(0x8000);
+    pub const VIDEO_ENCODE_DST_KHR: Self = Self(0x8000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const VIDEO_ENCODE_SRC: Self = Self(0x10000);
+    pub const VIDEO_ENCODE_SRC_KHR: Self = Self(0x10000);
+    pub const SHADER_DEVICE_ADDRESS_KHR: Self = Self::SHADER_DEVICE_ADDRESS;
     /// Added by extension VK_KHR_maintenance5.
-    pub const SHADER_DEVICE_ADDRESS: Self = Self(0x20000);
+    pub const ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_KHR: Self = Self(0x80000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY: Self = Self(0x80000);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const ACCELERATION_STRUCTURE_STORAGE: Self = Self(0x100000);
+    pub const ACCELERATION_STRUCTURE_STORAGE_KHR: Self = Self(0x100000);
     /// Added by extension VK_KHR_maintenance5.
     pub const SAMPLER_DESCRIPTOR_BUFFER_EXT: Self = Self(0x200000);
     /// Added by extension VK_KHR_maintenance5.
@@ -3069,8 +3074,8 @@ impl BufferUsageFlags2KHR {
     /// Added by extension VK_EXT_device_generated_commands.
     pub const PREPROCESS_BUFFER_EXT: Self = Self(0x80000000);
 }
-impl_bitmask!(BufferUsageFlags2KHR, 0x87fbffff);
-impl fmt::Display for BufferUsageFlags2KHR {
+impl_bitmask!(BufferUsageFlags2, 0x87fbffff);
+impl fmt::Display for BufferUsageFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0 as _,
@@ -3084,18 +3089,18 @@ impl fmt::Display for BufferUsageFlags2KHR {
                 (0x40, "INDEX_BUFFER"),
                 (0x80, "VERTEX_BUFFER"),
                 (0x100, "INDIRECT_BUFFER"),
+                (0x20000, "SHADER_DEVICE_ADDRESS"),
                 (0x2000000, "EXECUTION_GRAPH_SCRATCH_AMDX"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
-                (0x400, "SHADER_BINDING_TABLE"),
+                (0x400, "SHADER_BINDING_TABLE_KHR"),
                 (0x800, "TRANSFORM_FEEDBACK_BUFFER_EXT"),
                 (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT"),
-                (0x2000, "VIDEO_DECODE_SRC"),
-                (0x4000, "VIDEO_DECODE_DST"),
-                (0x8000, "VIDEO_ENCODE_DST"),
-                (0x10000, "VIDEO_ENCODE_SRC"),
-                (0x20000, "SHADER_DEVICE_ADDRESS"),
-                (0x80000, "ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY"),
-                (0x100000, "ACCELERATION_STRUCTURE_STORAGE"),
+                (0x2000, "VIDEO_DECODE_SRC_KHR"),
+                (0x4000, "VIDEO_DECODE_DST_KHR"),
+                (0x8000, "VIDEO_ENCODE_DST_KHR"),
+                (0x10000, "VIDEO_ENCODE_SRC_KHR"),
+                (0x80000, "ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_KHR"),
+                (0x100000, "ACCELERATION_STRUCTURE_STORAGE_KHR"),
                 (0x200000, "SAMPLER_DESCRIPTOR_BUFFER_EXT"),
                 (0x400000, "RESOURCE_DESCRIPTOR_BUFFER_EXT"),
                 (0x4000000, "PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT"),
@@ -3107,6 +3112,7 @@ impl fmt::Display for BufferUsageFlags2KHR {
         )
     }
 }
+pub type BufferUsageFlags2KHR = BufferUsageFlags2;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct CompositeAlphaFlagsKHR(pub(crate) u32);
@@ -3985,14 +3991,14 @@ impl fmt::Display for PipelineRasterizationDepthClipStateCreateFlagsEXT {
 pub struct ToolPurposeFlags(pub(crate) u32);
 impl ToolPurposeFlags {
     pub const VALIDATION: Self = Self(0x1);
-    pub const VALIDATION_EXT: Self = Self::VALIDATION;
     pub const PROFILING: Self = Self(0x2);
-    pub const PROFILING_EXT: Self = Self::PROFILING;
     pub const TRACING: Self = Self(0x4);
-    pub const TRACING_EXT: Self = Self::TRACING;
     pub const ADDITIONAL_FEATURES: Self = Self(0x8);
-    pub const ADDITIONAL_FEATURES_EXT: Self = Self::ADDITIONAL_FEATURES;
     pub const MODIFYING_FEATURES: Self = Self(0x10);
+    pub const VALIDATION_EXT: Self = Self::VALIDATION;
+    pub const PROFILING_EXT: Self = Self::PROFILING;
+    pub const TRACING_EXT: Self = Self::TRACING;
+    pub const ADDITIONAL_FEATURES_EXT: Self = Self::ADDITIONAL_FEATURES;
     pub const MODIFYING_FEATURES_EXT: Self = Self::MODIFYING_FEATURES;
     /// Added by extension VK_EXT_tooling_info.
     pub const DEBUG_REPORTING_EXT: Self = Self(0x20);
@@ -4044,16 +4050,18 @@ impl fmt::Display for ImageFormatConstraintsFlagsFUCHSIA {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct HostImageCopyFlagsEXT(pub(crate) u32);
-impl HostImageCopyFlagsEXT {
+pub struct HostImageCopyFlags(pub(crate) u32);
+impl HostImageCopyFlags {
     pub const MEMCPY: Self = Self(0x1);
+    pub const MEMCPY_EXT: Self = Self::MEMCPY;
 }
-impl_bitmask!(HostImageCopyFlagsEXT, 0x1);
-impl fmt::Display for HostImageCopyFlagsEXT {
+impl_bitmask!(HostImageCopyFlags, 0x1);
+impl fmt::Display for HostImageCopyFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "MEMCPY")], f)
     }
 }
+pub type HostImageCopyFlagsEXT = HostImageCopyFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageConstraintsInfoFlagsFUCHSIA(pub(crate) u32);
@@ -4814,8 +4822,9 @@ impl AttachmentLoadOp {
     pub const LOAD: Self = Self(0);
     pub const CLEAR: Self = Self(1);
     pub const DONT_CARE: Self = Self(2);
-    pub const NONE_EXT: Self = Self::NONE_KHR;
-    pub const NONE_KHR: Self = Self(1000400000);
+    pub const NONE: Self = Self(1000400000);
+    pub const NONE_EXT: Self = Self::NONE;
+    pub const NONE_KHR: Self = Self::NONE;
 }
 impl fmt::Display for AttachmentLoadOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4823,7 +4832,7 @@ impl fmt::Display for AttachmentLoadOp {
             0 => Some(&"LOAD"),
             1 => Some(&"CLEAR"),
             2 => Some(&"DONT_CARE"),
-            1000400000 => Some(&"NONE_KHR"),
+            1000400000 => Some(&"NONE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -5303,6 +5312,7 @@ impl DynamicState {
     pub const RASTERIZER_DISCARD_ENABLE: Self = Self(1000377001);
     pub const DEPTH_BIAS_ENABLE: Self = Self(1000377002);
     pub const PRIMITIVE_RESTART_ENABLE: Self = Self(1000377004);
+    pub const LINE_STIPPLE: Self = Self(1000259000);
     /// Added by extension VK_NV_clip_space_w_scaling.
     pub const VIEWPORT_W_SCALING_NV: Self = Self(1000087000);
     /// Added by extension VK_EXT_discard_rectangles.
@@ -5325,7 +5335,7 @@ impl DynamicState {
     pub const EXCLUSIVE_SCISSOR_NV: Self = Self(1000205001);
     /// Added by extension VK_KHR_fragment_shading_rate.
     pub const FRAGMENT_SHADING_RATE_KHR: Self = Self(1000226000);
-    pub const LINE_STIPPLE_EXT: Self = Self::LINE_STIPPLE_KHR;
+    pub const LINE_STIPPLE_EXT: Self = Self::LINE_STIPPLE;
     pub const CULL_MODE_EXT: Self = Self::CULL_MODE;
     pub const FRONT_FACE_EXT: Self = Self::FRONT_FACE;
     pub const PRIMITIVE_TOPOLOGY_EXT: Self = Self::PRIMITIVE_TOPOLOGY;
@@ -5415,7 +5425,7 @@ impl DynamicState {
     pub const COVERAGE_REDUCTION_MODE_NV: Self = Self(1000455032);
     /// Added by extension VK_EXT_attachment_feedback_loop_dynamic_state.
     pub const ATTACHMENT_FEEDBACK_LOOP_ENABLE_EXT: Self = Self(1000524000);
-    pub const LINE_STIPPLE_KHR: Self = Self(1000259000);
+    pub const LINE_STIPPLE_KHR: Self = Self::LINE_STIPPLE;
     /// Added by extension VK_EXT_depth_clamp_control.
     pub const DEPTH_CLAMP_RANGE_EXT: Self = Self(1000582000);
 }
@@ -5446,6 +5456,7 @@ impl fmt::Display for DynamicState {
             1000377001 => Some(&"RASTERIZER_DISCARD_ENABLE"),
             1000377002 => Some(&"DEPTH_BIAS_ENABLE"),
             1000377004 => Some(&"PRIMITIVE_RESTART_ENABLE"),
+            1000259000 => Some(&"LINE_STIPPLE"),
             1000087000 => Some(&"VIEWPORT_W_SCALING_NV"),
             1000099000 => Some(&"DISCARD_RECTANGLE_EXT"),
             1000099001 => Some(&"DISCARD_RECTANGLE_ENABLE_EXT"),
@@ -5493,7 +5504,6 @@ impl fmt::Display for DynamicState {
             1000455031 => Some(&"REPRESENTATIVE_FRAGMENT_TEST_ENABLE_NV"),
             1000455032 => Some(&"COVERAGE_REDUCTION_MODE_NV"),
             1000524000 => Some(&"ATTACHMENT_FEEDBACK_LOOP_ENABLE_EXT"),
-            1000259000 => Some(&"LINE_STIPPLE_KHR"),
             1000582000 => Some(&"DEPTH_CLAMP_RANGE_EXT"),
             _ => None,
         };
@@ -5773,6 +5783,8 @@ impl Format {
     pub const ASTC_10X10_SFLOAT_BLOCK: Self = Self(1000066011);
     pub const ASTC_12X10_SFLOAT_BLOCK: Self = Self(1000066012);
     pub const ASTC_12X12_SFLOAT_BLOCK: Self = Self(1000066013);
+    pub const A1B5G5R5_UNORM_PACK16: Self = Self(1000470000);
+    pub const A8_UNORM: Self = Self(1000470001);
     /// Added by extension VK_IMG_format_pvrtc.
     pub const PVRTC1_2BPP_UNORM_BLOCK_IMG: Self = Self(1000054000);
     /// Added by extension VK_IMG_format_pvrtc.
@@ -5846,10 +5858,8 @@ impl Format {
     /// Added by extension VK_NV_optical_flow.
     pub const R16G16_SFIXED5_NV: Self = Self(1000464000);
     pub const R16G16_S10_5_NV: Self = Self::R16G16_SFIXED5_NV;
-    /// Added by extension VK_KHR_maintenance5.
-    pub const A1B5G5R5_UNORM_PACK16_KHR: Self = Self(1000470000);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const A8_UNORM_KHR: Self = Self(1000470001);
+    pub const A1B5G5R5_UNORM_PACK16_KHR: Self = Self::A1B5G5R5_UNORM_PACK16;
+    pub const A8_UNORM_KHR: Self = Self::A8_UNORM;
 }
 impl fmt::Display for Format {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6093,6 +6103,8 @@ impl fmt::Display for Format {
             1000066011 => Some(&"ASTC_10X10_SFLOAT_BLOCK"),
             1000066012 => Some(&"ASTC_12X10_SFLOAT_BLOCK"),
             1000066013 => Some(&"ASTC_12X12_SFLOAT_BLOCK"),
+            1000470000 => Some(&"A1B5G5R5_UNORM_PACK16"),
+            1000470001 => Some(&"A8_UNORM"),
             1000054000 => Some(&"PVRTC1_2BPP_UNORM_BLOCK_IMG"),
             1000054001 => Some(&"PVRTC1_4BPP_UNORM_BLOCK_IMG"),
             1000054002 => Some(&"PVRTC2_2BPP_UNORM_BLOCK_IMG"),
@@ -6102,8 +6114,6 @@ impl fmt::Display for Format {
             1000054006 => Some(&"PVRTC2_2BPP_SRGB_BLOCK_IMG"),
             1000054007 => Some(&"PVRTC2_4BPP_SRGB_BLOCK_IMG"),
             1000464000 => Some(&"R16G16_SFIXED5_NV"),
-            1000470000 => Some(&"A1B5G5R5_UNORM_PACK16_KHR"),
-            1000470001 => Some(&"A8_UNORM_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -6164,6 +6174,7 @@ impl ImageLayout {
     pub const STENCIL_READ_ONLY_OPTIMAL: Self = Self(1000241003);
     pub const READ_ONLY_OPTIMAL: Self = Self(1000314000);
     pub const ATTACHMENT_OPTIMAL: Self = Self(1000314001);
+    pub const RENDERING_LOCAL_READ: Self = Self(1000232000);
     /// Added by extension VK_KHR_swapchain.
     pub const PRESENT_SRC_KHR: Self = Self(1000001002);
     /// Added by extension VK_KHR_shared_presentable_image.
@@ -6174,8 +6185,7 @@ impl ImageLayout {
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_OPTIMAL_EXT: Self = Self(1000218000);
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR: Self = Self(1000164003);
-    /// Added by extension VK_KHR_dynamic_rendering_local_read.
-    pub const RENDERING_LOCAL_READ_KHR: Self = Self(1000232000);
+    pub const RENDERING_LOCAL_READ_KHR: Self = Self::RENDERING_LOCAL_READ;
     pub const DEPTH_ATTACHMENT_OPTIMAL_KHR: Self = Self::DEPTH_ATTACHMENT_OPTIMAL;
     pub const DEPTH_READ_ONLY_OPTIMAL_KHR: Self = Self::DEPTH_READ_ONLY_OPTIMAL;
     pub const STENCIL_ATTACHMENT_OPTIMAL_KHR: Self = Self::STENCIL_ATTACHMENT_OPTIMAL;
@@ -6205,11 +6215,11 @@ impl fmt::Display for ImageLayout {
             1000241003 => Some(&"STENCIL_READ_ONLY_OPTIMAL"),
             1000314000 => Some(&"READ_ONLY_OPTIMAL"),
             1000314001 => Some(&"ATTACHMENT_OPTIMAL"),
+            1000232000 => Some(&"RENDERING_LOCAL_READ"),
             1000001002 => Some(&"PRESENT_SRC_KHR"),
             1000111000 => Some(&"SHARED_PRESENT_KHR"),
             1000218000 => Some(&"FRAGMENT_DENSITY_MAP_OPTIMAL_EXT"),
             1000164003 => Some(&"FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR"),
-            1000232000 => Some(&"RENDERING_LOCAL_READ_KHR"),
             1000339000 => Some(&"ATTACHMENT_FEEDBACK_LOOP_OPTIMAL_EXT"),
             _ => None,
         };
@@ -6377,18 +6387,19 @@ pub struct IndexType(pub(crate) i32);
 impl IndexType {
     pub const UINT16: Self = Self(0);
     pub const UINT32: Self = Self(1);
+    pub const UINT8: Self = Self(1000265000);
     pub const NONE_KHR: Self = Self(1000165000);
     pub const NONE_NV: Self = Self::NONE_KHR;
-    pub const UINT8_EXT: Self = Self::UINT8_KHR;
-    pub const UINT8_KHR: Self = Self(1000265000);
+    pub const UINT8_EXT: Self = Self::UINT8;
+    pub const UINT8_KHR: Self = Self::UINT8;
 }
 impl fmt::Display for IndexType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"UINT16"),
             1 => Some(&"UINT32"),
+            1000265000 => Some(&"UINT8"),
             1000165000 => Some(&"NONE_KHR"),
-            1000265000 => Some(&"UINT8_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -6673,6 +6684,7 @@ impl Result {
     pub const ERROR_FRAGMENTATION: Self = Self(-1000161000);
     pub const ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS: Self = Self(-1000257000);
     pub const PIPELINE_COMPILE_REQUIRED: Self = Self(1000297000);
+    pub const ERROR_NOT_PERMITTED: Self = Self(-1000174001);
     /// Added by extension VK_KHR_surface.
     pub const ERROR_SURFACE_LOST_KHR: Self = Self(-1000000000);
     /// Added by extension VK_KHR_surface.
@@ -6692,8 +6704,8 @@ impl Result {
     /// Added by extension VK_EXT_image_drm_format_modifier.
     pub const ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT: Self = Self(-1000158000);
     pub const ERROR_FRAGMENTATION_EXT: Self = Self::ERROR_FRAGMENTATION;
-    pub const ERROR_NOT_PERMITTED_EXT: Self = Self::ERROR_NOT_PERMITTED_KHR;
-    pub const ERROR_NOT_PERMITTED_KHR: Self = Self(-1000174001);
+    pub const ERROR_NOT_PERMITTED_EXT: Self = Self::ERROR_NOT_PERMITTED;
+    pub const ERROR_NOT_PERMITTED_KHR: Self = Self::ERROR_NOT_PERMITTED;
     pub const ERROR_INVALID_DEVICE_ADDRESS_EXT: Self = Self::ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS;
     /// Added by extension VK_EXT_full_screen_exclusive.
     pub const ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT: Self = Self(-1000255000);
@@ -6745,6 +6757,7 @@ impl fmt::Display for Result {
             -1000161000 => Some(&"ERROR_FRAGMENTATION"),
             -1000257000 => Some(&"ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS"),
             1000297000 => Some(&"PIPELINE_COMPILE_REQUIRED"),
+            -1000174001 => Some(&"ERROR_NOT_PERMITTED"),
             -1000000000 => Some(&"ERROR_SURFACE_LOST_KHR"),
             -1000000001 => Some(&"ERROR_NATIVE_WINDOW_IN_USE_KHR"),
             1000001003 => Some(&"SUBOPTIMAL_KHR"),
@@ -6753,7 +6766,6 @@ impl fmt::Display for Result {
             -1000011001 => Some(&"ERROR_VALIDATION_FAILED_EXT"),
             -1000012000 => Some(&"ERROR_INVALID_SHADER_NV"),
             -1000158000 => Some(&"ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT"),
-            -1000174001 => Some(&"ERROR_NOT_PERMITTED_KHR"),
             -1000255000 => Some(&"ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT"),
             1000268000 => Some(&"THREAD_IDLE_KHR"),
             1000268001 => Some(&"THREAD_DONE_KHR"),
@@ -7030,6 +7042,56 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES: Self = Self(1000413001);
     pub const DEVICE_BUFFER_MEMORY_REQUIREMENTS: Self = Self(1000413002);
     pub const DEVICE_IMAGE_MEMORY_REQUIREMENTS: Self = Self(1000413003);
+    pub const PHYSICAL_DEVICE_VULKAN_1_4_FEATURES: Self = Self(55);
+    pub const PHYSICAL_DEVICE_VULKAN_1_4_PROPERTIES: Self = Self(56);
+    pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO: Self = Self(1000174000);
+    pub const PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES: Self = Self(1000388000);
+    pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES: Self = Self(1000388001);
+    pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES: Self = Self(1000416000);
+    pub const PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES: Self = Self(1000528000);
+    pub const PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES: Self = Self(1000544000);
+    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES: Self = Self(1000259000);
+    pub const PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO: Self = Self(1000259001);
+    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES: Self = Self(1000259002);
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES: Self = Self(1000525000);
+    pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO: Self = Self(1000190001);
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES: Self = Self(1000190002);
+    pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES: Self = Self(1000265000);
+    pub const MEMORY_MAP_INFO: Self = Self(1000271000);
+    pub const MEMORY_UNMAP_INFO: Self = Self(1000271001);
+    pub const PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES: Self = Self(1000470000);
+    pub const PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES: Self = Self(1000470001);
+    pub const RENDERING_AREA_INFO: Self = Self(1000470003);
+    pub const DEVICE_IMAGE_SUBRESOURCE_INFO: Self = Self(1000470004);
+    pub const SUBRESOURCE_LAYOUT_2: Self = Self(1000338002);
+    pub const IMAGE_SUBRESOURCE_2: Self = Self(1000338003);
+    pub const PIPELINE_CREATE_FLAGS_2_CREATE_INFO: Self = Self(1000470005);
+    pub const BUFFER_USAGE_FLAGS_2_CREATE_INFO: Self = Self(1000470006);
+    pub const PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES: Self = Self(1000080000);
+    pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES: Self = Self(1000232000);
+    pub const RENDERING_ATTACHMENT_LOCATION_INFO: Self = Self(1000232001);
+    pub const RENDERING_INPUT_ATTACHMENT_INDEX_INFO: Self = Self(1000232002);
+    pub const PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES: Self = Self(1000545000);
+    pub const PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES: Self = Self(1000545001);
+    pub const BIND_MEMORY_STATUS: Self = Self(1000545002);
+    pub const BIND_DESCRIPTOR_SETS_INFO: Self = Self(1000545003);
+    pub const PUSH_CONSTANTS_INFO: Self = Self(1000545004);
+    pub const PUSH_DESCRIPTOR_SET_INFO: Self = Self(1000545005);
+    pub const PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO: Self = Self(1000545006);
+    pub const PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES: Self = Self(1000466000);
+    pub const PIPELINE_ROBUSTNESS_CREATE_INFO: Self = Self(1000068000);
+    pub const PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES: Self = Self(1000068001);
+    pub const PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES: Self = Self(1000068002);
+    pub const PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES: Self = Self(1000270000);
+    pub const PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES: Self = Self(1000270001);
+    pub const MEMORY_TO_IMAGE_COPY: Self = Self(1000270002);
+    pub const IMAGE_TO_MEMORY_COPY: Self = Self(1000270003);
+    pub const COPY_IMAGE_TO_MEMORY_INFO: Self = Self(1000270004);
+    pub const COPY_MEMORY_TO_IMAGE_INFO: Self = Self(1000270005);
+    pub const HOST_IMAGE_LAYOUT_TRANSITION_INFO: Self = Self(1000270006);
+    pub const COPY_IMAGE_TO_IMAGE_INFO: Self = Self(1000270007);
+    pub const SUBRESOURCE_HOST_MEMCPY_SIZE: Self = Self(1000270008);
+    pub const HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY: Self = Self(1000270009);
     /// Added by extension VK_KHR_swapchain.
     pub const SWAPCHAIN_CREATE_INFO_KHR: Self = Self(1000001000);
     /// Added by extension VK_KHR_swapchain.
@@ -7145,12 +7207,11 @@ impl StructureType {
     pub const IMAGE_VIEW_ASTC_DECODE_MODE_EXT: Self = Self(1000067000);
     /// Added by extension VK_EXT_astc_decode_mode.
     pub const PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT: Self = Self(1000067001);
-    /// Added by extension VK_EXT_pipeline_robustness.
-    pub const PIPELINE_ROBUSTNESS_CREATE_INFO_EXT: Self = Self(1000068000);
-    /// Added by extension VK_EXT_pipeline_robustness.
-    pub const PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000068001);
-    /// Added by extension VK_EXT_pipeline_robustness.
-    pub const PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES_EXT: Self = Self(1000068002);
+    pub const PIPELINE_ROBUSTNESS_CREATE_INFO_EXT: Self = Self::PIPELINE_ROBUSTNESS_CREATE_INFO;
+    pub const PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES_EXT: Self =
+        Self::PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES;
+    pub const PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES_EXT: Self =
+        Self::PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES;
     pub const PHYSICAL_DEVICE_GROUP_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_GROUP_PROPERTIES;
     pub const DEVICE_GROUP_DEVICE_CREATE_INFO_KHR: Self = Self::DEVICE_GROUP_DEVICE_CREATE_INFO;
     pub const PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO_KHR: Self = Self::PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO;
@@ -7192,8 +7253,7 @@ impl StructureType {
     pub const IMPORT_SEMAPHORE_FD_INFO_KHR: Self = Self(1000079000);
     /// Added by extension VK_KHR_external_semaphore_fd.
     pub const SEMAPHORE_GET_FD_INFO_KHR: Self = Self(1000079001);
-    /// Added by extension VK_KHR_push_descriptor.
-    pub const PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR: Self = Self(1000080000);
+    pub const PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES;
     /// Added by extension VK_EXT_conditional_rendering.
     pub const COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT: Self = Self(1000081000);
     /// Added by extension VK_EXT_conditional_rendering.
@@ -7512,7 +7572,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT: Self = Self(1000170000);
     /// Added by extension VK_EXT_filter_cubic.
     pub const FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT: Self = Self(1000170001);
-    pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT: Self = Self::DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR;
+    pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT: Self = Self::DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO;
     pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES_KHR: Self =
         Self::PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES;
     pub const PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES;
@@ -7531,17 +7591,18 @@ impl StructureType {
     pub const CALIBRATED_TIMESTAMP_INFO_EXT: Self = Self::CALIBRATED_TIMESTAMP_INFO_KHR;
     /// Added by extension VK_AMD_shader_core_properties.
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD: Self = Self(1000185000);
-    pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR: Self = Self(1000174000);
-    pub const PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR: Self = Self(1000388000);
-    pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR: Self = Self(1000388001);
+    pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR: Self = Self::DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO;
+    pub const PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR: Self =
+        Self::PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES;
+    pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR: Self = Self::QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES;
     /// Added by extension VK_AMD_memory_overallocation_behavior.
     pub const DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD: Self = Self(1000189000);
     /// Added by extension VK_EXT_vertex_attribute_divisor.
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT: Self = Self(1000190000);
     pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT: Self =
-        Self::PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_KHR;
+        Self::PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO;
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT: Self =
-        Self::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR;
+        Self::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES;
     pub const PIPELINE_CREATION_FEEDBACK_CREATE_INFO_EXT: Self = Self::PIPELINE_CREATION_FEEDBACK_CREATE_INFO;
     pub const PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_DRIVER_PROPERTIES;
     pub const PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES;
@@ -7634,12 +7695,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD: Self = Self(1000227000);
     /// Added by extension VK_AMD_device_coherent_memory.
     pub const PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD: Self = Self(1000229000);
-    /// Added by extension VK_KHR_dynamic_rendering_local_read.
-    pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES_KHR: Self = Self(1000232000);
-    /// Added by extension VK_KHR_dynamic_rendering_local_read.
-    pub const RENDERING_ATTACHMENT_LOCATION_INFO_KHR: Self = Self(1000232001);
-    /// Added by extension VK_KHR_dynamic_rendering_local_read.
-    pub const RENDERING_INPUT_ATTACHMENT_INDEX_INFO_KHR: Self = Self(1000232002);
+    pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES_KHR: Self =
+        Self::PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES;
+    pub const RENDERING_ATTACHMENT_LOCATION_INFO_KHR: Self = Self::RENDERING_ATTACHMENT_LOCATION_INFO;
+    pub const RENDERING_INPUT_ATTACHMENT_INDEX_INFO_KHR: Self = Self::RENDERING_INPUT_ATTACHMENT_INDEX_INFO;
     /// Added by extension VK_EXT_shader_image_atomic_int64.
     pub const PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT: Self = Self(1000234000);
     /// Added by extension VK_KHR_shader_quad_control.
@@ -7709,16 +7768,15 @@ impl StructureType {
     pub const BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO_KHR: Self = Self::BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO;
     pub const MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO_KHR: Self = Self::MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO;
     pub const DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO_KHR: Self = Self::DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO;
-    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT: Self =
-        Self::PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_KHR;
+    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT: Self = Self::PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES;
     pub const PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT: Self =
-        Self::PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_KHR;
+        Self::PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO;
     pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT: Self =
-        Self::PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_KHR;
+        Self::PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES;
     /// Added by extension VK_EXT_shader_atomic_float.
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_FEATURES_EXT: Self = Self(1000260000);
     pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT: Self = Self::PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES;
-    pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT: Self = Self::PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_KHR;
+    pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT: Self = Self::PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES;
     /// Not promoted to 1.3
     /// Added by extension VK_EXT_extended_dynamic_state.
     pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT: Self = Self(1000267000);
@@ -7734,30 +7792,18 @@ impl StructureType {
     pub const PIPELINE_EXECUTABLE_STATISTIC_KHR: Self = Self(1000269004);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR: Self = Self(1000269005);
-    /// Added by extension VK_EXT_host_image_copy.
-    pub const PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES_EXT: Self = Self(1000270000);
-    /// Added by extension VK_EXT_host_image_copy.
-    pub const PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES_EXT: Self = Self(1000270001);
-    /// Added by extension VK_EXT_host_image_copy.
-    pub const MEMORY_TO_IMAGE_COPY_EXT: Self = Self(1000270002);
-    /// Added by extension VK_EXT_host_image_copy.
-    pub const IMAGE_TO_MEMORY_COPY_EXT: Self = Self(1000270003);
-    /// Added by extension VK_EXT_host_image_copy.
-    pub const COPY_IMAGE_TO_MEMORY_INFO_EXT: Self = Self(1000270004);
-    /// Added by extension VK_EXT_host_image_copy.
-    pub const COPY_MEMORY_TO_IMAGE_INFO_EXT: Self = Self(1000270005);
-    /// Added by extension VK_EXT_host_image_copy.
-    pub const HOST_IMAGE_LAYOUT_TRANSITION_INFO_EXT: Self = Self(1000270006);
-    /// Added by extension VK_EXT_host_image_copy.
-    pub const COPY_IMAGE_TO_IMAGE_INFO_EXT: Self = Self(1000270007);
-    /// Added by extension VK_EXT_host_image_copy.
-    pub const SUBRESOURCE_HOST_MEMCPY_SIZE_EXT: Self = Self(1000270008);
-    /// Added by extension VK_EXT_host_image_copy.
-    pub const HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY_EXT: Self = Self(1000270009);
-    /// Added by extension VK_KHR_map_memory2.
-    pub const MEMORY_MAP_INFO_KHR: Self = Self(1000271000);
-    /// Added by extension VK_KHR_map_memory2.
-    pub const MEMORY_UNMAP_INFO_KHR: Self = Self(1000271001);
+    pub const PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES_EXT: Self = Self::PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES;
+    pub const PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES_EXT: Self = Self::PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES;
+    pub const MEMORY_TO_IMAGE_COPY_EXT: Self = Self::MEMORY_TO_IMAGE_COPY;
+    pub const IMAGE_TO_MEMORY_COPY_EXT: Self = Self::IMAGE_TO_MEMORY_COPY;
+    pub const COPY_IMAGE_TO_MEMORY_INFO_EXT: Self = Self::COPY_IMAGE_TO_MEMORY_INFO;
+    pub const COPY_MEMORY_TO_IMAGE_INFO_EXT: Self = Self::COPY_MEMORY_TO_IMAGE_INFO;
+    pub const HOST_IMAGE_LAYOUT_TRANSITION_INFO_EXT: Self = Self::HOST_IMAGE_LAYOUT_TRANSITION_INFO;
+    pub const COPY_IMAGE_TO_IMAGE_INFO_EXT: Self = Self::COPY_IMAGE_TO_IMAGE_INFO;
+    pub const SUBRESOURCE_HOST_MEMCPY_SIZE_EXT: Self = Self::SUBRESOURCE_HOST_MEMCPY_SIZE;
+    pub const HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY_EXT: Self = Self::HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY;
+    pub const MEMORY_MAP_INFO_KHR: Self = Self::MEMORY_MAP_INFO;
+    pub const MEMORY_UNMAP_INFO_KHR: Self = Self::MEMORY_UNMAP_INFO;
     /// Added by extension VK_EXT_map_memory_placed.
     pub const PHYSICAL_DEVICE_MAP_MEMORY_PLACED_FEATURES_EXT: Self = Self(1000272000);
     /// Added by extension VK_EXT_map_memory_placed.
@@ -7989,8 +8035,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_FEATURES_EXT: Self = Self(1000338000);
     /// Added by extension VK_EXT_image_compression_control.
     pub const IMAGE_COMPRESSION_CONTROL_EXT: Self = Self(1000338001);
-    pub const SUBRESOURCE_LAYOUT_2_EXT: Self = Self::SUBRESOURCE_LAYOUT_2_KHR;
-    pub const IMAGE_SUBRESOURCE_2_EXT: Self = Self::IMAGE_SUBRESOURCE_2_KHR;
+    pub const SUBRESOURCE_LAYOUT_2_EXT: Self = Self::SUBRESOURCE_LAYOUT_2;
+    pub const IMAGE_SUBRESOURCE_2_EXT: Self = Self::IMAGE_SUBRESOURCE_2;
     /// Added by extension VK_EXT_image_compression_control.
     pub const IMAGE_COMPRESSION_PROPERTIES_EXT: Self = Self(1000338004);
     /// Added by extension VK_EXT_attachment_feedback_loop_layout.
@@ -8102,8 +8148,8 @@ impl StructureType {
     /// Added by extension VK_KHR_ray_tracing_maintenance1.
     pub const PHYSICAL_DEVICE_RAY_TRACING_MAINTENANCE_1_FEATURES_KHR: Self = Self(1000386000);
     pub const PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT: Self =
-        Self::PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR;
-    pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT: Self = Self::QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR;
+        Self::PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES;
+    pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT: Self = Self::QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES;
     /// Added by extension VK_EXT_image_view_min_lod.
     pub const PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT: Self = Self(1000391000);
     /// Added by extension VK_EXT_image_view_min_lod.
@@ -8162,8 +8208,8 @@ impl StructureType {
     pub const DEVICE_IMAGE_MEMORY_REQUIREMENTS_KHR: Self = Self::DEVICE_IMAGE_MEMORY_REQUIREMENTS;
     /// Added by extension VK_ARM_shader_core_properties.
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_ARM: Self = Self(1000415000);
-    /// Added by extension VK_KHR_shader_subgroup_rotate.
-    pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES_KHR: Self = Self(1000416000);
+    pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES_KHR: Self =
+        Self::PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES;
     /// Added by extension VK_ARM_scheduling_controls.
     pub const DEVICE_QUEUE_SHADER_CORE_CONTROL_CREATE_INFO_ARM: Self = Self(1000417000);
     /// Added by extension VK_ARM_scheduling_controls.
@@ -8273,28 +8319,22 @@ impl StructureType {
     pub const OPTICAL_FLOW_SESSION_CREATE_PRIVATE_DATA_INFO_NV: Self = Self(1000464010);
     /// Added by extension VK_EXT_legacy_dithering.
     pub const PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT: Self = Self(1000465000);
-    /// Added by extension VK_EXT_pipeline_protected_access.
-    pub const PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT: Self = Self(1000466000);
+    pub const PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT: Self =
+        Self::PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES;
     /// Added by extension VK_ANDROID_external_format_resolve.
     pub const PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_FEATURES_ANDROID: Self = Self(1000468000);
     /// Added by extension VK_ANDROID_external_format_resolve.
     pub const PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_PROPERTIES_ANDROID: Self = Self(1000468001);
     /// Added by extension VK_ANDROID_external_format_resolve.
     pub const ANDROID_HARDWARE_BUFFER_FORMAT_RESOLVE_PROPERTIES_ANDROID: Self = Self(1000468002);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES_KHR: Self = Self(1000470000);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES_KHR: Self = Self(1000470001);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const RENDERING_AREA_INFO_KHR: Self = Self(1000470003);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const DEVICE_IMAGE_SUBRESOURCE_INFO_KHR: Self = Self(1000470004);
-    pub const SUBRESOURCE_LAYOUT_2_KHR: Self = Self(1000338002);
-    pub const IMAGE_SUBRESOURCE_2_KHR: Self = Self(1000338003);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const PIPELINE_CREATE_FLAGS_2_CREATE_INFO_KHR: Self = Self(1000470005);
-    /// Added by extension VK_KHR_maintenance5.
-    pub const BUFFER_USAGE_FLAGS_2_CREATE_INFO_KHR: Self = Self(1000470006);
+    pub const PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES;
+    pub const PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES;
+    pub const RENDERING_AREA_INFO_KHR: Self = Self::RENDERING_AREA_INFO;
+    pub const DEVICE_IMAGE_SUBRESOURCE_INFO_KHR: Self = Self::DEVICE_IMAGE_SUBRESOURCE_INFO;
+    pub const SUBRESOURCE_LAYOUT_2_KHR: Self = Self::SUBRESOURCE_LAYOUT_2;
+    pub const IMAGE_SUBRESOURCE_2_KHR: Self = Self::IMAGE_SUBRESOURCE_2;
+    pub const PIPELINE_CREATE_FLAGS_2_CREATE_INFO_KHR: Self = Self::PIPELINE_CREATE_FLAGS_2_CREATE_INFO;
+    pub const BUFFER_USAGE_FLAGS_2_CREATE_INFO_KHR: Self = Self::BUFFER_USAGE_FLAGS_2_CREATE_INFO;
     /// Added by extension VK_AMD_anti_lag.
     pub const PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD: Self = Self(1000476000);
     /// Added by extension VK_AMD_anti_lag.
@@ -8418,35 +8458,32 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_CUBIC_CLAMP_FEATURES_QCOM: Self = Self(1000521000);
     /// Added by extension VK_EXT_attachment_feedback_loop_dynamic_state.
     pub const PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT: Self = Self(1000524000);
-    /// Added by extension VK_KHR_vertex_attribute_divisor.
-    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_KHR: Self = Self(1000525000);
-    pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_KHR: Self = Self(1000190001);
-    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR: Self = Self(1000190002);
-    /// Added by extension VK_KHR_shader_float_controls2.
-    pub const PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES_KHR: Self = Self(1000528000);
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_KHR: Self =
+        Self::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES;
+    pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_KHR: Self =
+        Self::PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO;
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR: Self =
+        Self::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES;
+    pub const PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES_KHR: Self =
+        Self::PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES;
     /// Added by extension VK_MSFT_layered_driver.
     pub const PHYSICAL_DEVICE_LAYERED_DRIVER_PROPERTIES_MSFT: Self = Self(1000530000);
-    pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_KHR: Self = Self(1000265000);
-    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_KHR: Self = Self(1000259000);
-    pub const PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_KHR: Self = Self(1000259001);
-    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_KHR: Self = Self(1000259002);
+    pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES;
+    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES;
+    pub const PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_KHR: Self =
+        Self::PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO;
+    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_KHR: Self =
+        Self::PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES;
     pub const CALIBRATED_TIMESTAMP_INFO_KHR: Self = Self(1000184000);
-    /// Added by extension VK_KHR_shader_expect_assume.
-    pub const PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES_KHR: Self = Self(1000544000);
-    /// Added by extension VK_KHR_maintenance6.
-    pub const PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES_KHR: Self = Self(1000545000);
-    /// Added by extension VK_KHR_maintenance6.
-    pub const PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES_KHR: Self = Self(1000545001);
-    /// Added by extension VK_KHR_maintenance6.
-    pub const BIND_MEMORY_STATUS_KHR: Self = Self(1000545002);
-    /// Added by extension VK_KHR_maintenance6.
-    pub const BIND_DESCRIPTOR_SETS_INFO_KHR: Self = Self(1000545003);
-    /// Added by extension VK_KHR_maintenance6.
-    pub const PUSH_CONSTANTS_INFO_KHR: Self = Self(1000545004);
-    /// Added by extension VK_KHR_maintenance6.
-    pub const PUSH_DESCRIPTOR_SET_INFO_KHR: Self = Self(1000545005);
-    /// Added by extension VK_KHR_maintenance6.
-    pub const PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO_KHR: Self = Self(1000545006);
+    pub const PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES_KHR: Self =
+        Self::PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES;
+    pub const PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES;
+    pub const PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES;
+    pub const BIND_MEMORY_STATUS_KHR: Self = Self::BIND_MEMORY_STATUS;
+    pub const BIND_DESCRIPTOR_SETS_INFO_KHR: Self = Self::BIND_DESCRIPTOR_SETS_INFO;
+    pub const PUSH_CONSTANTS_INFO_KHR: Self = Self::PUSH_CONSTANTS_INFO;
+    pub const PUSH_DESCRIPTOR_SET_INFO_KHR: Self = Self::PUSH_DESCRIPTOR_SET_INFO;
+    pub const PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO_KHR: Self = Self::PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO;
     /// Added by extension VK_KHR_maintenance6.
     pub const SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT: Self = Self(1000545007);
     /// Added by extension VK_KHR_maintenance6.
@@ -8749,6 +8786,56 @@ impl fmt::Display for StructureType {
             1000413001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES"),
             1000413002 => Some(&"DEVICE_BUFFER_MEMORY_REQUIREMENTS"),
             1000413003 => Some(&"DEVICE_IMAGE_MEMORY_REQUIREMENTS"),
+            55 => Some(&"PHYSICAL_DEVICE_VULKAN_1_4_FEATURES"),
+            56 => Some(&"PHYSICAL_DEVICE_VULKAN_1_4_PROPERTIES"),
+            1000174000 => Some(&"DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO"),
+            1000388000 => Some(&"PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES"),
+            1000388001 => Some(&"QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES"),
+            1000416000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES"),
+            1000528000 => Some(&"PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES"),
+            1000544000 => Some(&"PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES"),
+            1000259000 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES"),
+            1000259001 => Some(&"PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO"),
+            1000259002 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES"),
+            1000525000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES"),
+            1000190001 => Some(&"PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO"),
+            1000190002 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES"),
+            1000265000 => Some(&"PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES"),
+            1000271000 => Some(&"MEMORY_MAP_INFO"),
+            1000271001 => Some(&"MEMORY_UNMAP_INFO"),
+            1000470000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES"),
+            1000470001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES"),
+            1000470003 => Some(&"RENDERING_AREA_INFO"),
+            1000470004 => Some(&"DEVICE_IMAGE_SUBRESOURCE_INFO"),
+            1000338002 => Some(&"SUBRESOURCE_LAYOUT_2"),
+            1000338003 => Some(&"IMAGE_SUBRESOURCE_2"),
+            1000470005 => Some(&"PIPELINE_CREATE_FLAGS_2_CREATE_INFO"),
+            1000470006 => Some(&"BUFFER_USAGE_FLAGS_2_CREATE_INFO"),
+            1000080000 => Some(&"PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES"),
+            1000232000 => Some(&"PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES"),
+            1000232001 => Some(&"RENDERING_ATTACHMENT_LOCATION_INFO"),
+            1000232002 => Some(&"RENDERING_INPUT_ATTACHMENT_INDEX_INFO"),
+            1000545000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES"),
+            1000545001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES"),
+            1000545002 => Some(&"BIND_MEMORY_STATUS"),
+            1000545003 => Some(&"BIND_DESCRIPTOR_SETS_INFO"),
+            1000545004 => Some(&"PUSH_CONSTANTS_INFO"),
+            1000545005 => Some(&"PUSH_DESCRIPTOR_SET_INFO"),
+            1000545006 => Some(&"PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO"),
+            1000466000 => Some(&"PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES"),
+            1000068000 => Some(&"PIPELINE_ROBUSTNESS_CREATE_INFO"),
+            1000068001 => Some(&"PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES"),
+            1000068002 => Some(&"PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES"),
+            1000270000 => Some(&"PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES"),
+            1000270001 => Some(&"PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES"),
+            1000270002 => Some(&"MEMORY_TO_IMAGE_COPY"),
+            1000270003 => Some(&"IMAGE_TO_MEMORY_COPY"),
+            1000270004 => Some(&"COPY_IMAGE_TO_MEMORY_INFO"),
+            1000270005 => Some(&"COPY_MEMORY_TO_IMAGE_INFO"),
+            1000270006 => Some(&"HOST_IMAGE_LAYOUT_TRANSITION_INFO"),
+            1000270007 => Some(&"COPY_IMAGE_TO_IMAGE_INFO"),
+            1000270008 => Some(&"SUBRESOURCE_HOST_MEMCPY_SIZE"),
+            1000270009 => Some(&"HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY"),
             1000001000 => Some(&"SWAPCHAIN_CREATE_INFO_KHR"),
             1000001001 => Some(&"PRESENT_INFO_KHR"),
             1000060007 => Some(&"DEVICE_GROUP_PRESENT_CAPABILITIES_KHR"),
@@ -8793,9 +8880,6 @@ impl fmt::Display for StructureType {
             1000062000 => Some(&"VI_SURFACE_CREATE_INFO_NN"),
             1000067000 => Some(&"IMAGE_VIEW_ASTC_DECODE_MODE_EXT"),
             1000067001 => Some(&"PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT"),
-            1000068000 => Some(&"PIPELINE_ROBUSTNESS_CREATE_INFO_EXT"),
-            1000068001 => Some(&"PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES_EXT"),
-            1000068002 => Some(&"PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES_EXT"),
             1000073000 => Some(&"IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR"),
             1000073001 => Some(&"EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR"),
             1000073002 => Some(&"MEMORY_WIN32_HANDLE_PROPERTIES_KHR"),
@@ -8810,7 +8894,6 @@ impl fmt::Display for StructureType {
             1000078003 => Some(&"SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR"),
             1000079000 => Some(&"IMPORT_SEMAPHORE_FD_INFO_KHR"),
             1000079001 => Some(&"SEMAPHORE_GET_FD_INFO_KHR"),
-            1000080000 => Some(&"PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR"),
             1000081000 => Some(&"COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT"),
             1000081001 => Some(&"PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT"),
             1000081002 => Some(&"CONDITIONAL_RENDERING_BEGIN_INFO_EXT"),
@@ -8943,9 +9026,6 @@ impl fmt::Display for StructureType {
             1000181000 => Some(&"PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR"),
             1000183000 => Some(&"PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD"),
             1000185000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD"),
-            1000174000 => Some(&"DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR"),
-            1000388000 => Some(&"PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR"),
-            1000388001 => Some(&"QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR"),
             1000189000 => Some(&"DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD"),
             1000190000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT"),
             1000202000 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV"),
@@ -8981,9 +9061,6 @@ impl fmt::Display for StructureType {
             1000044006 => Some(&"RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR"),
             1000227000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD"),
             1000229000 => Some(&"PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD"),
-            1000232000 => Some(&"PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES_KHR"),
-            1000232001 => Some(&"RENDERING_ATTACHMENT_LOCATION_INFO_KHR"),
-            1000232002 => Some(&"RENDERING_INPUT_ATTACHMENT_INDEX_INFO_KHR"),
             1000234000 => Some(&"PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT"),
             1000235000 => Some(&"PHYSICAL_DEVICE_SHADER_QUAD_CONTROL_FEATURES_KHR"),
             1000237000 => Some(&"PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT"),
@@ -9018,18 +9095,6 @@ impl fmt::Display for StructureType {
             1000269003 => Some(&"PIPELINE_EXECUTABLE_INFO_KHR"),
             1000269004 => Some(&"PIPELINE_EXECUTABLE_STATISTIC_KHR"),
             1000269005 => Some(&"PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR"),
-            1000270000 => Some(&"PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES_EXT"),
-            1000270001 => Some(&"PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES_EXT"),
-            1000270002 => Some(&"MEMORY_TO_IMAGE_COPY_EXT"),
-            1000270003 => Some(&"IMAGE_TO_MEMORY_COPY_EXT"),
-            1000270004 => Some(&"COPY_IMAGE_TO_MEMORY_INFO_EXT"),
-            1000270005 => Some(&"COPY_MEMORY_TO_IMAGE_INFO_EXT"),
-            1000270006 => Some(&"HOST_IMAGE_LAYOUT_TRANSITION_INFO_EXT"),
-            1000270007 => Some(&"COPY_IMAGE_TO_IMAGE_INFO_EXT"),
-            1000270008 => Some(&"SUBRESOURCE_HOST_MEMCPY_SIZE_EXT"),
-            1000270009 => Some(&"HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY_EXT"),
-            1000271000 => Some(&"MEMORY_MAP_INFO_KHR"),
-            1000271001 => Some(&"MEMORY_UNMAP_INFO_KHR"),
             1000272000 => Some(&"PHYSICAL_DEVICE_MAP_MEMORY_PLACED_FEATURES_EXT"),
             1000272001 => Some(&"PHYSICAL_DEVICE_MAP_MEMORY_PLACED_PROPERTIES_EXT"),
             1000272002 => Some(&"MEMORY_MAP_PLACED_INFO_EXT"),
@@ -9206,7 +9271,6 @@ impl fmt::Display for StructureType {
             1000411001 => Some(&"SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT"),
             1000412000 => Some(&"PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT"),
             1000415000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_ARM"),
-            1000416000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES_KHR"),
             1000417000 => Some(&"DEVICE_QUEUE_SHADER_CORE_CONTROL_CREATE_INFO_ARM"),
             1000417001 => Some(&"PHYSICAL_DEVICE_SCHEDULING_CONTROLS_FEATURES_ARM"),
             1000417002 => Some(&"PHYSICAL_DEVICE_SCHEDULING_CONTROLS_PROPERTIES_ARM"),
@@ -9262,18 +9326,9 @@ impl fmt::Display for StructureType {
             1000464005 => Some(&"OPTICAL_FLOW_EXECUTE_INFO_NV"),
             1000464010 => Some(&"OPTICAL_FLOW_SESSION_CREATE_PRIVATE_DATA_INFO_NV"),
             1000465000 => Some(&"PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT"),
-            1000466000 => Some(&"PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT"),
             1000468000 => Some(&"PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_FEATURES_ANDROID"),
             1000468001 => Some(&"PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_PROPERTIES_ANDROID"),
             1000468002 => Some(&"ANDROID_HARDWARE_BUFFER_FORMAT_RESOLVE_PROPERTIES_ANDROID"),
-            1000470000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES_KHR"),
-            1000470001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES_KHR"),
-            1000470003 => Some(&"RENDERING_AREA_INFO_KHR"),
-            1000470004 => Some(&"DEVICE_IMAGE_SUBRESOURCE_INFO_KHR"),
-            1000338002 => Some(&"SUBRESOURCE_LAYOUT_2_KHR"),
-            1000338003 => Some(&"IMAGE_SUBRESOURCE_2_KHR"),
-            1000470005 => Some(&"PIPELINE_CREATE_FLAGS_2_CREATE_INFO_KHR"),
-            1000470006 => Some(&"BUFFER_USAGE_FLAGS_2_CREATE_INFO_KHR"),
             1000476000 => Some(&"PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD"),
             1000476001 => Some(&"ANTI_LAG_DATA_AMD"),
             1000476002 => Some(&"ANTI_LAG_PRESENTATION_INFO_AMD"),
@@ -9336,24 +9391,8 @@ impl fmt::Display for StructureType {
             1000520001 => Some(&"SAMPLER_YCBCR_CONVERSION_YCBCR_DEGAMMA_CREATE_INFO_QCOM"),
             1000521000 => Some(&"PHYSICAL_DEVICE_CUBIC_CLAMP_FEATURES_QCOM"),
             1000524000 => Some(&"PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT"),
-            1000525000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_KHR"),
-            1000190001 => Some(&"PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_KHR"),
-            1000190002 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR"),
-            1000528000 => Some(&"PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES_KHR"),
             1000530000 => Some(&"PHYSICAL_DEVICE_LAYERED_DRIVER_PROPERTIES_MSFT"),
-            1000265000 => Some(&"PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_KHR"),
-            1000259000 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_KHR"),
-            1000259001 => Some(&"PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_KHR"),
-            1000259002 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_KHR"),
             1000184000 => Some(&"CALIBRATED_TIMESTAMP_INFO_KHR"),
-            1000544000 => Some(&"PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES_KHR"),
-            1000545000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES_KHR"),
-            1000545001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES_KHR"),
-            1000545002 => Some(&"BIND_MEMORY_STATUS_KHR"),
-            1000545003 => Some(&"BIND_DESCRIPTOR_SETS_INFO_KHR"),
-            1000545004 => Some(&"PUSH_CONSTANTS_INFO_KHR"),
-            1000545005 => Some(&"PUSH_DESCRIPTOR_SET_INFO_KHR"),
-            1000545006 => Some(&"PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO_KHR"),
             1000545007 => Some(&"SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT"),
             1000545008 => Some(&"BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT"),
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
@@ -9765,16 +9804,15 @@ pub struct DescriptorUpdateTemplateType(pub(crate) i32);
 impl DescriptorUpdateTemplateType {
     /// Create descriptor update template for descriptor set updates
     pub const DESCRIPTOR_SET: Self = Self(0);
-    /// Create descriptor update template for pushed descriptor updates
-    /// Added by extension VK_KHR_descriptor_update_template.
-    pub const PUSH_DESCRIPTORS_KHR: Self = Self(1);
+    pub const PUSH_DESCRIPTORS: Self = Self(1);
+    pub const PUSH_DESCRIPTORS_KHR: Self = Self::PUSH_DESCRIPTORS;
     pub const DESCRIPTOR_SET_KHR: Self = Self::DESCRIPTOR_SET;
 }
 impl fmt::Display for DescriptorUpdateTemplateType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"DESCRIPTOR_SET"),
-            1 => Some(&"PUSH_DESCRIPTORS_KHR"),
+            1 => Some(&"PUSH_DESCRIPTORS"),
             _ => None,
         };
         if let Some(name) = name {
@@ -9953,8 +9991,8 @@ impl fmt::Display for ShaderInfoTypeAMD {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct QueueGlobalPriorityKHR(pub(crate) i32);
-impl QueueGlobalPriorityKHR {
+pub struct QueueGlobalPriority(pub(crate) i32);
+impl QueueGlobalPriority {
     pub const LOW: Self = Self(128);
     pub const MEDIUM: Self = Self(256);
     pub const HIGH: Self = Self(512);
@@ -9963,8 +10001,12 @@ impl QueueGlobalPriorityKHR {
     pub const MEDIUM_EXT: Self = Self::MEDIUM;
     pub const HIGH_EXT: Self = Self::HIGH;
     pub const REALTIME_EXT: Self = Self::REALTIME;
+    pub const LOW_KHR: Self = Self::LOW;
+    pub const MEDIUM_KHR: Self = Self::MEDIUM;
+    pub const HIGH_KHR: Self = Self::HIGH;
+    pub const REALTIME_KHR: Self = Self::REALTIME;
 }
-impl fmt::Display for QueueGlobalPriorityKHR {
+impl fmt::Display for QueueGlobalPriority {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             128 => Some(&"LOW"),
@@ -9980,7 +10022,8 @@ impl fmt::Display for QueueGlobalPriorityKHR {
         }
     }
 }
-pub type QueueGlobalPriorityEXT = QueueGlobalPriorityKHR;
+pub type QueueGlobalPriorityKHR = QueueGlobalPriority;
+pub type QueueGlobalPriorityEXT = QueueGlobalPriority;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct TimeDomainKHR(pub(crate) i32);
@@ -10506,18 +10549,22 @@ impl fmt::Display for PerformanceValueTypeINTEL {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct LineRasterizationModeKHR(pub(crate) i32);
-impl LineRasterizationModeKHR {
+pub struct LineRasterizationMode(pub(crate) i32);
+impl LineRasterizationMode {
     pub const DEFAULT: Self = Self(0);
-    pub const DEFAULT_EXT: Self = Self::DEFAULT;
     pub const RECTANGULAR: Self = Self(1);
-    pub const RECTANGULAR_EXT: Self = Self::RECTANGULAR;
     pub const BRESENHAM: Self = Self(2);
-    pub const BRESENHAM_EXT: Self = Self::BRESENHAM;
     pub const RECTANGULAR_SMOOTH: Self = Self(3);
+    pub const DEFAULT_EXT: Self = Self::DEFAULT;
+    pub const RECTANGULAR_EXT: Self = Self::RECTANGULAR;
+    pub const BRESENHAM_EXT: Self = Self::BRESENHAM;
     pub const RECTANGULAR_SMOOTH_EXT: Self = Self::RECTANGULAR_SMOOTH;
+    pub const DEFAULT_KHR: Self = Self::DEFAULT;
+    pub const RECTANGULAR_KHR: Self = Self::RECTANGULAR;
+    pub const BRESENHAM_KHR: Self = Self::BRESENHAM;
+    pub const RECTANGULAR_SMOOTH_KHR: Self = Self::RECTANGULAR_SMOOTH;
 }
-impl fmt::Display for LineRasterizationModeKHR {
+impl fmt::Display for LineRasterizationMode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"DEFAULT"),
@@ -10533,7 +10580,8 @@ impl fmt::Display for LineRasterizationModeKHR {
         }
     }
 }
-pub type LineRasterizationModeEXT = LineRasterizationModeKHR;
+pub type LineRasterizationModeKHR = LineRasterizationMode;
+pub type LineRasterizationModeEXT = LineRasterizationMode;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct FragmentShadingRateNV(pub(crate) i32);
@@ -10664,14 +10712,18 @@ impl fmt::Display for ProvokingVertexModeEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PipelineRobustnessBufferBehaviorEXT(pub(crate) i32);
-impl PipelineRobustnessBufferBehaviorEXT {
+pub struct PipelineRobustnessBufferBehavior(pub(crate) i32);
+impl PipelineRobustnessBufferBehavior {
     pub const DEVICE_DEFAULT: Self = Self(0);
     pub const DISABLED: Self = Self(1);
     pub const ROBUST_BUFFER_ACCESS: Self = Self(2);
     pub const ROBUST_BUFFER_ACCESS_2: Self = Self(3);
+    pub const DEVICE_DEFAULT_EXT: Self = Self::DEVICE_DEFAULT;
+    pub const DISABLED_EXT: Self = Self::DISABLED;
+    pub const ROBUST_BUFFER_ACCESS_EXT: Self = Self::ROBUST_BUFFER_ACCESS;
+    pub const ROBUST_BUFFER_ACCESS_2_EXT: Self = Self::ROBUST_BUFFER_ACCESS_2;
 }
-impl fmt::Display for PipelineRobustnessBufferBehaviorEXT {
+impl fmt::Display for PipelineRobustnessBufferBehavior {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"DEVICE_DEFAULT"),
@@ -10687,16 +10739,21 @@ impl fmt::Display for PipelineRobustnessBufferBehaviorEXT {
         }
     }
 }
+pub type PipelineRobustnessBufferBehaviorEXT = PipelineRobustnessBufferBehavior;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PipelineRobustnessImageBehaviorEXT(pub(crate) i32);
-impl PipelineRobustnessImageBehaviorEXT {
+pub struct PipelineRobustnessImageBehavior(pub(crate) i32);
+impl PipelineRobustnessImageBehavior {
     pub const DEVICE_DEFAULT: Self = Self(0);
     pub const DISABLED: Self = Self(1);
     pub const ROBUST_IMAGE_ACCESS: Self = Self(2);
     pub const ROBUST_IMAGE_ACCESS_2: Self = Self(3);
+    pub const DEVICE_DEFAULT_EXT: Self = Self::DEVICE_DEFAULT;
+    pub const DISABLED_EXT: Self = Self::DISABLED;
+    pub const ROBUST_IMAGE_ACCESS_EXT: Self = Self::ROBUST_IMAGE_ACCESS;
+    pub const ROBUST_IMAGE_ACCESS_2_EXT: Self = Self::ROBUST_IMAGE_ACCESS_2;
 }
-impl fmt::Display for PipelineRobustnessImageBehaviorEXT {
+impl fmt::Display for PipelineRobustnessImageBehavior {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"DEVICE_DEFAULT"),
@@ -10712,6 +10769,7 @@ impl fmt::Display for PipelineRobustnessImageBehaviorEXT {
         }
     }
 }
+pub type PipelineRobustnessImageBehaviorEXT = PipelineRobustnessImageBehavior;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DeviceAddressBindingTypeEXT(pub(crate) i32);
@@ -13268,31 +13326,32 @@ impl fmt::Debug for CopyDescriptorSet {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct BufferUsageFlags2CreateInfoKHR {
+pub struct BufferUsageFlags2CreateInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub usage: BufferUsageFlags2KHR,
+    pub usage: BufferUsageFlags2,
 }
-unsafe impl Send for BufferUsageFlags2CreateInfoKHR {}
-unsafe impl Sync for BufferUsageFlags2CreateInfoKHR {}
-impl Default for BufferUsageFlags2CreateInfoKHR {
+unsafe impl Send for BufferUsageFlags2CreateInfo {}
+unsafe impl Sync for BufferUsageFlags2CreateInfo {}
+impl Default for BufferUsageFlags2CreateInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::BUFFER_USAGE_FLAGS_2_CREATE_INFO_KHR,
+            s_type: StructureType::BUFFER_USAGE_FLAGS_2_CREATE_INFO,
             p_next: ptr::null(),
             usage: Default::default(),
         }
     }
 }
-impl fmt::Debug for BufferUsageFlags2CreateInfoKHR {
+impl fmt::Debug for BufferUsageFlags2CreateInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("BufferUsageFlags2CreateInfoKHR")
+        fmt.debug_struct("BufferUsageFlags2CreateInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("usage", &self.usage)
             .finish()
     }
 }
+pub type BufferUsageFlags2CreateInfoKHR = BufferUsageFlags2CreateInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct BufferCreateInfo {
@@ -14409,31 +14468,32 @@ impl fmt::Debug for ComputePipelineIndirectBufferInfoNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PipelineCreateFlags2CreateInfoKHR {
+pub struct PipelineCreateFlags2CreateInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub flags: PipelineCreateFlags2KHR,
+    pub flags: PipelineCreateFlags2,
 }
-unsafe impl Send for PipelineCreateFlags2CreateInfoKHR {}
-unsafe impl Sync for PipelineCreateFlags2CreateInfoKHR {}
-impl Default for PipelineCreateFlags2CreateInfoKHR {
+unsafe impl Send for PipelineCreateFlags2CreateInfo {}
+unsafe impl Sync for PipelineCreateFlags2CreateInfo {}
+impl Default for PipelineCreateFlags2CreateInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PIPELINE_CREATE_FLAGS_2_CREATE_INFO_KHR,
+            s_type: StructureType::PIPELINE_CREATE_FLAGS_2_CREATE_INFO,
             p_next: ptr::null(),
             flags: Default::default(),
         }
     }
 }
-impl fmt::Debug for PipelineCreateFlags2CreateInfoKHR {
+impl fmt::Debug for PipelineCreateFlags2CreateInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PipelineCreateFlags2CreateInfoKHR")
+        fmt.debug_struct("PipelineCreateFlags2CreateInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
             .finish()
     }
 }
+pub type PipelineCreateFlags2CreateInfoKHR = PipelineCreateFlags2CreateInfo;
 #[repr(C)]
 #[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct VertexInputBindingDescription {
@@ -19074,31 +19134,32 @@ impl fmt::Debug for PhysicalDeviceSparseImageFormatInfo2 {
 pub type PhysicalDeviceSparseImageFormatInfo2KHR = PhysicalDeviceSparseImageFormatInfo2;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDevicePushDescriptorPropertiesKHR {
+pub struct PhysicalDevicePushDescriptorProperties {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub max_push_descriptors: u32,
 }
-unsafe impl Send for PhysicalDevicePushDescriptorPropertiesKHR {}
-unsafe impl Sync for PhysicalDevicePushDescriptorPropertiesKHR {}
-impl Default for PhysicalDevicePushDescriptorPropertiesKHR {
+unsafe impl Send for PhysicalDevicePushDescriptorProperties {}
+unsafe impl Sync for PhysicalDevicePushDescriptorProperties {}
+impl Default for PhysicalDevicePushDescriptorProperties {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES,
             p_next: ptr::null_mut(),
             max_push_descriptors: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDevicePushDescriptorPropertiesKHR {
+impl fmt::Debug for PhysicalDevicePushDescriptorProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDevicePushDescriptorPropertiesKHR")
+        fmt.debug_struct("PhysicalDevicePushDescriptorProperties")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("max_push_descriptors", &self.max_push_descriptors)
             .finish()
     }
 }
+pub type PhysicalDevicePushDescriptorPropertiesKHR = PhysicalDevicePushDescriptorProperties;
 #[repr(C)]
 #[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ConformanceVersion {
@@ -24061,34 +24122,35 @@ impl fmt::Debug for PhysicalDeviceMaintenance4Properties {
 pub type PhysicalDeviceMaintenance4PropertiesKHR = PhysicalDeviceMaintenance4Properties;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceMaintenance5FeaturesKHR {
+pub struct PhysicalDeviceMaintenance5Features {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub maintenance5: Bool32,
 }
-unsafe impl Send for PhysicalDeviceMaintenance5FeaturesKHR {}
-unsafe impl Sync for PhysicalDeviceMaintenance5FeaturesKHR {}
-impl Default for PhysicalDeviceMaintenance5FeaturesKHR {
+unsafe impl Send for PhysicalDeviceMaintenance5Features {}
+unsafe impl Sync for PhysicalDeviceMaintenance5Features {}
+impl Default for PhysicalDeviceMaintenance5Features {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES,
             p_next: ptr::null_mut(),
             maintenance5: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceMaintenance5FeaturesKHR {
+impl fmt::Debug for PhysicalDeviceMaintenance5Features {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceMaintenance5FeaturesKHR")
+        fmt.debug_struct("PhysicalDeviceMaintenance5Features")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("maintenance5", &self.maintenance5)
             .finish()
     }
 }
+pub type PhysicalDeviceMaintenance5FeaturesKHR = PhysicalDeviceMaintenance5Features;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceMaintenance5PropertiesKHR {
+pub struct PhysicalDeviceMaintenance5Properties {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub early_fragment_multisample_coverage_after_sample_counting: Bool32,
@@ -24098,12 +24160,12 @@ pub struct PhysicalDeviceMaintenance5PropertiesKHR {
     pub non_strict_single_pixel_wide_lines_use_parallelogram: Bool32,
     pub non_strict_wide_lines_use_parallelogram: Bool32,
 }
-unsafe impl Send for PhysicalDeviceMaintenance5PropertiesKHR {}
-unsafe impl Sync for PhysicalDeviceMaintenance5PropertiesKHR {}
-impl Default for PhysicalDeviceMaintenance5PropertiesKHR {
+unsafe impl Send for PhysicalDeviceMaintenance5Properties {}
+unsafe impl Sync for PhysicalDeviceMaintenance5Properties {}
+impl Default for PhysicalDeviceMaintenance5Properties {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES,
             p_next: ptr::null_mut(),
             early_fragment_multisample_coverage_after_sample_counting: Default::default(),
             early_fragment_sample_mask_test_before_sample_counting: Default::default(),
@@ -24114,9 +24176,9 @@ impl Default for PhysicalDeviceMaintenance5PropertiesKHR {
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceMaintenance5PropertiesKHR {
+impl fmt::Debug for PhysicalDeviceMaintenance5Properties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceMaintenance5PropertiesKHR")
+        fmt.debug_struct("PhysicalDeviceMaintenance5Properties")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field(
@@ -24143,48 +24205,50 @@ impl fmt::Debug for PhysicalDeviceMaintenance5PropertiesKHR {
             .finish()
     }
 }
+pub type PhysicalDeviceMaintenance5PropertiesKHR = PhysicalDeviceMaintenance5Properties;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceMaintenance6FeaturesKHR {
+pub struct PhysicalDeviceMaintenance6Features {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub maintenance6: Bool32,
 }
-unsafe impl Send for PhysicalDeviceMaintenance6FeaturesKHR {}
-unsafe impl Sync for PhysicalDeviceMaintenance6FeaturesKHR {}
-impl Default for PhysicalDeviceMaintenance6FeaturesKHR {
+unsafe impl Send for PhysicalDeviceMaintenance6Features {}
+unsafe impl Sync for PhysicalDeviceMaintenance6Features {}
+impl Default for PhysicalDeviceMaintenance6Features {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES,
             p_next: ptr::null_mut(),
             maintenance6: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceMaintenance6FeaturesKHR {
+impl fmt::Debug for PhysicalDeviceMaintenance6Features {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceMaintenance6FeaturesKHR")
+        fmt.debug_struct("PhysicalDeviceMaintenance6Features")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("maintenance6", &self.maintenance6)
             .finish()
     }
 }
+pub type PhysicalDeviceMaintenance6FeaturesKHR = PhysicalDeviceMaintenance6Features;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceMaintenance6PropertiesKHR {
+pub struct PhysicalDeviceMaintenance6Properties {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub block_texel_view_compatible_multiple_layers: Bool32,
     pub max_combined_image_sampler_descriptor_count: u32,
     pub fragment_shading_rate_clamp_combiner_inputs: Bool32,
 }
-unsafe impl Send for PhysicalDeviceMaintenance6PropertiesKHR {}
-unsafe impl Sync for PhysicalDeviceMaintenance6PropertiesKHR {}
-impl Default for PhysicalDeviceMaintenance6PropertiesKHR {
+unsafe impl Send for PhysicalDeviceMaintenance6Properties {}
+unsafe impl Sync for PhysicalDeviceMaintenance6Properties {}
+impl Default for PhysicalDeviceMaintenance6Properties {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES,
             p_next: ptr::null_mut(),
             block_texel_view_compatible_multiple_layers: Default::default(),
             max_combined_image_sampler_descriptor_count: Default::default(),
@@ -24192,9 +24256,9 @@ impl Default for PhysicalDeviceMaintenance6PropertiesKHR {
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceMaintenance6PropertiesKHR {
+impl fmt::Debug for PhysicalDeviceMaintenance6Properties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceMaintenance6PropertiesKHR")
+        fmt.debug_struct("PhysicalDeviceMaintenance6Properties")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field(
@@ -24212,6 +24276,7 @@ impl fmt::Debug for PhysicalDeviceMaintenance6PropertiesKHR {
             .finish()
     }
 }
+pub type PhysicalDeviceMaintenance6PropertiesKHR = PhysicalDeviceMaintenance6Properties;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceMaintenance7FeaturesKHR {
@@ -24407,7 +24472,7 @@ impl fmt::Debug for PhysicalDeviceLayeredApiVulkanPropertiesKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct RenderingAreaInfoKHR {
+pub struct RenderingAreaInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub view_mask: u32,
@@ -24416,12 +24481,12 @@ pub struct RenderingAreaInfoKHR {
     pub depth_attachment_format: Format,
     pub stencil_attachment_format: Format,
 }
-unsafe impl Send for RenderingAreaInfoKHR {}
-unsafe impl Sync for RenderingAreaInfoKHR {}
-impl Default for RenderingAreaInfoKHR {
+unsafe impl Send for RenderingAreaInfo {}
+unsafe impl Sync for RenderingAreaInfo {}
+impl Default for RenderingAreaInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::RENDERING_AREA_INFO_KHR,
+            s_type: StructureType::RENDERING_AREA_INFO,
             p_next: ptr::null(),
             view_mask: Default::default(),
             color_attachment_count: Default::default(),
@@ -24431,9 +24496,9 @@ impl Default for RenderingAreaInfoKHR {
         }
     }
 }
-impl fmt::Debug for RenderingAreaInfoKHR {
+impl fmt::Debug for RenderingAreaInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("RenderingAreaInfoKHR")
+        fmt.debug_struct("RenderingAreaInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("view_mask", &self.view_mask)
@@ -24444,6 +24509,7 @@ impl fmt::Debug for RenderingAreaInfoKHR {
             .finish()
     }
 }
+pub type RenderingAreaInfoKHR = RenderingAreaInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct DescriptorSetLayoutSupport {
@@ -24735,83 +24801,85 @@ impl fmt::Debug for ShaderStatisticsInfoAMD {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct DeviceQueueGlobalPriorityCreateInfoKHR {
+pub struct DeviceQueueGlobalPriorityCreateInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub global_priority: QueueGlobalPriorityKHR,
+    pub global_priority: QueueGlobalPriority,
 }
-unsafe impl Send for DeviceQueueGlobalPriorityCreateInfoKHR {}
-unsafe impl Sync for DeviceQueueGlobalPriorityCreateInfoKHR {}
-impl Default for DeviceQueueGlobalPriorityCreateInfoKHR {
+unsafe impl Send for DeviceQueueGlobalPriorityCreateInfo {}
+unsafe impl Sync for DeviceQueueGlobalPriorityCreateInfo {}
+impl Default for DeviceQueueGlobalPriorityCreateInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR,
+            s_type: StructureType::DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO,
             p_next: ptr::null(),
             global_priority: Default::default(),
         }
     }
 }
-impl fmt::Debug for DeviceQueueGlobalPriorityCreateInfoKHR {
+impl fmt::Debug for DeviceQueueGlobalPriorityCreateInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("DeviceQueueGlobalPriorityCreateInfoKHR")
+        fmt.debug_struct("DeviceQueueGlobalPriorityCreateInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("global_priority", &self.global_priority)
             .finish()
     }
 }
-pub type DeviceQueueGlobalPriorityCreateInfoEXT = DeviceQueueGlobalPriorityCreateInfoKHR;
+pub type DeviceQueueGlobalPriorityCreateInfoKHR = DeviceQueueGlobalPriorityCreateInfo;
+pub type DeviceQueueGlobalPriorityCreateInfoEXT = DeviceQueueGlobalPriorityCreateInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceGlobalPriorityQueryFeaturesKHR {
+pub struct PhysicalDeviceGlobalPriorityQueryFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub global_priority_query: Bool32,
 }
-unsafe impl Send for PhysicalDeviceGlobalPriorityQueryFeaturesKHR {}
-unsafe impl Sync for PhysicalDeviceGlobalPriorityQueryFeaturesKHR {}
-impl Default for PhysicalDeviceGlobalPriorityQueryFeaturesKHR {
+unsafe impl Send for PhysicalDeviceGlobalPriorityQueryFeatures {}
+unsafe impl Sync for PhysicalDeviceGlobalPriorityQueryFeatures {}
+impl Default for PhysicalDeviceGlobalPriorityQueryFeatures {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES,
             p_next: ptr::null_mut(),
             global_priority_query: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceGlobalPriorityQueryFeaturesKHR {
+impl fmt::Debug for PhysicalDeviceGlobalPriorityQueryFeatures {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceGlobalPriorityQueryFeaturesKHR")
+        fmt.debug_struct("PhysicalDeviceGlobalPriorityQueryFeatures")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("global_priority_query", &self.global_priority_query)
             .finish()
     }
 }
-pub type PhysicalDeviceGlobalPriorityQueryFeaturesEXT = PhysicalDeviceGlobalPriorityQueryFeaturesKHR;
+pub type PhysicalDeviceGlobalPriorityQueryFeaturesKHR = PhysicalDeviceGlobalPriorityQueryFeatures;
+pub type PhysicalDeviceGlobalPriorityQueryFeaturesEXT = PhysicalDeviceGlobalPriorityQueryFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct QueueFamilyGlobalPriorityPropertiesKHR {
+pub struct QueueFamilyGlobalPriorityProperties {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub priority_count: u32,
-    pub priorities: [QueueGlobalPriorityKHR; MAX_GLOBAL_PRIORITY_SIZE_KHR],
+    pub priorities: [QueueGlobalPriority; MAX_GLOBAL_PRIORITY_SIZE],
 }
-unsafe impl Send for QueueFamilyGlobalPriorityPropertiesKHR {}
-unsafe impl Sync for QueueFamilyGlobalPriorityPropertiesKHR {}
-impl Default for QueueFamilyGlobalPriorityPropertiesKHR {
+unsafe impl Send for QueueFamilyGlobalPriorityProperties {}
+unsafe impl Sync for QueueFamilyGlobalPriorityProperties {}
+impl Default for QueueFamilyGlobalPriorityProperties {
     fn default() -> Self {
         Self {
-            s_type: StructureType::QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR,
+            s_type: StructureType::QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES,
             p_next: ptr::null_mut(),
             priority_count: Default::default(),
-            priorities: [Default::default(); MAX_GLOBAL_PRIORITY_SIZE_KHR],
+            priorities: [Default::default(); MAX_GLOBAL_PRIORITY_SIZE],
         }
     }
 }
-impl fmt::Debug for QueueFamilyGlobalPriorityPropertiesKHR {
+impl fmt::Debug for QueueFamilyGlobalPriorityProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("QueueFamilyGlobalPriorityPropertiesKHR")
+        fmt.debug_struct("QueueFamilyGlobalPriorityProperties")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("priority_count", &self.priority_count)
@@ -24819,7 +24887,8 @@ impl fmt::Debug for QueueFamilyGlobalPriorityPropertiesKHR {
             .finish()
     }
 }
-pub type QueueFamilyGlobalPriorityPropertiesEXT = QueueFamilyGlobalPriorityPropertiesKHR;
+pub type QueueFamilyGlobalPriorityPropertiesKHR = QueueFamilyGlobalPriorityProperties;
+pub type QueueFamilyGlobalPriorityPropertiesEXT = QueueFamilyGlobalPriorityProperties;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct DebugUtilsObjectNameInfoEXT {
@@ -26367,42 +26436,43 @@ impl fmt::Debug for SemaphoreSignalInfo {
 pub type SemaphoreSignalInfoKHR = SemaphoreSignalInfo;
 #[repr(C)]
 #[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct VertexInputBindingDivisorDescriptionKHR {
+pub struct VertexInputBindingDivisorDescription {
     pub binding: u32,
     pub divisor: u32,
 }
-impl fmt::Debug for VertexInputBindingDivisorDescriptionKHR {
+impl fmt::Debug for VertexInputBindingDivisorDescription {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("VertexInputBindingDivisorDescriptionKHR")
+        fmt.debug_struct("VertexInputBindingDivisorDescription")
             .field("binding", &self.binding)
             .field("divisor", &self.divisor)
             .finish()
     }
 }
-pub type VertexInputBindingDivisorDescriptionEXT = VertexInputBindingDivisorDescriptionKHR;
+pub type VertexInputBindingDivisorDescriptionKHR = VertexInputBindingDivisorDescription;
+pub type VertexInputBindingDivisorDescriptionEXT = VertexInputBindingDivisorDescription;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PipelineVertexInputDivisorStateCreateInfoKHR {
+pub struct PipelineVertexInputDivisorStateCreateInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub vertex_binding_divisor_count: u32,
-    pub p_vertex_binding_divisors: *const VertexInputBindingDivisorDescriptionKHR,
+    pub p_vertex_binding_divisors: *const VertexInputBindingDivisorDescription,
 }
-unsafe impl Send for PipelineVertexInputDivisorStateCreateInfoKHR {}
-unsafe impl Sync for PipelineVertexInputDivisorStateCreateInfoKHR {}
-impl Default for PipelineVertexInputDivisorStateCreateInfoKHR {
+unsafe impl Send for PipelineVertexInputDivisorStateCreateInfo {}
+unsafe impl Sync for PipelineVertexInputDivisorStateCreateInfo {}
+impl Default for PipelineVertexInputDivisorStateCreateInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_KHR,
+            s_type: StructureType::PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO,
             p_next: ptr::null(),
             vertex_binding_divisor_count: Default::default(),
             p_vertex_binding_divisors: ptr::null(),
         }
     }
 }
-impl fmt::Debug for PipelineVertexInputDivisorStateCreateInfoKHR {
+impl fmt::Debug for PipelineVertexInputDivisorStateCreateInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PipelineVertexInputDivisorStateCreateInfoKHR")
+        fmt.debug_struct("PipelineVertexInputDivisorStateCreateInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("vertex_binding_divisor_count", &self.vertex_binding_divisor_count)
@@ -26410,7 +26480,8 @@ impl fmt::Debug for PipelineVertexInputDivisorStateCreateInfoKHR {
             .finish()
     }
 }
-pub type PipelineVertexInputDivisorStateCreateInfoEXT = PipelineVertexInputDivisorStateCreateInfoKHR;
+pub type PipelineVertexInputDivisorStateCreateInfoKHR = PipelineVertexInputDivisorStateCreateInfo;
+pub type PipelineVertexInputDivisorStateCreateInfoEXT = PipelineVertexInputDivisorStateCreateInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
@@ -26441,28 +26512,28 @@ impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceVertexAttributeDivisorPropertiesKHR {
+pub struct PhysicalDeviceVertexAttributeDivisorProperties {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     /// max value of vertex attribute divisor
     pub max_vertex_attrib_divisor: u32,
     pub supports_non_zero_first_instance: Bool32,
 }
-unsafe impl Send for PhysicalDeviceVertexAttributeDivisorPropertiesKHR {}
-unsafe impl Sync for PhysicalDeviceVertexAttributeDivisorPropertiesKHR {}
-impl Default for PhysicalDeviceVertexAttributeDivisorPropertiesKHR {
+unsafe impl Send for PhysicalDeviceVertexAttributeDivisorProperties {}
+unsafe impl Sync for PhysicalDeviceVertexAttributeDivisorProperties {}
+impl Default for PhysicalDeviceVertexAttributeDivisorProperties {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES,
             p_next: ptr::null_mut(),
             max_vertex_attrib_divisor: Default::default(),
             supports_non_zero_first_instance: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorPropertiesKHR {
+impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceVertexAttributeDivisorPropertiesKHR")
+        fmt.debug_struct("PhysicalDeviceVertexAttributeDivisorProperties")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("max_vertex_attrib_divisor", &self.max_vertex_attrib_divisor)
@@ -26473,6 +26544,7 @@ impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorPropertiesKHR {
             .finish()
     }
 }
+pub type PhysicalDeviceVertexAttributeDivisorPropertiesKHR = PhysicalDeviceVertexAttributeDivisorProperties;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDevicePCIBusInfoPropertiesEXT {
@@ -27031,27 +27103,27 @@ impl fmt::Debug for PhysicalDeviceShaderAtomicFloat2FeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceVertexAttributeDivisorFeaturesKHR {
+pub struct PhysicalDeviceVertexAttributeDivisorFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub vertex_attribute_instance_rate_divisor: Bool32,
     pub vertex_attribute_instance_rate_zero_divisor: Bool32,
 }
-unsafe impl Send for PhysicalDeviceVertexAttributeDivisorFeaturesKHR {}
-unsafe impl Sync for PhysicalDeviceVertexAttributeDivisorFeaturesKHR {}
-impl Default for PhysicalDeviceVertexAttributeDivisorFeaturesKHR {
+unsafe impl Send for PhysicalDeviceVertexAttributeDivisorFeatures {}
+unsafe impl Sync for PhysicalDeviceVertexAttributeDivisorFeatures {}
+impl Default for PhysicalDeviceVertexAttributeDivisorFeatures {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES,
             p_next: ptr::null_mut(),
             vertex_attribute_instance_rate_divisor: Default::default(),
             vertex_attribute_instance_rate_zero_divisor: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorFeaturesKHR {
+impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorFeatures {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceVertexAttributeDivisorFeaturesKHR")
+        fmt.debug_struct("PhysicalDeviceVertexAttributeDivisorFeatures")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field(
@@ -27065,7 +27137,8 @@ impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorFeaturesKHR {
             .finish()
     }
 }
-pub type PhysicalDeviceVertexAttributeDivisorFeaturesEXT = PhysicalDeviceVertexAttributeDivisorFeaturesKHR;
+pub type PhysicalDeviceVertexAttributeDivisorFeaturesKHR = PhysicalDeviceVertexAttributeDivisorFeatures;
+pub type PhysicalDeviceVertexAttributeDivisorFeaturesEXT = PhysicalDeviceVertexAttributeDivisorFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct QueueFamilyCheckpointPropertiesNV {
@@ -31495,32 +31568,33 @@ impl fmt::Debug for PhysicalDeviceShaderClockFeaturesKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceIndexTypeUint8FeaturesKHR {
+pub struct PhysicalDeviceIndexTypeUint8Features {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub index_type_uint8: Bool32,
 }
-unsafe impl Send for PhysicalDeviceIndexTypeUint8FeaturesKHR {}
-unsafe impl Sync for PhysicalDeviceIndexTypeUint8FeaturesKHR {}
-impl Default for PhysicalDeviceIndexTypeUint8FeaturesKHR {
+unsafe impl Send for PhysicalDeviceIndexTypeUint8Features {}
+unsafe impl Sync for PhysicalDeviceIndexTypeUint8Features {}
+impl Default for PhysicalDeviceIndexTypeUint8Features {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES,
             p_next: ptr::null_mut(),
             index_type_uint8: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceIndexTypeUint8FeaturesKHR {
+impl fmt::Debug for PhysicalDeviceIndexTypeUint8Features {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceIndexTypeUint8FeaturesKHR")
+        fmt.debug_struct("PhysicalDeviceIndexTypeUint8Features")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("index_type_uint8", &self.index_type_uint8)
             .finish()
     }
 }
-pub type PhysicalDeviceIndexTypeUint8FeaturesEXT = PhysicalDeviceIndexTypeUint8FeaturesKHR;
+pub type PhysicalDeviceIndexTypeUint8FeaturesKHR = PhysicalDeviceIndexTypeUint8Features;
+pub type PhysicalDeviceIndexTypeUint8FeaturesEXT = PhysicalDeviceIndexTypeUint8Features;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderSMBuiltinsPropertiesNV {
@@ -32322,7 +32396,7 @@ impl fmt::Debug for DeviceMemoryOpaqueCaptureAddressInfo {
 pub type DeviceMemoryOpaqueCaptureAddressInfoKHR = DeviceMemoryOpaqueCaptureAddressInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceLineRasterizationFeaturesKHR {
+pub struct PhysicalDeviceLineRasterizationFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub rectangular_lines: Bool32,
@@ -32332,12 +32406,12 @@ pub struct PhysicalDeviceLineRasterizationFeaturesKHR {
     pub stippled_bresenham_lines: Bool32,
     pub stippled_smooth_lines: Bool32,
 }
-unsafe impl Send for PhysicalDeviceLineRasterizationFeaturesKHR {}
-unsafe impl Sync for PhysicalDeviceLineRasterizationFeaturesKHR {}
-impl Default for PhysicalDeviceLineRasterizationFeaturesKHR {
+unsafe impl Send for PhysicalDeviceLineRasterizationFeatures {}
+unsafe impl Sync for PhysicalDeviceLineRasterizationFeatures {}
+impl Default for PhysicalDeviceLineRasterizationFeatures {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES,
             p_next: ptr::null_mut(),
             rectangular_lines: Default::default(),
             bresenham_lines: Default::default(),
@@ -32348,9 +32422,9 @@ impl Default for PhysicalDeviceLineRasterizationFeaturesKHR {
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceLineRasterizationFeaturesKHR {
+impl fmt::Debug for PhysicalDeviceLineRasterizationFeatures {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceLineRasterizationFeaturesKHR")
+        fmt.debug_struct("PhysicalDeviceLineRasterizationFeatures")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("rectangular_lines", &self.rectangular_lines)
@@ -32362,51 +32436,53 @@ impl fmt::Debug for PhysicalDeviceLineRasterizationFeaturesKHR {
             .finish()
     }
 }
-pub type PhysicalDeviceLineRasterizationFeaturesEXT = PhysicalDeviceLineRasterizationFeaturesKHR;
+pub type PhysicalDeviceLineRasterizationFeaturesKHR = PhysicalDeviceLineRasterizationFeatures;
+pub type PhysicalDeviceLineRasterizationFeaturesEXT = PhysicalDeviceLineRasterizationFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceLineRasterizationPropertiesKHR {
+pub struct PhysicalDeviceLineRasterizationProperties {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub line_sub_pixel_precision_bits: u32,
 }
-unsafe impl Send for PhysicalDeviceLineRasterizationPropertiesKHR {}
-unsafe impl Sync for PhysicalDeviceLineRasterizationPropertiesKHR {}
-impl Default for PhysicalDeviceLineRasterizationPropertiesKHR {
+unsafe impl Send for PhysicalDeviceLineRasterizationProperties {}
+unsafe impl Sync for PhysicalDeviceLineRasterizationProperties {}
+impl Default for PhysicalDeviceLineRasterizationProperties {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES,
             p_next: ptr::null_mut(),
             line_sub_pixel_precision_bits: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceLineRasterizationPropertiesKHR {
+impl fmt::Debug for PhysicalDeviceLineRasterizationProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceLineRasterizationPropertiesKHR")
+        fmt.debug_struct("PhysicalDeviceLineRasterizationProperties")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("line_sub_pixel_precision_bits", &self.line_sub_pixel_precision_bits)
             .finish()
     }
 }
-pub type PhysicalDeviceLineRasterizationPropertiesEXT = PhysicalDeviceLineRasterizationPropertiesKHR;
+pub type PhysicalDeviceLineRasterizationPropertiesKHR = PhysicalDeviceLineRasterizationProperties;
+pub type PhysicalDeviceLineRasterizationPropertiesEXT = PhysicalDeviceLineRasterizationProperties;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PipelineRasterizationLineStateCreateInfoKHR {
+pub struct PipelineRasterizationLineStateCreateInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub line_rasterization_mode: LineRasterizationModeKHR,
+    pub line_rasterization_mode: LineRasterizationMode,
     pub stippled_line_enable: Bool32,
     pub line_stipple_factor: u32,
     pub line_stipple_pattern: u16,
 }
-unsafe impl Send for PipelineRasterizationLineStateCreateInfoKHR {}
-unsafe impl Sync for PipelineRasterizationLineStateCreateInfoKHR {}
-impl Default for PipelineRasterizationLineStateCreateInfoKHR {
+unsafe impl Send for PipelineRasterizationLineStateCreateInfo {}
+unsafe impl Sync for PipelineRasterizationLineStateCreateInfo {}
+impl Default for PipelineRasterizationLineStateCreateInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_KHR,
+            s_type: StructureType::PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO,
             p_next: ptr::null(),
             line_rasterization_mode: Default::default(),
             stippled_line_enable: Default::default(),
@@ -32415,9 +32491,9 @@ impl Default for PipelineRasterizationLineStateCreateInfoKHR {
         }
     }
 }
-impl fmt::Debug for PipelineRasterizationLineStateCreateInfoKHR {
+impl fmt::Debug for PipelineRasterizationLineStateCreateInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PipelineRasterizationLineStateCreateInfoKHR")
+        fmt.debug_struct("PipelineRasterizationLineStateCreateInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("line_rasterization_mode", &self.line_rasterization_mode)
@@ -32427,7 +32503,8 @@ impl fmt::Debug for PipelineRasterizationLineStateCreateInfoKHR {
             .finish()
     }
 }
-pub type PipelineRasterizationLineStateCreateInfoEXT = PipelineRasterizationLineStateCreateInfoKHR;
+pub type PipelineRasterizationLineStateCreateInfoKHR = PipelineRasterizationLineStateCreateInfo;
+pub type PipelineRasterizationLineStateCreateInfoEXT = PipelineRasterizationLineStateCreateInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDevicePipelineCreationCacheControlFeatures {
@@ -33515,6 +33592,247 @@ impl fmt::Debug for PhysicalDeviceVulkan13Properties {
                 &self.uniform_texel_buffer_offset_single_texel_alignment,
             )
             .field("max_buffer_size", &self.max_buffer_size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceVulkan14Features {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub global_priority_query: Bool32,
+    pub shader_subgroup_rotate: Bool32,
+    pub shader_subgroup_rotate_clustered: Bool32,
+    pub shader_float_controls2: Bool32,
+    pub shader_expect_assume: Bool32,
+    pub rectangular_lines: Bool32,
+    pub bresenham_lines: Bool32,
+    pub smooth_lines: Bool32,
+    pub stippled_rectangular_lines: Bool32,
+    pub stippled_bresenham_lines: Bool32,
+    pub stippled_smooth_lines: Bool32,
+    pub vertex_attribute_instance_rate_divisor: Bool32,
+    pub vertex_attribute_instance_rate_zero_divisor: Bool32,
+    pub index_type_uint8: Bool32,
+    pub dynamic_rendering_local_read: Bool32,
+    pub maintenance5: Bool32,
+    pub maintenance6: Bool32,
+    pub pipeline_protected_access: Bool32,
+    pub pipeline_robustness: Bool32,
+    pub host_image_copy: Bool32,
+    pub push_descriptor: Bool32,
+}
+unsafe impl Send for PhysicalDeviceVulkan14Features {}
+unsafe impl Sync for PhysicalDeviceVulkan14Features {}
+impl Default for PhysicalDeviceVulkan14Features {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_VULKAN_1_4_FEATURES,
+            p_next: ptr::null_mut(),
+            global_priority_query: Default::default(),
+            shader_subgroup_rotate: Default::default(),
+            shader_subgroup_rotate_clustered: Default::default(),
+            shader_float_controls2: Default::default(),
+            shader_expect_assume: Default::default(),
+            rectangular_lines: Default::default(),
+            bresenham_lines: Default::default(),
+            smooth_lines: Default::default(),
+            stippled_rectangular_lines: Default::default(),
+            stippled_bresenham_lines: Default::default(),
+            stippled_smooth_lines: Default::default(),
+            vertex_attribute_instance_rate_divisor: Default::default(),
+            vertex_attribute_instance_rate_zero_divisor: Default::default(),
+            index_type_uint8: Default::default(),
+            dynamic_rendering_local_read: Default::default(),
+            maintenance5: Default::default(),
+            maintenance6: Default::default(),
+            pipeline_protected_access: Default::default(),
+            pipeline_robustness: Default::default(),
+            host_image_copy: Default::default(),
+            push_descriptor: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceVulkan14Features {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceVulkan14Features")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("global_priority_query", &self.global_priority_query)
+            .field("shader_subgroup_rotate", &self.shader_subgroup_rotate)
+            .field(
+                "shader_subgroup_rotate_clustered",
+                &self.shader_subgroup_rotate_clustered,
+            )
+            .field("shader_float_controls2", &self.shader_float_controls2)
+            .field("shader_expect_assume", &self.shader_expect_assume)
+            .field("rectangular_lines", &self.rectangular_lines)
+            .field("bresenham_lines", &self.bresenham_lines)
+            .field("smooth_lines", &self.smooth_lines)
+            .field("stippled_rectangular_lines", &self.stippled_rectangular_lines)
+            .field("stippled_bresenham_lines", &self.stippled_bresenham_lines)
+            .field("stippled_smooth_lines", &self.stippled_smooth_lines)
+            .field(
+                "vertex_attribute_instance_rate_divisor",
+                &self.vertex_attribute_instance_rate_divisor,
+            )
+            .field(
+                "vertex_attribute_instance_rate_zero_divisor",
+                &self.vertex_attribute_instance_rate_zero_divisor,
+            )
+            .field("index_type_uint8", &self.index_type_uint8)
+            .field("dynamic_rendering_local_read", &self.dynamic_rendering_local_read)
+            .field("maintenance5", &self.maintenance5)
+            .field("maintenance6", &self.maintenance6)
+            .field("pipeline_protected_access", &self.pipeline_protected_access)
+            .field("pipeline_robustness", &self.pipeline_robustness)
+            .field("host_image_copy", &self.host_image_copy)
+            .field("push_descriptor", &self.push_descriptor)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceVulkan14Properties {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub line_sub_pixel_precision_bits: u32,
+    /// max value of vertex attribute divisor
+    pub max_vertex_attrib_divisor: u32,
+    pub supports_non_zero_first_instance: Bool32,
+    pub max_push_descriptors: u32,
+    pub dynamic_rendering_local_read_depth_stencil_attachments: Bool32,
+    pub dynamic_rendering_local_read_multisampled_attachments: Bool32,
+    pub early_fragment_multisample_coverage_after_sample_counting: Bool32,
+    pub early_fragment_sample_mask_test_before_sample_counting: Bool32,
+    pub depth_stencil_swizzle_one_support: Bool32,
+    pub polygon_mode_point_size: Bool32,
+    pub non_strict_single_pixel_wide_lines_use_parallelogram: Bool32,
+    pub non_strict_wide_lines_use_parallelogram: Bool32,
+    pub block_texel_view_compatible_multiple_layers: Bool32,
+    pub max_combined_image_sampler_descriptor_count: u32,
+    pub fragment_shading_rate_clamp_combiner_inputs: Bool32,
+    pub default_robustness_storage_buffers: PipelineRobustnessBufferBehavior,
+    pub default_robustness_uniform_buffers: PipelineRobustnessBufferBehavior,
+    pub default_robustness_vertex_inputs: PipelineRobustnessBufferBehavior,
+    pub default_robustness_images: PipelineRobustnessImageBehavior,
+    pub copy_src_layout_count: u32,
+    pub p_copy_src_layouts: *mut ImageLayout,
+    pub copy_dst_layout_count: u32,
+    pub p_copy_dst_layouts: *mut ImageLayout,
+    pub optimal_tiling_layout_uuid: [u8; UUID_SIZE],
+    pub identical_memory_type_requirements: Bool32,
+}
+unsafe impl Send for PhysicalDeviceVulkan14Properties {}
+unsafe impl Sync for PhysicalDeviceVulkan14Properties {}
+impl Default for PhysicalDeviceVulkan14Properties {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_VULKAN_1_4_PROPERTIES,
+            p_next: ptr::null_mut(),
+            line_sub_pixel_precision_bits: Default::default(),
+            max_vertex_attrib_divisor: Default::default(),
+            supports_non_zero_first_instance: Default::default(),
+            max_push_descriptors: Default::default(),
+            dynamic_rendering_local_read_depth_stencil_attachments: Default::default(),
+            dynamic_rendering_local_read_multisampled_attachments: Default::default(),
+            early_fragment_multisample_coverage_after_sample_counting: Default::default(),
+            early_fragment_sample_mask_test_before_sample_counting: Default::default(),
+            depth_stencil_swizzle_one_support: Default::default(),
+            polygon_mode_point_size: Default::default(),
+            non_strict_single_pixel_wide_lines_use_parallelogram: Default::default(),
+            non_strict_wide_lines_use_parallelogram: Default::default(),
+            block_texel_view_compatible_multiple_layers: Default::default(),
+            max_combined_image_sampler_descriptor_count: Default::default(),
+            fragment_shading_rate_clamp_combiner_inputs: Default::default(),
+            default_robustness_storage_buffers: Default::default(),
+            default_robustness_uniform_buffers: Default::default(),
+            default_robustness_vertex_inputs: Default::default(),
+            default_robustness_images: Default::default(),
+            copy_src_layout_count: Default::default(),
+            p_copy_src_layouts: ptr::null_mut(),
+            copy_dst_layout_count: Default::default(),
+            p_copy_dst_layouts: ptr::null_mut(),
+            optimal_tiling_layout_uuid: [Default::default(); UUID_SIZE],
+            identical_memory_type_requirements: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceVulkan14Properties {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceVulkan14Properties")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("line_sub_pixel_precision_bits", &self.line_sub_pixel_precision_bits)
+            .field("max_vertex_attrib_divisor", &self.max_vertex_attrib_divisor)
+            .field(
+                "supports_non_zero_first_instance",
+                &self.supports_non_zero_first_instance,
+            )
+            .field("max_push_descriptors", &self.max_push_descriptors)
+            .field(
+                "dynamic_rendering_local_read_depth_stencil_attachments",
+                &self.dynamic_rendering_local_read_depth_stencil_attachments,
+            )
+            .field(
+                "dynamic_rendering_local_read_multisampled_attachments",
+                &self.dynamic_rendering_local_read_multisampled_attachments,
+            )
+            .field(
+                "early_fragment_multisample_coverage_after_sample_counting",
+                &self.early_fragment_multisample_coverage_after_sample_counting,
+            )
+            .field(
+                "early_fragment_sample_mask_test_before_sample_counting",
+                &self.early_fragment_sample_mask_test_before_sample_counting,
+            )
+            .field(
+                "depth_stencil_swizzle_one_support",
+                &self.depth_stencil_swizzle_one_support,
+            )
+            .field("polygon_mode_point_size", &self.polygon_mode_point_size)
+            .field(
+                "non_strict_single_pixel_wide_lines_use_parallelogram",
+                &self.non_strict_single_pixel_wide_lines_use_parallelogram,
+            )
+            .field(
+                "non_strict_wide_lines_use_parallelogram",
+                &self.non_strict_wide_lines_use_parallelogram,
+            )
+            .field(
+                "block_texel_view_compatible_multiple_layers",
+                &self.block_texel_view_compatible_multiple_layers,
+            )
+            .field(
+                "max_combined_image_sampler_descriptor_count",
+                &self.max_combined_image_sampler_descriptor_count,
+            )
+            .field(
+                "fragment_shading_rate_clamp_combiner_inputs",
+                &self.fragment_shading_rate_clamp_combiner_inputs,
+            )
+            .field(
+                "default_robustness_storage_buffers",
+                &self.default_robustness_storage_buffers,
+            )
+            .field(
+                "default_robustness_uniform_buffers",
+                &self.default_robustness_uniform_buffers,
+            )
+            .field(
+                "default_robustness_vertex_inputs",
+                &self.default_robustness_vertex_inputs,
+            )
+            .field("default_robustness_images", &self.default_robustness_images)
+            .field("copy_src_layout_count", &self.copy_src_layout_count)
+            .field("p_copy_src_layouts", &self.p_copy_src_layouts)
+            .field("copy_dst_layout_count", &self.copy_dst_layout_count)
+            .field("p_copy_dst_layouts", &self.p_copy_dst_layouts)
+            .field("optimal_tiling_layout_uuid", &self.optimal_tiling_layout_uuid)
+            .field(
+                "identical_memory_type_requirements",
+                &self.identical_memory_type_requirements,
+            )
             .finish()
     }
 }
@@ -37827,34 +38145,35 @@ impl fmt::Debug for PhysicalDeviceSynchronization2Features {
 pub type PhysicalDeviceSynchronization2FeaturesKHR = PhysicalDeviceSynchronization2Features;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceHostImageCopyFeaturesEXT {
+pub struct PhysicalDeviceHostImageCopyFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub host_image_copy: Bool32,
 }
-unsafe impl Send for PhysicalDeviceHostImageCopyFeaturesEXT {}
-unsafe impl Sync for PhysicalDeviceHostImageCopyFeaturesEXT {}
-impl Default for PhysicalDeviceHostImageCopyFeaturesEXT {
+unsafe impl Send for PhysicalDeviceHostImageCopyFeatures {}
+unsafe impl Sync for PhysicalDeviceHostImageCopyFeatures {}
+impl Default for PhysicalDeviceHostImageCopyFeatures {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES_EXT,
+            s_type: StructureType::PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES,
             p_next: ptr::null_mut(),
             host_image_copy: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceHostImageCopyFeaturesEXT {
+impl fmt::Debug for PhysicalDeviceHostImageCopyFeatures {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceHostImageCopyFeaturesEXT")
+        fmt.debug_struct("PhysicalDeviceHostImageCopyFeatures")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("host_image_copy", &self.host_image_copy)
             .finish()
     }
 }
+pub type PhysicalDeviceHostImageCopyFeaturesEXT = PhysicalDeviceHostImageCopyFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceHostImageCopyPropertiesEXT {
+pub struct PhysicalDeviceHostImageCopyProperties {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub copy_src_layout_count: u32,
@@ -37864,12 +38183,12 @@ pub struct PhysicalDeviceHostImageCopyPropertiesEXT {
     pub optimal_tiling_layout_uuid: [u8; UUID_SIZE],
     pub identical_memory_type_requirements: Bool32,
 }
-unsafe impl Send for PhysicalDeviceHostImageCopyPropertiesEXT {}
-unsafe impl Sync for PhysicalDeviceHostImageCopyPropertiesEXT {}
-impl Default for PhysicalDeviceHostImageCopyPropertiesEXT {
+unsafe impl Send for PhysicalDeviceHostImageCopyProperties {}
+unsafe impl Sync for PhysicalDeviceHostImageCopyProperties {}
+impl Default for PhysicalDeviceHostImageCopyProperties {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES_EXT,
+            s_type: StructureType::PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES,
             p_next: ptr::null_mut(),
             copy_src_layout_count: Default::default(),
             p_copy_src_layouts: ptr::null_mut(),
@@ -37880,9 +38199,9 @@ impl Default for PhysicalDeviceHostImageCopyPropertiesEXT {
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceHostImageCopyPropertiesEXT {
+impl fmt::Debug for PhysicalDeviceHostImageCopyProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceHostImageCopyPropertiesEXT")
+        fmt.debug_struct("PhysicalDeviceHostImageCopyProperties")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("copy_src_layout_count", &self.copy_src_layout_count)
@@ -37897,9 +38216,10 @@ impl fmt::Debug for PhysicalDeviceHostImageCopyPropertiesEXT {
             .finish()
     }
 }
+pub type PhysicalDeviceHostImageCopyPropertiesEXT = PhysicalDeviceHostImageCopyProperties;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct MemoryToImageCopyEXT {
+pub struct MemoryToImageCopy {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub p_host_pointer: *const c_void,
@@ -37910,12 +38230,12 @@ pub struct MemoryToImageCopyEXT {
     pub image_offset: Offset3D,
     pub image_extent: Extent3D,
 }
-unsafe impl Send for MemoryToImageCopyEXT {}
-unsafe impl Sync for MemoryToImageCopyEXT {}
-impl Default for MemoryToImageCopyEXT {
+unsafe impl Send for MemoryToImageCopy {}
+unsafe impl Sync for MemoryToImageCopy {}
+impl Default for MemoryToImageCopy {
     fn default() -> Self {
         Self {
-            s_type: StructureType::MEMORY_TO_IMAGE_COPY_EXT,
+            s_type: StructureType::MEMORY_TO_IMAGE_COPY,
             p_next: ptr::null(),
             p_host_pointer: ptr::null(),
             memory_row_length: Default::default(),
@@ -37926,9 +38246,9 @@ impl Default for MemoryToImageCopyEXT {
         }
     }
 }
-impl fmt::Debug for MemoryToImageCopyEXT {
+impl fmt::Debug for MemoryToImageCopy {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("MemoryToImageCopyEXT")
+        fmt.debug_struct("MemoryToImageCopy")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("p_host_pointer", &self.p_host_pointer)
@@ -37940,9 +38260,10 @@ impl fmt::Debug for MemoryToImageCopyEXT {
             .finish()
     }
 }
+pub type MemoryToImageCopyEXT = MemoryToImageCopy;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ImageToMemoryCopyEXT {
+pub struct ImageToMemoryCopy {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub p_host_pointer: *mut c_void,
@@ -37953,12 +38274,12 @@ pub struct ImageToMemoryCopyEXT {
     pub image_offset: Offset3D,
     pub image_extent: Extent3D,
 }
-unsafe impl Send for ImageToMemoryCopyEXT {}
-unsafe impl Sync for ImageToMemoryCopyEXT {}
-impl Default for ImageToMemoryCopyEXT {
+unsafe impl Send for ImageToMemoryCopy {}
+unsafe impl Sync for ImageToMemoryCopy {}
+impl Default for ImageToMemoryCopy {
     fn default() -> Self {
         Self {
-            s_type: StructureType::IMAGE_TO_MEMORY_COPY_EXT,
+            s_type: StructureType::IMAGE_TO_MEMORY_COPY,
             p_next: ptr::null(),
             p_host_pointer: ptr::null_mut(),
             memory_row_length: Default::default(),
@@ -37969,9 +38290,9 @@ impl Default for ImageToMemoryCopyEXT {
         }
     }
 }
-impl fmt::Debug for ImageToMemoryCopyEXT {
+impl fmt::Debug for ImageToMemoryCopy {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("ImageToMemoryCopyEXT")
+        fmt.debug_struct("ImageToMemoryCopy")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("p_host_pointer", &self.p_host_pointer)
@@ -37983,23 +38304,24 @@ impl fmt::Debug for ImageToMemoryCopyEXT {
             .finish()
     }
 }
+pub type ImageToMemoryCopyEXT = ImageToMemoryCopy;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct CopyMemoryToImageInfoEXT {
+pub struct CopyMemoryToImageInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub flags: HostImageCopyFlagsEXT,
+    pub flags: HostImageCopyFlags,
     pub dst_image: Option<Image>,
     pub dst_image_layout: ImageLayout,
     pub region_count: u32,
-    pub p_regions: *const MemoryToImageCopyEXT,
+    pub p_regions: *const MemoryToImageCopy,
 }
-unsafe impl Send for CopyMemoryToImageInfoEXT {}
-unsafe impl Sync for CopyMemoryToImageInfoEXT {}
-impl Default for CopyMemoryToImageInfoEXT {
+unsafe impl Send for CopyMemoryToImageInfo {}
+unsafe impl Sync for CopyMemoryToImageInfo {}
+impl Default for CopyMemoryToImageInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::COPY_MEMORY_TO_IMAGE_INFO_EXT,
+            s_type: StructureType::COPY_MEMORY_TO_IMAGE_INFO,
             p_next: ptr::null(),
             flags: Default::default(),
             dst_image: Default::default(),
@@ -38009,9 +38331,9 @@ impl Default for CopyMemoryToImageInfoEXT {
         }
     }
 }
-impl fmt::Debug for CopyMemoryToImageInfoEXT {
+impl fmt::Debug for CopyMemoryToImageInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("CopyMemoryToImageInfoEXT")
+        fmt.debug_struct("CopyMemoryToImageInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
@@ -38022,23 +38344,24 @@ impl fmt::Debug for CopyMemoryToImageInfoEXT {
             .finish()
     }
 }
+pub type CopyMemoryToImageInfoEXT = CopyMemoryToImageInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct CopyImageToMemoryInfoEXT {
+pub struct CopyImageToMemoryInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub flags: HostImageCopyFlagsEXT,
+    pub flags: HostImageCopyFlags,
     pub src_image: Option<Image>,
     pub src_image_layout: ImageLayout,
     pub region_count: u32,
-    pub p_regions: *const ImageToMemoryCopyEXT,
+    pub p_regions: *const ImageToMemoryCopy,
 }
-unsafe impl Send for CopyImageToMemoryInfoEXT {}
-unsafe impl Sync for CopyImageToMemoryInfoEXT {}
-impl Default for CopyImageToMemoryInfoEXT {
+unsafe impl Send for CopyImageToMemoryInfo {}
+unsafe impl Sync for CopyImageToMemoryInfo {}
+impl Default for CopyImageToMemoryInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::COPY_IMAGE_TO_MEMORY_INFO_EXT,
+            s_type: StructureType::COPY_IMAGE_TO_MEMORY_INFO,
             p_next: ptr::null(),
             flags: Default::default(),
             src_image: Default::default(),
@@ -38048,9 +38371,9 @@ impl Default for CopyImageToMemoryInfoEXT {
         }
     }
 }
-impl fmt::Debug for CopyImageToMemoryInfoEXT {
+impl fmt::Debug for CopyImageToMemoryInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("CopyImageToMemoryInfoEXT")
+        fmt.debug_struct("CopyImageToMemoryInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
@@ -38061,12 +38384,13 @@ impl fmt::Debug for CopyImageToMemoryInfoEXT {
             .finish()
     }
 }
+pub type CopyImageToMemoryInfoEXT = CopyImageToMemoryInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct CopyImageToImageInfoEXT {
+pub struct CopyImageToImageInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub flags: HostImageCopyFlagsEXT,
+    pub flags: HostImageCopyFlags,
     pub src_image: Option<Image>,
     pub src_image_layout: ImageLayout,
     pub dst_image: Option<Image>,
@@ -38074,12 +38398,12 @@ pub struct CopyImageToImageInfoEXT {
     pub region_count: u32,
     pub p_regions: *const ImageCopy2,
 }
-unsafe impl Send for CopyImageToImageInfoEXT {}
-unsafe impl Sync for CopyImageToImageInfoEXT {}
-impl Default for CopyImageToImageInfoEXT {
+unsafe impl Send for CopyImageToImageInfo {}
+unsafe impl Sync for CopyImageToImageInfo {}
+impl Default for CopyImageToImageInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::COPY_IMAGE_TO_IMAGE_INFO_EXT,
+            s_type: StructureType::COPY_IMAGE_TO_IMAGE_INFO,
             p_next: ptr::null(),
             flags: Default::default(),
             src_image: Default::default(),
@@ -38091,9 +38415,9 @@ impl Default for CopyImageToImageInfoEXT {
         }
     }
 }
-impl fmt::Debug for CopyImageToImageInfoEXT {
+impl fmt::Debug for CopyImageToImageInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("CopyImageToImageInfoEXT")
+        fmt.debug_struct("CopyImageToImageInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
@@ -38106,9 +38430,10 @@ impl fmt::Debug for CopyImageToImageInfoEXT {
             .finish()
     }
 }
+pub type CopyImageToImageInfoEXT = CopyImageToImageInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct HostImageLayoutTransitionInfoEXT {
+pub struct HostImageLayoutTransitionInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub image: Option<Image>,
@@ -38116,12 +38441,12 @@ pub struct HostImageLayoutTransitionInfoEXT {
     pub new_layout: ImageLayout,
     pub subresource_range: ImageSubresourceRange,
 }
-unsafe impl Send for HostImageLayoutTransitionInfoEXT {}
-unsafe impl Sync for HostImageLayoutTransitionInfoEXT {}
-impl Default for HostImageLayoutTransitionInfoEXT {
+unsafe impl Send for HostImageLayoutTransitionInfo {}
+unsafe impl Sync for HostImageLayoutTransitionInfo {}
+impl Default for HostImageLayoutTransitionInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::HOST_IMAGE_LAYOUT_TRANSITION_INFO_EXT,
+            s_type: StructureType::HOST_IMAGE_LAYOUT_TRANSITION_INFO,
             p_next: ptr::null(),
             image: Default::default(),
             old_layout: Default::default(),
@@ -38130,9 +38455,9 @@ impl Default for HostImageLayoutTransitionInfoEXT {
         }
     }
 }
-impl fmt::Debug for HostImageLayoutTransitionInfoEXT {
+impl fmt::Debug for HostImageLayoutTransitionInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("HostImageLayoutTransitionInfoEXT")
+        fmt.debug_struct("HostImageLayoutTransitionInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("image", &self.image)
@@ -38142,37 +38467,39 @@ impl fmt::Debug for HostImageLayoutTransitionInfoEXT {
             .finish()
     }
 }
+pub type HostImageLayoutTransitionInfoEXT = HostImageLayoutTransitionInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct SubresourceHostMemcpySizeEXT {
+pub struct SubresourceHostMemcpySize {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     /// Specified in bytes
     pub size: DeviceSize,
 }
-unsafe impl Send for SubresourceHostMemcpySizeEXT {}
-unsafe impl Sync for SubresourceHostMemcpySizeEXT {}
-impl Default for SubresourceHostMemcpySizeEXT {
+unsafe impl Send for SubresourceHostMemcpySize {}
+unsafe impl Sync for SubresourceHostMemcpySize {}
+impl Default for SubresourceHostMemcpySize {
     fn default() -> Self {
         Self {
-            s_type: StructureType::SUBRESOURCE_HOST_MEMCPY_SIZE_EXT,
+            s_type: StructureType::SUBRESOURCE_HOST_MEMCPY_SIZE,
             p_next: ptr::null_mut(),
             size: Default::default(),
         }
     }
 }
-impl fmt::Debug for SubresourceHostMemcpySizeEXT {
+impl fmt::Debug for SubresourceHostMemcpySize {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SubresourceHostMemcpySizeEXT")
+        fmt.debug_struct("SubresourceHostMemcpySize")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("size", &self.size)
             .finish()
     }
 }
+pub type SubresourceHostMemcpySizeEXT = SubresourceHostMemcpySize;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct HostImageCopyDevicePerformanceQueryEXT {
+pub struct HostImageCopyDevicePerformanceQuery {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     /// Specifies if device access is optimal
@@ -38180,21 +38507,21 @@ pub struct HostImageCopyDevicePerformanceQueryEXT {
     /// Specifies if memory layout is identical
     pub identical_memory_layout: Bool32,
 }
-unsafe impl Send for HostImageCopyDevicePerformanceQueryEXT {}
-unsafe impl Sync for HostImageCopyDevicePerformanceQueryEXT {}
-impl Default for HostImageCopyDevicePerformanceQueryEXT {
+unsafe impl Send for HostImageCopyDevicePerformanceQuery {}
+unsafe impl Sync for HostImageCopyDevicePerformanceQuery {}
+impl Default for HostImageCopyDevicePerformanceQuery {
     fn default() -> Self {
         Self {
-            s_type: StructureType::HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY_EXT,
+            s_type: StructureType::HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY,
             p_next: ptr::null_mut(),
             optimal_device_access: Default::default(),
             identical_memory_layout: Default::default(),
         }
     }
 }
-impl fmt::Debug for HostImageCopyDevicePerformanceQueryEXT {
+impl fmt::Debug for HostImageCopyDevicePerformanceQuery {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("HostImageCopyDevicePerformanceQueryEXT")
+        fmt.debug_struct("HostImageCopyDevicePerformanceQuery")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("optimal_device_access", &self.optimal_device_access)
@@ -38202,6 +38529,7 @@ impl fmt::Debug for HostImageCopyDevicePerformanceQueryEXT {
             .finish()
     }
 }
+pub type HostImageCopyDevicePerformanceQueryEXT = HostImageCopyDevicePerformanceQuery;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {
@@ -38360,31 +38688,32 @@ impl fmt::Debug for MultisampledRenderToSingleSampledInfoEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDevicePipelineProtectedAccessFeaturesEXT {
+pub struct PhysicalDevicePipelineProtectedAccessFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub pipeline_protected_access: Bool32,
 }
-unsafe impl Send for PhysicalDevicePipelineProtectedAccessFeaturesEXT {}
-unsafe impl Sync for PhysicalDevicePipelineProtectedAccessFeaturesEXT {}
-impl Default for PhysicalDevicePipelineProtectedAccessFeaturesEXT {
+unsafe impl Send for PhysicalDevicePipelineProtectedAccessFeatures {}
+unsafe impl Sync for PhysicalDevicePipelineProtectedAccessFeatures {}
+impl Default for PhysicalDevicePipelineProtectedAccessFeatures {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT,
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES,
             p_next: ptr::null_mut(),
             pipeline_protected_access: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDevicePipelineProtectedAccessFeaturesEXT {
+impl fmt::Debug for PhysicalDevicePipelineProtectedAccessFeatures {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDevicePipelineProtectedAccessFeaturesEXT")
+        fmt.debug_struct("PhysicalDevicePipelineProtectedAccessFeatures")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("pipeline_protected_access", &self.pipeline_protected_access)
             .finish()
     }
 }
+pub type PhysicalDevicePipelineProtectedAccessFeaturesEXT = PhysicalDevicePipelineProtectedAccessFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceInheritedViewportScissorFeaturesNV {
@@ -41667,60 +41996,62 @@ impl fmt::Debug for PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ImageSubresource2KHR {
+pub struct ImageSubresource2 {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub image_subresource: ImageSubresource,
 }
-unsafe impl Send for ImageSubresource2KHR {}
-unsafe impl Sync for ImageSubresource2KHR {}
-impl Default for ImageSubresource2KHR {
+unsafe impl Send for ImageSubresource2 {}
+unsafe impl Sync for ImageSubresource2 {}
+impl Default for ImageSubresource2 {
     fn default() -> Self {
         Self {
-            s_type: StructureType::IMAGE_SUBRESOURCE_2_KHR,
+            s_type: StructureType::IMAGE_SUBRESOURCE_2,
             p_next: ptr::null_mut(),
             image_subresource: Default::default(),
         }
     }
 }
-impl fmt::Debug for ImageSubresource2KHR {
+impl fmt::Debug for ImageSubresource2 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("ImageSubresource2KHR")
+        fmt.debug_struct("ImageSubresource2")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("image_subresource", &self.image_subresource)
             .finish()
     }
 }
-pub type ImageSubresource2EXT = ImageSubresource2KHR;
+pub type ImageSubresource2KHR = ImageSubresource2;
+pub type ImageSubresource2EXT = ImageSubresource2;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct SubresourceLayout2KHR {
+pub struct SubresourceLayout2 {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub subresource_layout: SubresourceLayout,
 }
-unsafe impl Send for SubresourceLayout2KHR {}
-unsafe impl Sync for SubresourceLayout2KHR {}
-impl Default for SubresourceLayout2KHR {
+unsafe impl Send for SubresourceLayout2 {}
+unsafe impl Sync for SubresourceLayout2 {}
+impl Default for SubresourceLayout2 {
     fn default() -> Self {
         Self {
-            s_type: StructureType::SUBRESOURCE_LAYOUT_2_KHR,
+            s_type: StructureType::SUBRESOURCE_LAYOUT_2,
             p_next: ptr::null_mut(),
             subresource_layout: Default::default(),
         }
     }
 }
-impl fmt::Debug for SubresourceLayout2KHR {
+impl fmt::Debug for SubresourceLayout2 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SubresourceLayout2KHR")
+        fmt.debug_struct("SubresourceLayout2")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("subresource_layout", &self.subresource_layout)
             .finish()
     }
 }
-pub type SubresourceLayout2EXT = SubresourceLayout2KHR;
+pub type SubresourceLayout2KHR = SubresourceLayout2;
+pub type SubresourceLayout2EXT = SubresourceLayout2;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct RenderPassCreationControlEXT {
@@ -42911,47 +43242,48 @@ impl fmt::Debug for PhysicalDeviceNonSeamlessCubeMapFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDevicePipelineRobustnessFeaturesEXT {
+pub struct PhysicalDevicePipelineRobustnessFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub pipeline_robustness: Bool32,
 }
-unsafe impl Send for PhysicalDevicePipelineRobustnessFeaturesEXT {}
-unsafe impl Sync for PhysicalDevicePipelineRobustnessFeaturesEXT {}
-impl Default for PhysicalDevicePipelineRobustnessFeaturesEXT {
+unsafe impl Send for PhysicalDevicePipelineRobustnessFeatures {}
+unsafe impl Sync for PhysicalDevicePipelineRobustnessFeatures {}
+impl Default for PhysicalDevicePipelineRobustnessFeatures {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES_EXT,
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES,
             p_next: ptr::null_mut(),
             pipeline_robustness: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDevicePipelineRobustnessFeaturesEXT {
+impl fmt::Debug for PhysicalDevicePipelineRobustnessFeatures {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDevicePipelineRobustnessFeaturesEXT")
+        fmt.debug_struct("PhysicalDevicePipelineRobustnessFeatures")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("pipeline_robustness", &self.pipeline_robustness)
             .finish()
     }
 }
+pub type PhysicalDevicePipelineRobustnessFeaturesEXT = PhysicalDevicePipelineRobustnessFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PipelineRobustnessCreateInfoEXT {
+pub struct PipelineRobustnessCreateInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub storage_buffers: PipelineRobustnessBufferBehaviorEXT,
-    pub uniform_buffers: PipelineRobustnessBufferBehaviorEXT,
-    pub vertex_inputs: PipelineRobustnessBufferBehaviorEXT,
-    pub images: PipelineRobustnessImageBehaviorEXT,
+    pub storage_buffers: PipelineRobustnessBufferBehavior,
+    pub uniform_buffers: PipelineRobustnessBufferBehavior,
+    pub vertex_inputs: PipelineRobustnessBufferBehavior,
+    pub images: PipelineRobustnessImageBehavior,
 }
-unsafe impl Send for PipelineRobustnessCreateInfoEXT {}
-unsafe impl Sync for PipelineRobustnessCreateInfoEXT {}
-impl Default for PipelineRobustnessCreateInfoEXT {
+unsafe impl Send for PipelineRobustnessCreateInfo {}
+unsafe impl Sync for PipelineRobustnessCreateInfo {}
+impl Default for PipelineRobustnessCreateInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PIPELINE_ROBUSTNESS_CREATE_INFO_EXT,
+            s_type: StructureType::PIPELINE_ROBUSTNESS_CREATE_INFO,
             p_next: ptr::null(),
             storage_buffers: Default::default(),
             uniform_buffers: Default::default(),
@@ -42960,9 +43292,9 @@ impl Default for PipelineRobustnessCreateInfoEXT {
         }
     }
 }
-impl fmt::Debug for PipelineRobustnessCreateInfoEXT {
+impl fmt::Debug for PipelineRobustnessCreateInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PipelineRobustnessCreateInfoEXT")
+        fmt.debug_struct("PipelineRobustnessCreateInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("storage_buffers", &self.storage_buffers)
@@ -42972,22 +43304,23 @@ impl fmt::Debug for PipelineRobustnessCreateInfoEXT {
             .finish()
     }
 }
+pub type PipelineRobustnessCreateInfoEXT = PipelineRobustnessCreateInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDevicePipelineRobustnessPropertiesEXT {
+pub struct PhysicalDevicePipelineRobustnessProperties {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
-    pub default_robustness_storage_buffers: PipelineRobustnessBufferBehaviorEXT,
-    pub default_robustness_uniform_buffers: PipelineRobustnessBufferBehaviorEXT,
-    pub default_robustness_vertex_inputs: PipelineRobustnessBufferBehaviorEXT,
-    pub default_robustness_images: PipelineRobustnessImageBehaviorEXT,
+    pub default_robustness_storage_buffers: PipelineRobustnessBufferBehavior,
+    pub default_robustness_uniform_buffers: PipelineRobustnessBufferBehavior,
+    pub default_robustness_vertex_inputs: PipelineRobustnessBufferBehavior,
+    pub default_robustness_images: PipelineRobustnessImageBehavior,
 }
-unsafe impl Send for PhysicalDevicePipelineRobustnessPropertiesEXT {}
-unsafe impl Sync for PhysicalDevicePipelineRobustnessPropertiesEXT {}
-impl Default for PhysicalDevicePipelineRobustnessPropertiesEXT {
+unsafe impl Send for PhysicalDevicePipelineRobustnessProperties {}
+unsafe impl Sync for PhysicalDevicePipelineRobustnessProperties {}
+impl Default for PhysicalDevicePipelineRobustnessProperties {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES_EXT,
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES,
             p_next: ptr::null_mut(),
             default_robustness_storage_buffers: Default::default(),
             default_robustness_uniform_buffers: Default::default(),
@@ -42996,9 +43329,9 @@ impl Default for PhysicalDevicePipelineRobustnessPropertiesEXT {
         }
     }
 }
-impl fmt::Debug for PhysicalDevicePipelineRobustnessPropertiesEXT {
+impl fmt::Debug for PhysicalDevicePipelineRobustnessProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDevicePipelineRobustnessPropertiesEXT")
+        fmt.debug_struct("PhysicalDevicePipelineRobustnessProperties")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field(
@@ -43017,6 +43350,7 @@ impl fmt::Debug for PhysicalDevicePipelineRobustnessPropertiesEXT {
             .finish()
     }
 }
+pub type PhysicalDevicePipelineRobustnessPropertiesEXT = PhysicalDevicePipelineRobustnessProperties;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct ImageViewSampleWeightCreateInfoQCOM {
@@ -44663,27 +44997,27 @@ impl fmt::Debug for PhysicalDeviceRayTracingPositionFetchFeaturesKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct DeviceImageSubresourceInfoKHR {
+pub struct DeviceImageSubresourceInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub p_create_info: *const ImageCreateInfo,
-    pub p_subresource: *const ImageSubresource2KHR,
+    pub p_subresource: *const ImageSubresource2,
 }
-unsafe impl Send for DeviceImageSubresourceInfoKHR {}
-unsafe impl Sync for DeviceImageSubresourceInfoKHR {}
-impl Default for DeviceImageSubresourceInfoKHR {
+unsafe impl Send for DeviceImageSubresourceInfo {}
+unsafe impl Sync for DeviceImageSubresourceInfo {}
+impl Default for DeviceImageSubresourceInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::DEVICE_IMAGE_SUBRESOURCE_INFO_KHR,
+            s_type: StructureType::DEVICE_IMAGE_SUBRESOURCE_INFO,
             p_next: ptr::null(),
             p_create_info: ptr::null(),
             p_subresource: ptr::null(),
         }
     }
 }
-impl fmt::Debug for DeviceImageSubresourceInfoKHR {
+impl fmt::Debug for DeviceImageSubresourceInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("DeviceImageSubresourceInfoKHR")
+        fmt.debug_struct("DeviceImageSubresourceInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("p_create_info", &self.p_create_info)
@@ -44691,6 +45025,7 @@ impl fmt::Debug for DeviceImageSubresourceInfoKHR {
             .finish()
     }
 }
+pub type DeviceImageSubresourceInfoKHR = DeviceImageSubresourceInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderCorePropertiesARM {
@@ -44810,7 +45145,7 @@ impl fmt::Debug for QueryLowLatencySupportNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct MemoryMapInfoKHR {
+pub struct MemoryMapInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub flags: MemoryMapFlags,
@@ -44818,12 +45153,12 @@ pub struct MemoryMapInfoKHR {
     pub offset: DeviceSize,
     pub size: DeviceSize,
 }
-unsafe impl Send for MemoryMapInfoKHR {}
-unsafe impl Sync for MemoryMapInfoKHR {}
-impl Default for MemoryMapInfoKHR {
+unsafe impl Send for MemoryMapInfo {}
+unsafe impl Sync for MemoryMapInfo {}
+impl Default for MemoryMapInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::MEMORY_MAP_INFO_KHR,
+            s_type: StructureType::MEMORY_MAP_INFO,
             p_next: ptr::null(),
             flags: Default::default(),
             memory: Default::default(),
@@ -44832,9 +45167,9 @@ impl Default for MemoryMapInfoKHR {
         }
     }
 }
-impl fmt::Debug for MemoryMapInfoKHR {
+impl fmt::Debug for MemoryMapInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("MemoryMapInfoKHR")
+        fmt.debug_struct("MemoryMapInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
@@ -44844,29 +45179,30 @@ impl fmt::Debug for MemoryMapInfoKHR {
             .finish()
     }
 }
+pub type MemoryMapInfoKHR = MemoryMapInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct MemoryUnmapInfoKHR {
+pub struct MemoryUnmapInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub flags: MemoryUnmapFlagsKHR,
+    pub flags: MemoryUnmapFlags,
     pub memory: Option<DeviceMemory>,
 }
-unsafe impl Send for MemoryUnmapInfoKHR {}
-unsafe impl Sync for MemoryUnmapInfoKHR {}
-impl Default for MemoryUnmapInfoKHR {
+unsafe impl Send for MemoryUnmapInfo {}
+unsafe impl Sync for MemoryUnmapInfo {}
+impl Default for MemoryUnmapInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::MEMORY_UNMAP_INFO_KHR,
+            s_type: StructureType::MEMORY_UNMAP_INFO,
             p_next: ptr::null(),
             flags: Default::default(),
             memory: Default::default(),
         }
     }
 }
-impl fmt::Debug for MemoryUnmapInfoKHR {
+impl fmt::Debug for MemoryUnmapInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("MemoryUnmapInfoKHR")
+        fmt.debug_struct("MemoryUnmapInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
@@ -44874,6 +45210,7 @@ impl fmt::Debug for MemoryUnmapInfoKHR {
             .finish()
     }
 }
+pub type MemoryUnmapInfoKHR = MemoryUnmapInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderObjectFeaturesEXT {
@@ -45513,34 +45850,35 @@ impl fmt::Debug for AntiLagPresentationInfoAMD {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct BindMemoryStatusKHR {
+pub struct BindMemoryStatus {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub p_result: *mut Result,
 }
-unsafe impl Send for BindMemoryStatusKHR {}
-unsafe impl Sync for BindMemoryStatusKHR {}
-impl Default for BindMemoryStatusKHR {
+unsafe impl Send for BindMemoryStatus {}
+unsafe impl Sync for BindMemoryStatus {}
+impl Default for BindMemoryStatus {
     fn default() -> Self {
         Self {
-            s_type: StructureType::BIND_MEMORY_STATUS_KHR,
+            s_type: StructureType::BIND_MEMORY_STATUS,
             p_next: ptr::null(),
             p_result: ptr::null_mut(),
         }
     }
 }
-impl fmt::Debug for BindMemoryStatusKHR {
+impl fmt::Debug for BindMemoryStatus {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("BindMemoryStatusKHR")
+        fmt.debug_struct("BindMemoryStatus")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("p_result", &self.p_result)
             .finish()
     }
 }
+pub type BindMemoryStatusKHR = BindMemoryStatus;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct BindDescriptorSetsInfoKHR {
+pub struct BindDescriptorSetsInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub stage_flags: ShaderStageFlags,
@@ -45551,12 +45889,12 @@ pub struct BindDescriptorSetsInfoKHR {
     pub dynamic_offset_count: u32,
     pub p_dynamic_offsets: *const u32,
 }
-unsafe impl Send for BindDescriptorSetsInfoKHR {}
-unsafe impl Sync for BindDescriptorSetsInfoKHR {}
-impl Default for BindDescriptorSetsInfoKHR {
+unsafe impl Send for BindDescriptorSetsInfo {}
+unsafe impl Sync for BindDescriptorSetsInfo {}
+impl Default for BindDescriptorSetsInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::BIND_DESCRIPTOR_SETS_INFO_KHR,
+            s_type: StructureType::BIND_DESCRIPTOR_SETS_INFO,
             p_next: ptr::null(),
             stage_flags: Default::default(),
             layout: Default::default(),
@@ -45568,9 +45906,9 @@ impl Default for BindDescriptorSetsInfoKHR {
         }
     }
 }
-impl fmt::Debug for BindDescriptorSetsInfoKHR {
+impl fmt::Debug for BindDescriptorSetsInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("BindDescriptorSetsInfoKHR")
+        fmt.debug_struct("BindDescriptorSetsInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("stage_flags", &self.stage_flags)
@@ -45583,9 +45921,10 @@ impl fmt::Debug for BindDescriptorSetsInfoKHR {
             .finish()
     }
 }
+pub type BindDescriptorSetsInfoKHR = BindDescriptorSetsInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PushConstantsInfoKHR {
+pub struct PushConstantsInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub layout: Option<PipelineLayout>,
@@ -45594,12 +45933,12 @@ pub struct PushConstantsInfoKHR {
     pub size: u32,
     pub p_values: *const c_void,
 }
-unsafe impl Send for PushConstantsInfoKHR {}
-unsafe impl Sync for PushConstantsInfoKHR {}
-impl Default for PushConstantsInfoKHR {
+unsafe impl Send for PushConstantsInfo {}
+unsafe impl Sync for PushConstantsInfo {}
+impl Default for PushConstantsInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PUSH_CONSTANTS_INFO_KHR,
+            s_type: StructureType::PUSH_CONSTANTS_INFO,
             p_next: ptr::null(),
             layout: Default::default(),
             stage_flags: Default::default(),
@@ -45609,9 +45948,9 @@ impl Default for PushConstantsInfoKHR {
         }
     }
 }
-impl fmt::Debug for PushConstantsInfoKHR {
+impl fmt::Debug for PushConstantsInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PushConstantsInfoKHR")
+        fmt.debug_struct("PushConstantsInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("layout", &self.layout)
@@ -45622,9 +45961,10 @@ impl fmt::Debug for PushConstantsInfoKHR {
             .finish()
     }
 }
+pub type PushConstantsInfoKHR = PushConstantsInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PushDescriptorSetInfoKHR {
+pub struct PushDescriptorSetInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub stage_flags: ShaderStageFlags,
@@ -45633,12 +45973,12 @@ pub struct PushDescriptorSetInfoKHR {
     pub descriptor_write_count: u32,
     pub p_descriptor_writes: *const WriteDescriptorSet,
 }
-unsafe impl Send for PushDescriptorSetInfoKHR {}
-unsafe impl Sync for PushDescriptorSetInfoKHR {}
-impl Default for PushDescriptorSetInfoKHR {
+unsafe impl Send for PushDescriptorSetInfo {}
+unsafe impl Sync for PushDescriptorSetInfo {}
+impl Default for PushDescriptorSetInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PUSH_DESCRIPTOR_SET_INFO_KHR,
+            s_type: StructureType::PUSH_DESCRIPTOR_SET_INFO,
             p_next: ptr::null(),
             stage_flags: Default::default(),
             layout: Default::default(),
@@ -45648,9 +45988,9 @@ impl Default for PushDescriptorSetInfoKHR {
         }
     }
 }
-impl fmt::Debug for PushDescriptorSetInfoKHR {
+impl fmt::Debug for PushDescriptorSetInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PushDescriptorSetInfoKHR")
+        fmt.debug_struct("PushDescriptorSetInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("stage_flags", &self.stage_flags)
@@ -45661,9 +46001,10 @@ impl fmt::Debug for PushDescriptorSetInfoKHR {
             .finish()
     }
 }
+pub type PushDescriptorSetInfoKHR = PushDescriptorSetInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PushDescriptorSetWithTemplateInfoKHR {
+pub struct PushDescriptorSetWithTemplateInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub descriptor_update_template: Option<DescriptorUpdateTemplate>,
@@ -45671,12 +46012,12 @@ pub struct PushDescriptorSetWithTemplateInfoKHR {
     pub set: u32,
     pub p_data: *const c_void,
 }
-unsafe impl Send for PushDescriptorSetWithTemplateInfoKHR {}
-unsafe impl Sync for PushDescriptorSetWithTemplateInfoKHR {}
-impl Default for PushDescriptorSetWithTemplateInfoKHR {
+unsafe impl Send for PushDescriptorSetWithTemplateInfo {}
+unsafe impl Sync for PushDescriptorSetWithTemplateInfo {}
+impl Default for PushDescriptorSetWithTemplateInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO_KHR,
+            s_type: StructureType::PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO,
             p_next: ptr::null(),
             descriptor_update_template: Default::default(),
             layout: Default::default(),
@@ -45685,9 +46026,9 @@ impl Default for PushDescriptorSetWithTemplateInfoKHR {
         }
     }
 }
-impl fmt::Debug for PushDescriptorSetWithTemplateInfoKHR {
+impl fmt::Debug for PushDescriptorSetWithTemplateInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PushDescriptorSetWithTemplateInfoKHR")
+        fmt.debug_struct("PushDescriptorSetWithTemplateInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("descriptor_update_template", &self.descriptor_update_template)
@@ -45697,6 +46038,7 @@ impl fmt::Debug for PushDescriptorSetWithTemplateInfoKHR {
             .finish()
     }
 }
+pub type PushDescriptorSetWithTemplateInfoKHR = PushDescriptorSetWithTemplateInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct SetDescriptorBufferOffsetsInfoEXT {
@@ -46839,27 +47181,27 @@ impl fmt::Debug for PhysicalDeviceShaderMaximalReconvergenceFeaturesKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceShaderSubgroupRotateFeaturesKHR {
+pub struct PhysicalDeviceShaderSubgroupRotateFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub shader_subgroup_rotate: Bool32,
     pub shader_subgroup_rotate_clustered: Bool32,
 }
-unsafe impl Send for PhysicalDeviceShaderSubgroupRotateFeaturesKHR {}
-unsafe impl Sync for PhysicalDeviceShaderSubgroupRotateFeaturesKHR {}
-impl Default for PhysicalDeviceShaderSubgroupRotateFeaturesKHR {
+unsafe impl Send for PhysicalDeviceShaderSubgroupRotateFeatures {}
+unsafe impl Sync for PhysicalDeviceShaderSubgroupRotateFeatures {}
+impl Default for PhysicalDeviceShaderSubgroupRotateFeatures {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES,
             p_next: ptr::null_mut(),
             shader_subgroup_rotate: Default::default(),
             shader_subgroup_rotate_clustered: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceShaderSubgroupRotateFeaturesKHR {
+impl fmt::Debug for PhysicalDeviceShaderSubgroupRotateFeatures {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceShaderSubgroupRotateFeaturesKHR")
+        fmt.debug_struct("PhysicalDeviceShaderSubgroupRotateFeatures")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_subgroup_rotate", &self.shader_subgroup_rotate)
@@ -46870,110 +47212,114 @@ impl fmt::Debug for PhysicalDeviceShaderSubgroupRotateFeaturesKHR {
             .finish()
     }
 }
+pub type PhysicalDeviceShaderSubgroupRotateFeaturesKHR = PhysicalDeviceShaderSubgroupRotateFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceShaderExpectAssumeFeaturesKHR {
+pub struct PhysicalDeviceShaderExpectAssumeFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub shader_expect_assume: Bool32,
 }
-unsafe impl Send for PhysicalDeviceShaderExpectAssumeFeaturesKHR {}
-unsafe impl Sync for PhysicalDeviceShaderExpectAssumeFeaturesKHR {}
-impl Default for PhysicalDeviceShaderExpectAssumeFeaturesKHR {
+unsafe impl Send for PhysicalDeviceShaderExpectAssumeFeatures {}
+unsafe impl Sync for PhysicalDeviceShaderExpectAssumeFeatures {}
+impl Default for PhysicalDeviceShaderExpectAssumeFeatures {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES,
             p_next: ptr::null_mut(),
             shader_expect_assume: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceShaderExpectAssumeFeaturesKHR {
+impl fmt::Debug for PhysicalDeviceShaderExpectAssumeFeatures {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceShaderExpectAssumeFeaturesKHR")
+        fmt.debug_struct("PhysicalDeviceShaderExpectAssumeFeatures")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_expect_assume", &self.shader_expect_assume)
             .finish()
     }
 }
+pub type PhysicalDeviceShaderExpectAssumeFeaturesKHR = PhysicalDeviceShaderExpectAssumeFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceShaderFloatControls2FeaturesKHR {
+pub struct PhysicalDeviceShaderFloatControls2Features {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub shader_float_controls2: Bool32,
 }
-unsafe impl Send for PhysicalDeviceShaderFloatControls2FeaturesKHR {}
-unsafe impl Sync for PhysicalDeviceShaderFloatControls2FeaturesKHR {}
-impl Default for PhysicalDeviceShaderFloatControls2FeaturesKHR {
+unsafe impl Send for PhysicalDeviceShaderFloatControls2Features {}
+unsafe impl Sync for PhysicalDeviceShaderFloatControls2Features {}
+impl Default for PhysicalDeviceShaderFloatControls2Features {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES,
             p_next: ptr::null_mut(),
             shader_float_controls2: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceShaderFloatControls2FeaturesKHR {
+impl fmt::Debug for PhysicalDeviceShaderFloatControls2Features {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceShaderFloatControls2FeaturesKHR")
+        fmt.debug_struct("PhysicalDeviceShaderFloatControls2Features")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_float_controls2", &self.shader_float_controls2)
             .finish()
     }
 }
+pub type PhysicalDeviceShaderFloatControls2FeaturesKHR = PhysicalDeviceShaderFloatControls2Features;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceDynamicRenderingLocalReadFeaturesKHR {
+pub struct PhysicalDeviceDynamicRenderingLocalReadFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub dynamic_rendering_local_read: Bool32,
 }
-unsafe impl Send for PhysicalDeviceDynamicRenderingLocalReadFeaturesKHR {}
-unsafe impl Sync for PhysicalDeviceDynamicRenderingLocalReadFeaturesKHR {}
-impl Default for PhysicalDeviceDynamicRenderingLocalReadFeaturesKHR {
+unsafe impl Send for PhysicalDeviceDynamicRenderingLocalReadFeatures {}
+unsafe impl Sync for PhysicalDeviceDynamicRenderingLocalReadFeatures {}
+impl Default for PhysicalDeviceDynamicRenderingLocalReadFeatures {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES,
             p_next: ptr::null_mut(),
             dynamic_rendering_local_read: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceDynamicRenderingLocalReadFeaturesKHR {
+impl fmt::Debug for PhysicalDeviceDynamicRenderingLocalReadFeatures {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceDynamicRenderingLocalReadFeaturesKHR")
+        fmt.debug_struct("PhysicalDeviceDynamicRenderingLocalReadFeatures")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("dynamic_rendering_local_read", &self.dynamic_rendering_local_read)
             .finish()
     }
 }
+pub type PhysicalDeviceDynamicRenderingLocalReadFeaturesKHR = PhysicalDeviceDynamicRenderingLocalReadFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct RenderingAttachmentLocationInfoKHR {
+pub struct RenderingAttachmentLocationInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub color_attachment_count: u32,
     pub p_color_attachment_locations: *const u32,
 }
-unsafe impl Send for RenderingAttachmentLocationInfoKHR {}
-unsafe impl Sync for RenderingAttachmentLocationInfoKHR {}
-impl Default for RenderingAttachmentLocationInfoKHR {
+unsafe impl Send for RenderingAttachmentLocationInfo {}
+unsafe impl Sync for RenderingAttachmentLocationInfo {}
+impl Default for RenderingAttachmentLocationInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::RENDERING_ATTACHMENT_LOCATION_INFO_KHR,
+            s_type: StructureType::RENDERING_ATTACHMENT_LOCATION_INFO,
             p_next: ptr::null(),
             color_attachment_count: Default::default(),
             p_color_attachment_locations: ptr::null(),
         }
     }
 }
-impl fmt::Debug for RenderingAttachmentLocationInfoKHR {
+impl fmt::Debug for RenderingAttachmentLocationInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("RenderingAttachmentLocationInfoKHR")
+        fmt.debug_struct("RenderingAttachmentLocationInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("color_attachment_count", &self.color_attachment_count)
@@ -46981,9 +47327,10 @@ impl fmt::Debug for RenderingAttachmentLocationInfoKHR {
             .finish()
     }
 }
+pub type RenderingAttachmentLocationInfoKHR = RenderingAttachmentLocationInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct RenderingInputAttachmentIndexInfoKHR {
+pub struct RenderingInputAttachmentIndexInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub color_attachment_count: u32,
@@ -46991,12 +47338,12 @@ pub struct RenderingInputAttachmentIndexInfoKHR {
     pub p_depth_input_attachment_index: *const u32,
     pub p_stencil_input_attachment_index: *const u32,
 }
-unsafe impl Send for RenderingInputAttachmentIndexInfoKHR {}
-unsafe impl Sync for RenderingInputAttachmentIndexInfoKHR {}
-impl Default for RenderingInputAttachmentIndexInfoKHR {
+unsafe impl Send for RenderingInputAttachmentIndexInfo {}
+unsafe impl Sync for RenderingInputAttachmentIndexInfo {}
+impl Default for RenderingInputAttachmentIndexInfo {
     fn default() -> Self {
         Self {
-            s_type: StructureType::RENDERING_INPUT_ATTACHMENT_INDEX_INFO_KHR,
+            s_type: StructureType::RENDERING_INPUT_ATTACHMENT_INDEX_INFO,
             p_next: ptr::null(),
             color_attachment_count: Default::default(),
             p_color_attachment_input_indices: ptr::null(),
@@ -47005,9 +47352,9 @@ impl Default for RenderingInputAttachmentIndexInfoKHR {
         }
     }
 }
-impl fmt::Debug for RenderingInputAttachmentIndexInfoKHR {
+impl fmt::Debug for RenderingInputAttachmentIndexInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("RenderingInputAttachmentIndexInfoKHR")
+        fmt.debug_struct("RenderingInputAttachmentIndexInfo")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("color_attachment_count", &self.color_attachment_count)
@@ -47023,6 +47370,7 @@ impl fmt::Debug for RenderingInputAttachmentIndexInfoKHR {
             .finish()
     }
 }
+pub type RenderingInputAttachmentIndexInfoKHR = RenderingInputAttachmentIndexInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderQuadControlFeaturesKHR {
@@ -48022,9 +48370,9 @@ pub type FnDestroyRenderPass = unsafe extern "system" fn(
 );
 pub type FnGetRenderAreaGranularity =
     unsafe extern "system" fn(device: Option<Device>, render_pass: Option<RenderPass>, p_granularity: *mut Extent2D);
-pub type FnGetRenderingAreaGranularityKHR = unsafe extern "system" fn(
+pub type FnGetRenderingAreaGranularity = unsafe extern "system" fn(
     device: Option<Device>,
-    p_rendering_area_info: *const RenderingAreaInfoKHR,
+    p_rendering_area_info: *const RenderingAreaInfo,
     p_granularity: *mut Extent2D,
 );
 pub type FnCreateCommandPool = unsafe extern "system" fn(
@@ -48711,7 +49059,7 @@ pub type FnGetPhysicalDeviceSparseImageFormatProperties2 = unsafe extern "system
     p_property_count: *mut u32,
     p_properties: *mut SparseImageFormatProperties2,
 );
-pub type FnCmdPushDescriptorSetKHR = unsafe extern "system" fn(
+pub type FnCmdPushDescriptorSet = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     pipeline_bind_point: PipelineBindPoint,
     layout: Option<PipelineLayout>,
@@ -48935,7 +49283,7 @@ pub type FnUpdateDescriptorSetWithTemplate = unsafe extern "system" fn(
     descriptor_update_template: Option<DescriptorUpdateTemplate>,
     p_data: *const c_void,
 );
-pub type FnCmdPushDescriptorSetWithTemplateKHR = unsafe extern "system" fn(
+pub type FnCmdPushDescriptorSetWithTemplate = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     descriptor_update_template: Option<DescriptorUpdateTemplate>,
     layout: Option<PipelineLayout>,
@@ -49651,7 +49999,7 @@ pub type FnGetPipelineExecutableInternalRepresentationsKHR = unsafe extern "syst
     p_internal_representation_count: *mut u32,
     p_internal_representations: *mut PipelineExecutableInternalRepresentationKHR,
 ) -> Result;
-pub type FnCmdSetLineStippleKHR = unsafe extern "system" fn(
+pub type FnCmdSetLineStipple = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     line_stipple_factor: u32,
     line_stipple_pattern: u16,
@@ -49726,7 +50074,7 @@ pub type FnCmdSetViewportWithCount =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, viewport_count: u32, p_viewports: *const Viewport);
 pub type FnCmdSetScissorWithCount =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, scissor_count: u32, p_scissors: *const Rect2D);
-pub type FnCmdBindIndexBuffer2KHR = unsafe extern "system" fn(
+pub type FnCmdBindIndexBuffer2 = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     buffer: Option<Buffer>,
     offset: DeviceSize,
@@ -49978,22 +50326,22 @@ pub type FnGetQueueCheckpointData2NV = unsafe extern "system" fn(
     p_checkpoint_data_count: *mut u32,
     p_checkpoint_data: *mut CheckpointData2NV,
 );
-pub type FnCopyMemoryToImageEXT = unsafe extern "system" fn(
+pub type FnCopyMemoryToImage = unsafe extern "system" fn(
     device: Option<Device>,
-    p_copy_memory_to_image_info: *const CopyMemoryToImageInfoEXT,
+    p_copy_memory_to_image_info: *const CopyMemoryToImageInfo,
 ) -> Result;
-pub type FnCopyImageToMemoryEXT = unsafe extern "system" fn(
+pub type FnCopyImageToMemory = unsafe extern "system" fn(
     device: Option<Device>,
-    p_copy_image_to_memory_info: *const CopyImageToMemoryInfoEXT,
+    p_copy_image_to_memory_info: *const CopyImageToMemoryInfo,
 ) -> Result;
-pub type FnCopyImageToImageEXT = unsafe extern "system" fn(
+pub type FnCopyImageToImage = unsafe extern "system" fn(
     device: Option<Device>,
-    p_copy_image_to_image_info: *const CopyImageToImageInfoEXT,
+    p_copy_image_to_image_info: *const CopyImageToImageInfo,
 ) -> Result;
-pub type FnTransitionImageLayoutEXT = unsafe extern "system" fn(
+pub type FnTransitionImageLayout = unsafe extern "system" fn(
     device: Option<Device>,
     transition_count: u32,
-    p_transitions: *const HostImageLayoutTransitionInfoEXT,
+    p_transitions: *const HostImageLayoutTransitionInfo,
 ) -> Result;
 pub type FnCmdDecompressMemoryNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
@@ -50258,11 +50606,11 @@ pub type FnGetShaderModuleCreateInfoIdentifierEXT = unsafe extern "system" fn(
     p_create_info: *const ShaderModuleCreateInfo,
     p_identifier: *mut ShaderModuleIdentifierEXT,
 );
-pub type FnGetImageSubresourceLayout2KHR = unsafe extern "system" fn(
+pub type FnGetImageSubresourceLayout2 = unsafe extern "system" fn(
     device: Option<Device>,
     image: Option<Image>,
-    p_subresource: *const ImageSubresource2KHR,
-    p_layout: *mut SubresourceLayout2KHR,
+    p_subresource: *const ImageSubresource2,
+    p_layout: *mut SubresourceLayout2,
 );
 pub type FnGetPipelinePropertiesEXT = unsafe extern "system" fn(
     device: Option<Device>,
@@ -50320,18 +50668,18 @@ pub type FnCmdSetDepthBias2EXT =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_depth_bias_info: *const DepthBiasInfoEXT);
 pub type FnReleaseSwapchainImagesEXT =
     unsafe extern "system" fn(device: Option<Device>, p_release_info: *const ReleaseSwapchainImagesInfoEXT) -> Result;
-pub type FnGetDeviceImageSubresourceLayoutKHR = unsafe extern "system" fn(
+pub type FnGetDeviceImageSubresourceLayout = unsafe extern "system" fn(
     device: Option<Device>,
-    p_info: *const DeviceImageSubresourceInfoKHR,
-    p_layout: *mut SubresourceLayout2KHR,
+    p_info: *const DeviceImageSubresourceInfo,
+    p_layout: *mut SubresourceLayout2,
 );
-pub type FnMapMemory2KHR = unsafe extern "system" fn(
+pub type FnMapMemory2 = unsafe extern "system" fn(
     device: Option<Device>,
-    p_memory_map_info: *const MemoryMapInfoKHR,
+    p_memory_map_info: *const MemoryMapInfo,
     pp_data: *mut *mut c_void,
 ) -> Result;
-pub type FnUnmapMemory2KHR =
-    unsafe extern "system" fn(device: Option<Device>, p_memory_unmap_info: *const MemoryUnmapInfoKHR) -> Result;
+pub type FnUnmapMemory2 =
+    unsafe extern "system" fn(device: Option<Device>, p_memory_unmap_info: *const MemoryUnmapInfo) -> Result;
 pub type FnCreateShadersEXT = unsafe extern "system" fn(
     device: Option<Device>,
     create_info_count: u32,
@@ -50404,21 +50752,19 @@ pub type FnCmdDispatchGraphIndirectCountAMDX = unsafe extern "system" fn(
     scratch_size: DeviceSize,
     count_info: DeviceAddress,
 );
-pub type FnCmdBindDescriptorSets2KHR = unsafe extern "system" fn(
+pub type FnCmdBindDescriptorSets2 = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    p_bind_descriptor_sets_info: *const BindDescriptorSetsInfoKHR,
+    p_bind_descriptor_sets_info: *const BindDescriptorSetsInfo,
 );
-pub type FnCmdPushConstants2KHR = unsafe extern "system" fn(
+pub type FnCmdPushConstants2 =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_push_constants_info: *const PushConstantsInfo);
+pub type FnCmdPushDescriptorSet2 = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    p_push_constants_info: *const PushConstantsInfoKHR,
+    p_push_descriptor_set_info: *const PushDescriptorSetInfo,
 );
-pub type FnCmdPushDescriptorSet2KHR = unsafe extern "system" fn(
+pub type FnCmdPushDescriptorSetWithTemplate2 = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    p_push_descriptor_set_info: *const PushDescriptorSetInfoKHR,
-);
-pub type FnCmdPushDescriptorSetWithTemplate2KHR = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_push_descriptor_set_with_template_info: *const PushDescriptorSetWithTemplateInfoKHR,
+    p_push_descriptor_set_with_template_info: *const PushDescriptorSetWithTemplateInfo,
 );
 pub type FnCmdSetDescriptorBufferOffsets2EXT = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
@@ -50450,13 +50796,13 @@ pub type FnGetLatencyTimingsNV = unsafe extern "system" fn(
 );
 pub type FnQueueNotifyOutOfBandNV =
     unsafe extern "system" fn(queue: Option<Queue>, p_queue_type_info: *const OutOfBandQueueTypeInfoNV);
-pub type FnCmdSetRenderingAttachmentLocationsKHR = unsafe extern "system" fn(
+pub type FnCmdSetRenderingAttachmentLocations = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    p_location_info: *const RenderingAttachmentLocationInfoKHR,
+    p_location_info: *const RenderingAttachmentLocationInfo,
 );
-pub type FnCmdSetRenderingInputAttachmentIndicesKHR = unsafe extern "system" fn(
+pub type FnCmdSetRenderingInputAttachmentIndices = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    p_input_attachment_index_info: *const RenderingInputAttachmentIndexInfoKHR,
+    p_input_attachment_index_info: *const RenderingInputAttachmentIndexInfo,
 );
 pub type FnCmdSetDepthClampRangeEXT = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
