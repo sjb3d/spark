@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 301
+//! Generated from vk.xml with `VK_HEADER_VERSION` 302
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -267,6 +267,7 @@ pub struct InstanceExtensions {
     pub google_surfaceless_query: bool,
     pub lunarg_direct_driver_loading: bool,
     pub ext_layer_settings: bool,
+    pub nv_display_stereo: bool,
 }
 impl InstanceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -308,6 +309,7 @@ impl InstanceExtensions {
             b"VK_GOOGLE_surfaceless_query" => self.google_surfaceless_query = true,
             b"VK_LUNARG_direct_driver_loading" => self.lunarg_direct_driver_loading = true,
             b"VK_EXT_layer_settings" => self.ext_layer_settings = true,
+            b"VK_NV_display_stereo" => self.nv_display_stereo = true,
             _ => {}
         }
     }
@@ -351,6 +353,7 @@ impl InstanceExtensions {
             google_surfaceless_query: false,
             lunarg_direct_driver_loading: false,
             ext_layer_settings: false,
+            nv_display_stereo: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -2577,6 +2580,14 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_nv_display_stereo(&self) -> bool {
+        self.nv_display_stereo && self.supports_khr_display() && self.supports_khr_get_display_properties2()
+    }
+    pub fn enable_nv_display_stereo(&mut self) {
+        self.nv_display_stereo = true;
+        self.enable_khr_display();
+        self.enable_khr_get_display_properties2();
+    }
     pub fn supports_ext_device_generated_commands(&self) -> bool {
         self.supports_khr_buffer_device_address() && self.supports_khr_maintenance5()
     }
@@ -2731,6 +2742,9 @@ impl InstanceExtensions {
         }
         if self.ext_layer_settings {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_layer_settings\0") })
+        }
+        if self.nv_display_stereo {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_display_stereo\0") })
         }
         v
     }
@@ -5338,6 +5352,7 @@ pub struct DeviceExtensions {
     pub ext_depth_clamp_control: bool,
     pub huawei_hdr_vivid: bool,
     pub nv_cooperative_matrix2: bool,
+    pub ext_vertex_attribute_robustness: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -5678,6 +5693,7 @@ impl DeviceExtensions {
             b"VK_EXT_depth_clamp_control" => self.ext_depth_clamp_control = true,
             b"VK_HUAWEI_hdr_vivid" => self.huawei_hdr_vivid = true,
             b"VK_NV_cooperative_matrix2" => self.nv_cooperative_matrix2 = true,
+            b"VK_EXT_vertex_attribute_robustness" => self.ext_vertex_attribute_robustness = true,
             _ => {}
         }
     }
@@ -6018,6 +6034,7 @@ impl DeviceExtensions {
             ext_depth_clamp_control: false,
             huawei_hdr_vivid: false,
             nv_cooperative_matrix2: false,
+            ext_vertex_attribute_robustness: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -8597,6 +8614,12 @@ impl DeviceExtensions {
         self.nv_cooperative_matrix2 = true;
         self.enable_khr_cooperative_matrix();
     }
+    pub fn supports_ext_vertex_attribute_robustness(&self) -> bool {
+        self.ext_vertex_attribute_robustness
+    }
+    pub fn enable_ext_vertex_attribute_robustness(&mut self) {
+        self.ext_vertex_attribute_robustness = true;
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -9603,6 +9626,9 @@ impl DeviceExtensions {
         if self.nv_cooperative_matrix2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cooperative_matrix2\0") })
         }
+        if self.ext_vertex_attribute_robustness {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_vertex_attribute_robustness\0") })
+        }
         v
     }
 }
@@ -9912,6 +9938,7 @@ pub struct Device {
     pub fp_get_ray_tracing_shader_group_stack_size_khr: Option<vk::FnGetRayTracingShaderGroupStackSizeKHR>,
     pub fp_cmd_set_ray_tracing_pipeline_stack_size_khr: Option<vk::FnCmdSetRayTracingPipelineStackSizeKHR>,
     pub fp_get_image_view_handle_nvx: Option<vk::FnGetImageViewHandleNVX>,
+    pub fp_get_image_view_handle64_nvx: Option<vk::FnGetImageViewHandle64NVX>,
     pub fp_get_image_view_address_nvx: Option<vk::FnGetImageViewAddressNVX>,
     pub fp_get_physical_device_surface_present_modes2_ext: Option<vk::FnGetPhysicalDeviceSurfacePresentModes2EXT>,
     pub fp_get_device_group_surface_present_modes2_ext: Option<vk::FnGetDeviceGroupSurfacePresentModes2EXT>,
@@ -12464,6 +12491,12 @@ impl Device {
             },
             fp_get_image_view_handle_nvx: if extensions.nvx_image_view_handle {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetImageViewHandleNVX\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_view_handle64_nvx: if extensions.nvx_image_view_handle {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetImageViewHandle64NVX\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -19664,6 +19697,12 @@ impl Device {
         let fp = self
             .fp_get_image_view_handle_nvx
             .expect("vkGetImageViewHandleNVX is not loaded");
+        (fp)(Some(self.handle), p_info)
+    }
+    pub unsafe fn get_image_view_handle64_nvx(&self, p_info: &vk::ImageViewHandleInfoNVX) -> u64 {
+        let fp = self
+            .fp_get_image_view_handle64_nvx
+            .expect("vkGetImageViewHandle64NVX is not loaded");
         (fp)(Some(self.handle), p_info)
     }
     pub unsafe fn get_image_view_address_nvx(

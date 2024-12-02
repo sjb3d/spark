@@ -3070,17 +3070,25 @@ impl Deref for DisplayModeCreateInfoKHRBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::DisplaySurfaceCreateInfoKHR {
-    type Type = DisplaySurfaceCreateInfoKHRBuilder;
+impl<'a> Builder<'a> for vk::DisplaySurfaceCreateInfoKHR {
+    type Type = DisplaySurfaceCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait DisplaySurfaceCreateInfoKHRNext {}
 #[derive(Default)]
-pub struct DisplaySurfaceCreateInfoKHRBuilder {
+pub struct DisplaySurfaceCreateInfoKHRBuilder<'a> {
     inner: vk::DisplaySurfaceCreateInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl DisplaySurfaceCreateInfoKHRBuilder {
+impl<'a> DisplaySurfaceCreateInfoKHRBuilder<'a> {
+    pub fn insert_next<T: DisplaySurfaceCreateInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3118,12 +3126,40 @@ impl DisplaySurfaceCreateInfoKHRBuilder {
         self
     }
 }
-impl Deref for DisplaySurfaceCreateInfoKHRBuilder {
+impl<'a> Deref for DisplaySurfaceCreateInfoKHRBuilder<'a> {
     type Target = vk::DisplaySurfaceCreateInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
+impl Builder<'_> for vk::DisplaySurfaceStereoCreateInfoNV {
+    type Type = DisplaySurfaceStereoCreateInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DisplaySurfaceStereoCreateInfoNVBuilder {
+    inner: vk::DisplaySurfaceStereoCreateInfoNV,
+}
+impl DisplaySurfaceStereoCreateInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stereo_type(mut self, stereo_type: vk::DisplaySurfaceStereoTypeNV) -> Self {
+        self.inner.stereo_type = stereo_type;
+        self
+    }
+}
+impl Deref for DisplaySurfaceStereoCreateInfoNVBuilder {
+    type Target = vk::DisplaySurfaceStereoCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DisplaySurfaceCreateInfoKHRNext for DisplaySurfaceStereoCreateInfoNVBuilder {}
+impl DisplaySurfaceCreateInfoKHRNext for vk::DisplaySurfaceStereoCreateInfoNV {}
 impl Builder<'_> for vk::DisplayPresentInfoKHR {
     type Type = DisplayPresentInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -7319,6 +7355,36 @@ impl<'a> Deref for SurfaceFormat2KHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::DisplayModeProperties2KHR {
+    type Type = DisplayModeProperties2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait DisplayModeProperties2KHRNext {}
+#[derive(Default)]
+pub struct DisplayModeProperties2KHRBuilder<'a> {
+    inner: vk::DisplayModeProperties2KHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> DisplayModeProperties2KHRBuilder<'a> {
+    pub fn insert_next<T: DisplayModeProperties2KHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::DisplayModeProperties2KHR {
+        &mut self.inner
+    }
+}
+impl<'a> Deref for DisplayModeProperties2KHRBuilder<'a> {
+    type Target = vk::DisplayModeProperties2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DisplayModeProperties2KHRNext for vk::DisplayModeStereoPropertiesNV {}
 impl Builder<'_> for vk::DisplayPlaneInfo2KHR {
     type Type = DisplayPlaneInfo2KHRBuilder;
     fn builder() -> Self::Type {
@@ -20145,12 +20211,19 @@ impl<'a> Builder<'a> for vk::CuModuleCreateInfoNVX {
         Default::default()
     }
 }
+pub trait CuModuleCreateInfoNVXNext {}
 #[derive(Default)]
 pub struct CuModuleCreateInfoNVXBuilder<'a> {
     inner: vk::CuModuleCreateInfoNVX,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> CuModuleCreateInfoNVXBuilder<'a> {
+    pub fn insert_next<T: CuModuleCreateInfoNVXNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20167,6 +20240,34 @@ impl<'a> Deref for CuModuleCreateInfoNVXBuilder<'a> {
         &self.inner
     }
 }
+impl Builder<'_> for vk::CuModuleTexturingModeCreateInfoNVX {
+    type Type = CuModuleTexturingModeCreateInfoNVXBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CuModuleTexturingModeCreateInfoNVXBuilder {
+    inner: vk::CuModuleTexturingModeCreateInfoNVX,
+}
+impl CuModuleTexturingModeCreateInfoNVXBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn use64bit_texturing(mut self, use64bit_texturing: bool) -> Self {
+        self.inner.use64bit_texturing = if use64bit_texturing { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for CuModuleTexturingModeCreateInfoNVXBuilder {
+    type Target = vk::CuModuleTexturingModeCreateInfoNVX;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl CuModuleCreateInfoNVXNext for CuModuleTexturingModeCreateInfoNVXBuilder {}
+impl CuModuleCreateInfoNVXNext for vk::CuModuleTexturingModeCreateInfoNVX {}
 impl<'a> Builder<'a> for vk::CuFunctionCreateInfoNVX {
     type Type = CuFunctionCreateInfoNVXBuilder<'a>;
     fn builder() -> Self::Type {
@@ -27640,3 +27741,37 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceHdrVividFeaturesHUAWEIBuilder
 impl DeviceCreateInfoNext for PhysicalDeviceHdrVividFeaturesHUAWEIBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceHdrVividFeaturesHUAWEI {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceHdrVividFeaturesHUAWEI {}
+impl Builder<'_> for vk::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {
+    type Type = PhysicalDeviceVertexAttributeRobustnessFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceVertexAttributeRobustnessFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT,
+}
+impl PhysicalDeviceVertexAttributeRobustnessFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn vertex_attribute_robustness(mut self, vertex_attribute_robustness: bool) -> Self {
+        self.inner.vertex_attribute_robustness = if vertex_attribute_robustness {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceVertexAttributeRobustnessFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceVertexAttributeRobustnessFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceVertexAttributeRobustnessFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {}

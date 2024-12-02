@@ -7091,6 +7091,8 @@ impl StructureType {
     pub const CU_FUNCTION_CREATE_INFO_NVX: Self = Self(1000029001);
     /// Added by extension VK_NVX_binary_import.
     pub const CU_LAUNCH_INFO_NVX: Self = Self(1000029002);
+    /// Added by extension VK_NVX_binary_import.
+    pub const CU_MODULE_TEXTURING_MODE_CREATE_INFO_NVX: Self = Self(1000029004);
     /// Added by extension VK_NVX_image_view_handle.
     pub const IMAGE_VIEW_HANDLE_INFO_NVX: Self = Self(1000030000);
     /// Added by extension VK_NVX_image_view_handle.
@@ -8451,6 +8453,10 @@ impl StructureType {
     pub const BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT: Self = Self(1000545008);
     /// Added by extension VK_NV_descriptor_pool_overallocation.
     pub const PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV: Self = Self(1000546000);
+    /// Added by extension VK_NV_display_stereo.
+    pub const DISPLAY_SURFACE_STEREO_CREATE_INFO_NV: Self = Self(1000551000);
+    /// Added by extension VK_NV_display_stereo.
+    pub const DISPLAY_MODE_STEREO_PROPERTIES_NV: Self = Self(1000551001);
     /// Added by extension VK_NV_raw_access_chains.
     pub const PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV: Self = Self(1000555000);
     /// Added by extension VK_KHR_shader_relaxed_extended_instruction.
@@ -8521,6 +8527,8 @@ impl StructureType {
     pub const COOPERATIVE_MATRIX_FLEXIBLE_DIMENSIONS_PROPERTIES_NV: Self = Self(1000593001);
     /// Added by extension VK_NV_cooperative_matrix2.
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV: Self = Self(1000593002);
+    /// Added by extension VK_EXT_vertex_attribute_robustness.
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000608000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8771,6 +8779,7 @@ impl fmt::Display for StructureType {
             1000029000 => Some(&"CU_MODULE_CREATE_INFO_NVX"),
             1000029001 => Some(&"CU_FUNCTION_CREATE_INFO_NVX"),
             1000029002 => Some(&"CU_LAUNCH_INFO_NVX"),
+            1000029004 => Some(&"CU_MODULE_TEXTURING_MODE_CREATE_INFO_NVX"),
             1000030000 => Some(&"IMAGE_VIEW_HANDLE_INFO_NVX"),
             1000030001 => Some(&"IMAGE_VIEW_ADDRESS_PROPERTIES_NVX"),
             1000041000 => Some(&"TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD"),
@@ -9348,6 +9357,8 @@ impl fmt::Display for StructureType {
             1000545007 => Some(&"SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT"),
             1000545008 => Some(&"BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT"),
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
+            1000551000 => Some(&"DISPLAY_SURFACE_STEREO_CREATE_INFO_NV"),
+            1000551001 => Some(&"DISPLAY_MODE_STEREO_PROPERTIES_NV"),
             1000555000 => Some(&"PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV"),
             1000558000 => Some(&"PHYSICAL_DEVICE_SHADER_RELAXED_EXTENDED_INSTRUCTION_FEATURES_KHR"),
             1000559000 => Some(&"PHYSICAL_DEVICE_COMMAND_BUFFER_INHERITANCE_FEATURES_NV"),
@@ -9383,6 +9394,7 @@ impl fmt::Display for StructureType {
             1000593000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV"),
             1000593001 => Some(&"COOPERATIVE_MATRIX_FLEXIBLE_DIMENSIONS_PROPERTIES_NV"),
             1000593002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV"),
+            1000608000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11292,6 +11304,31 @@ impl fmt::Display for PresentModeKHR {
             1000111000 => Some(&"SHARED_DEMAND_REFRESH"),
             1000111001 => Some(&"SHARED_CONTINUOUS_REFRESH"),
             1000361000 => Some(&"FIFO_LATEST_READY_EXT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DisplaySurfaceStereoTypeNV(pub(crate) i32);
+impl DisplaySurfaceStereoTypeNV {
+    pub const NONE: Self = Self(0);
+    pub const ONBOARD_DIN: Self = Self(1);
+    pub const HDMI_3D: Self = Self(2);
+    pub const INBAND_DISPLAYPORT: Self = Self(3);
+}
+impl fmt::Display for DisplaySurfaceStereoTypeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"NONE"),
+            1 => Some(&"ONBOARD_DIN"),
+            2 => Some(&"HDMI_3D"),
+            3 => Some(&"INBAND_DISPLAYPORT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -17018,6 +17055,34 @@ impl fmt::Debug for DisplaySurfaceCreateInfoKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct DisplaySurfaceStereoCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// The 3D stereo type to use when presenting this surface.
+    pub stereo_type: DisplaySurfaceStereoTypeNV,
+}
+unsafe impl Send for DisplaySurfaceStereoCreateInfoNV {}
+unsafe impl Sync for DisplaySurfaceStereoCreateInfoNV {}
+impl Default for DisplaySurfaceStereoCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DISPLAY_SURFACE_STEREO_CREATE_INFO_NV,
+            p_next: ptr::null(),
+            stereo_type: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DisplaySurfaceStereoCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DisplaySurfaceStereoCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stereo_type", &self.stereo_type)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct DisplayPresentInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -22179,6 +22244,34 @@ impl fmt::Debug for DisplayModeProperties2KHR {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("display_mode_properties", &self.display_mode_properties)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DisplayModeStereoPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Whether this mode supports HDMI 3D stereo rendering.
+    pub hdmi_3d_supported: Bool32,
+}
+unsafe impl Send for DisplayModeStereoPropertiesNV {}
+unsafe impl Sync for DisplayModeStereoPropertiesNV {}
+impl Default for DisplayModeStereoPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DISPLAY_MODE_STEREO_PROPERTIES_NV,
+            p_next: ptr::null(),
+            hdmi_3d_supported: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DisplayModeStereoPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DisplayModeStereoPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("hdmi_3d_supported", &self.hdmi_3d_supported)
             .finish()
     }
 }
@@ -38507,6 +38600,33 @@ impl fmt::Debug for CuModuleCreateInfoNVX {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct CuModuleTexturingModeCreateInfoNVX {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub use64bit_texturing: Bool32,
+}
+unsafe impl Send for CuModuleTexturingModeCreateInfoNVX {}
+unsafe impl Sync for CuModuleTexturingModeCreateInfoNVX {}
+impl Default for CuModuleTexturingModeCreateInfoNVX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CU_MODULE_TEXTURING_MODE_CREATE_INFO_NVX,
+            p_next: ptr::null(),
+            use64bit_texturing: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for CuModuleTexturingModeCreateInfoNVX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CuModuleTexturingModeCreateInfoNVX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("use64bit_texturing", &self.use64bit_texturing)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct CuFunctionCreateInfoNVX {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -47427,6 +47547,33 @@ impl fmt::Debug for PhysicalDeviceHdrVividFeaturesHUAWEI {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub vertex_attribute_robustness: Bool32,
+}
+unsafe impl Send for PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {}
+impl Default for PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            vertex_attribute_robustness: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceVertexAttributeRobustnessFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("vertex_attribute_robustness", &self.vertex_attribute_robustness)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -49396,6 +49543,8 @@ pub type FnCmdSetRayTracingPipelineStackSizeKHR =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, pipeline_stack_size: u32);
 pub type FnGetImageViewHandleNVX =
     unsafe extern "system" fn(device: Option<Device>, p_info: *const ImageViewHandleInfoNVX) -> u32;
+pub type FnGetImageViewHandle64NVX =
+    unsafe extern "system" fn(device: Option<Device>, p_info: *const ImageViewHandleInfoNVX) -> u64;
 pub type FnGetImageViewAddressNVX = unsafe extern "system" fn(
     device: Option<Device>,
     image_view: Option<ImageView>,
