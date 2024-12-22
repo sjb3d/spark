@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 303
+//! Generated from vk.xml with `VK_HEADER_VERSION` 304
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2632,6 +2632,14 @@ impl InstanceExtensions {
     }
     pub fn enable_nv_cooperative_matrix2(&mut self) {
         self.enable_khr_cooperative_matrix();
+    }
+    pub fn supports_ext_vertex_attribute_robustness(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_ext_vertex_attribute_robustness(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -12293,7 +12301,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_draw_mesh_tasks_indirect_count_nv: if extensions.nv_mesh_shader {
+            fp_cmd_draw_mesh_tasks_indirect_count_nv: if extensions.nv_mesh_shader
+                && (extensions.khr_draw_indirect_count || version >= vk::Version::from_raw_parts(1, 2, 0))
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdDrawMeshTasksIndirectCountNV\0",
                 ));
@@ -12313,7 +12323,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_draw_mesh_tasks_indirect_count_ext: if extensions.ext_mesh_shader {
+            fp_cmd_draw_mesh_tasks_indirect_count_ext: if extensions.ext_mesh_shader
+                && (extensions.khr_draw_indirect_count || version >= vk::Version::from_raw_parts(1, 2, 0))
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdDrawMeshTasksIndirectCountEXT\0",
                 ));

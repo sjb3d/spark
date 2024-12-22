@@ -12224,8 +12224,8 @@ impl DriverId {
     pub const IMAGINATION_OPEN_SOURCE_MESA: Self = Self(25);
     /// Mesa open source project
     pub const MESA_HONEYKRISP: Self = Self(26);
-    /// Reserved for undisclosed driver project
-    pub const RESERVED_27: Self = Self(27);
+    /// Vulkan SC Emulation on Vulkan
+    pub const VULKAN_SC_EMULATION_ON_VULKAN: Self = Self(27);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -12268,7 +12268,7 @@ impl fmt::Display for DriverId {
             24 => Some(&"MESA_NVK"),
             25 => Some(&"IMAGINATION_OPEN_SOURCE_MESA"),
             26 => Some(&"MESA_HONEYKRISP"),
-            27 => Some(&"RESERVED_27"),
+            27 => Some(&"VULKAN_SC_EMULATION_ON_VULKAN"),
             _ => None,
         };
         if let Some(name) = name {
