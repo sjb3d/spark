@@ -319,11 +319,20 @@ pub struct PipelineCacheCreateFlags(pub(crate) u32);
 impl PipelineCacheCreateFlags {
     pub const EXTERNALLY_SYNCHRONIZED: Self = Self(0x1);
     pub const EXTERNALLY_SYNCHRONIZED_EXT: Self = Self::EXTERNALLY_SYNCHRONIZED;
+    /// Added by extension VK_KHR_maintenance8.
+    pub const INTERNALLY_SYNCHRONIZED_MERGE_KHR: Self = Self(0x8);
 }
-impl_bitmask!(PipelineCacheCreateFlags, 0x1);
+impl_bitmask!(PipelineCacheCreateFlags, 0x9);
 impl fmt::Display for PipelineCacheCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x1, "EXTERNALLY_SYNCHRONIZED")], f)
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "EXTERNALLY_SYNCHRONIZED"),
+                (0x8, "INTERNALLY_SYNCHRONIZED_MERGE_KHR"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -1955,8 +1964,10 @@ impl DependencyFlags {
     /// Dependency may be a feedback loop
     /// Added by extension VK_EXT_attachment_feedback_loop_layout.
     pub const FEEDBACK_LOOP_EXT: Self = Self(0x8);
+    /// Added by extension VK_KHR_maintenance8.
+    pub const QUEUE_FAMILY_OWNERSHIP_TRANSFER_USE_ALL_STAGES_KHR: Self = Self(0x20);
 }
-impl_bitmask!(DependencyFlags, 0xf);
+impl_bitmask!(DependencyFlags, 0x2f);
 impl fmt::Display for DependencyFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1966,6 +1977,7 @@ impl fmt::Display for DependencyFlags {
                 (0x4, "DEVICE_GROUP"),
                 (0x2, "VIEW_LOCAL"),
                 (0x8, "FEEDBACK_LOOP_EXT"),
+                (0x20, "QUEUE_FAMILY_OWNERSHIP_TRANSFER_USE_ALL_STAGES_KHR"),
             ],
             f,
         )
@@ -2962,12 +2974,14 @@ impl PipelineCreateFlags2 {
     pub const RAY_TRACING_DISPLACEMENT_MICROMAP_NV: Self = Self(0x10000000);
     /// Added by extension VK_KHR_maintenance5.
     pub const DESCRIPTOR_BUFFER_EXT: Self = Self(0x20000000);
+    /// Added by extension VK_ARM_pipeline_opacity_micromap.
+    pub const DISALLOW_OPACITY_MICROMAP_ARM: Self = Self(0x2000000000);
     /// Added by extension VK_KHR_pipeline_binary.
     pub const CAPTURE_DATA_KHR: Self = Self(0x80000000);
     /// Added by extension VK_EXT_device_generated_commands.
     pub const INDIRECT_BINDABLE_EXT: Self = Self(0x4000000000);
 }
-impl_bitmask!(PipelineCreateFlags2, 0x45ffffffff);
+impl_bitmask!(PipelineCreateFlags2, 0x65ffffffff);
 impl fmt::Display for PipelineCreateFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -3006,6 +3020,7 @@ impl fmt::Display for PipelineCreateFlags2 {
                 (0x4000000, "DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT"),
                 (0x10000000, "RAY_TRACING_DISPLACEMENT_MICROMAP_NV"),
                 (0x20000000, "DESCRIPTOR_BUFFER_EXT"),
+                (0x2000000000, "DISALLOW_OPACITY_MICROMAP_ARM"),
                 (0x80000000, "CAPTURE_DATA_KHR"),
                 (0x4000000000, "INDIRECT_BINDABLE_EXT"),
             ],
@@ -4418,6 +4433,18 @@ impl_bitmask!(PhysicalDeviceSchedulingControlsFlagsARM, 0x1);
 impl fmt::Display for PhysicalDeviceSchedulingControlsFlagsARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "SHADER_CORE_COUNT")], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct AccessFlags3KHR(pub(crate) u64);
+impl AccessFlags3KHR {
+    pub const N3_NONE: Self = Self(0x0);
+}
+impl_bitmask!(AccessFlags3KHR, 0x0);
+impl fmt::Display for AccessFlags3KHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -8226,8 +8253,8 @@ impl StructureType {
     pub const DESCRIPTOR_SET_BINDING_REFERENCE_VALVE: Self = Self(1000420001);
     /// Added by extension VK_VALVE_descriptor_set_host_mapping.
     pub const DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE: Self = Self(1000420002);
-    /// Added by extension VK_EXT_depth_clamp_zero_one.
-    pub const PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT: Self = Self(1000421000);
+    pub const PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT: Self =
+        Self::PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR;
     /// Added by extension VK_EXT_non_seamless_cube_map.
     pub const PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT: Self = Self(1000422000);
     /// Added by extension VK_ARM_render_pass_striped.
@@ -8544,6 +8571,10 @@ impl StructureType {
     pub const GENERATED_COMMANDS_PIPELINE_INFO_EXT: Self = Self(1000572013);
     /// Added by extension VK_EXT_device_generated_commands.
     pub const GENERATED_COMMANDS_SHADER_INFO_EXT: Self = Self(1000572014);
+    /// Added by extension VK_KHR_maintenance8.
+    pub const PHYSICAL_DEVICE_MAINTENANCE_8_FEATURES_KHR: Self = Self(1000574000);
+    /// Added by extension VK_KHR_maintenance8.
+    pub const MEMORY_BARRIER_ACCESS_FLAGS_3_KHR: Self = Self(1000574002);
     /// Added by extension VK_MESA_image_alignment_control.
     pub const PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA: Self = Self(1000575000);
     /// Added by extension VK_MESA_image_alignment_control.
@@ -8564,6 +8595,9 @@ impl StructureType {
     pub const COOPERATIVE_MATRIX_FLEXIBLE_DIMENSIONS_PROPERTIES_NV: Self = Self(1000593001);
     /// Added by extension VK_NV_cooperative_matrix2.
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV: Self = Self(1000593002);
+    /// Added by extension VK_ARM_pipeline_opacity_micromap.
+    pub const PHYSICAL_DEVICE_PIPELINE_OPACITY_MICROMAP_FEATURES_ARM: Self = Self(1000596000);
+    pub const PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR: Self = Self(1000421000);
     /// Added by extension VK_EXT_vertex_attribute_robustness.
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000608000);
 }
@@ -9279,7 +9313,6 @@ impl fmt::Display for StructureType {
             1000420000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE"),
             1000420001 => Some(&"DESCRIPTOR_SET_BINDING_REFERENCE_VALVE"),
             1000420002 => Some(&"DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE"),
-            1000421000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT"),
             1000422000 => Some(&"PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT"),
             1000424000 => Some(&"PHYSICAL_DEVICE_RENDER_PASS_STRIPED_FEATURES_ARM"),
             1000424001 => Some(&"PHYSICAL_DEVICE_RENDER_PASS_STRIPED_PROPERTIES_ARM"),
@@ -9423,6 +9456,8 @@ impl fmt::Display for StructureType {
             1000572012 => Some(&"INDIRECT_EXECUTION_SET_SHADER_LAYOUT_INFO_EXT"),
             1000572013 => Some(&"GENERATED_COMMANDS_PIPELINE_INFO_EXT"),
             1000572014 => Some(&"GENERATED_COMMANDS_SHADER_INFO_EXT"),
+            1000574000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_8_FEATURES_KHR"),
+            1000574002 => Some(&"MEMORY_BARRIER_ACCESS_FLAGS_3_KHR"),
             1000575000 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA"),
             1000575001 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA"),
             1000575002 => Some(&"IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA"),
@@ -9433,6 +9468,8 @@ impl fmt::Display for StructureType {
             1000593000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV"),
             1000593001 => Some(&"COOPERATIVE_MATRIX_FLEXIBLE_DIMENSIONS_PROPERTIES_NV"),
             1000593002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV"),
+            1000596000 => Some(&"PHYSICAL_DEVICE_PIPELINE_OPACITY_MICROMAP_FEATURES_ARM"),
+            1000421000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR"),
             1000608000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT"),
             _ => None,
         };
@@ -24472,6 +24509,33 @@ impl fmt::Debug for PhysicalDeviceLayeredApiVulkanPropertiesKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance8FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub maintenance8: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMaintenance8FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance8FeaturesKHR {}
+impl Default for PhysicalDeviceMaintenance8FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_8_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            maintenance8: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance8FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance8FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("maintenance8", &self.maintenance8)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct RenderingAreaInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -37900,6 +37964,36 @@ impl fmt::Debug for BufferMemoryBarrier2 {
 pub type BufferMemoryBarrier2KHR = BufferMemoryBarrier2;
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct MemoryBarrierAccessFlags3KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_access_mask3: AccessFlags3KHR,
+    pub dst_access_mask3: AccessFlags3KHR,
+}
+unsafe impl Send for MemoryBarrierAccessFlags3KHR {}
+unsafe impl Sync for MemoryBarrierAccessFlags3KHR {}
+impl Default for MemoryBarrierAccessFlags3KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_BARRIER_ACCESS_FLAGS_3_KHR,
+            p_next: ptr::null(),
+            src_access_mask3: Default::default(),
+            dst_access_mask3: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryBarrierAccessFlags3KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryBarrierAccessFlags3KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_access_mask3", &self.src_access_mask3)
+            .field("dst_access_mask3", &self.dst_access_mask3)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct DependencyInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -43597,33 +43691,7 @@ impl fmt::Debug for PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {
             .finish()
     }
 }
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct PhysicalDeviceDepthClampZeroOneFeaturesEXT {
-    pub s_type: StructureType,
-    pub p_next: *mut c_void,
-    pub depth_clamp_zero_one: Bool32,
-}
-unsafe impl Send for PhysicalDeviceDepthClampZeroOneFeaturesEXT {}
-unsafe impl Sync for PhysicalDeviceDepthClampZeroOneFeaturesEXT {}
-impl Default for PhysicalDeviceDepthClampZeroOneFeaturesEXT {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT,
-            p_next: ptr::null_mut(),
-            depth_clamp_zero_one: Default::default(),
-        }
-    }
-}
-impl fmt::Debug for PhysicalDeviceDepthClampZeroOneFeaturesEXT {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceDepthClampZeroOneFeaturesEXT")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
-            .field("depth_clamp_zero_one", &self.depth_clamp_zero_one)
-            .finish()
-    }
-}
+pub type PhysicalDeviceDepthClampZeroOneFeaturesEXT = PhysicalDeviceDepthClampZeroOneFeaturesKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceAddressBindingReportFeaturesEXT {
@@ -47154,6 +47222,33 @@ impl fmt::Debug for RenderPassStripeSubmitInfoARM {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDevicePipelineOpacityMicromapFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_opacity_micromap: Bool32,
+}
+unsafe impl Send for PhysicalDevicePipelineOpacityMicromapFeaturesARM {}
+unsafe impl Sync for PhysicalDevicePipelineOpacityMicromapFeaturesARM {}
+impl Default for PhysicalDevicePipelineOpacityMicromapFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_OPACITY_MICROMAP_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            pipeline_opacity_micromap: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePipelineOpacityMicromapFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePipelineOpacityMicromapFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_opacity_micromap", &self.pipeline_opacity_micromap)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderMaximalReconvergenceFeaturesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -47919,6 +48014,33 @@ impl fmt::Debug for PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("vertex_attribute_robustness", &self.vertex_attribute_robustness)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDepthClampZeroOneFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub depth_clamp_zero_one: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDepthClampZeroOneFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceDepthClampZeroOneFeaturesKHR {}
+impl Default for PhysicalDeviceDepthClampZeroOneFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            depth_clamp_zero_one: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDepthClampZeroOneFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDepthClampZeroOneFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("depth_clamp_zero_one", &self.depth_clamp_zero_one)
             .finish()
     }
 }

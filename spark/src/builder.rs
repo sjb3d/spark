@@ -8824,6 +8824,36 @@ impl<'a> Deref for PhysicalDeviceLayeredApiPropertiesKHRBuilder<'a> {
     }
 }
 impl PhysicalDeviceLayeredApiPropertiesKHRNext for vk::PhysicalDeviceLayeredApiVulkanPropertiesKHR {}
+impl Builder<'_> for vk::PhysicalDeviceMaintenance8FeaturesKHR {
+    type Type = PhysicalDeviceMaintenance8FeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMaintenance8FeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceMaintenance8FeaturesKHR,
+}
+impl PhysicalDeviceMaintenance8FeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn maintenance8(mut self, maintenance8: bool) -> Self {
+        self.inner.maintenance8 = if maintenance8 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMaintenance8FeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceMaintenance8FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMaintenance8FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMaintenance8FeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMaintenance8FeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMaintenance8FeaturesKHR {}
 impl<'a> Builder<'a> for vk::RenderingAreaInfo {
     type Type = RenderingAreaInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -19262,17 +19292,25 @@ impl<'a> Deref for PipelineColorWriteCreateInfoEXTBuilder<'a> {
 }
 impl<'a> PipelineColorBlendStateCreateInfoNext for PipelineColorWriteCreateInfoEXTBuilder<'a> {}
 impl PipelineColorBlendStateCreateInfoNext for vk::PipelineColorWriteCreateInfoEXT {}
-impl Builder<'_> for vk::MemoryBarrier2 {
-    type Type = MemoryBarrier2Builder;
+impl<'a> Builder<'a> for vk::MemoryBarrier2 {
+    type Type = MemoryBarrier2Builder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait MemoryBarrier2Next {}
 #[derive(Default)]
-pub struct MemoryBarrier2Builder {
+pub struct MemoryBarrier2Builder<'a> {
     inner: vk::MemoryBarrier2,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl MemoryBarrier2Builder {
+impl<'a> MemoryBarrier2Builder<'a> {
+    pub fn insert_next<T: MemoryBarrier2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19294,13 +19332,13 @@ impl MemoryBarrier2Builder {
         self
     }
 }
-impl Deref for MemoryBarrier2Builder {
+impl<'a> Deref for MemoryBarrier2Builder<'a> {
     type Target = vk::MemoryBarrier2;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl SubpassDependency2Next for MemoryBarrier2Builder {}
+impl<'a> SubpassDependency2Next for MemoryBarrier2Builder<'a> {}
 impl SubpassDependency2Next for vk::MemoryBarrier2 {}
 impl<'a> Builder<'a> for vk::ImageMemoryBarrier2 {
     type Type = ImageMemoryBarrier2Builder<'a>;
@@ -19438,6 +19476,42 @@ impl<'a> Deref for BufferMemoryBarrier2Builder<'a> {
         &self.inner
     }
 }
+impl Builder<'_> for vk::MemoryBarrierAccessFlags3KHR {
+    type Type = MemoryBarrierAccessFlags3KHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MemoryBarrierAccessFlags3KHRBuilder {
+    inner: vk::MemoryBarrierAccessFlags3KHR,
+}
+impl MemoryBarrierAccessFlags3KHRBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_access_mask3(mut self, src_access_mask3: vk::AccessFlags3KHR) -> Self {
+        self.inner.src_access_mask3 = src_access_mask3;
+        self
+    }
+    pub fn dst_access_mask3(mut self, dst_access_mask3: vk::AccessFlags3KHR) -> Self {
+        self.inner.dst_access_mask3 = dst_access_mask3;
+        self
+    }
+}
+impl Deref for MemoryBarrierAccessFlags3KHRBuilder {
+    type Target = vk::MemoryBarrierAccessFlags3KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl MemoryBarrier2Next for MemoryBarrierAccessFlags3KHRBuilder {}
+impl BufferMemoryBarrier2Next for MemoryBarrierAccessFlags3KHRBuilder {}
+impl ImageMemoryBarrier2Next for MemoryBarrierAccessFlags3KHRBuilder {}
+impl MemoryBarrier2Next for vk::MemoryBarrierAccessFlags3KHR {}
+impl BufferMemoryBarrier2Next for vk::MemoryBarrierAccessFlags3KHR {}
+impl ImageMemoryBarrier2Next for vk::MemoryBarrierAccessFlags3KHR {}
 impl<'a> Builder<'a> for vk::DependencyInfo {
     type Type = DependencyInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -24169,36 +24243,6 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceAttachmentFeedbackLoopLayoutF
 impl DeviceCreateInfoNext for PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {}
-impl Builder<'_> for vk::PhysicalDeviceDepthClampZeroOneFeaturesEXT {
-    type Type = PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder {
-    inner: vk::PhysicalDeviceDepthClampZeroOneFeaturesEXT,
-}
-impl PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn depth_clamp_zero_one(mut self, depth_clamp_zero_one: bool) -> Self {
-        self.inner.depth_clamp_zero_one = if depth_clamp_zero_one { vk::TRUE } else { vk::FALSE };
-        self
-    }
-}
-impl Deref for PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder {
-    type Target = vk::PhysicalDeviceDepthClampZeroOneFeaturesEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl PhysicalDeviceFeatures2Next for PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder {}
-impl DeviceCreateInfoNext for PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder {}
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDepthClampZeroOneFeaturesEXT {}
-impl DeviceCreateInfoNext for vk::PhysicalDeviceDepthClampZeroOneFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceAddressBindingReportFeaturesEXT {
     type Type = PhysicalDeviceAddressBindingReportFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -27168,6 +27212,36 @@ impl<'a> Deref for RenderPassStripeSubmitInfoARMBuilder<'a> {
 }
 impl<'a> CommandBufferSubmitInfoNext for RenderPassStripeSubmitInfoARMBuilder<'a> {}
 impl CommandBufferSubmitInfoNext for vk::RenderPassStripeSubmitInfoARM {}
+impl Builder<'_> for vk::PhysicalDevicePipelineOpacityMicromapFeaturesARM {
+    type Type = PhysicalDevicePipelineOpacityMicromapFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePipelineOpacityMicromapFeaturesARMBuilder {
+    inner: vk::PhysicalDevicePipelineOpacityMicromapFeaturesARM,
+}
+impl PhysicalDevicePipelineOpacityMicromapFeaturesARMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_opacity_micromap(mut self, pipeline_opacity_micromap: bool) -> Self {
+        self.inner.pipeline_opacity_micromap = if pipeline_opacity_micromap { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePipelineOpacityMicromapFeaturesARMBuilder {
+    type Target = vk::PhysicalDevicePipelineOpacityMicromapFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineOpacityMicromapFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePipelineOpacityMicromapFeaturesARMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineOpacityMicromapFeaturesARM {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineOpacityMicromapFeaturesARM {}
 impl Builder<'_> for vk::PhysicalDeviceShaderMaximalReconvergenceFeaturesKHR {
     type Type = PhysicalDeviceShaderMaximalReconvergenceFeaturesKHRBuilder;
     fn builder() -> Self::Type {
@@ -27909,3 +27983,33 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceVertexAttributeRobustnessFeat
 impl DeviceCreateInfoNext for PhysicalDeviceVertexAttributeRobustnessFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceDepthClampZeroOneFeaturesKHR {
+    type Type = PhysicalDeviceDepthClampZeroOneFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDepthClampZeroOneFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceDepthClampZeroOneFeaturesKHR,
+}
+impl PhysicalDeviceDepthClampZeroOneFeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn depth_clamp_zero_one(mut self, depth_clamp_zero_one: bool) -> Self {
+        self.inner.depth_clamp_zero_one = if depth_clamp_zero_one { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDepthClampZeroOneFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceDepthClampZeroOneFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDepthClampZeroOneFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDepthClampZeroOneFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDepthClampZeroOneFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDepthClampZeroOneFeaturesKHR {}

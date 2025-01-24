@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 304
+//! Generated from vk.xml with `VK_HEADER_VERSION` 305
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2632,6 +2632,20 @@ impl InstanceExtensions {
     }
     pub fn enable_nv_cooperative_matrix2(&mut self) {
         self.enable_khr_cooperative_matrix();
+    }
+    pub fn supports_arm_pipeline_opacity_micromap(&self) -> bool {
+        self.supports_ext_opacity_micromap()
+    }
+    pub fn enable_arm_pipeline_opacity_micromap(&mut self) {
+        self.enable_ext_opacity_micromap();
+    }
+    pub fn supports_khr_depth_clamp_zero_one(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_khr_depth_clamp_zero_one(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_vertex_attribute_robustness(&self) -> bool {
         self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -5359,10 +5373,13 @@ pub struct DeviceExtensions {
     pub ext_shader_replicated_composites: bool,
     pub nv_ray_tracing_validation: bool,
     pub ext_device_generated_commands: bool,
+    pub khr_maintenance8: bool,
     pub mesa_image_alignment_control: bool,
     pub ext_depth_clamp_control: bool,
     pub huawei_hdr_vivid: bool,
     pub nv_cooperative_matrix2: bool,
+    pub arm_pipeline_opacity_micromap: bool,
+    pub khr_depth_clamp_zero_one: bool,
     pub ext_vertex_attribute_robustness: bool,
 }
 impl DeviceExtensions {
@@ -5700,10 +5717,13 @@ impl DeviceExtensions {
             b"VK_EXT_shader_replicated_composites" => self.ext_shader_replicated_composites = true,
             b"VK_NV_ray_tracing_validation" => self.nv_ray_tracing_validation = true,
             b"VK_EXT_device_generated_commands" => self.ext_device_generated_commands = true,
+            b"VK_KHR_maintenance8" => self.khr_maintenance8 = true,
             b"VK_MESA_image_alignment_control" => self.mesa_image_alignment_control = true,
             b"VK_EXT_depth_clamp_control" => self.ext_depth_clamp_control = true,
             b"VK_HUAWEI_hdr_vivid" => self.huawei_hdr_vivid = true,
             b"VK_NV_cooperative_matrix2" => self.nv_cooperative_matrix2 = true,
+            b"VK_ARM_pipeline_opacity_micromap" => self.arm_pipeline_opacity_micromap = true,
+            b"VK_KHR_depth_clamp_zero_one" => self.khr_depth_clamp_zero_one = true,
             b"VK_EXT_vertex_attribute_robustness" => self.ext_vertex_attribute_robustness = true,
             _ => {}
         }
@@ -6041,10 +6061,13 @@ impl DeviceExtensions {
             ext_shader_replicated_composites: false,
             nv_ray_tracing_validation: false,
             ext_device_generated_commands: false,
+            khr_maintenance8: false,
             mesa_image_alignment_control: false,
             ext_depth_clamp_control: false,
             huawei_hdr_vivid: false,
             nv_cooperative_matrix2: false,
+            arm_pipeline_opacity_micromap: false,
+            khr_depth_clamp_zero_one: false,
             ext_vertex_attribute_robustness: false,
         }
     }
@@ -8642,6 +8665,13 @@ impl DeviceExtensions {
         self.enable_khr_buffer_device_address();
         self.enable_khr_maintenance5();
     }
+    pub fn supports_khr_maintenance8(&self) -> bool {
+        self.khr_maintenance8 && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_khr_maintenance8(&mut self) {
+        self.khr_maintenance8 = true;
+        debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
+    }
     pub fn supports_mesa_image_alignment_control(&self) -> bool {
         self.mesa_image_alignment_control
     }
@@ -8668,6 +8698,19 @@ impl DeviceExtensions {
     pub fn enable_nv_cooperative_matrix2(&mut self) {
         self.nv_cooperative_matrix2 = true;
         self.enable_khr_cooperative_matrix();
+    }
+    pub fn supports_arm_pipeline_opacity_micromap(&self) -> bool {
+        self.arm_pipeline_opacity_micromap && self.supports_ext_opacity_micromap()
+    }
+    pub fn enable_arm_pipeline_opacity_micromap(&mut self) {
+        self.arm_pipeline_opacity_micromap = true;
+        self.enable_ext_opacity_micromap();
+    }
+    pub fn supports_khr_depth_clamp_zero_one(&self) -> bool {
+        self.khr_depth_clamp_zero_one
+    }
+    pub fn enable_khr_depth_clamp_zero_one(&mut self) {
+        self.khr_depth_clamp_zero_one = true;
     }
     pub fn supports_ext_vertex_attribute_robustness(&self) -> bool {
         self.ext_vertex_attribute_robustness
@@ -9669,6 +9712,9 @@ impl DeviceExtensions {
         if self.ext_device_generated_commands {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_device_generated_commands\0") })
         }
+        if self.khr_maintenance8 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance8\0") })
+        }
         if self.mesa_image_alignment_control {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_MESA_image_alignment_control\0") })
         }
@@ -9680,6 +9726,12 @@ impl DeviceExtensions {
         }
         if self.nv_cooperative_matrix2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cooperative_matrix2\0") })
+        }
+        if self.arm_pipeline_opacity_micromap {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_pipeline_opacity_micromap\0") })
+        }
+        if self.khr_depth_clamp_zero_one {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_depth_clamp_zero_one\0") })
         }
         if self.ext_vertex_attribute_robustness {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_vertex_attribute_robustness\0") })
