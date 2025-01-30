@@ -5451,6 +5451,68 @@ impl<'a> SubmitInfoNext for Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {}
 impl<'a> SubmitInfo2Next for Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {}
 impl SubmitInfoNext for vk::Win32KeyedMutexAcquireReleaseInfoKHR {}
 impl SubmitInfo2Next for vk::Win32KeyedMutexAcquireReleaseInfoKHR {}
+impl Builder<'_> for vk::ImportMemoryMetalHandleInfoEXT {
+    type Type = ImportMemoryMetalHandleInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImportMemoryMetalHandleInfoEXTBuilder {
+    inner: vk::ImportMemoryMetalHandleInfoEXT,
+}
+impl ImportMemoryMetalHandleInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+        self.inner.handle_type = handle_type;
+        self
+    }
+    pub fn handle(mut self, handle: *mut c_void) -> Self {
+        self.inner.handle = handle;
+        self
+    }
+}
+impl Deref for ImportMemoryMetalHandleInfoEXTBuilder {
+    type Target = vk::ImportMemoryMetalHandleInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl MemoryAllocateInfoNext for ImportMemoryMetalHandleInfoEXTBuilder {}
+impl MemoryAllocateInfoNext for vk::ImportMemoryMetalHandleInfoEXT {}
+impl Builder<'_> for vk::MemoryGetMetalHandleInfoEXT {
+    type Type = MemoryGetMetalHandleInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MemoryGetMetalHandleInfoEXTBuilder {
+    inner: vk::MemoryGetMetalHandleInfoEXT,
+}
+impl MemoryGetMetalHandleInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
+        self.inner.memory = Some(memory);
+        self
+    }
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+        self.inner.handle_type = handle_type;
+        self
+    }
+}
+impl Deref for MemoryGetMetalHandleInfoEXTBuilder {
+    type Target = vk::MemoryGetMetalHandleInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDeviceExternalSemaphoreInfo {
     type Type = PhysicalDeviceExternalSemaphoreInfoBuilder<'a>;
     fn builder() -> Self::Type {

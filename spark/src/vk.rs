@@ -3577,8 +3577,14 @@ impl ExternalMemoryHandleTypeFlags {
     pub const ZIRCON_VMO_FUCHSIA: Self = Self(0x800);
     /// Added by extension VK_NV_external_memory_rdma.
     pub const RDMA_ADDRESS_NV: Self = Self(0x1000);
+    /// Added by extension VK_EXT_external_memory_metal.
+    pub const MTLBUFFER_EXT: Self = Self(0x10000);
+    /// Added by extension VK_EXT_external_memory_metal.
+    pub const MTLTEXTURE_EXT: Self = Self(0x20000);
+    /// Added by extension VK_EXT_external_memory_metal.
+    pub const MTLHEAP_EXT: Self = Self(0x40000);
 }
-impl_bitmask!(ExternalMemoryHandleTypeFlags, 0x1fff);
+impl_bitmask!(ExternalMemoryHandleTypeFlags, 0x71fff);
 impl fmt::Display for ExternalMemoryHandleTypeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -3597,6 +3603,9 @@ impl fmt::Display for ExternalMemoryHandleTypeFlags {
                 (0x100, "HOST_MAPPED_FOREIGN_MEMORY_EXT"),
                 (0x800, "ZIRCON_VMO_FUCHSIA"),
                 (0x1000, "RDMA_ADDRESS_NV"),
+                (0x10000, "MTLBUFFER_EXT"),
+                (0x20000, "MTLTEXTURE_EXT"),
+                (0x40000, "MTLHEAP_EXT"),
             ],
             f,
         )
@@ -8597,6 +8606,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV: Self = Self(1000593002);
     /// Added by extension VK_ARM_pipeline_opacity_micromap.
     pub const PHYSICAL_DEVICE_PIPELINE_OPACITY_MICROMAP_FEATURES_ARM: Self = Self(1000596000);
+    /// Added by extension VK_EXT_external_memory_metal.
+    pub const IMPORT_MEMORY_METAL_HANDLE_INFO_EXT: Self = Self(1000602000);
+    /// Added by extension VK_EXT_external_memory_metal.
+    pub const MEMORY_METAL_HANDLE_PROPERTIES_EXT: Self = Self(1000602001);
+    /// Added by extension VK_EXT_external_memory_metal.
+    pub const MEMORY_GET_METAL_HANDLE_INFO_EXT: Self = Self(1000602002);
     pub const PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR: Self = Self(1000421000);
     /// Added by extension VK_EXT_vertex_attribute_robustness.
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000608000);
@@ -9469,6 +9484,9 @@ impl fmt::Display for StructureType {
             1000593001 => Some(&"COOPERATIVE_MATRIX_FLEXIBLE_DIMENSIONS_PROPERTIES_NV"),
             1000593002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV"),
             1000596000 => Some(&"PHYSICAL_DEVICE_PIPELINE_OPACITY_MICROMAP_FEATURES_ARM"),
+            1000602000 => Some(&"IMPORT_MEMORY_METAL_HANDLE_INFO_EXT"),
+            1000602001 => Some(&"MEMORY_METAL_HANDLE_PROPERTIES_EXT"),
+            1000602002 => Some(&"MEMORY_GET_METAL_HANDLE_INFO_EXT"),
             1000421000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR"),
             1000608000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT"),
             _ => None,
@@ -19967,6 +19985,93 @@ impl fmt::Debug for Win32KeyedMutexAcquireReleaseInfoKHR {
             .field("release_count", &self.release_count)
             .field("p_release_syncs", &self.p_release_syncs)
             .field("p_release_keys", &self.p_release_keys)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImportMemoryMetalHandleInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub handle_type: ExternalMemoryHandleTypeFlags,
+    pub handle: *mut c_void,
+}
+unsafe impl Send for ImportMemoryMetalHandleInfoEXT {}
+unsafe impl Sync for ImportMemoryMetalHandleInfoEXT {}
+impl Default for ImportMemoryMetalHandleInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMPORT_MEMORY_METAL_HANDLE_INFO_EXT,
+            p_next: ptr::null(),
+            handle_type: Default::default(),
+            handle: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for ImportMemoryMetalHandleInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImportMemoryMetalHandleInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("handle_type", &self.handle_type)
+            .field("handle", &self.handle)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryMetalHandlePropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub memory_type_bits: u32,
+}
+unsafe impl Send for MemoryMetalHandlePropertiesEXT {}
+unsafe impl Sync for MemoryMetalHandlePropertiesEXT {}
+impl Default for MemoryMetalHandlePropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_METAL_HANDLE_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            memory_type_bits: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryMetalHandlePropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryMetalHandlePropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory_type_bits", &self.memory_type_bits)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryGetMetalHandleInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub memory: Option<DeviceMemory>,
+    pub handle_type: ExternalMemoryHandleTypeFlags,
+}
+unsafe impl Send for MemoryGetMetalHandleInfoEXT {}
+unsafe impl Sync for MemoryGetMetalHandleInfoEXT {}
+impl Default for MemoryGetMetalHandleInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_GET_METAL_HANDLE_INFO_EXT,
+            p_next: ptr::null(),
+            memory: Default::default(),
+            handle_type: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryGetMetalHandleInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryGetMetalHandleInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory", &self.memory)
+            .field("handle_type", &self.handle_type)
             .finish()
     }
 }
@@ -50935,4 +51040,15 @@ pub type FnGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = un
     physical_device: Option<PhysicalDevice>,
     p_property_count: *mut u32,
     p_properties: *mut CooperativeMatrixFlexibleDimensionsPropertiesNV,
+) -> Result;
+pub type FnGetMemoryMetalHandleEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_metal_handle_info: *const MemoryGetMetalHandleInfoEXT,
+    p_handle: *mut *mut c_void,
+) -> Result;
+pub type FnGetMemoryMetalHandlePropertiesEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    handle_type: ExternalMemoryHandleTypeFlags,
+    p_handle: *const c_void,
+    p_memory_metal_handle_properties: *mut MemoryMetalHandlePropertiesEXT,
 ) -> Result;

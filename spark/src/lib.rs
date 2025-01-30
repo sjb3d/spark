@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 305
+//! Generated from vk.xml with `VK_HEADER_VERSION` 306
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2638,6 +2638,14 @@ impl InstanceExtensions {
     }
     pub fn enable_arm_pipeline_opacity_micromap(&mut self) {
         self.enable_ext_opacity_micromap();
+    }
+    pub fn supports_ext_external_memory_metal(&self) -> bool {
+        self.supports_khr_external_memory() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_ext_external_memory_metal(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_external_memory();
+        }
     }
     pub fn supports_khr_depth_clamp_zero_one(&self) -> bool {
         self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -5379,6 +5387,7 @@ pub struct DeviceExtensions {
     pub huawei_hdr_vivid: bool,
     pub nv_cooperative_matrix2: bool,
     pub arm_pipeline_opacity_micromap: bool,
+    pub ext_external_memory_metal: bool,
     pub khr_depth_clamp_zero_one: bool,
     pub ext_vertex_attribute_robustness: bool,
 }
@@ -5723,6 +5732,7 @@ impl DeviceExtensions {
             b"VK_HUAWEI_hdr_vivid" => self.huawei_hdr_vivid = true,
             b"VK_NV_cooperative_matrix2" => self.nv_cooperative_matrix2 = true,
             b"VK_ARM_pipeline_opacity_micromap" => self.arm_pipeline_opacity_micromap = true,
+            b"VK_EXT_external_memory_metal" => self.ext_external_memory_metal = true,
             b"VK_KHR_depth_clamp_zero_one" => self.khr_depth_clamp_zero_one = true,
             b"VK_EXT_vertex_attribute_robustness" => self.ext_vertex_attribute_robustness = true,
             _ => {}
@@ -6067,6 +6077,7 @@ impl DeviceExtensions {
             huawei_hdr_vivid: false,
             nv_cooperative_matrix2: false,
             arm_pipeline_opacity_micromap: false,
+            ext_external_memory_metal: false,
             khr_depth_clamp_zero_one: false,
             ext_vertex_attribute_robustness: false,
         }
@@ -8706,6 +8717,16 @@ impl DeviceExtensions {
         self.arm_pipeline_opacity_micromap = true;
         self.enable_ext_opacity_micromap();
     }
+    pub fn supports_ext_external_memory_metal(&self) -> bool {
+        self.ext_external_memory_metal
+            && (self.supports_khr_external_memory() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+    }
+    pub fn enable_ext_external_memory_metal(&mut self) {
+        self.ext_external_memory_metal = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_external_memory();
+        }
+    }
     pub fn supports_khr_depth_clamp_zero_one(&self) -> bool {
         self.khr_depth_clamp_zero_one
     }
@@ -9730,6 +9751,9 @@ impl DeviceExtensions {
         if self.arm_pipeline_opacity_micromap {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_pipeline_opacity_micromap\0") })
         }
+        if self.ext_external_memory_metal {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_external_memory_metal\0") })
+        }
         if self.khr_depth_clamp_zero_one {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_depth_clamp_zero_one\0") })
         }
@@ -10265,6 +10289,8 @@ pub struct Device {
     pub fp_cmd_set_depth_clamp_range_ext: Option<vk::FnCmdSetDepthClampRangeEXT>,
     pub fp_get_physical_device_cooperative_matrix_flexible_dimensions_properties_nv:
         Option<vk::FnGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV>,
+    pub fp_get_memory_metal_handle_ext: Option<vk::FnGetMemoryMetalHandleEXT>,
+    pub fp_get_memory_metal_handle_properties_ext: Option<vk::FnGetMemoryMetalHandlePropertiesEXT>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -14539,6 +14565,20 @@ impl Device {
             {
                 let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_memory_metal_handle_ext: if extensions.ext_external_memory_metal {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryMetalHandleEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_memory_metal_handle_properties_ext: if extensions.ext_external_memory_metal {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetMemoryMetalHandlePropertiesEXT\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -23525,6 +23565,40 @@ impl Device {
         match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
+        }
+    }
+    pub unsafe fn get_memory_metal_handle_ext(
+        &self,
+        p_get_metal_handle_info: &vk::MemoryGetMetalHandleInfoEXT,
+    ) -> Result<*mut c_void> {
+        let fp = self
+            .fp_get_memory_metal_handle_ext
+            .expect("vkGetMemoryMetalHandleEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_get_metal_handle_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_memory_metal_handle_properties_ext(
+        &self,
+        handle_type: vk::ExternalMemoryHandleTypeFlags,
+        p_handle: *const c_void,
+        p_memory_metal_handle_properties: &mut vk::MemoryMetalHandlePropertiesEXT,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_memory_metal_handle_properties_ext
+            .expect("vkGetMemoryMetalHandlePropertiesEXT is not loaded");
+        let err = (fp)(
+            Some(self.handle),
+            handle_type,
+            p_handle,
+            p_memory_metal_handle_properties,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
         }
     }
 }
