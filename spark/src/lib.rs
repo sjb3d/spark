@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 306
+//! Generated from vk.xml with `VK_HEADER_VERSION` 307
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2239,6 +2239,12 @@ impl InstanceExtensions {
     pub fn enable_nv_device_generated_commands_compute(&mut self) {
         self.enable_nv_device_generated_commands();
     }
+    pub fn supports_nv_ray_tracing_linear_swept_spheres(&self) -> bool {
+        self.supports_khr_ray_tracing_pipeline()
+    }
+    pub fn enable_nv_ray_tracing_linear_swept_spheres(&mut self) {
+        self.enable_khr_ray_tracing_pipeline();
+    }
     pub fn supports_nv_linear_color_attachment(&self) -> bool {
         self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
@@ -2590,6 +2596,18 @@ impl InstanceExtensions {
         self.nv_display_stereo = true;
         self.enable_khr_display();
         self.enable_khr_get_display_properties2();
+    }
+    pub fn supports_nv_cluster_acceleration_structure(&self) -> bool {
+        self.supports_khr_acceleration_structure()
+    }
+    pub fn enable_nv_cluster_acceleration_structure(&mut self) {
+        self.enable_khr_acceleration_structure();
+    }
+    pub fn supports_nv_partitioned_acceleration_structure(&self) -> bool {
+        self.supports_khr_acceleration_structure()
+    }
+    pub fn enable_nv_partitioned_acceleration_structure(&mut self) {
+        self.enable_khr_acceleration_structure();
     }
     pub fn supports_ext_device_generated_commands(&self) -> bool {
         self.supports_khr_buffer_device_address() && self.supports_khr_maintenance5()
@@ -5324,6 +5342,7 @@ pub struct DeviceExtensions {
     pub nv_copy_memory_indirect: bool,
     pub nv_memory_decompression: bool,
     pub nv_device_generated_commands_compute: bool,
+    pub nv_ray_tracing_linear_swept_spheres: bool,
     pub nv_linear_color_attachment: bool,
     pub khr_shader_maximal_reconvergence: bool,
     pub ext_image_compression_control_swapchain: bool,
@@ -5347,6 +5366,7 @@ pub struct DeviceExtensions {
     pub sec_amigo_profiling: bool,
     pub qcom_multiview_per_view_viewports: bool,
     pub nv_ray_tracing_invocation_reorder: bool,
+    pub nv_cooperative_vector: bool,
     pub nv_extended_sparse_address_space: bool,
     pub ext_mutable_descriptor_type: bool,
     pub ext_legacy_vertex_attributes: bool,
@@ -5380,6 +5400,8 @@ pub struct DeviceExtensions {
     pub nv_shader_atomic_float16_vector: bool,
     pub ext_shader_replicated_composites: bool,
     pub nv_ray_tracing_validation: bool,
+    pub nv_cluster_acceleration_structure: bool,
+    pub nv_partitioned_acceleration_structure: bool,
     pub ext_device_generated_commands: bool,
     pub khr_maintenance8: bool,
     pub mesa_image_alignment_control: bool,
@@ -5669,6 +5691,7 @@ impl DeviceExtensions {
             b"VK_NV_copy_memory_indirect" => self.nv_copy_memory_indirect = true,
             b"VK_NV_memory_decompression" => self.nv_memory_decompression = true,
             b"VK_NV_device_generated_commands_compute" => self.nv_device_generated_commands_compute = true,
+            b"VK_NV_ray_tracing_linear_swept_spheres" => self.nv_ray_tracing_linear_swept_spheres = true,
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
             b"VK_KHR_shader_maximal_reconvergence" => self.khr_shader_maximal_reconvergence = true,
             b"VK_EXT_image_compression_control_swapchain" => self.ext_image_compression_control_swapchain = true,
@@ -5692,6 +5715,7 @@ impl DeviceExtensions {
             b"VK_SEC_amigo_profiling" => self.sec_amigo_profiling = true,
             b"VK_QCOM_multiview_per_view_viewports" => self.qcom_multiview_per_view_viewports = true,
             b"VK_NV_ray_tracing_invocation_reorder" => self.nv_ray_tracing_invocation_reorder = true,
+            b"VK_NV_cooperative_vector" => self.nv_cooperative_vector = true,
             b"VK_NV_extended_sparse_address_space" => self.nv_extended_sparse_address_space = true,
             b"VK_EXT_mutable_descriptor_type" => self.ext_mutable_descriptor_type = true,
             b"VK_EXT_legacy_vertex_attributes" => self.ext_legacy_vertex_attributes = true,
@@ -5725,6 +5749,8 @@ impl DeviceExtensions {
             b"VK_NV_shader_atomic_float16_vector" => self.nv_shader_atomic_float16_vector = true,
             b"VK_EXT_shader_replicated_composites" => self.ext_shader_replicated_composites = true,
             b"VK_NV_ray_tracing_validation" => self.nv_ray_tracing_validation = true,
+            b"VK_NV_cluster_acceleration_structure" => self.nv_cluster_acceleration_structure = true,
+            b"VK_NV_partitioned_acceleration_structure" => self.nv_partitioned_acceleration_structure = true,
             b"VK_EXT_device_generated_commands" => self.ext_device_generated_commands = true,
             b"VK_KHR_maintenance8" => self.khr_maintenance8 = true,
             b"VK_MESA_image_alignment_control" => self.mesa_image_alignment_control = true,
@@ -6014,6 +6040,7 @@ impl DeviceExtensions {
             nv_copy_memory_indirect: false,
             nv_memory_decompression: false,
             nv_device_generated_commands_compute: false,
+            nv_ray_tracing_linear_swept_spheres: false,
             nv_linear_color_attachment: false,
             khr_shader_maximal_reconvergence: false,
             ext_image_compression_control_swapchain: false,
@@ -6037,6 +6064,7 @@ impl DeviceExtensions {
             sec_amigo_profiling: false,
             qcom_multiview_per_view_viewports: false,
             nv_ray_tracing_invocation_reorder: false,
+            nv_cooperative_vector: false,
             nv_extended_sparse_address_space: false,
             ext_mutable_descriptor_type: false,
             ext_legacy_vertex_attributes: false,
@@ -6070,6 +6098,8 @@ impl DeviceExtensions {
             nv_shader_atomic_float16_vector: false,
             ext_shader_replicated_composites: false,
             nv_ray_tracing_validation: false,
+            nv_cluster_acceleration_structure: false,
+            nv_partitioned_acceleration_structure: false,
             ext_device_generated_commands: false,
             khr_maintenance8: false,
             mesa_image_alignment_control: false,
@@ -8239,6 +8269,13 @@ impl DeviceExtensions {
         self.nv_device_generated_commands_compute = true;
         self.enable_nv_device_generated_commands();
     }
+    pub fn supports_nv_ray_tracing_linear_swept_spheres(&self) -> bool {
+        self.nv_ray_tracing_linear_swept_spheres && self.supports_khr_ray_tracing_pipeline()
+    }
+    pub fn enable_nv_ray_tracing_linear_swept_spheres(&mut self) {
+        self.nv_ray_tracing_linear_swept_spheres = true;
+        self.enable_khr_ray_tracing_pipeline();
+    }
     pub fn supports_nv_linear_color_attachment(&self) -> bool {
         self.nv_linear_color_attachment
     }
@@ -8417,6 +8454,12 @@ impl DeviceExtensions {
     pub fn enable_nv_ray_tracing_invocation_reorder(&mut self) {
         self.nv_ray_tracing_invocation_reorder = true;
         self.enable_khr_ray_tracing_pipeline();
+    }
+    pub fn supports_nv_cooperative_vector(&self) -> bool {
+        self.nv_cooperative_vector
+    }
+    pub fn enable_nv_cooperative_vector(&mut self) {
+        self.nv_cooperative_vector = true;
     }
     pub fn supports_nv_extended_sparse_address_space(&self) -> bool {
         self.nv_extended_sparse_address_space
@@ -8665,6 +8708,20 @@ impl DeviceExtensions {
     }
     pub fn enable_nv_ray_tracing_validation(&mut self) {
         self.nv_ray_tracing_validation = true;
+    }
+    pub fn supports_nv_cluster_acceleration_structure(&self) -> bool {
+        self.nv_cluster_acceleration_structure && self.supports_khr_acceleration_structure()
+    }
+    pub fn enable_nv_cluster_acceleration_structure(&mut self) {
+        self.nv_cluster_acceleration_structure = true;
+        self.enable_khr_acceleration_structure();
+    }
+    pub fn supports_nv_partitioned_acceleration_structure(&self) -> bool {
+        self.nv_partitioned_acceleration_structure && self.supports_khr_acceleration_structure()
+    }
+    pub fn enable_nv_partitioned_acceleration_structure(&mut self) {
+        self.nv_partitioned_acceleration_structure = true;
+        self.enable_khr_acceleration_structure();
     }
     pub fn supports_ext_device_generated_commands(&self) -> bool {
         self.ext_device_generated_commands
@@ -9562,6 +9619,9 @@ impl DeviceExtensions {
         if self.nv_device_generated_commands_compute {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_generated_commands_compute\0") })
         }
+        if self.nv_ray_tracing_linear_swept_spheres {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing_linear_swept_spheres\0") })
+        }
         if self.nv_linear_color_attachment {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_linear_color_attachment\0") })
         }
@@ -9630,6 +9690,9 @@ impl DeviceExtensions {
         }
         if self.nv_ray_tracing_invocation_reorder {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing_invocation_reorder\0") })
+        }
+        if self.nv_cooperative_vector {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cooperative_vector\0") })
         }
         if self.nv_extended_sparse_address_space {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_extended_sparse_address_space\0") })
@@ -9729,6 +9792,12 @@ impl DeviceExtensions {
         }
         if self.nv_ray_tracing_validation {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing_validation\0") })
+        }
+        if self.nv_cluster_acceleration_structure {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cluster_acceleration_structure\0") })
+        }
+        if self.nv_partitioned_acceleration_structure {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_partitioned_acceleration_structure\0") })
         }
         if self.ext_device_generated_commands {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_device_generated_commands\0") })
@@ -10064,6 +10133,9 @@ pub struct Device {
         Option<vk::FnGetPhysicalDeviceCooperativeMatrixPropertiesNV>,
     pub fp_cmd_trace_rays_indirect_khr: Option<vk::FnCmdTraceRaysIndirectKHR>,
     pub fp_cmd_trace_rays_indirect2_khr: Option<vk::FnCmdTraceRaysIndirect2KHR>,
+    pub fp_get_cluster_acceleration_structure_build_sizes_nv: Option<vk::FnGetClusterAccelerationStructureBuildSizesNV>,
+    pub fp_cmd_build_cluster_acceleration_structure_indirect_nv:
+        Option<vk::FnCmdBuildClusterAccelerationStructureIndirectNV>,
     pub fp_get_device_acceleration_structure_compatibility_khr:
         Option<vk::FnGetDeviceAccelerationStructureCompatibilityKHR>,
     pub fp_get_ray_tracing_shader_group_stack_size_khr: Option<vk::FnGetRayTracingShaderGroupStackSizeKHR>,
@@ -10194,6 +10266,9 @@ pub struct Device {
     pub fp_transition_image_layout: Option<vk::FnTransitionImageLayout>,
     pub fp_cmd_decompress_memory_nv: Option<vk::FnCmdDecompressMemoryNV>,
     pub fp_cmd_decompress_memory_indirect_count_nv: Option<vk::FnCmdDecompressMemoryIndirectCountNV>,
+    pub fp_get_partitioned_acceleration_structures_build_sizes_nv:
+        Option<vk::FnGetPartitionedAccelerationStructuresBuildSizesNV>,
+    pub fp_cmd_build_partitioned_acceleration_structures_nv: Option<vk::FnCmdBuildPartitionedAccelerationStructuresNV>,
     pub fp_create_cu_module_nvx: Option<vk::FnCreateCuModuleNVX>,
     pub fp_create_cu_function_nvx: Option<vk::FnCreateCuFunctionNVX>,
     pub fp_destroy_cu_module_nvx: Option<vk::FnDestroyCuModuleNVX>,
@@ -10291,6 +10366,10 @@ pub struct Device {
         Option<vk::FnGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV>,
     pub fp_get_memory_metal_handle_ext: Option<vk::FnGetMemoryMetalHandleEXT>,
     pub fp_get_memory_metal_handle_properties_ext: Option<vk::FnGetMemoryMetalHandlePropertiesEXT>,
+    pub fp_get_physical_device_cooperative_vector_properties_nv:
+        Option<vk::FnGetPhysicalDeviceCooperativeVectorPropertiesNV>,
+    pub fp_convert_cooperative_vector_matrix_nv: Option<vk::FnConvertCooperativeVectorMatrixNV>,
+    pub fp_cmd_convert_cooperative_vector_matrix_nv: Option<vk::FnCmdConvertCooperativeVectorMatrixNV>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -12624,6 +12703,22 @@ impl Device {
             } else {
                 None
             },
+            fp_get_cluster_acceleration_structure_build_sizes_nv: if extensions.nv_cluster_acceleration_structure {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetClusterAccelerationStructureBuildSizesNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_build_cluster_acceleration_structure_indirect_nv: if extensions.nv_cluster_acceleration_structure {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdBuildClusterAccelerationStructureIndirectNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_get_device_acceleration_structure_compatibility_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetDeviceAccelerationStructureCompatibilityKHR\0",
@@ -13841,6 +13936,24 @@ impl Device {
             } else {
                 None
             },
+            fp_get_partitioned_acceleration_structures_build_sizes_nv: if extensions
+                .nv_partitioned_acceleration_structure
+            {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPartitionedAccelerationStructuresBuildSizesNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_build_partitioned_acceleration_structures_nv: if extensions.nv_partitioned_acceleration_structure {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdBuildPartitionedAccelerationStructuresNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_create_cu_module_nvx: if extensions.nvx_binary_import {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateCuModuleNVX\0"));
                 fp.map(|f| mem::transmute(f))
@@ -14579,6 +14692,30 @@ impl Device {
             fp_get_memory_metal_handle_properties_ext: if extensions.ext_external_memory_metal {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetMemoryMetalHandlePropertiesEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_cooperative_vector_properties_nv: if extensions.nv_cooperative_vector {
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceCooperativeVectorPropertiesNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_convert_cooperative_vector_matrix_nv: if extensions.nv_cooperative_vector {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkConvertCooperativeVectorMatrixNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_convert_cooperative_vector_matrix_nv: if extensions.nv_cooperative_vector {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdConvertCooperativeVectorMatrixNV\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -19992,6 +20129,26 @@ impl Device {
             .expect("vkCmdTraceRaysIndirect2KHR is not loaded");
         (fp)(Some(command_buffer), indirect_device_address);
     }
+    pub unsafe fn get_cluster_acceleration_structure_build_sizes_nv(
+        &self,
+        p_info: &vk::ClusterAccelerationStructureInputInfoNV,
+        p_size_info: &mut vk::AccelerationStructureBuildSizesInfoKHR,
+    ) {
+        let fp = self
+            .fp_get_cluster_acceleration_structure_build_sizes_nv
+            .expect("vkGetClusterAccelerationStructureBuildSizesNV is not loaded");
+        (fp)(Some(self.handle), p_info, p_size_info);
+    }
+    pub unsafe fn cmd_build_cluster_acceleration_structure_indirect_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_command_infos: &vk::ClusterAccelerationStructureCommandsInfoNV,
+    ) {
+        let fp = self
+            .fp_cmd_build_cluster_acceleration_structure_indirect_nv
+            .expect("vkCmdBuildClusterAccelerationStructureIndirectNV is not loaded");
+        (fp)(Some(command_buffer), p_command_infos);
+    }
     pub unsafe fn get_device_acceleration_structure_compatibility_khr(
         &self,
         p_version_info: &vk::AccelerationStructureVersionInfoKHR,
@@ -22077,6 +22234,26 @@ impl Device {
             stride,
         );
     }
+    pub unsafe fn get_partitioned_acceleration_structures_build_sizes_nv(
+        &self,
+        p_info: &vk::PartitionedAccelerationStructureInstancesInputNV,
+        p_size_info: &mut vk::AccelerationStructureBuildSizesInfoKHR,
+    ) {
+        let fp = self
+            .fp_get_partitioned_acceleration_structures_build_sizes_nv
+            .expect("vkGetPartitionedAccelerationStructuresBuildSizesNV is not loaded");
+        (fp)(Some(self.handle), p_info, p_size_info);
+    }
+    pub unsafe fn cmd_build_partitioned_acceleration_structures_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_build_info: &vk::BuildPartitionedAccelerationStructureInfoNV,
+    ) {
+        let fp = self
+            .fp_cmd_build_partitioned_acceleration_structures_nv
+            .expect("vkCmdBuildPartitionedAccelerationStructuresNV is not loaded");
+        (fp)(Some(command_buffer), p_build_info);
+    }
     pub unsafe fn create_cu_module_nvx(
         &self,
         p_create_info: &vk::CuModuleCreateInfoNVX,
@@ -23600,6 +23777,55 @@ impl Device {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         }
+    }
+    pub unsafe fn get_physical_device_cooperative_vector_properties_nv_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::CooperativeVectorPropertiesNV>> {
+        let fp = self
+            .fp_get_physical_device_cooperative_vector_properties_nv
+            .expect("vkGetPhysicalDeviceCooperativeVectorPropertiesNV is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn convert_cooperative_vector_matrix_nv(
+        &self,
+        p_info: &vk::ConvertCooperativeVectorMatrixInfoNV,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_convert_cooperative_vector_matrix_nv
+            .expect("vkConvertCooperativeVectorMatrixNV is not loaded");
+        let err = (fp)(Some(self.handle), p_info);
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_convert_cooperative_vector_matrix_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_infos: &[vk::ConvertCooperativeVectorMatrixInfoNV],
+    ) {
+        let fp = self
+            .fp_cmd_convert_cooperative_vector_matrix_nv
+            .expect("vkCmdConvertCooperativeVectorMatrixNV is not loaded");
+        let info_count = p_infos.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            info_count,
+            p_infos.first().map_or(ptr::null(), |s| s as *const _),
+        );
     }
 }
 

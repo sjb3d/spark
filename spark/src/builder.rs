@@ -4321,6 +4321,293 @@ impl DeviceCreateInfoNext for PhysicalDevicePrivateDataFeaturesBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePrivateDataFeatures {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePrivateDataFeatures {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {}
+impl Builder<'_> for vk::PhysicalDeviceClusterAccelerationStructureFeaturesNV {
+    type Type = PhysicalDeviceClusterAccelerationStructureFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceClusterAccelerationStructureFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceClusterAccelerationStructureFeaturesNV,
+}
+impl PhysicalDeviceClusterAccelerationStructureFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cluster_acceleration_structure(mut self, cluster_acceleration_structure: bool) -> Self {
+        self.inner.cluster_acceleration_structure = if cluster_acceleration_structure {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceClusterAccelerationStructureFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceClusterAccelerationStructureFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceClusterAccelerationStructureFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceClusterAccelerationStructureFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceClusterAccelerationStructureFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceClusterAccelerationStructureFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceClusterAccelerationStructurePropertiesNV {}
+impl Builder<'_> for vk::RayTracingPipelineClusterAccelerationStructureCreateInfoNV {
+    type Type = RayTracingPipelineClusterAccelerationStructureCreateInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RayTracingPipelineClusterAccelerationStructureCreateInfoNVBuilder {
+    inner: vk::RayTracingPipelineClusterAccelerationStructureCreateInfoNV,
+}
+impl RayTracingPipelineClusterAccelerationStructureCreateInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn allow_cluster_acceleration_structure(mut self, allow_cluster_acceleration_structure: bool) -> Self {
+        self.inner.allow_cluster_acceleration_structure = if allow_cluster_acceleration_structure {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for RayTracingPipelineClusterAccelerationStructureCreateInfoNVBuilder {
+    type Target = vk::RayTracingPipelineClusterAccelerationStructureCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl RayTracingPipelineCreateInfoKHRNext for RayTracingPipelineClusterAccelerationStructureCreateInfoNVBuilder {}
+impl RayTracingPipelineCreateInfoKHRNext for vk::RayTracingPipelineClusterAccelerationStructureCreateInfoNV {}
+impl Builder<'_> for vk::ClusterAccelerationStructureClustersBottomLevelInputNV {
+    type Type = ClusterAccelerationStructureClustersBottomLevelInputNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ClusterAccelerationStructureClustersBottomLevelInputNVBuilder {
+    inner: vk::ClusterAccelerationStructureClustersBottomLevelInputNV,
+}
+impl ClusterAccelerationStructureClustersBottomLevelInputNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn max_total_cluster_count(mut self, max_total_cluster_count: u32) -> Self {
+        self.inner.max_total_cluster_count = max_total_cluster_count;
+        self
+    }
+    pub fn max_cluster_count_per_acceleration_structure(
+        mut self,
+        max_cluster_count_per_acceleration_structure: u32,
+    ) -> Self {
+        self.inner.max_cluster_count_per_acceleration_structure = max_cluster_count_per_acceleration_structure;
+        self
+    }
+}
+impl Deref for ClusterAccelerationStructureClustersBottomLevelInputNVBuilder {
+    type Target = vk::ClusterAccelerationStructureClustersBottomLevelInputNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ClusterAccelerationStructureTriangleClusterInputNV {
+    type Type = ClusterAccelerationStructureTriangleClusterInputNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ClusterAccelerationStructureTriangleClusterInputNVBuilder {
+    inner: vk::ClusterAccelerationStructureTriangleClusterInputNV,
+}
+impl ClusterAccelerationStructureTriangleClusterInputNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn vertex_format(mut self, vertex_format: vk::Format) -> Self {
+        self.inner.vertex_format = vertex_format;
+        self
+    }
+    pub fn max_geometry_index_value(mut self, max_geometry_index_value: u32) -> Self {
+        self.inner.max_geometry_index_value = max_geometry_index_value;
+        self
+    }
+    pub fn max_cluster_unique_geometry_count(mut self, max_cluster_unique_geometry_count: u32) -> Self {
+        self.inner.max_cluster_unique_geometry_count = max_cluster_unique_geometry_count;
+        self
+    }
+    pub fn max_cluster_triangle_count(mut self, max_cluster_triangle_count: u32) -> Self {
+        self.inner.max_cluster_triangle_count = max_cluster_triangle_count;
+        self
+    }
+    pub fn max_cluster_vertex_count(mut self, max_cluster_vertex_count: u32) -> Self {
+        self.inner.max_cluster_vertex_count = max_cluster_vertex_count;
+        self
+    }
+    pub fn max_total_triangle_count(mut self, max_total_triangle_count: u32) -> Self {
+        self.inner.max_total_triangle_count = max_total_triangle_count;
+        self
+    }
+    pub fn max_total_vertex_count(mut self, max_total_vertex_count: u32) -> Self {
+        self.inner.max_total_vertex_count = max_total_vertex_count;
+        self
+    }
+    pub fn min_position_truncate_bit_count(mut self, min_position_truncate_bit_count: u32) -> Self {
+        self.inner.min_position_truncate_bit_count = min_position_truncate_bit_count;
+        self
+    }
+}
+impl Deref for ClusterAccelerationStructureTriangleClusterInputNVBuilder {
+    type Target = vk::ClusterAccelerationStructureTriangleClusterInputNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ClusterAccelerationStructureMoveObjectsInputNV {
+    type Type = ClusterAccelerationStructureMoveObjectsInputNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ClusterAccelerationStructureMoveObjectsInputNVBuilder {
+    inner: vk::ClusterAccelerationStructureMoveObjectsInputNV,
+}
+impl ClusterAccelerationStructureMoveObjectsInputNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::ClusterAccelerationStructureTypeNV) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn no_move_overlap(mut self, no_move_overlap: bool) -> Self {
+        self.inner.no_move_overlap = if no_move_overlap { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn max_moved_bytes(mut self, max_moved_bytes: vk::DeviceSize) -> Self {
+        self.inner.max_moved_bytes = max_moved_bytes;
+        self
+    }
+}
+impl Deref for ClusterAccelerationStructureMoveObjectsInputNVBuilder {
+    type Target = vk::ClusterAccelerationStructureMoveObjectsInputNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ClusterAccelerationStructureInputInfoNV {
+    type Type = ClusterAccelerationStructureInputInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ClusterAccelerationStructureInputInfoNVBuilder {
+    inner: vk::ClusterAccelerationStructureInputInfoNV,
+}
+impl ClusterAccelerationStructureInputInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn max_acceleration_structure_count(mut self, max_acceleration_structure_count: u32) -> Self {
+        self.inner.max_acceleration_structure_count = max_acceleration_structure_count;
+        self
+    }
+    pub fn flags(mut self, flags: vk::BuildAccelerationStructureFlagsKHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn op_type(mut self, op_type: vk::ClusterAccelerationStructureOpTypeNV) -> Self {
+        self.inner.op_type = op_type;
+        self
+    }
+    pub fn op_mode(mut self, op_mode: vk::ClusterAccelerationStructureOpModeNV) -> Self {
+        self.inner.op_mode = op_mode;
+        self
+    }
+    pub fn op_input(mut self, op_input: vk::ClusterAccelerationStructureOpInputNV) -> Self {
+        self.inner.op_input = op_input;
+        self
+    }
+}
+impl Deref for ClusterAccelerationStructureInputInfoNVBuilder {
+    type Target = vk::ClusterAccelerationStructureInputInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ClusterAccelerationStructureCommandsInfoNV {
+    type Type = ClusterAccelerationStructureCommandsInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ClusterAccelerationStructureCommandsInfoNVBuilder {
+    inner: vk::ClusterAccelerationStructureCommandsInfoNV,
+}
+impl ClusterAccelerationStructureCommandsInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn input(mut self, input: vk::ClusterAccelerationStructureInputInfoNV) -> Self {
+        self.inner.input = input;
+        self
+    }
+    pub fn dst_implicit_data(mut self, dst_implicit_data: vk::DeviceAddress) -> Self {
+        self.inner.dst_implicit_data = dst_implicit_data;
+        self
+    }
+    pub fn scratch_data(mut self, scratch_data: vk::DeviceAddress) -> Self {
+        self.inner.scratch_data = scratch_data;
+        self
+    }
+    pub fn dst_addresses_array(mut self, dst_addresses_array: vk::StridedDeviceAddressRegionKHR) -> Self {
+        self.inner.dst_addresses_array = dst_addresses_array;
+        self
+    }
+    pub fn dst_sizes_array(mut self, dst_sizes_array: vk::StridedDeviceAddressRegionKHR) -> Self {
+        self.inner.dst_sizes_array = dst_sizes_array;
+        self
+    }
+    pub fn src_infos_array(mut self, src_infos_array: vk::StridedDeviceAddressRegionKHR) -> Self {
+        self.inner.src_infos_array = src_infos_array;
+        self
+    }
+    pub fn src_infos_count(mut self, src_infos_count: vk::DeviceAddress) -> Self {
+        self.inner.src_infos_count = src_infos_count;
+        self
+    }
+    pub fn address_resolution_flags(
+        mut self,
+        address_resolution_flags: vk::ClusterAccelerationStructureAddressResolutionFlagsNV,
+    ) -> Self {
+        self.inner.address_resolution_flags = address_resolution_flags;
+        self
+    }
+}
+impl Deref for ClusterAccelerationStructureCommandsInfoNVBuilder {
+    type Target = vk::ClusterAccelerationStructureCommandsInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMultiDrawPropertiesEXT {}
 impl<'a> Builder<'a> for vk::GraphicsShaderGroupCreateInfoNV {
     type Type = GraphicsShaderGroupCreateInfoNVBuilder<'a>;
@@ -16003,6 +16290,130 @@ impl Deref for AccelerationStructureGeometryInstancesDataKHRBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::AccelerationStructureGeometryLinearSweptSpheresDataNV {
+    type Type = AccelerationStructureGeometryLinearSweptSpheresDataNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureGeometryLinearSweptSpheresDataNVBuilder {
+    inner: vk::AccelerationStructureGeometryLinearSweptSpheresDataNV,
+}
+impl AccelerationStructureGeometryLinearSweptSpheresDataNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn vertex_format(mut self, vertex_format: vk::Format) -> Self {
+        self.inner.vertex_format = vertex_format;
+        self
+    }
+    pub fn vertex_data(mut self, vertex_data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.vertex_data = vertex_data;
+        self
+    }
+    pub fn vertex_stride(mut self, vertex_stride: vk::DeviceSize) -> Self {
+        self.inner.vertex_stride = vertex_stride;
+        self
+    }
+    pub fn radius_format(mut self, radius_format: vk::Format) -> Self {
+        self.inner.radius_format = radius_format;
+        self
+    }
+    pub fn radius_data(mut self, radius_data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.radius_data = radius_data;
+        self
+    }
+    pub fn radius_stride(mut self, radius_stride: vk::DeviceSize) -> Self {
+        self.inner.radius_stride = radius_stride;
+        self
+    }
+    pub fn index_type(mut self, index_type: vk::IndexType) -> Self {
+        self.inner.index_type = index_type;
+        self
+    }
+    pub fn index_data(mut self, index_data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.index_data = index_data;
+        self
+    }
+    pub fn index_stride(mut self, index_stride: vk::DeviceSize) -> Self {
+        self.inner.index_stride = index_stride;
+        self
+    }
+    pub fn indexing_mode(mut self, indexing_mode: vk::RayTracingLssIndexingModeNV) -> Self {
+        self.inner.indexing_mode = indexing_mode;
+        self
+    }
+    pub fn end_caps_mode(mut self, end_caps_mode: vk::RayTracingLssPrimitiveEndCapsModeNV) -> Self {
+        self.inner.end_caps_mode = end_caps_mode;
+        self
+    }
+}
+impl Deref for AccelerationStructureGeometryLinearSweptSpheresDataNVBuilder {
+    type Target = vk::AccelerationStructureGeometryLinearSweptSpheresDataNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::AccelerationStructureGeometrySpheresDataNV {
+    type Type = AccelerationStructureGeometrySpheresDataNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureGeometrySpheresDataNVBuilder {
+    inner: vk::AccelerationStructureGeometrySpheresDataNV,
+}
+impl AccelerationStructureGeometrySpheresDataNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn vertex_format(mut self, vertex_format: vk::Format) -> Self {
+        self.inner.vertex_format = vertex_format;
+        self
+    }
+    pub fn vertex_data(mut self, vertex_data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.vertex_data = vertex_data;
+        self
+    }
+    pub fn vertex_stride(mut self, vertex_stride: vk::DeviceSize) -> Self {
+        self.inner.vertex_stride = vertex_stride;
+        self
+    }
+    pub fn radius_format(mut self, radius_format: vk::Format) -> Self {
+        self.inner.radius_format = radius_format;
+        self
+    }
+    pub fn radius_data(mut self, radius_data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.radius_data = radius_data;
+        self
+    }
+    pub fn radius_stride(mut self, radius_stride: vk::DeviceSize) -> Self {
+        self.inner.radius_stride = radius_stride;
+        self
+    }
+    pub fn index_type(mut self, index_type: vk::IndexType) -> Self {
+        self.inner.index_type = index_type;
+        self
+    }
+    pub fn index_data(mut self, index_data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.index_data = index_data;
+        self
+    }
+    pub fn index_stride(mut self, index_stride: vk::DeviceSize) -> Self {
+        self.inner.index_stride = index_stride;
+        self
+    }
+}
+impl Deref for AccelerationStructureGeometrySpheresDataNVBuilder {
+    type Target = vk::AccelerationStructureGeometrySpheresDataNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::AccelerationStructureGeometryKHR {
     type Type = AccelerationStructureGeometryKHRBuilder;
     fn builder() -> Self::Type {
@@ -16937,6 +17348,199 @@ impl Deref for CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder {
 }
 impl CommandBufferInheritanceInfoNext for CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder {}
 impl CommandBufferInheritanceInfoNext for vk::CommandBufferInheritanceRenderPassTransformInfoQCOM {}
+impl Builder<'_> for vk::PhysicalDevicePartitionedAccelerationStructureFeaturesNV {
+    type Type = PhysicalDevicePartitionedAccelerationStructureFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePartitionedAccelerationStructureFeaturesNVBuilder {
+    inner: vk::PhysicalDevicePartitionedAccelerationStructureFeaturesNV,
+}
+impl PhysicalDevicePartitionedAccelerationStructureFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn partitioned_acceleration_structure(mut self, partitioned_acceleration_structure: bool) -> Self {
+        self.inner.partitioned_acceleration_structure = if partitioned_acceleration_structure {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDevicePartitionedAccelerationStructureFeaturesNVBuilder {
+    type Target = vk::PhysicalDevicePartitionedAccelerationStructureFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePartitionedAccelerationStructureFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePartitionedAccelerationStructureFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePartitionedAccelerationStructureFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePartitionedAccelerationStructureFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePartitionedAccelerationStructurePropertiesNV {}
+impl Builder<'_> for vk::PartitionedAccelerationStructureFlagsNV {
+    type Type = PartitionedAccelerationStructureFlagsNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PartitionedAccelerationStructureFlagsNVBuilder {
+    inner: vk::PartitionedAccelerationStructureFlagsNV,
+}
+impl PartitionedAccelerationStructureFlagsNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn enable_partition_translation(mut self, enable_partition_translation: bool) -> Self {
+        self.inner.enable_partition_translation = if enable_partition_translation {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PartitionedAccelerationStructureFlagsNVBuilder {
+    type Target = vk::PartitionedAccelerationStructureFlagsNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PartitionedAccelerationStructureInstancesInputNVNext for PartitionedAccelerationStructureFlagsNVBuilder {}
+impl PartitionedAccelerationStructureInstancesInputNVNext for vk::PartitionedAccelerationStructureFlagsNV {}
+impl<'a> Builder<'a> for vk::WriteDescriptorSetPartitionedAccelerationStructureNV {
+    type Type = WriteDescriptorSetPartitionedAccelerationStructureNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct WriteDescriptorSetPartitionedAccelerationStructureNVBuilder<'a> {
+    inner: vk::WriteDescriptorSetPartitionedAccelerationStructureNV,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> WriteDescriptorSetPartitionedAccelerationStructureNVBuilder<'a> {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_acceleration_structures(mut self, p_acceleration_structures: &'a [vk::DeviceAddress]) -> Self {
+        self.inner.acceleration_structure_count = p_acceleration_structures.len() as u32;
+        self.inner.p_acceleration_structures = p_acceleration_structures.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for WriteDescriptorSetPartitionedAccelerationStructureNVBuilder<'a> {
+    type Target = vk::WriteDescriptorSetPartitionedAccelerationStructureNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> WriteDescriptorSetNext for WriteDescriptorSetPartitionedAccelerationStructureNVBuilder<'a> {}
+impl WriteDescriptorSetNext for vk::WriteDescriptorSetPartitionedAccelerationStructureNV {}
+impl<'a> Builder<'a> for vk::PartitionedAccelerationStructureInstancesInputNV {
+    type Type = PartitionedAccelerationStructureInstancesInputNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait PartitionedAccelerationStructureInstancesInputNVNext {}
+#[derive(Default)]
+pub struct PartitionedAccelerationStructureInstancesInputNVBuilder<'a> {
+    inner: vk::PartitionedAccelerationStructureInstancesInputNV,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PartitionedAccelerationStructureInstancesInputNVBuilder<'a> {
+    pub fn insert_next<T: PartitionedAccelerationStructureInstancesInputNVNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::BuildAccelerationStructureFlagsKHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn instance_count(mut self, instance_count: u32) -> Self {
+        self.inner.instance_count = instance_count;
+        self
+    }
+    pub fn max_instance_per_partition_count(mut self, max_instance_per_partition_count: u32) -> Self {
+        self.inner.max_instance_per_partition_count = max_instance_per_partition_count;
+        self
+    }
+    pub fn partition_count(mut self, partition_count: u32) -> Self {
+        self.inner.partition_count = partition_count;
+        self
+    }
+    pub fn max_instance_in_global_partition_count(mut self, max_instance_in_global_partition_count: u32) -> Self {
+        self.inner.max_instance_in_global_partition_count = max_instance_in_global_partition_count;
+        self
+    }
+}
+impl<'a> Deref for PartitionedAccelerationStructureInstancesInputNVBuilder<'a> {
+    type Target = vk::PartitionedAccelerationStructureInstancesInputNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::BuildPartitionedAccelerationStructureInfoNV {
+    type Type = BuildPartitionedAccelerationStructureInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BuildPartitionedAccelerationStructureInfoNVBuilder {
+    inner: vk::BuildPartitionedAccelerationStructureInfoNV,
+}
+impl BuildPartitionedAccelerationStructureInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn input(mut self, input: vk::PartitionedAccelerationStructureInstancesInputNV) -> Self {
+        self.inner.input = input;
+        self
+    }
+    pub fn src_acceleration_structure_data(mut self, src_acceleration_structure_data: vk::DeviceAddress) -> Self {
+        self.inner.src_acceleration_structure_data = src_acceleration_structure_data;
+        self
+    }
+    pub fn dst_acceleration_structure_data(mut self, dst_acceleration_structure_data: vk::DeviceAddress) -> Self {
+        self.inner.dst_acceleration_structure_data = dst_acceleration_structure_data;
+        self
+    }
+    pub fn scratch_data(mut self, scratch_data: vk::DeviceAddress) -> Self {
+        self.inner.scratch_data = scratch_data;
+        self
+    }
+    pub fn src_infos(mut self, src_infos: vk::DeviceAddress) -> Self {
+        self.inner.src_infos = src_infos;
+        self
+    }
+    pub fn src_infos_count(mut self, src_infos_count: vk::DeviceAddress) -> Self {
+        self.inner.src_infos_count = src_infos_count;
+        self
+    }
+}
+impl Deref for BuildPartitionedAccelerationStructureInfoNVBuilder {
+    type Target = vk::BuildPartitionedAccelerationStructureInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::PhysicalDeviceDiagnosticsConfigFeaturesNV {
     type Type = PhysicalDeviceDiagnosticsConfigFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -21135,6 +21739,40 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingValidationFeaturesN
 impl DeviceCreateInfoNext for PhysicalDeviceRayTracingValidationFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingValidationFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingValidationFeaturesNV {}
+impl Builder<'_> for vk::PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV {
+    type Type = PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV,
+}
+impl PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn spheres(mut self, spheres: bool) -> Self {
+        self.inner.spheres = if spheres { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn linear_swept_spheres(mut self, linear_swept_spheres: bool) -> Self {
+        self.inner.linear_swept_spheres = if linear_swept_spheres { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV {}
 impl Builder<'_> for vk::AccelerationStructureGeometryMotionTrianglesDataNV {
     type Type = AccelerationStructureGeometryMotionTrianglesDataNVBuilder;
     fn builder() -> Self::Type {
@@ -28075,3 +28713,158 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceDepthClampZeroOneFeaturesKHRB
 impl DeviceCreateInfoNext for PhysicalDeviceDepthClampZeroOneFeaturesKHRBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDepthClampZeroOneFeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceDepthClampZeroOneFeaturesKHR {}
+impl Builder<'_> for vk::PhysicalDeviceCooperativeVectorFeaturesNV {
+    type Type = PhysicalDeviceCooperativeVectorFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceCooperativeVectorFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceCooperativeVectorFeaturesNV,
+}
+impl PhysicalDeviceCooperativeVectorFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cooperative_vector(mut self, cooperative_vector: bool) -> Self {
+        self.inner.cooperative_vector = if cooperative_vector { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn cooperative_vector_training(mut self, cooperative_vector_training: bool) -> Self {
+        self.inner.cooperative_vector_training = if cooperative_vector_training {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCooperativeVectorFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceCooperativeVectorFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCooperativeVectorFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCooperativeVectorFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCooperativeVectorFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeVectorFeaturesNV {}
+impl Builder<'_> for vk::CooperativeVectorPropertiesNV {
+    type Type = CooperativeVectorPropertiesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CooperativeVectorPropertiesNVBuilder {
+    inner: vk::CooperativeVectorPropertiesNV,
+}
+impl CooperativeVectorPropertiesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn input_type(mut self, input_type: vk::ComponentTypeKHR) -> Self {
+        self.inner.input_type = input_type;
+        self
+    }
+    pub fn input_interpretation(mut self, input_interpretation: vk::ComponentTypeKHR) -> Self {
+        self.inner.input_interpretation = input_interpretation;
+        self
+    }
+    pub fn matrix_interpretation(mut self, matrix_interpretation: vk::ComponentTypeKHR) -> Self {
+        self.inner.matrix_interpretation = matrix_interpretation;
+        self
+    }
+    pub fn bias_interpretation(mut self, bias_interpretation: vk::ComponentTypeKHR) -> Self {
+        self.inner.bias_interpretation = bias_interpretation;
+        self
+    }
+    pub fn result_type(mut self, result_type: vk::ComponentTypeKHR) -> Self {
+        self.inner.result_type = result_type;
+        self
+    }
+    pub fn transpose(mut self, transpose: bool) -> Self {
+        self.inner.transpose = if transpose { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for CooperativeVectorPropertiesNVBuilder {
+    type Target = vk::CooperativeVectorPropertiesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCooperativeVectorPropertiesNV {}
+impl Builder<'_> for vk::ConvertCooperativeVectorMatrixInfoNV {
+    type Type = ConvertCooperativeVectorMatrixInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ConvertCooperativeVectorMatrixInfoNVBuilder {
+    inner: vk::ConvertCooperativeVectorMatrixInfoNV,
+}
+impl ConvertCooperativeVectorMatrixInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_size(mut self, src_size: usize) -> Self {
+        self.inner.src_size = src_size;
+        self
+    }
+    pub fn src_data(mut self, src_data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.src_data = src_data;
+        self
+    }
+    pub fn p_dst_size(mut self, p_dst_size: *mut usize) -> Self {
+        self.inner.p_dst_size = p_dst_size;
+        self
+    }
+    pub fn dst_data(mut self, dst_data: vk::DeviceOrHostAddressKHR) -> Self {
+        self.inner.dst_data = dst_data;
+        self
+    }
+    pub fn src_component_type(mut self, src_component_type: vk::ComponentTypeKHR) -> Self {
+        self.inner.src_component_type = src_component_type;
+        self
+    }
+    pub fn dst_component_type(mut self, dst_component_type: vk::ComponentTypeKHR) -> Self {
+        self.inner.dst_component_type = dst_component_type;
+        self
+    }
+    pub fn num_rows(mut self, num_rows: u32) -> Self {
+        self.inner.num_rows = num_rows;
+        self
+    }
+    pub fn num_columns(mut self, num_columns: u32) -> Self {
+        self.inner.num_columns = num_columns;
+        self
+    }
+    pub fn src_layout(mut self, src_layout: vk::CooperativeVectorMatrixLayoutNV) -> Self {
+        self.inner.src_layout = src_layout;
+        self
+    }
+    pub fn src_stride(mut self, src_stride: usize) -> Self {
+        self.inner.src_stride = src_stride;
+        self
+    }
+    pub fn dst_layout(mut self, dst_layout: vk::CooperativeVectorMatrixLayoutNV) -> Self {
+        self.inner.dst_layout = dst_layout;
+        self
+    }
+    pub fn dst_stride(mut self, dst_stride: usize) -> Self {
+        self.inner.dst_stride = dst_stride;
+        self
+    }
+}
+impl Deref for ConvertCooperativeVectorMatrixInfoNVBuilder {
+    type Target = vk::ConvertCooperativeVectorMatrixInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

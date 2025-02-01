@@ -227,6 +227,7 @@ pub const MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT: usize = 32;
 pub const MAX_PIPELINE_BINARY_KEY_SIZE_KHR: usize = 32;
 pub const MAX_VIDEO_AV1_REFERENCES_PER_FRAME_KHR: usize = 7;
 pub const SHADER_INDEX_UNUSED_AMDX: u32 = 0xffffffff;
+pub const PARTITIONED_ACCELERATION_STRUCTURE_PARTITION_INDEX_GLOBAL_NV: u32 = 0xffffffff;
 pub type SampleMask = u32;
 pub type Bool32 = u32;
 pub type Flags = u32;
@@ -2124,6 +2125,68 @@ impl fmt::Display for GeometryInstanceFlagsKHR {
 pub type GeometryInstanceFlagsNV = GeometryInstanceFlagsKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureGeometryFlagsNV(pub(crate) u32);
+impl ClusterAccelerationStructureGeometryFlagsNV {
+    pub const CULL_DISABLE: Self = Self(0x1);
+    pub const NO_DUPLICATE_ANYHIT_INVOCATION: Self = Self(0x2);
+    pub const OPAQUE: Self = Self(0x4);
+}
+impl_bitmask!(ClusterAccelerationStructureGeometryFlagsNV, 0x7);
+impl fmt::Display for ClusterAccelerationStructureGeometryFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "CULL_DISABLE"),
+                (0x2, "NO_DUPLICATE_ANYHIT_INVOCATION"),
+                (0x4, "OPAQUE"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureClusterFlagsNV(pub(crate) u32);
+impl ClusterAccelerationStructureClusterFlagsNV {
+    pub const ALLOW_DISABLE_OPACITY_MICROMAPS: Self = Self(0x1);
+}
+impl_bitmask!(ClusterAccelerationStructureClusterFlagsNV, 0x1);
+impl fmt::Display for ClusterAccelerationStructureClusterFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "ALLOW_DISABLE_OPACITY_MICROMAPS")], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureAddressResolutionFlagsNV(pub(crate) u32);
+impl ClusterAccelerationStructureAddressResolutionFlagsNV {
+    pub const INDIRECTED_DST_IMPLICIT_DATA: Self = Self(0x1);
+    pub const INDIRECTED_SCRATCH_DATA: Self = Self(0x2);
+    pub const INDIRECTED_DST_ADDRESS_ARRAY: Self = Self(0x4);
+    pub const INDIRECTED_DST_SIZES_ARRAY: Self = Self(0x8);
+    pub const INDIRECTED_SRC_INFOS_ARRAY: Self = Self(0x10);
+    pub const INDIRECTED_SRC_INFOS_COUNT: Self = Self(0x20);
+}
+impl_bitmask!(ClusterAccelerationStructureAddressResolutionFlagsNV, 0x3f);
+impl fmt::Display for ClusterAccelerationStructureAddressResolutionFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "INDIRECTED_DST_IMPLICIT_DATA"),
+                (0x2, "INDIRECTED_SCRATCH_DATA"),
+                (0x4, "INDIRECTED_DST_ADDRESS_ARRAY"),
+                (0x8, "INDIRECTED_DST_SIZES_ARRAY"),
+                (0x10, "INDIRECTED_SRC_INFOS_ARRAY"),
+                (0x20, "INDIRECTED_SRC_INFOS_COUNT"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct BuildAccelerationStructureFlagsKHR(pub(crate) u32);
 impl BuildAccelerationStructureFlagsKHR {
     pub const ALLOW_UPDATE: Self = Self(0x1);
@@ -2562,8 +2625,10 @@ impl PipelineStageFlags2 {
     pub const CLUSTER_CULLING_SHADER_HUAWEI: Self = Self(0x20000000000);
     /// Added by extension VK_NV_optical_flow.
     pub const OPTICAL_FLOW_NV: Self = Self(0x20000000);
+    /// Added by extension VK_NV_cooperative_vector.
+    pub const CONVERT_COOPERATIVE_VECTOR_MATRIX_NV: Self = Self(0x100000000000);
 }
-impl_bitmask!(PipelineStageFlags2, 0x3ff73ffffff);
+impl_bitmask!(PipelineStageFlags2, 0x13ff73ffffff);
 impl fmt::Display for PipelineStageFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2608,6 +2673,7 @@ impl fmt::Display for PipelineStageFlags2 {
                 (0x40000000, "MICROMAP_BUILD_EXT"),
                 (0x20000000000, "CLUSTER_CULLING_SHADER_HUAWEI"),
                 (0x20000000, "OPTICAL_FLOW_NV"),
+                (0x100000000000, "CONVERT_COOPERATIVE_VECTOR_MATRIX_NV"),
             ],
             f,
         )
@@ -2705,6 +2771,8 @@ impl FormatFeatureFlags2 {
     pub const SAMPLED_IMAGE_DEPTH_COMPARISON_KHR: Self = Self::SAMPLED_IMAGE_DEPTH_COMPARISON;
     pub const SAMPLED_IMAGE_FILTER_MINMAX_KHR: Self = Self::SAMPLED_IMAGE_FILTER_MINMAX;
     pub const SAMPLED_IMAGE_FILTER_CUBIC_EXT: Self = Self::SAMPLED_IMAGE_FILTER_CUBIC;
+    /// Added by extension VK_NV_ray_tracing_linear_swept_spheres.
+    pub const ACCELERATION_STRUCTURE_RADIUS_BUFFER_NV: Self = Self(0x8000000000000);
     /// Format support linear image as render target, it cannot be mixed with non linear attachment
     /// Added by extension VK_NV_linear_color_attachment.
     pub const LINEAR_COLOR_ATTACHMENT_NV: Self = Self(0x4000000000);
@@ -2723,7 +2791,7 @@ impl FormatFeatureFlags2 {
     /// Added by extension VK_NV_optical_flow.
     pub const OPTICAL_FLOW_COST_NV: Self = Self(0x40000000000);
 }
-impl_bitmask!(FormatFeatureFlags2, 0x477fe1ffffff);
+impl_bitmask!(FormatFeatureFlags2, 0x8477fe1ffffff);
 impl fmt::Display for FormatFeatureFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2766,6 +2834,7 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x20000000, "ACCELERATION_STRUCTURE_VERTEX_BUFFER_KHR"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x40000000, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
+                (0x8000000000000, "ACCELERATION_STRUCTURE_RADIUS_BUFFER_NV"),
                 (0x4000000000, "LINEAR_COLOR_ATTACHMENT_NV"),
                 (0x400000000, "WEIGHT_IMAGE_QCOM"),
                 (0x800000000, "WEIGHT_SAMPLED_IMAGE_QCOM"),
@@ -2919,6 +2988,9 @@ impl PipelineCreateFlags2 {
     pub const PROTECTED_ACCESS_ONLY: Self = Self(0x40000000);
     /// Added by extension VK_AMDX_shader_enqueue.
     pub const EXECUTION_GRAPH_AMDX: Self = Self(0x100000000);
+    pub const RAY_TRACING_SKIP_BUILT_IN_PRIMITIVES_KHR: Self = Self::RAY_TRACING_SKIP_TRIANGLES_KHR;
+    /// Added by extension VK_NV_ray_tracing_linear_swept_spheres.
+    pub const RAY_TRACING_ALLOW_SPHERES_AND_LINEAR_SWEPT_SPHERES_NV: Self = Self(0x200000000);
     /// Added by extension VK_EXT_legacy_dithering.
     pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x400000000);
     pub const DISABLE_OPTIMIZATION_KHR: Self = Self::DISABLE_OPTIMIZATION;
@@ -2981,7 +3053,7 @@ impl PipelineCreateFlags2 {
     /// Added by extension VK_EXT_device_generated_commands.
     pub const INDIRECT_BINDABLE_EXT: Self = Self(0x4000000000);
 }
-impl_bitmask!(PipelineCreateFlags2, 0x65ffffffff);
+impl_bitmask!(PipelineCreateFlags2, 0x67ffffffff);
 impl fmt::Display for PipelineCreateFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2997,6 +3069,7 @@ impl fmt::Display for PipelineCreateFlags2 {
                 (0x8000000, "NO_PROTECTED_ACCESS"),
                 (0x40000000, "PROTECTED_ACCESS_ONLY"),
                 (0x100000000, "EXECUTION_GRAPH_AMDX"),
+                (0x200000000, "RAY_TRACING_ALLOW_SPHERES_AND_LINEAR_SWEPT_SPHERES_NV"),
                 (0x400000000, "ENABLE_LEGACY_DITHERING_EXT"),
                 (0x20, "DEFER_COMPILE_NV"),
                 (0x40, "CAPTURE_STATISTICS_KHR"),
@@ -3527,6 +3600,20 @@ impl fmt::Display for ExternalMemoryHandleTypeFlagsNV {
             ],
             f,
         )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureIndexFormatFlagsNV(pub(crate) u32);
+impl ClusterAccelerationStructureIndexFormatFlagsNV {
+    pub const N8BIT: Self = Self(0x1);
+    pub const N16BIT: Self = Self(0x2);
+    pub const N32BIT: Self = Self(0x4);
+}
+impl_bitmask!(ClusterAccelerationStructureIndexFormatFlagsNV, 0x7);
+impl fmt::Display for ClusterAccelerationStructureIndexFormatFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "N8BIT"), (0x2, "N16BIT"), (0x4, "N32BIT")], f)
     }
 }
 #[repr(transparent)]
@@ -4086,6 +4173,32 @@ impl fmt::Display for HostImageCopyFlags {
     }
 }
 pub type HostImageCopyFlagsEXT = HostImageCopyFlags;
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct PartitionedAccelerationStructureInstanceFlagsNV(pub(crate) u32);
+impl PartitionedAccelerationStructureInstanceFlagsNV {
+    pub const TRIANGLE_FACING_CULL_DISABLE: Self = Self(0x1);
+    pub const TRIANGLE_FLIP_FACING: Self = Self(0x2);
+    pub const FORCE_OPAQUE: Self = Self(0x4);
+    pub const FORCE_NO_OPAQUE: Self = Self(0x8);
+    pub const ENABLE_EXPLICIT_BOUNDING_BOX: Self = Self(0x10);
+}
+impl_bitmask!(PartitionedAccelerationStructureInstanceFlagsNV, 0x1f);
+impl fmt::Display for PartitionedAccelerationStructureInstanceFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "TRIANGLE_FACING_CULL_DISABLE"),
+                (0x2, "TRIANGLE_FLIP_FACING"),
+                (0x4, "FORCE_OPAQUE"),
+                (0x8, "FORCE_NO_OPAQUE"),
+                (0x10, "ENABLE_EXPLICIT_BOUNDING_BOX"),
+            ],
+            f,
+        )
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageConstraintsInfoFlagsFUCHSIA(pub(crate) u32);
@@ -5290,6 +5403,8 @@ impl DescriptorType {
     /// Added by extension VK_QCOM_image_processing.
     pub const BLOCK_MATCH_IMAGE_QCOM: Self = Self(1000440001);
     pub const MUTABLE_EXT: Self = Self(1000351000);
+    /// Added by extension VK_NV_partitioned_acceleration_structure.
+    pub const PARTITIONED_ACCELERATION_STRUCTURE_NV: Self = Self(1000570000);
 }
 impl fmt::Display for DescriptorType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5311,6 +5426,7 @@ impl fmt::Display for DescriptorType {
             1000440000 => Some(&"SAMPLE_WEIGHT_IMAGE_QCOM"),
             1000440001 => Some(&"BLOCK_MATCH_IMAGE_QCOM"),
             1000351000 => Some(&"MUTABLE_EXT"),
+            1000570000 => Some(&"PARTITIONED_ACCELERATION_STRUCTURE_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -8296,6 +8412,12 @@ impl StructureType {
     pub const COMPUTE_PIPELINE_INDIRECT_BUFFER_INFO_NV: Self = Self(1000428001);
     /// Added by extension VK_NV_device_generated_commands_compute.
     pub const PIPELINE_INDIRECT_DEVICE_ADDRESS_INFO_NV: Self = Self(1000428002);
+    /// Added by extension VK_NV_ray_tracing_linear_swept_spheres.
+    pub const PHYSICAL_DEVICE_RAY_TRACING_LINEAR_SWEPT_SPHERES_FEATURES_NV: Self = Self(1000429008);
+    /// Added by extension VK_NV_ray_tracing_linear_swept_spheres.
+    pub const ACCELERATION_STRUCTURE_GEOMETRY_LINEAR_SWEPT_SPHERES_DATA_NV: Self = Self(1000429009);
+    /// Added by extension VK_NV_ray_tracing_linear_swept_spheres.
+    pub const ACCELERATION_STRUCTURE_GEOMETRY_SPHERES_DATA_NV: Self = Self(1000429010);
     /// Added by extension VK_NV_linear_color_attachment.
     pub const PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV: Self = Self(1000430000);
     /// Added by extension VK_KHR_shader_maximal_reconvergence.
@@ -8421,6 +8543,14 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV: Self = Self(1000490000);
     /// Added by extension VK_NV_ray_tracing_invocation_reorder.
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV: Self = Self(1000490001);
+    /// Added by extension VK_NV_cooperative_vector.
+    pub const PHYSICAL_DEVICE_COOPERATIVE_VECTOR_FEATURES_NV: Self = Self(1000491000);
+    /// Added by extension VK_NV_cooperative_vector.
+    pub const PHYSICAL_DEVICE_COOPERATIVE_VECTOR_PROPERTIES_NV: Self = Self(1000491001);
+    /// Added by extension VK_NV_cooperative_vector.
+    pub const COOPERATIVE_VECTOR_PROPERTIES_NV: Self = Self(1000491002);
+    /// Added by extension VK_NV_cooperative_vector.
+    pub const CONVERT_COOPERATIVE_VECTOR_MATRIX_INFO_NV: Self = Self(1000491004);
     /// Added by extension VK_NV_extended_sparse_address_space.
     pub const PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_FEATURES_NV: Self = Self(1000492000);
     /// Added by extension VK_NV_extended_sparse_address_space.
@@ -8552,6 +8682,34 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT: Self = Self(1000564000);
     /// Added by extension VK_NV_ray_tracing_validation.
     pub const PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV: Self = Self(1000568000);
+    /// Added by extension VK_NV_cluster_acceleration_structure.
+    pub const PHYSICAL_DEVICE_CLUSTER_ACCELERATION_STRUCTURE_FEATURES_NV: Self = Self(1000569000);
+    /// Added by extension VK_NV_cluster_acceleration_structure.
+    pub const PHYSICAL_DEVICE_CLUSTER_ACCELERATION_STRUCTURE_PROPERTIES_NV: Self = Self(1000569001);
+    /// Added by extension VK_NV_cluster_acceleration_structure.
+    pub const CLUSTER_ACCELERATION_STRUCTURE_CLUSTERS_BOTTOM_LEVEL_INPUT_NV: Self = Self(1000569002);
+    /// Added by extension VK_NV_cluster_acceleration_structure.
+    pub const CLUSTER_ACCELERATION_STRUCTURE_TRIANGLE_CLUSTER_INPUT_NV: Self = Self(1000569003);
+    /// Added by extension VK_NV_cluster_acceleration_structure.
+    pub const CLUSTER_ACCELERATION_STRUCTURE_MOVE_OBJECTS_INPUT_NV: Self = Self(1000569004);
+    /// Added by extension VK_NV_cluster_acceleration_structure.
+    pub const CLUSTER_ACCELERATION_STRUCTURE_INPUT_INFO_NV: Self = Self(1000569005);
+    /// Added by extension VK_NV_cluster_acceleration_structure.
+    pub const CLUSTER_ACCELERATION_STRUCTURE_COMMANDS_INFO_NV: Self = Self(1000569006);
+    /// Added by extension VK_NV_cluster_acceleration_structure.
+    pub const RAY_TRACING_PIPELINE_CLUSTER_ACCELERATION_STRUCTURE_CREATE_INFO_NV: Self = Self(1000569007);
+    /// Added by extension VK_NV_partitioned_acceleration_structure.
+    pub const PHYSICAL_DEVICE_PARTITIONED_ACCELERATION_STRUCTURE_FEATURES_NV: Self = Self(1000570000);
+    /// Added by extension VK_NV_partitioned_acceleration_structure.
+    pub const PHYSICAL_DEVICE_PARTITIONED_ACCELERATION_STRUCTURE_PROPERTIES_NV: Self = Self(1000570001);
+    /// Added by extension VK_NV_partitioned_acceleration_structure.
+    pub const WRITE_DESCRIPTOR_SET_PARTITIONED_ACCELERATION_STRUCTURE_NV: Self = Self(1000570002);
+    /// Added by extension VK_NV_partitioned_acceleration_structure.
+    pub const PARTITIONED_ACCELERATION_STRUCTURE_INSTANCES_INPUT_NV: Self = Self(1000570003);
+    /// Added by extension VK_NV_partitioned_acceleration_structure.
+    pub const BUILD_PARTITIONED_ACCELERATION_STRUCTURE_INFO_NV: Self = Self(1000570004);
+    /// Added by extension VK_NV_partitioned_acceleration_structure.
+    pub const PARTITIONED_ACCELERATION_STRUCTURE_FLAGS_NV: Self = Self(1000570005);
     /// Added by extension VK_EXT_device_generated_commands.
     pub const PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_EXT: Self = Self(1000572000);
     /// Added by extension VK_EXT_device_generated_commands.
@@ -9344,6 +9502,9 @@ impl fmt::Display for StructureType {
             1000428000 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_COMPUTE_FEATURES_NV"),
             1000428001 => Some(&"COMPUTE_PIPELINE_INDIRECT_BUFFER_INFO_NV"),
             1000428002 => Some(&"PIPELINE_INDIRECT_DEVICE_ADDRESS_INFO_NV"),
+            1000429008 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_LINEAR_SWEPT_SPHERES_FEATURES_NV"),
+            1000429009 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_LINEAR_SWEPT_SPHERES_DATA_NV"),
+            1000429010 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_SPHERES_DATA_NV"),
             1000430000 => Some(&"PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV"),
             1000434000 => Some(&"PHYSICAL_DEVICE_SHADER_MAXIMAL_RECONVERGENCE_FEATURES_KHR"),
             1000437000 => Some(&"PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT"),
@@ -9401,6 +9562,10 @@ impl fmt::Display for StructureType {
             1000488000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM"),
             1000490000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV"),
             1000490001 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV"),
+            1000491000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_VECTOR_FEATURES_NV"),
+            1000491001 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_VECTOR_PROPERTIES_NV"),
+            1000491002 => Some(&"COOPERATIVE_VECTOR_PROPERTIES_NV"),
+            1000491004 => Some(&"CONVERT_COOPERATIVE_VECTOR_MATRIX_INFO_NV"),
             1000492000 => Some(&"PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_FEATURES_NV"),
             1000492001 => Some(&"PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_PROPERTIES_NV"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT"),
@@ -9457,6 +9622,20 @@ impl fmt::Display for StructureType {
             1000563000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV"),
             1000564000 => Some(&"PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT"),
             1000568000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV"),
+            1000569000 => Some(&"PHYSICAL_DEVICE_CLUSTER_ACCELERATION_STRUCTURE_FEATURES_NV"),
+            1000569001 => Some(&"PHYSICAL_DEVICE_CLUSTER_ACCELERATION_STRUCTURE_PROPERTIES_NV"),
+            1000569002 => Some(&"CLUSTER_ACCELERATION_STRUCTURE_CLUSTERS_BOTTOM_LEVEL_INPUT_NV"),
+            1000569003 => Some(&"CLUSTER_ACCELERATION_STRUCTURE_TRIANGLE_CLUSTER_INPUT_NV"),
+            1000569004 => Some(&"CLUSTER_ACCELERATION_STRUCTURE_MOVE_OBJECTS_INPUT_NV"),
+            1000569005 => Some(&"CLUSTER_ACCELERATION_STRUCTURE_INPUT_INFO_NV"),
+            1000569006 => Some(&"CLUSTER_ACCELERATION_STRUCTURE_COMMANDS_INFO_NV"),
+            1000569007 => Some(&"RAY_TRACING_PIPELINE_CLUSTER_ACCELERATION_STRUCTURE_CREATE_INFO_NV"),
+            1000570000 => Some(&"PHYSICAL_DEVICE_PARTITIONED_ACCELERATION_STRUCTURE_FEATURES_NV"),
+            1000570001 => Some(&"PHYSICAL_DEVICE_PARTITIONED_ACCELERATION_STRUCTURE_PROPERTIES_NV"),
+            1000570002 => Some(&"WRITE_DESCRIPTOR_SET_PARTITIONED_ACCELERATION_STRUCTURE_NV"),
+            1000570003 => Some(&"PARTITIONED_ACCELERATION_STRUCTURE_INSTANCES_INPUT_NV"),
+            1000570004 => Some(&"BUILD_PARTITIONED_ACCELERATION_STRUCTURE_INFO_NV"),
+            1000570005 => Some(&"PARTITIONED_ACCELERATION_STRUCTURE_FLAGS_NV"),
             1000572000 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_EXT"),
             1000572001 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_EXT"),
             1000572002 => Some(&"GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_EXT"),
@@ -9633,6 +9812,79 @@ impl fmt::Display for VertexInputRate {
         let name = match self.0 {
             0 => Some(&"VERTEX"),
             1 => Some(&"INSTANCE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureTypeNV(pub(crate) i32);
+impl ClusterAccelerationStructureTypeNV {
+    pub const CLUSTERS_BOTTOM_LEVEL: Self = Self(0);
+    pub const TRIANGLE_CLUSTER: Self = Self(1);
+    pub const TRIANGLE_CLUSTER_TEMPLATE: Self = Self(2);
+}
+impl fmt::Display for ClusterAccelerationStructureTypeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"CLUSTERS_BOTTOM_LEVEL"),
+            1 => Some(&"TRIANGLE_CLUSTER"),
+            2 => Some(&"TRIANGLE_CLUSTER_TEMPLATE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureOpTypeNV(pub(crate) i32);
+impl ClusterAccelerationStructureOpTypeNV {
+    pub const MOVE_OBJECTS: Self = Self(0);
+    pub const BUILD_CLUSTERS_BOTTOM_LEVEL: Self = Self(1);
+    pub const BUILD_TRIANGLE_CLUSTER: Self = Self(2);
+    pub const BUILD_TRIANGLE_CLUSTER_TEMPLATE: Self = Self(3);
+    pub const INSTANTIATE_TRIANGLE_CLUSTER: Self = Self(4);
+}
+impl fmt::Display for ClusterAccelerationStructureOpTypeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"MOVE_OBJECTS"),
+            1 => Some(&"BUILD_CLUSTERS_BOTTOM_LEVEL"),
+            2 => Some(&"BUILD_TRIANGLE_CLUSTER"),
+            3 => Some(&"BUILD_TRIANGLE_CLUSTER_TEMPLATE"),
+            4 => Some(&"INSTANTIATE_TRIANGLE_CLUSTER"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureOpModeNV(pub(crate) i32);
+impl ClusterAccelerationStructureOpModeNV {
+    pub const IMPLICIT_DESTINATIONS: Self = Self(0);
+    pub const EXPLICIT_DESTINATIONS: Self = Self(1);
+    pub const COMPUTE_SIZES: Self = Self(2);
+}
+impl fmt::Display for ClusterAccelerationStructureOpModeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"IMPLICIT_DESTINATIONS"),
+            1 => Some(&"EXPLICIT_DESTINATIONS"),
+            2 => Some(&"COMPUTE_SIZES"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10242,6 +10494,10 @@ impl GeometryTypeKHR {
     pub const INSTANCES: Self = Self(2);
     pub const TRIANGLES_NV: Self = Self::TRIANGLES;
     pub const AABBS_NV: Self = Self::AABBS;
+    /// Added by extension VK_NV_ray_tracing_linear_swept_spheres.
+    pub const SPHERES_NV: Self = Self(1000429004);
+    /// Added by extension VK_NV_ray_tracing_linear_swept_spheres.
+    pub const LINEAR_SWEPT_SPHERES_NV: Self = Self(1000429005);
 }
 impl fmt::Display for GeometryTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10249,6 +10505,8 @@ impl fmt::Display for GeometryTypeKHR {
             0 => Some(&"TRIANGLES"),
             1 => Some(&"AABBS"),
             2 => Some(&"INSTANCES"),
+            1000429004 => Some(&"SPHERES_NV"),
+            1000429005 => Some(&"LINEAR_SWEPT_SPHERES_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10344,6 +10602,48 @@ impl fmt::Display for AccelerationStructureCompatibilityKHR {
         let name = match self.0 {
             0 => Some(&"COMPATIBLE"),
             1 => Some(&"INCOMPATIBLE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct RayTracingLssIndexingModeNV(pub(crate) i32);
+impl RayTracingLssIndexingModeNV {
+    pub const LIST: Self = Self(0);
+    pub const SUCCESSIVE: Self = Self(1);
+}
+impl fmt::Display for RayTracingLssIndexingModeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"LIST"),
+            1 => Some(&"SUCCESSIVE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct RayTracingLssPrimitiveEndCapsModeNV(pub(crate) i32);
+impl RayTracingLssPrimitiveEndCapsModeNV {
+    pub const NONE: Self = Self(0);
+    pub const CHAINED: Self = Self(1);
+}
+impl fmt::Display for RayTracingLssPrimitiveEndCapsModeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"NONE"),
+            1 => Some(&"CHAINED"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10941,6 +11241,8 @@ impl OpacityMicromapSpecialIndexEXT {
     pub const FULLY_OPAQUE: Self = Self(-2);
     pub const FULLY_UNKNOWN_TRANSPARENT: Self = Self(-3);
     pub const FULLY_UNKNOWN_OPAQUE: Self = Self(-4);
+    /// Added by extension VK_NV_cluster_acceleration_structure.
+    pub const CLUSTER_GEOMETRY_DISABLE_OPACITY_MICROMAP_NV: Self = Self(-5);
 }
 impl fmt::Display for OpacityMicromapSpecialIndexEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10949,6 +11251,7 @@ impl fmt::Display for OpacityMicromapSpecialIndexEXT {
             -2 => Some(&"FULLY_OPAQUE"),
             -3 => Some(&"FULLY_UNKNOWN_TRANSPARENT"),
             -4 => Some(&"FULLY_UNKNOWN_OPAQUE"),
+            -5 => Some(&"CLUSTER_GEOMETRY_DISABLE_OPACITY_MICROMAP_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11033,6 +11336,29 @@ impl fmt::Display for DirectDriverLoadingModeLUNARG {
         let name = match self.0 {
             0 => Some(&"EXCLUSIVE"),
             1 => Some(&"INCLUSIVE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PartitionedAccelerationStructureOpTypeNV(pub(crate) i32);
+impl PartitionedAccelerationStructureOpTypeNV {
+    pub const WRITE_INSTANCE: Self = Self(0);
+    pub const UPDATE_INSTANCE: Self = Self(1);
+    pub const WRITE_PARTITION_TRANSLATION: Self = Self(2);
+}
+impl fmt::Display for PartitionedAccelerationStructureOpTypeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"WRITE_INSTANCE"),
+            1 => Some(&"UPDATE_INSTANCE"),
+            2 => Some(&"WRITE_PARTITION_TRANSLATION"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11185,6 +11511,14 @@ impl ComponentTypeKHR {
     pub const UINT16_NV: Self = Self::UINT16;
     pub const UINT32_NV: Self = Self::UINT32;
     pub const UINT64_NV: Self = Self::UINT64;
+    /// Added by extension VK_NV_cooperative_vector.
+    pub const SINT8_PACKED_NV: Self = Self(1000491000);
+    /// Added by extension VK_NV_cooperative_vector.
+    pub const UINT8_PACKED_NV: Self = Self(1000491001);
+    /// Added by extension VK_NV_cooperative_vector.
+    pub const FLOAT_E4M3_NV: Self = Self(1000491002);
+    /// Added by extension VK_NV_cooperative_vector.
+    pub const FLOAT_E5M2_NV: Self = Self(1000491003);
 }
 impl fmt::Display for ComponentTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -11200,6 +11534,10 @@ impl fmt::Display for ComponentTypeKHR {
             8 => Some(&"UINT16"),
             9 => Some(&"UINT32"),
             10 => Some(&"UINT64"),
+            1000491000 => Some(&"SINT8_PACKED_NV"),
+            1000491001 => Some(&"UINT8_PACKED_NV"),
+            1000491002 => Some(&"FLOAT_E4M3_NV"),
+            1000491003 => Some(&"FLOAT_E5M2_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11317,6 +11655,31 @@ impl fmt::Display for DepthClampModeEXT {
         let name = match self.0 {
             0 => Some(&"VIEWPORT_RANGE"),
             1 => Some(&"USER_DEFINED_RANGE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct CooperativeVectorMatrixLayoutNV(pub(crate) i32);
+impl CooperativeVectorMatrixLayoutNV {
+    pub const ROW_MAJOR: Self = Self(0);
+    pub const COLUMN_MAJOR: Self = Self(1);
+    pub const INFERENCING_OPTIMAL: Self = Self(2);
+    pub const TRAINING_OPTIMAL: Self = Self(3);
+}
+impl fmt::Display for CooperativeVectorMatrixLayoutNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"ROW_MAJOR"),
+            1 => Some(&"COLUMN_MAJOR"),
+            2 => Some(&"INFERENCING_OPTIMAL"),
+            3 => Some(&"TRAINING_OPTIMAL"),
             _ => None,
         };
         if let Some(name) = name {
@@ -18493,6 +18856,502 @@ impl fmt::Debug for PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {
                 "min_indirect_commands_buffer_offset_alignment",
                 &self.min_indirect_commands_buffer_offset_alignment,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceClusterAccelerationStructureFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cluster_acceleration_structure: Bool32,
+}
+unsafe impl Send for PhysicalDeviceClusterAccelerationStructureFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceClusterAccelerationStructureFeaturesNV {}
+impl Default for PhysicalDeviceClusterAccelerationStructureFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_CLUSTER_ACCELERATION_STRUCTURE_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            cluster_acceleration_structure: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceClusterAccelerationStructureFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceClusterAccelerationStructureFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("cluster_acceleration_structure", &self.cluster_acceleration_structure)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceClusterAccelerationStructurePropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_vertices_per_cluster: u32,
+    pub max_triangles_per_cluster: u32,
+    pub cluster_scratch_byte_alignment: u32,
+    pub cluster_byte_alignment: u32,
+    pub cluster_template_byte_alignment: u32,
+    pub cluster_bottom_level_byte_alignment: u32,
+    pub cluster_template_bounds_byte_alignment: u32,
+    pub max_cluster_geometry_index: u32,
+}
+unsafe impl Send for PhysicalDeviceClusterAccelerationStructurePropertiesNV {}
+unsafe impl Sync for PhysicalDeviceClusterAccelerationStructurePropertiesNV {}
+impl Default for PhysicalDeviceClusterAccelerationStructurePropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_CLUSTER_ACCELERATION_STRUCTURE_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            max_vertices_per_cluster: Default::default(),
+            max_triangles_per_cluster: Default::default(),
+            cluster_scratch_byte_alignment: Default::default(),
+            cluster_byte_alignment: Default::default(),
+            cluster_template_byte_alignment: Default::default(),
+            cluster_bottom_level_byte_alignment: Default::default(),
+            cluster_template_bounds_byte_alignment: Default::default(),
+            max_cluster_geometry_index: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceClusterAccelerationStructurePropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceClusterAccelerationStructurePropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_vertices_per_cluster", &self.max_vertices_per_cluster)
+            .field("max_triangles_per_cluster", &self.max_triangles_per_cluster)
+            .field("cluster_scratch_byte_alignment", &self.cluster_scratch_byte_alignment)
+            .field("cluster_byte_alignment", &self.cluster_byte_alignment)
+            .field("cluster_template_byte_alignment", &self.cluster_template_byte_alignment)
+            .field(
+                "cluster_bottom_level_byte_alignment",
+                &self.cluster_bottom_level_byte_alignment,
+            )
+            .field(
+                "cluster_template_bounds_byte_alignment",
+                &self.cluster_template_bounds_byte_alignment,
+            )
+            .field("max_cluster_geometry_index", &self.max_cluster_geometry_index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct StridedDeviceAddressNV {
+    pub start_address: DeviceAddress,
+    /// Specified in bytes
+    pub stride_in_bytes: DeviceSize,
+}
+impl fmt::Debug for StridedDeviceAddressNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("StridedDeviceAddressNV")
+            .field("start_address", &self.start_address)
+            .field("stride_in_bytes", &self.stride_in_bytes)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RayTracingPipelineClusterAccelerationStructureCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub allow_cluster_acceleration_structure: Bool32,
+}
+unsafe impl Send for RayTracingPipelineClusterAccelerationStructureCreateInfoNV {}
+unsafe impl Sync for RayTracingPipelineClusterAccelerationStructureCreateInfoNV {}
+impl Default for RayTracingPipelineClusterAccelerationStructureCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RAY_TRACING_PIPELINE_CLUSTER_ACCELERATION_STRUCTURE_CREATE_INFO_NV,
+            p_next: ptr::null_mut(),
+            allow_cluster_acceleration_structure: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for RayTracingPipelineClusterAccelerationStructureCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RayTracingPipelineClusterAccelerationStructureCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "allow_cluster_acceleration_structure",
+                &self.allow_cluster_acceleration_structure,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV {
+    pub geometry_index_and_reserved_and_geometry_flags: u32,
+}
+impl fmt::Debug for ClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV")
+            .field(
+                "geometry_index_and_reserved_and_geometry_flags",
+                &self.geometry_index_and_reserved_and_geometry_flags,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureMoveObjectsInfoNV {
+    pub src_acceleration_structure: DeviceAddress,
+}
+impl fmt::Debug for ClusterAccelerationStructureMoveObjectsInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ClusterAccelerationStructureMoveObjectsInfoNV")
+            .field("src_acceleration_structure", &self.src_acceleration_structure)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureBuildClustersBottomLevelInfoNV {
+    pub cluster_references_count: u32,
+    pub cluster_references_stride: u32,
+    pub cluster_references: DeviceAddress,
+}
+impl fmt::Debug for ClusterAccelerationStructureBuildClustersBottomLevelInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ClusterAccelerationStructureBuildClustersBottomLevelInfoNV")
+            .field("cluster_references_count", &self.cluster_references_count)
+            .field("cluster_references_stride", &self.cluster_references_stride)
+            .field("cluster_references", &self.cluster_references)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureBuildTriangleClusterInfoNV {
+    pub cluster_id: u32,
+    pub cluster_flags: ClusterAccelerationStructureClusterFlagsNV,
+    pub triangle_count_and_vertex_count_and_position_truncate_bit_count_and_index_type_and_opacity_micromap_index_type:
+        u32,
+    pub base_geometry_index_and_geometry_flags: ClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV,
+    pub index_buffer_stride: u16,
+    pub vertex_buffer_stride: u16,
+    pub geometry_index_and_flags_buffer_stride: u16,
+    pub opacity_micromap_index_buffer_stride: u16,
+    pub index_buffer: DeviceAddress,
+    pub vertex_buffer: DeviceAddress,
+    pub geometry_index_and_flags_buffer: DeviceAddress,
+    pub opacity_micromap_array: DeviceAddress,
+    pub opacity_micromap_index_buffer: DeviceAddress,
+}
+impl fmt::Debug for ClusterAccelerationStructureBuildTriangleClusterInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ClusterAccelerationStructureBuildTriangleClusterInfoNV")
+.field("cluster_id", &self.cluster_id)
+.field("cluster_flags", &self.cluster_flags)
+.field("triangle_count_and_vertex_count_and_position_truncate_bit_count_and_index_type_and_opacity_micromap_index_type", &self.triangle_count_and_vertex_count_and_position_truncate_bit_count_and_index_type_and_opacity_micromap_index_type)
+.field("base_geometry_index_and_geometry_flags", &self.base_geometry_index_and_geometry_flags)
+.field("index_buffer_stride", &self.index_buffer_stride)
+.field("vertex_buffer_stride", &self.vertex_buffer_stride)
+.field("geometry_index_and_flags_buffer_stride", &self.geometry_index_and_flags_buffer_stride)
+.field("opacity_micromap_index_buffer_stride", &self.opacity_micromap_index_buffer_stride)
+.field("index_buffer", &self.index_buffer)
+.field("vertex_buffer", &self.vertex_buffer)
+.field("geometry_index_and_flags_buffer", &self.geometry_index_and_flags_buffer)
+.field("opacity_micromap_array", &self.opacity_micromap_array)
+.field("opacity_micromap_index_buffer", &self.opacity_micromap_index_buffer)
+.finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV {
+    pub cluster_id: u32,
+    pub cluster_flags: ClusterAccelerationStructureClusterFlagsNV,
+    pub triangle_count_and_vertex_count_and_position_truncate_bit_count_and_index_type_and_opacity_micromap_index_type:
+        u32,
+    pub base_geometry_index_and_geometry_flags: ClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV,
+    pub index_buffer_stride: u16,
+    pub vertex_buffer_stride: u16,
+    pub geometry_index_and_flags_buffer_stride: u16,
+    pub opacity_micromap_index_buffer_stride: u16,
+    pub index_buffer: DeviceAddress,
+    pub vertex_buffer: DeviceAddress,
+    pub geometry_index_and_flags_buffer: DeviceAddress,
+    pub opacity_micromap_array: DeviceAddress,
+    pub opacity_micromap_index_buffer: DeviceAddress,
+    pub instantiation_bounding_box_limit: DeviceAddress,
+}
+impl fmt::Debug for ClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV")
+.field("cluster_id", &self.cluster_id)
+.field("cluster_flags", &self.cluster_flags)
+.field("triangle_count_and_vertex_count_and_position_truncate_bit_count_and_index_type_and_opacity_micromap_index_type", &self.triangle_count_and_vertex_count_and_position_truncate_bit_count_and_index_type_and_opacity_micromap_index_type)
+.field("base_geometry_index_and_geometry_flags", &self.base_geometry_index_and_geometry_flags)
+.field("index_buffer_stride", &self.index_buffer_stride)
+.field("vertex_buffer_stride", &self.vertex_buffer_stride)
+.field("geometry_index_and_flags_buffer_stride", &self.geometry_index_and_flags_buffer_stride)
+.field("opacity_micromap_index_buffer_stride", &self.opacity_micromap_index_buffer_stride)
+.field("index_buffer", &self.index_buffer)
+.field("vertex_buffer", &self.vertex_buffer)
+.field("geometry_index_and_flags_buffer", &self.geometry_index_and_flags_buffer)
+.field("opacity_micromap_array", &self.opacity_micromap_array)
+.field("opacity_micromap_index_buffer", &self.opacity_micromap_index_buffer)
+.field("instantiation_bounding_box_limit", &self.instantiation_bounding_box_limit)
+.finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureInstantiateClusterInfoNV {
+    pub cluster_id_offset: u32,
+    pub geometry_index_offset_and_reserved: u32,
+    pub cluster_template_address: DeviceAddress,
+    pub vertex_buffer: StridedDeviceAddressNV,
+}
+impl fmt::Debug for ClusterAccelerationStructureInstantiateClusterInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ClusterAccelerationStructureInstantiateClusterInfoNV")
+            .field("cluster_id_offset", &self.cluster_id_offset)
+            .field(
+                "geometry_index_offset_and_reserved",
+                &self.geometry_index_offset_and_reserved,
+            )
+            .field("cluster_template_address", &self.cluster_template_address)
+            .field("vertex_buffer", &self.vertex_buffer)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ClusterAccelerationStructureClustersBottomLevelInputNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_total_cluster_count: u32,
+    pub max_cluster_count_per_acceleration_structure: u32,
+}
+unsafe impl Send for ClusterAccelerationStructureClustersBottomLevelInputNV {}
+unsafe impl Sync for ClusterAccelerationStructureClustersBottomLevelInputNV {}
+impl Default for ClusterAccelerationStructureClustersBottomLevelInputNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CLUSTER_ACCELERATION_STRUCTURE_CLUSTERS_BOTTOM_LEVEL_INPUT_NV,
+            p_next: ptr::null_mut(),
+            max_total_cluster_count: Default::default(),
+            max_cluster_count_per_acceleration_structure: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ClusterAccelerationStructureClustersBottomLevelInputNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ClusterAccelerationStructureClustersBottomLevelInputNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_total_cluster_count", &self.max_total_cluster_count)
+            .field(
+                "max_cluster_count_per_acceleration_structure",
+                &self.max_cluster_count_per_acceleration_structure,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ClusterAccelerationStructureTriangleClusterInputNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub vertex_format: Format,
+    pub max_geometry_index_value: u32,
+    pub max_cluster_unique_geometry_count: u32,
+    pub max_cluster_triangle_count: u32,
+    pub max_cluster_vertex_count: u32,
+    pub max_total_triangle_count: u32,
+    pub max_total_vertex_count: u32,
+    pub min_position_truncate_bit_count: u32,
+}
+unsafe impl Send for ClusterAccelerationStructureTriangleClusterInputNV {}
+unsafe impl Sync for ClusterAccelerationStructureTriangleClusterInputNV {}
+impl Default for ClusterAccelerationStructureTriangleClusterInputNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CLUSTER_ACCELERATION_STRUCTURE_TRIANGLE_CLUSTER_INPUT_NV,
+            p_next: ptr::null_mut(),
+            vertex_format: Default::default(),
+            max_geometry_index_value: Default::default(),
+            max_cluster_unique_geometry_count: Default::default(),
+            max_cluster_triangle_count: Default::default(),
+            max_cluster_vertex_count: Default::default(),
+            max_total_triangle_count: Default::default(),
+            max_total_vertex_count: Default::default(),
+            min_position_truncate_bit_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ClusterAccelerationStructureTriangleClusterInputNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ClusterAccelerationStructureTriangleClusterInputNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("vertex_format", &self.vertex_format)
+            .field("max_geometry_index_value", &self.max_geometry_index_value)
+            .field(
+                "max_cluster_unique_geometry_count",
+                &self.max_cluster_unique_geometry_count,
+            )
+            .field("max_cluster_triangle_count", &self.max_cluster_triangle_count)
+            .field("max_cluster_vertex_count", &self.max_cluster_vertex_count)
+            .field("max_total_triangle_count", &self.max_total_triangle_count)
+            .field("max_total_vertex_count", &self.max_total_vertex_count)
+            .field("min_position_truncate_bit_count", &self.min_position_truncate_bit_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ClusterAccelerationStructureMoveObjectsInputNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ty: ClusterAccelerationStructureTypeNV,
+    pub no_move_overlap: Bool32,
+    pub max_moved_bytes: DeviceSize,
+}
+unsafe impl Send for ClusterAccelerationStructureMoveObjectsInputNV {}
+unsafe impl Sync for ClusterAccelerationStructureMoveObjectsInputNV {}
+impl Default for ClusterAccelerationStructureMoveObjectsInputNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CLUSTER_ACCELERATION_STRUCTURE_MOVE_OBJECTS_INPUT_NV,
+            p_next: ptr::null_mut(),
+            ty: Default::default(),
+            no_move_overlap: Default::default(),
+            max_moved_bytes: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ClusterAccelerationStructureMoveObjectsInputNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ClusterAccelerationStructureMoveObjectsInputNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ty", &self.ty)
+            .field("no_move_overlap", &self.no_move_overlap)
+            .field("max_moved_bytes", &self.max_moved_bytes)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union ClusterAccelerationStructureOpInputNV {
+    pub p_clusters_bottom_level: *mut ClusterAccelerationStructureClustersBottomLevelInputNV,
+    pub p_triangle_clusters: *mut ClusterAccelerationStructureTriangleClusterInputNV,
+    pub p_move_objects: *mut ClusterAccelerationStructureMoveObjectsInputNV,
+}
+unsafe impl Send for ClusterAccelerationStructureOpInputNV {}
+unsafe impl Sync for ClusterAccelerationStructureOpInputNV {}
+impl Default for ClusterAccelerationStructureOpInputNV {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for ClusterAccelerationStructureOpInputNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ClusterAccelerationStructureOpInputNV")
+            .field("p_clusters_bottom_level", unsafe { &self.p_clusters_bottom_level })
+            .field("p_triangle_clusters", unsafe { &self.p_triangle_clusters })
+            .field("p_move_objects", unsafe { &self.p_move_objects })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ClusterAccelerationStructureInputInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_acceleration_structure_count: u32,
+    pub flags: BuildAccelerationStructureFlagsKHR,
+    pub op_type: ClusterAccelerationStructureOpTypeNV,
+    pub op_mode: ClusterAccelerationStructureOpModeNV,
+    pub op_input: ClusterAccelerationStructureOpInputNV,
+}
+unsafe impl Send for ClusterAccelerationStructureInputInfoNV {}
+unsafe impl Sync for ClusterAccelerationStructureInputInfoNV {}
+impl Default for ClusterAccelerationStructureInputInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CLUSTER_ACCELERATION_STRUCTURE_INPUT_INFO_NV,
+            p_next: ptr::null_mut(),
+            max_acceleration_structure_count: Default::default(),
+            flags: Default::default(),
+            op_type: Default::default(),
+            op_mode: Default::default(),
+            op_input: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ClusterAccelerationStructureInputInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ClusterAccelerationStructureInputInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_acceleration_structure_count",
+                &self.max_acceleration_structure_count,
+            )
+            .field("flags", &self.flags)
+            .field("op_type", &self.op_type)
+            .field("op_mode", &self.op_mode)
+            .field("op_input", &self.op_input)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ClusterAccelerationStructureCommandsInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub input: ClusterAccelerationStructureInputInfoNV,
+    pub dst_implicit_data: DeviceAddress,
+    pub scratch_data: DeviceAddress,
+    pub dst_addresses_array: StridedDeviceAddressRegionKHR,
+    pub dst_sizes_array: StridedDeviceAddressRegionKHR,
+    pub src_infos_array: StridedDeviceAddressRegionKHR,
+    pub src_infos_count: DeviceAddress,
+    pub address_resolution_flags: ClusterAccelerationStructureAddressResolutionFlagsNV,
+}
+unsafe impl Send for ClusterAccelerationStructureCommandsInfoNV {}
+unsafe impl Sync for ClusterAccelerationStructureCommandsInfoNV {}
+impl Default for ClusterAccelerationStructureCommandsInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CLUSTER_ACCELERATION_STRUCTURE_COMMANDS_INFO_NV,
+            p_next: ptr::null_mut(),
+            input: Default::default(),
+            dst_implicit_data: Default::default(),
+            scratch_data: Default::default(),
+            dst_addresses_array: Default::default(),
+            dst_sizes_array: Default::default(),
+            src_infos_array: Default::default(),
+            src_infos_count: Default::default(),
+            address_resolution_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ClusterAccelerationStructureCommandsInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ClusterAccelerationStructureCommandsInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("input", &self.input)
+            .field("dst_implicit_data", &self.dst_implicit_data)
+            .field("scratch_data", &self.scratch_data)
+            .field("dst_addresses_array", &self.dst_addresses_array)
+            .field("dst_sizes_array", &self.dst_sizes_array)
+            .field("src_infos_array", &self.src_infos_array)
+            .field("src_infos_count", &self.src_infos_count)
+            .field("address_resolution_flags", &self.address_resolution_flags)
             .finish()
     }
 }
@@ -34422,6 +35281,114 @@ impl fmt::Debug for AccelerationStructureGeometryInstancesDataKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct AccelerationStructureGeometryLinearSweptSpheresDataNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub vertex_format: Format,
+    pub vertex_data: DeviceOrHostAddressConstKHR,
+    pub vertex_stride: DeviceSize,
+    pub radius_format: Format,
+    pub radius_data: DeviceOrHostAddressConstKHR,
+    pub radius_stride: DeviceSize,
+    pub index_type: IndexType,
+    pub index_data: DeviceOrHostAddressConstKHR,
+    pub index_stride: DeviceSize,
+    pub indexing_mode: RayTracingLssIndexingModeNV,
+    pub end_caps_mode: RayTracingLssPrimitiveEndCapsModeNV,
+}
+unsafe impl Send for AccelerationStructureGeometryLinearSweptSpheresDataNV {}
+unsafe impl Sync for AccelerationStructureGeometryLinearSweptSpheresDataNV {}
+impl Default for AccelerationStructureGeometryLinearSweptSpheresDataNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_LINEAR_SWEPT_SPHERES_DATA_NV,
+            p_next: ptr::null(),
+            vertex_format: Default::default(),
+            vertex_data: Default::default(),
+            vertex_stride: Default::default(),
+            radius_format: Default::default(),
+            radius_data: Default::default(),
+            radius_stride: Default::default(),
+            index_type: Default::default(),
+            index_data: Default::default(),
+            index_stride: Default::default(),
+            indexing_mode: Default::default(),
+            end_caps_mode: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureGeometryLinearSweptSpheresDataNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureGeometryLinearSweptSpheresDataNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("vertex_format", &self.vertex_format)
+            .field("vertex_data", &self.vertex_data)
+            .field("vertex_stride", &self.vertex_stride)
+            .field("radius_format", &self.radius_format)
+            .field("radius_data", &self.radius_data)
+            .field("radius_stride", &self.radius_stride)
+            .field("index_type", &self.index_type)
+            .field("index_data", &self.index_data)
+            .field("index_stride", &self.index_stride)
+            .field("indexing_mode", &self.indexing_mode)
+            .field("end_caps_mode", &self.end_caps_mode)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureGeometrySpheresDataNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub vertex_format: Format,
+    pub vertex_data: DeviceOrHostAddressConstKHR,
+    pub vertex_stride: DeviceSize,
+    pub radius_format: Format,
+    pub radius_data: DeviceOrHostAddressConstKHR,
+    pub radius_stride: DeviceSize,
+    pub index_type: IndexType,
+    pub index_data: DeviceOrHostAddressConstKHR,
+    pub index_stride: DeviceSize,
+}
+unsafe impl Send for AccelerationStructureGeometrySpheresDataNV {}
+unsafe impl Sync for AccelerationStructureGeometrySpheresDataNV {}
+impl Default for AccelerationStructureGeometrySpheresDataNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_SPHERES_DATA_NV,
+            p_next: ptr::null(),
+            vertex_format: Default::default(),
+            vertex_data: Default::default(),
+            vertex_stride: Default::default(),
+            radius_format: Default::default(),
+            radius_data: Default::default(),
+            radius_stride: Default::default(),
+            index_type: Default::default(),
+            index_data: Default::default(),
+            index_stride: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureGeometrySpheresDataNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureGeometrySpheresDataNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("vertex_format", &self.vertex_format)
+            .field("vertex_data", &self.vertex_data)
+            .field("vertex_stride", &self.vertex_stride)
+            .field("radius_format", &self.radius_format)
+            .field("radius_data", &self.radius_data)
+            .field("radius_stride", &self.radius_stride)
+            .field("index_type", &self.index_type)
+            .field("index_data", &self.index_data)
+            .field("index_stride", &self.index_stride)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub union AccelerationStructureGeometryDataKHR {
     pub triangles: AccelerationStructureGeometryTrianglesDataKHR,
     pub aabbs: AccelerationStructureGeometryAabbsDataKHR,
@@ -35294,6 +36261,287 @@ impl fmt::Debug for CommandBufferInheritanceRenderPassTransformInfoQCOM {
             .field("p_next", &self.p_next)
             .field("transform", &self.transform)
             .field("render_area", &self.render_area)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePartitionedAccelerationStructureFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub partitioned_acceleration_structure: Bool32,
+}
+unsafe impl Send for PhysicalDevicePartitionedAccelerationStructureFeaturesNV {}
+unsafe impl Sync for PhysicalDevicePartitionedAccelerationStructureFeaturesNV {}
+impl Default for PhysicalDevicePartitionedAccelerationStructureFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PARTITIONED_ACCELERATION_STRUCTURE_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            partitioned_acceleration_structure: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePartitionedAccelerationStructureFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePartitionedAccelerationStructureFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "partitioned_acceleration_structure",
+                &self.partitioned_acceleration_structure,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePartitionedAccelerationStructurePropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_partition_count: u32,
+}
+unsafe impl Send for PhysicalDevicePartitionedAccelerationStructurePropertiesNV {}
+unsafe impl Sync for PhysicalDevicePartitionedAccelerationStructurePropertiesNV {}
+impl Default for PhysicalDevicePartitionedAccelerationStructurePropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PARTITIONED_ACCELERATION_STRUCTURE_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            max_partition_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePartitionedAccelerationStructurePropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePartitionedAccelerationStructurePropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_partition_count", &self.max_partition_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct BuildPartitionedAccelerationStructureIndirectCommandNV {
+    pub op_type: PartitionedAccelerationStructureOpTypeNV,
+    pub arg_count: u32,
+    pub arg_data: StridedDeviceAddressNV,
+}
+impl fmt::Debug for BuildPartitionedAccelerationStructureIndirectCommandNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BuildPartitionedAccelerationStructureIndirectCommandNV")
+            .field("op_type", &self.op_type)
+            .field("arg_count", &self.arg_count)
+            .field("arg_data", &self.arg_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PartitionedAccelerationStructureFlagsNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub enable_partition_translation: Bool32,
+}
+unsafe impl Send for PartitionedAccelerationStructureFlagsNV {}
+unsafe impl Sync for PartitionedAccelerationStructureFlagsNV {}
+impl Default for PartitionedAccelerationStructureFlagsNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PARTITIONED_ACCELERATION_STRUCTURE_FLAGS_NV,
+            p_next: ptr::null_mut(),
+            enable_partition_translation: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PartitionedAccelerationStructureFlagsNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PartitionedAccelerationStructureFlagsNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("enable_partition_translation", &self.enable_partition_translation)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default)]
+pub struct PartitionedAccelerationStructureWriteInstanceDataNV {
+    pub transform: TransformMatrixKHR,
+    pub explicit_aabb: [f32; 6],
+    pub instance_id: u32,
+    pub instance_mask: u32,
+    pub instance_contribution_to_hit_group_index: u32,
+    pub instance_flags: PartitionedAccelerationStructureInstanceFlagsNV,
+    pub instance_index: u32,
+    pub partition_index: u32,
+    pub acceleration_structure: DeviceAddress,
+}
+impl fmt::Debug for PartitionedAccelerationStructureWriteInstanceDataNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PartitionedAccelerationStructureWriteInstanceDataNV")
+            .field("transform", &self.transform)
+            .field("explicit_aabb", &self.explicit_aabb)
+            .field("instance_id", &self.instance_id)
+            .field("instance_mask", &self.instance_mask)
+            .field(
+                "instance_contribution_to_hit_group_index",
+                &self.instance_contribution_to_hit_group_index,
+            )
+            .field("instance_flags", &self.instance_flags)
+            .field("instance_index", &self.instance_index)
+            .field("partition_index", &self.partition_index)
+            .field("acceleration_structure", &self.acceleration_structure)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct PartitionedAccelerationStructureUpdateInstanceDataNV {
+    pub instance_index: u32,
+    pub instance_contribution_to_hit_group_index: u32,
+    pub acceleration_structure: DeviceAddress,
+}
+impl fmt::Debug for PartitionedAccelerationStructureUpdateInstanceDataNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PartitionedAccelerationStructureUpdateInstanceDataNV")
+            .field("instance_index", &self.instance_index)
+            .field(
+                "instance_contribution_to_hit_group_index",
+                &self.instance_contribution_to_hit_group_index,
+            )
+            .field("acceleration_structure", &self.acceleration_structure)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default)]
+pub struct PartitionedAccelerationStructureWritePartitionTranslationDataNV {
+    pub partition_index: u32,
+    pub partition_translation: [f32; 3],
+}
+impl fmt::Debug for PartitionedAccelerationStructureWritePartitionTranslationDataNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PartitionedAccelerationStructureWritePartitionTranslationDataNV")
+            .field("partition_index", &self.partition_index)
+            .field("partition_translation", &self.partition_translation)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct WriteDescriptorSetPartitionedAccelerationStructureNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub acceleration_structure_count: u32,
+    pub p_acceleration_structures: *const DeviceAddress,
+}
+unsafe impl Send for WriteDescriptorSetPartitionedAccelerationStructureNV {}
+unsafe impl Sync for WriteDescriptorSetPartitionedAccelerationStructureNV {}
+impl Default for WriteDescriptorSetPartitionedAccelerationStructureNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::WRITE_DESCRIPTOR_SET_PARTITIONED_ACCELERATION_STRUCTURE_NV,
+            p_next: ptr::null_mut(),
+            acceleration_structure_count: Default::default(),
+            p_acceleration_structures: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for WriteDescriptorSetPartitionedAccelerationStructureNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("WriteDescriptorSetPartitionedAccelerationStructureNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("acceleration_structure_count", &self.acceleration_structure_count)
+            .field("p_acceleration_structures", &self.p_acceleration_structures)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PartitionedAccelerationStructureInstancesInputNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub flags: BuildAccelerationStructureFlagsKHR,
+    pub instance_count: u32,
+    pub max_instance_per_partition_count: u32,
+    pub partition_count: u32,
+    pub max_instance_in_global_partition_count: u32,
+}
+unsafe impl Send for PartitionedAccelerationStructureInstancesInputNV {}
+unsafe impl Sync for PartitionedAccelerationStructureInstancesInputNV {}
+impl Default for PartitionedAccelerationStructureInstancesInputNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PARTITIONED_ACCELERATION_STRUCTURE_INSTANCES_INPUT_NV,
+            p_next: ptr::null_mut(),
+            flags: Default::default(),
+            instance_count: Default::default(),
+            max_instance_per_partition_count: Default::default(),
+            partition_count: Default::default(),
+            max_instance_in_global_partition_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PartitionedAccelerationStructureInstancesInputNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PartitionedAccelerationStructureInstancesInputNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("instance_count", &self.instance_count)
+            .field(
+                "max_instance_per_partition_count",
+                &self.max_instance_per_partition_count,
+            )
+            .field("partition_count", &self.partition_count)
+            .field(
+                "max_instance_in_global_partition_count",
+                &self.max_instance_in_global_partition_count,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BuildPartitionedAccelerationStructureInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub input: PartitionedAccelerationStructureInstancesInputNV,
+    pub src_acceleration_structure_data: DeviceAddress,
+    pub dst_acceleration_structure_data: DeviceAddress,
+    pub scratch_data: DeviceAddress,
+    pub src_infos: DeviceAddress,
+    pub src_infos_count: DeviceAddress,
+}
+unsafe impl Send for BuildPartitionedAccelerationStructureInfoNV {}
+unsafe impl Sync for BuildPartitionedAccelerationStructureInfoNV {}
+impl Default for BuildPartitionedAccelerationStructureInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUILD_PARTITIONED_ACCELERATION_STRUCTURE_INFO_NV,
+            p_next: ptr::null_mut(),
+            input: Default::default(),
+            src_acceleration_structure_data: Default::default(),
+            dst_acceleration_structure_data: Default::default(),
+            scratch_data: Default::default(),
+            src_infos: Default::default(),
+            src_infos_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for BuildPartitionedAccelerationStructureInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BuildPartitionedAccelerationStructureInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("input", &self.input)
+            .field("src_acceleration_structure_data", &self.src_acceleration_structure_data)
+            .field("dst_acceleration_structure_data", &self.dst_acceleration_structure_data)
+            .field("scratch_data", &self.scratch_data)
+            .field("src_infos", &self.src_infos)
+            .field("src_infos_count", &self.src_infos_count)
             .finish()
     }
 }
@@ -40227,6 +41475,36 @@ impl fmt::Debug for PhysicalDeviceRayTracingValidationFeaturesNV {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("ray_tracing_validation", &self.ray_tracing_validation)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub spheres: Bool32,
+    pub linear_swept_spheres: Bool32,
+}
+unsafe impl Send for PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV {}
+impl Default for PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_LINEAR_SWEPT_SPHERES_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            spheres: Default::default(),
+            linear_swept_spheres: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("spheres", &self.spheres)
+            .field("linear_swept_spheres", &self.linear_swept_spheres)
             .finish()
     }
 }
@@ -48149,6 +49427,186 @@ impl fmt::Debug for PhysicalDeviceDepthClampZeroOneFeaturesKHR {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCooperativeVectorFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cooperative_vector: Bool32,
+    pub cooperative_vector_training: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCooperativeVectorFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceCooperativeVectorFeaturesNV {}
+impl Default for PhysicalDeviceCooperativeVectorFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_VECTOR_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            cooperative_vector: Default::default(),
+            cooperative_vector_training: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCooperativeVectorFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCooperativeVectorFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("cooperative_vector", &self.cooperative_vector)
+            .field("cooperative_vector_training", &self.cooperative_vector_training)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CooperativeVectorPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub input_type: ComponentTypeKHR,
+    pub input_interpretation: ComponentTypeKHR,
+    pub matrix_interpretation: ComponentTypeKHR,
+    pub bias_interpretation: ComponentTypeKHR,
+    pub result_type: ComponentTypeKHR,
+    pub transpose: Bool32,
+}
+unsafe impl Send for CooperativeVectorPropertiesNV {}
+unsafe impl Sync for CooperativeVectorPropertiesNV {}
+impl Default for CooperativeVectorPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COOPERATIVE_VECTOR_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            input_type: Default::default(),
+            input_interpretation: Default::default(),
+            matrix_interpretation: Default::default(),
+            bias_interpretation: Default::default(),
+            result_type: Default::default(),
+            transpose: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for CooperativeVectorPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CooperativeVectorPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("input_type", &self.input_type)
+            .field("input_interpretation", &self.input_interpretation)
+            .field("matrix_interpretation", &self.matrix_interpretation)
+            .field("bias_interpretation", &self.bias_interpretation)
+            .field("result_type", &self.result_type)
+            .field("transpose", &self.transpose)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCooperativeVectorPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cooperative_vector_supported_stages: ShaderStageFlags,
+    pub cooperative_vector_training_float16_accumulation: Bool32,
+    pub cooperative_vector_training_float32_accumulation: Bool32,
+    pub max_cooperative_vector_components: u32,
+}
+unsafe impl Send for PhysicalDeviceCooperativeVectorPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceCooperativeVectorPropertiesNV {}
+impl Default for PhysicalDeviceCooperativeVectorPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_VECTOR_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            cooperative_vector_supported_stages: Default::default(),
+            cooperative_vector_training_float16_accumulation: Default::default(),
+            cooperative_vector_training_float32_accumulation: Default::default(),
+            max_cooperative_vector_components: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCooperativeVectorPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCooperativeVectorPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "cooperative_vector_supported_stages",
+                &self.cooperative_vector_supported_stages,
+            )
+            .field(
+                "cooperative_vector_training_float16_accumulation",
+                &self.cooperative_vector_training_float16_accumulation,
+            )
+            .field(
+                "cooperative_vector_training_float32_accumulation",
+                &self.cooperative_vector_training_float32_accumulation,
+            )
+            .field(
+                "max_cooperative_vector_components",
+                &self.max_cooperative_vector_components,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ConvertCooperativeVectorMatrixInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_size: usize,
+    pub src_data: DeviceOrHostAddressConstKHR,
+    pub p_dst_size: *mut usize,
+    pub dst_data: DeviceOrHostAddressKHR,
+    pub src_component_type: ComponentTypeKHR,
+    pub dst_component_type: ComponentTypeKHR,
+    pub num_rows: u32,
+    pub num_columns: u32,
+    pub src_layout: CooperativeVectorMatrixLayoutNV,
+    pub src_stride: usize,
+    pub dst_layout: CooperativeVectorMatrixLayoutNV,
+    pub dst_stride: usize,
+}
+unsafe impl Send for ConvertCooperativeVectorMatrixInfoNV {}
+unsafe impl Sync for ConvertCooperativeVectorMatrixInfoNV {}
+impl Default for ConvertCooperativeVectorMatrixInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CONVERT_COOPERATIVE_VECTOR_MATRIX_INFO_NV,
+            p_next: ptr::null(),
+            src_size: Default::default(),
+            src_data: Default::default(),
+            p_dst_size: ptr::null_mut(),
+            dst_data: Default::default(),
+            src_component_type: Default::default(),
+            dst_component_type: Default::default(),
+            num_rows: Default::default(),
+            num_columns: Default::default(),
+            src_layout: Default::default(),
+            src_stride: Default::default(),
+            dst_layout: Default::default(),
+            dst_stride: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ConvertCooperativeVectorMatrixInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ConvertCooperativeVectorMatrixInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_size", &self.src_size)
+            .field("src_data", &self.src_data)
+            .field("p_dst_size", &self.p_dst_size)
+            .field("dst_data", &self.dst_data)
+            .field("src_component_type", &self.src_component_type)
+            .field("dst_component_type", &self.dst_component_type)
+            .field("num_rows", &self.num_rows)
+            .field("num_columns", &self.num_columns)
+            .field("src_layout", &self.src_layout)
+            .field("src_stride", &self.src_stride)
+            .field("dst_layout", &self.dst_layout)
+            .field("dst_stride", &self.dst_stride)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -50103,6 +51561,15 @@ pub type FnCmdTraceRaysIndirectKHR = unsafe extern "system" fn(
 );
 pub type FnCmdTraceRaysIndirect2KHR =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, indirect_device_address: DeviceAddress);
+pub type FnGetClusterAccelerationStructureBuildSizesNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const ClusterAccelerationStructureInputInfoNV,
+    p_size_info: *mut AccelerationStructureBuildSizesInfoKHR,
+);
+pub type FnCmdBuildClusterAccelerationStructureIndirectNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_command_infos: *const ClusterAccelerationStructureCommandsInfoNV,
+);
 pub type FnGetDeviceAccelerationStructureCompatibilityKHR = unsafe extern "system" fn(
     device: Option<Device>,
     p_version_info: *const AccelerationStructureVersionInfoKHR,
@@ -50581,6 +52048,15 @@ pub type FnCmdDecompressMemoryIndirectCountNV = unsafe extern "system" fn(
     indirect_commands_count_address: DeviceAddress,
     stride: u32,
 );
+pub type FnGetPartitionedAccelerationStructuresBuildSizesNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const PartitionedAccelerationStructureInstancesInputNV,
+    p_size_info: *mut AccelerationStructureBuildSizesInfoKHR,
+);
+pub type FnCmdBuildPartitionedAccelerationStructuresNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_build_info: *const BuildPartitionedAccelerationStructureInfoNV,
+);
 pub type FnCreateCuModuleNVX = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const CuModuleCreateInfoNVX,
@@ -51052,3 +52528,15 @@ pub type FnGetMemoryMetalHandlePropertiesEXT = unsafe extern "system" fn(
     p_handle: *const c_void,
     p_memory_metal_handle_properties: *mut MemoryMetalHandlePropertiesEXT,
 ) -> Result;
+pub type FnGetPhysicalDeviceCooperativeVectorPropertiesNV = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut CooperativeVectorPropertiesNV,
+) -> Result;
+pub type FnConvertCooperativeVectorMatrixNV =
+    unsafe extern "system" fn(device: Option<Device>, p_info: *const ConvertCooperativeVectorMatrixInfoNV) -> Result;
+pub type FnCmdConvertCooperativeVectorMatrixNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    info_count: u32,
+    p_infos: *const ConvertCooperativeVectorMatrixInfoNV,
+);
