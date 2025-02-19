@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 307
+//! Generated from vk.xml with `VK_HEADER_VERSION` 308
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -5412,6 +5412,7 @@ pub struct DeviceExtensions {
     pub ext_external_memory_metal: bool,
     pub khr_depth_clamp_zero_one: bool,
     pub ext_vertex_attribute_robustness: bool,
+    pub nv_present_metering: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -5761,6 +5762,7 @@ impl DeviceExtensions {
             b"VK_EXT_external_memory_metal" => self.ext_external_memory_metal = true,
             b"VK_KHR_depth_clamp_zero_one" => self.khr_depth_clamp_zero_one = true,
             b"VK_EXT_vertex_attribute_robustness" => self.ext_vertex_attribute_robustness = true,
+            b"VK_NV_present_metering" => self.nv_present_metering = true,
             _ => {}
         }
     }
@@ -6110,6 +6112,7 @@ impl DeviceExtensions {
             ext_external_memory_metal: false,
             khr_depth_clamp_zero_one: false,
             ext_vertex_attribute_robustness: false,
+            nv_present_metering: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -8796,6 +8799,12 @@ impl DeviceExtensions {
     pub fn enable_ext_vertex_attribute_robustness(&mut self) {
         self.ext_vertex_attribute_robustness = true;
     }
+    pub fn supports_nv_present_metering(&self) -> bool {
+        self.nv_present_metering
+    }
+    pub fn enable_nv_present_metering(&mut self) {
+        self.nv_present_metering = true;
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -9828,6 +9837,9 @@ impl DeviceExtensions {
         }
         if self.ext_vertex_attribute_robustness {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_vertex_attribute_robustness\0") })
+        }
+        if self.nv_present_metering {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_present_metering\0") })
         }
         v
     }

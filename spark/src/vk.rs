@@ -8773,6 +8773,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR: Self = Self(1000421000);
     /// Added by extension VK_EXT_vertex_attribute_robustness.
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000608000);
+    /// Added by extension VK_NV_present_metering.
+    pub const SET_PRESENT_CONFIG_NV: Self = Self(1000613000);
+    /// Added by extension VK_NV_present_metering.
+    pub const PHYSICAL_DEVICE_PRESENT_METERING_FEATURES_NV: Self = Self(1000613001);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9668,6 +9672,8 @@ impl fmt::Display for StructureType {
             1000602002 => Some(&"MEMORY_GET_METAL_HANDLE_INFO_EXT"),
             1000421000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR"),
             1000608000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT"),
+            1000613000 => Some(&"SET_PRESENT_CONFIG_NV"),
+            1000613001 => Some(&"PHYSICAL_DEVICE_PRESENT_METERING_FEATURES_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -49604,6 +49610,63 @@ impl fmt::Debug for ConvertCooperativeVectorMatrixInfoNV {
             .field("src_stride", &self.src_stride)
             .field("dst_layout", &self.dst_layout)
             .field("dst_stride", &self.dst_stride)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SetPresentConfigNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub num_frames_per_batch: u32,
+    pub present_config_feedback: u32,
+}
+unsafe impl Send for SetPresentConfigNV {}
+unsafe impl Sync for SetPresentConfigNV {}
+impl Default for SetPresentConfigNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SET_PRESENT_CONFIG_NV,
+            p_next: ptr::null(),
+            num_frames_per_batch: Default::default(),
+            present_config_feedback: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SetPresentConfigNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SetPresentConfigNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("num_frames_per_batch", &self.num_frames_per_batch)
+            .field("present_config_feedback", &self.present_config_feedback)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePresentMeteringFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_metering: Bool32,
+}
+unsafe impl Send for PhysicalDevicePresentMeteringFeaturesNV {}
+unsafe impl Sync for PhysicalDevicePresentMeteringFeaturesNV {}
+impl Default for PhysicalDevicePresentMeteringFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRESENT_METERING_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            present_metering: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePresentMeteringFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePresentMeteringFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_metering", &self.present_metering)
             .finish()
     }
 }
