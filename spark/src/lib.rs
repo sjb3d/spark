@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 308
+//! Generated from vk.xml with `VK_HEADER_VERSION` 309
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -977,17 +977,23 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_ray_tracing_pipeline(&self) -> bool {
-        self.supports_khr_spirv_1_4() && self.supports_khr_acceleration_structure()
+        (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_spirv_1_4())
+            && self.supports_khr_acceleration_structure()
     }
     pub fn enable_khr_ray_tracing_pipeline(&mut self) {
-        self.enable_khr_spirv_1_4();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_spirv_1_4();
+        }
         self.enable_khr_acceleration_structure();
     }
     pub fn supports_khr_ray_query(&self) -> bool {
-        self.supports_khr_spirv_1_4() && self.supports_khr_acceleration_structure()
+        (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_spirv_1_4())
+            && self.supports_khr_acceleration_structure()
     }
     pub fn enable_khr_ray_query(&mut self) {
-        self.enable_khr_spirv_1_4();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_spirv_1_4();
+        }
         self.enable_khr_acceleration_structure();
     }
     pub fn supports_khr_sampler_ycbcr_conversion(&self) -> bool {
@@ -1328,11 +1334,14 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_shader_quad_control(&self) -> bool {
-        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_vulkan_memory_model()
+        self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+            || (self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_vulkan_memory_model())
     }
     pub fn enable_khr_shader_quad_control(&mut self) {
-        debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
-        self.enable_khr_vulkan_memory_model();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
+            self.enable_khr_vulkan_memory_model();
+        }
     }
     pub fn supports_khr_spirv_1_4(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
@@ -1788,10 +1797,12 @@ impl InstanceExtensions {
         self.enable_khr_ray_tracing_pipeline();
     }
     pub fn supports_ext_mesh_shader(&self) -> bool {
-        self.supports_khr_spirv_1_4()
+        self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_spirv_1_4()
     }
     pub fn enable_ext_mesh_shader(&mut self) {
-        self.enable_khr_spirv_1_4();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_spirv_1_4();
+        }
     }
     pub fn supports_ext_ycbcr_2plane_444_formats(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_sampler_ycbcr_conversion()
@@ -2403,10 +2414,12 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_pipeline_binary(&self) -> bool {
-        self.supports_khr_maintenance5()
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5()
     }
     pub fn enable_khr_pipeline_binary(&mut self) {
-        self.enable_khr_maintenance5();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.enable_khr_maintenance5();
+        }
     }
     pub fn supports_qcom_tile_properties(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -2439,10 +2452,12 @@ impl InstanceExtensions {
         self.enable_khr_ray_tracing_pipeline();
     }
     pub fn supports_ext_mutable_descriptor_type(&self) -> bool {
-        self.supports_khr_maintenance3()
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_maintenance3()
     }
     pub fn enable_ext_mutable_descriptor_type(&mut self) {
-        self.enable_khr_maintenance3();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_maintenance3();
+        }
     }
     pub fn supports_ext_legacy_vertex_attributes(&self) -> bool {
         self.supports_ext_vertex_input_dynamic_state()
@@ -2501,10 +2516,12 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_compute_shader_derivatives(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_compute_shader_derivatives(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_qcom_image_processing2(&self) -> bool {
         self.supports_qcom_image_processing()
@@ -2610,11 +2627,18 @@ impl InstanceExtensions {
         self.enable_khr_acceleration_structure();
     }
     pub fn supports_ext_device_generated_commands(&self) -> bool {
-        self.supports_khr_buffer_device_address() && self.supports_khr_maintenance5()
+        self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+            || ((self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+                || self.supports_khr_buffer_device_address())
+                && self.supports_khr_maintenance5())
     }
     pub fn enable_ext_device_generated_commands(&mut self) {
-        self.enable_khr_buffer_device_address();
-        self.enable_khr_maintenance5();
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+                self.enable_khr_buffer_device_address();
+            }
+            self.enable_khr_maintenance5();
+        }
     }
     pub fn supports_mesa_image_alignment_control(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -6842,19 +6866,27 @@ impl DeviceExtensions {
         self.enable_khr_deferred_host_operations();
     }
     pub fn supports_khr_ray_tracing_pipeline(&self) -> bool {
-        self.khr_ray_tracing_pipeline && self.supports_khr_spirv_1_4() && self.supports_khr_acceleration_structure()
+        self.khr_ray_tracing_pipeline
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_spirv_1_4())
+            && self.supports_khr_acceleration_structure()
     }
     pub fn enable_khr_ray_tracing_pipeline(&mut self) {
         self.khr_ray_tracing_pipeline = true;
-        self.enable_khr_spirv_1_4();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_spirv_1_4();
+        }
         self.enable_khr_acceleration_structure();
     }
     pub fn supports_khr_ray_query(&self) -> bool {
-        self.khr_ray_query && self.supports_khr_spirv_1_4() && self.supports_khr_acceleration_structure()
+        self.khr_ray_query
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_spirv_1_4())
+            && self.supports_khr_acceleration_structure()
     }
     pub fn enable_khr_ray_query(&mut self) {
         self.khr_ray_query = true;
-        self.enable_khr_spirv_1_4();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_spirv_1_4();
+        }
         self.enable_khr_acceleration_structure();
     }
     pub fn supports_nv_framebuffer_mixed_samples(&self) -> bool {
@@ -7333,14 +7365,17 @@ impl DeviceExtensions {
     }
     pub fn supports_khr_shader_quad_control(&self) -> bool {
         self.khr_shader_quad_control
-            && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
-            && self.supports_khr_vulkan_memory_model()
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+                || (self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+                    && self.supports_khr_vulkan_memory_model()))
             && self.supports_khr_shader_maximal_reconvergence()
     }
     pub fn enable_khr_shader_quad_control(&mut self) {
         self.khr_shader_quad_control = true;
-        debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
-        self.enable_khr_vulkan_memory_model();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
+            self.enable_khr_vulkan_memory_model();
+        }
         self.enable_khr_shader_maximal_reconvergence();
     }
     pub fn supports_khr_spirv_1_4(&self) -> bool {
@@ -7809,11 +7844,14 @@ impl DeviceExtensions {
         self.enable_khr_ray_tracing_pipeline();
     }
     pub fn supports_ext_mesh_shader(&self) -> bool {
-        self.ext_mesh_shader && self.supports_khr_spirv_1_4()
+        self.ext_mesh_shader
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_spirv_1_4())
     }
     pub fn enable_ext_mesh_shader(&mut self) {
         self.ext_mesh_shader = true;
-        self.enable_khr_spirv_1_4();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_spirv_1_4();
+        }
     }
     pub fn supports_ext_ycbcr_2plane_444_formats(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
@@ -8429,11 +8467,14 @@ impl DeviceExtensions {
         }
     }
     pub fn supports_khr_pipeline_binary(&self) -> bool {
-        self.khr_pipeline_binary && self.supports_khr_maintenance5()
+        self.khr_pipeline_binary
+            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5())
     }
     pub fn enable_khr_pipeline_binary(&mut self) {
         self.khr_pipeline_binary = true;
-        self.enable_khr_maintenance5();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.enable_khr_maintenance5();
+        }
     }
     pub fn supports_qcom_tile_properties(&self) -> bool {
         self.qcom_tile_properties
@@ -8473,11 +8514,14 @@ impl DeviceExtensions {
         self.nv_extended_sparse_address_space = true;
     }
     pub fn supports_ext_mutable_descriptor_type(&self) -> bool {
-        self.ext_mutable_descriptor_type && self.supports_khr_maintenance3()
+        self.ext_mutable_descriptor_type
+            && (self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_maintenance3())
     }
     pub fn enable_ext_mutable_descriptor_type(&mut self) {
         self.ext_mutable_descriptor_type = true;
-        self.enable_khr_maintenance3();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_maintenance3();
+        }
     }
     pub fn supports_ext_legacy_vertex_attributes(&self) -> bool {
         self.ext_legacy_vertex_attributes && self.supports_ext_vertex_input_dynamic_state()
@@ -8730,13 +8774,19 @@ impl DeviceExtensions {
     }
     pub fn supports_ext_device_generated_commands(&self) -> bool {
         self.ext_device_generated_commands
-            && self.supports_khr_buffer_device_address()
-            && self.supports_khr_maintenance5()
+            && (self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+                || ((self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+                    || self.supports_khr_buffer_device_address())
+                    && self.supports_khr_maintenance5()))
     }
     pub fn enable_ext_device_generated_commands(&mut self) {
         self.ext_device_generated_commands = true;
-        self.enable_khr_buffer_device_address();
-        self.enable_khr_maintenance5();
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+                self.enable_khr_buffer_device_address();
+            }
+            self.enable_khr_maintenance5();
+        }
     }
     pub fn supports_khr_maintenance8(&self) -> bool {
         self.khr_maintenance8 && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
