@@ -3281,15 +3281,6 @@ impl<'a> Generator<'a> {
                             Self::write_enable_impl(w, current_name, other)?;
                             writeln!(w, "}}")?;
                         }
-                        (DependencyExpr::Extension(a), DependencyExpr::Extension(b)) => {
-                            // enable the first choice of dependency, if necessary
-                            let name_a = a.skip_prefix(CONST_PREFIX).to_snake_case();
-                            let name_b = b.skip_prefix(CONST_PREFIX).to_snake_case();
-                            writeln!(
-                                w,
-                                "if !(self.supports_{name_a}() || self.supports_{name_b}()) {{ self.enable_{name_a}(); }}"
-                            )?;
-                        }
                         _ => unimplemented!(),
                     }
                 } else {
