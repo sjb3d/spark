@@ -111,7 +111,7 @@ impl<'a> DependencyExpr<'a> {
                     for prev in &mut result {
                         if let Some(merged) = Self::try_merge_and(prev, &dep) {
                             *prev = merged;
-                            break 'outer;
+                            continue 'outer;
                         }
                     }
                     result.push(dep);
@@ -137,7 +137,7 @@ impl<'a> DependencyExpr<'a> {
                     for prev in &mut result {
                         if let Some(merged) = Self::try_merge_or(prev, &dep) {
                             *prev = merged;
-                            break 'outer;
+                            continue 'outer;
                         }
                     }
                     result.push(dep);
