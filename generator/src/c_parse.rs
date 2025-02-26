@@ -337,7 +337,10 @@ fn depends_expr_inner(i: &str) -> Res<DependencyExpr> {
     alt((
         delimited(char('('), depends_expr, char(')')),
         map(version, DependencyExpr::Version),
-        map(separated_pair(take_while1(is_ident), tag("::"), take_while1(is_ident)), DependencyExpr::Feature),
+        map(
+            separated_pair(take_while1(is_ident), tag("::"), take_while1(is_ident)),
+            DependencyExpr::Feature,
+        ),
         map(take_while1(is_ident), DependencyExpr::Extension),
     ))(i)
 }
