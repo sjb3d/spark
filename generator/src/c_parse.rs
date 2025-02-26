@@ -85,6 +85,20 @@ impl<'a> DependencyExpr<'a> {
         }
     }
 
+    fn max_involved_version(&self) -> (u16, u16) {
+        match self {
+            Self::Never | Self::Always | Self::Extension(_) | Self::Feature(_) => (0, 0),
+            Self::Version(v) => *v,
+            Self::And(v) | Self::Or(v) => {
+                let mut result = (0, 0);
+                for dep in v.iter() {
+                    result = result.max(dep.max_involved_version());
+                }
+                result
+            }
+        }
+    }
+
     pub fn simplify(&mut self) {
         match self {
             Self::Never => {}
@@ -142,6 +156,11 @@ impl<'a> DependencyExpr<'a> {
                     }
                     result.push(dep);
                 }
+                result.sort_by(|a, b| {
+                    let av = a.max_involved_version();
+                    let bv = b.max_involved_version();
+                    av.cmp(&bv).reverse()
+                });
                 match result.len() {
                     0 => unreachable!(),
                     1 => *self = result.pop().unwrap(),
