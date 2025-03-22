@@ -703,13 +703,13 @@ impl AccessFlags {
     pub const FRAGMENT_DENSITY_MAP_READ_EXT: Self = Self(0x1000000);
     /// Added by extension VK_KHR_fragment_shading_rate.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_READ_KHR: Self = Self(0x800000);
-    /// Added by extension VK_NV_device_generated_commands.
-    pub const COMMAND_PREPROCESS_READ_NV: Self = Self(0x20000);
-    /// Added by extension VK_NV_device_generated_commands.
-    pub const COMMAND_PREPROCESS_WRITE_NV: Self = Self(0x40000);
+    pub const COMMAND_PREPROCESS_READ_NV: Self = Self::COMMAND_PREPROCESS_READ_EXT;
+    pub const COMMAND_PREPROCESS_WRITE_NV: Self = Self::COMMAND_PREPROCESS_WRITE_EXT;
     pub const NONE_KHR: Self = Self::NONE;
-    pub const COMMAND_PREPROCESS_READ_EXT: Self = Self::COMMAND_PREPROCESS_READ_NV;
-    pub const COMMAND_PREPROCESS_WRITE_EXT: Self = Self::COMMAND_PREPROCESS_WRITE_NV;
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const COMMAND_PREPROCESS_READ_EXT: Self = Self(0x20000);
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const COMMAND_PREPROCESS_WRITE_EXT: Self = Self(0x40000);
 }
 impl_bitmask!(AccessFlags, 0xfffffff);
 impl fmt::Display for AccessFlags {
@@ -743,8 +743,8 @@ impl fmt::Display for AccessFlags {
                 (0x400000, "ACCELERATION_STRUCTURE_WRITE_KHR"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_READ_EXT"),
                 (0x800000, "FRAGMENT_SHADING_RATE_ATTACHMENT_READ_KHR"),
-                (0x20000, "COMMAND_PREPROCESS_READ_NV"),
-                (0x40000, "COMMAND_PREPROCESS_WRITE_NV"),
+                (0x20000, "COMMAND_PREPROCESS_READ_EXT"),
+                (0x40000, "COMMAND_PREPROCESS_WRITE_EXT"),
             ],
             f,
         )
@@ -1773,14 +1773,14 @@ impl PipelineStageFlags {
     pub const FRAGMENT_DENSITY_PROCESS_EXT: Self = Self(0x800000);
     /// Added by extension VK_KHR_fragment_shading_rate.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x400000);
-    /// Added by extension VK_NV_device_generated_commands.
-    pub const COMMAND_PREPROCESS_NV: Self = Self(0x20000);
+    pub const COMMAND_PREPROCESS_NV: Self = Self::COMMAND_PREPROCESS_EXT;
     pub const NONE_KHR: Self = Self::NONE;
     /// Added by extension VK_EXT_mesh_shader.
     pub const TASK_SHADER_EXT: Self = Self(0x80000);
     /// Added by extension VK_EXT_mesh_shader.
     pub const MESH_SHADER_EXT: Self = Self(0x100000);
-    pub const COMMAND_PREPROCESS_EXT: Self = Self::COMMAND_PREPROCESS_NV;
+    /// Added by extension VK_EXT_device_generated_commands.
+    pub const COMMAND_PREPROCESS_EXT: Self = Self(0x20000);
 }
 impl_bitmask!(PipelineStageFlags, 0x3ffffff);
 impl fmt::Display for PipelineStageFlags {
@@ -1811,9 +1811,9 @@ impl fmt::Display for PipelineStageFlags {
                 (0x200000, "RAY_TRACING_SHADER_KHR"),
                 (0x800000, "FRAGMENT_DENSITY_PROCESS_EXT"),
                 (0x400000, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
-                (0x20000, "COMMAND_PREPROCESS_NV"),
                 (0x80000, "TASK_SHADER_EXT"),
                 (0x100000, "MESH_SHADER_EXT"),
+                (0x20000, "COMMAND_PREPROCESS_EXT"),
             ],
             f,
         )
@@ -2447,12 +2447,12 @@ impl AccessFlags2 {
     /// read access flag for reading conditional rendering predicate
     /// Added by extension VK_KHR_synchronization2.
     pub const CONDITIONAL_RENDERING_READ_EXT: Self = Self(0x100000);
+    pub const COMMAND_PREPROCESS_READ_NV: Self = Self::COMMAND_PREPROCESS_READ_EXT;
+    pub const COMMAND_PREPROCESS_WRITE_NV: Self = Self::COMMAND_PREPROCESS_WRITE_EXT;
     /// Added by extension VK_KHR_synchronization2.
-    pub const COMMAND_PREPROCESS_READ_NV: Self = Self(0x20000);
+    pub const COMMAND_PREPROCESS_READ_EXT: Self = Self(0x20000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const COMMAND_PREPROCESS_WRITE_NV: Self = Self(0x40000);
-    pub const COMMAND_PREPROCESS_READ_EXT: Self = Self::COMMAND_PREPROCESS_READ_NV;
-    pub const COMMAND_PREPROCESS_WRITE_EXT: Self = Self::COMMAND_PREPROCESS_WRITE_NV;
+    pub const COMMAND_PREPROCESS_WRITE_EXT: Self = Self(0x40000);
     /// Added by extension VK_KHR_synchronization2.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_READ_KHR: Self = Self(0x800000);
     pub const SHADING_RATE_IMAGE_READ_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT_READ_KHR;
@@ -2511,8 +2511,8 @@ impl fmt::Display for AccessFlags2 {
                 (0x4000000, "TRANSFORM_FEEDBACK_COUNTER_READ_EXT"),
                 (0x8000000, "TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT"),
                 (0x100000, "CONDITIONAL_RENDERING_READ_EXT"),
-                (0x20000, "COMMAND_PREPROCESS_READ_NV"),
-                (0x40000, "COMMAND_PREPROCESS_WRITE_NV"),
+                (0x20000, "COMMAND_PREPROCESS_READ_EXT"),
+                (0x40000, "COMMAND_PREPROCESS_WRITE_EXT"),
                 (0x800000, "FRAGMENT_SHADING_RATE_ATTACHMENT_READ_KHR"),
                 (0x200000, "ACCELERATION_STRUCTURE_READ_KHR"),
                 (0x400000, "ACCELERATION_STRUCTURE_WRITE_KHR"),
@@ -2592,9 +2592,9 @@ impl PipelineStageFlags2 {
     /// A pipeline stage for conditional rendering predicate fetch
     /// Added by extension VK_KHR_synchronization2.
     pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x40000);
+    pub const COMMAND_PREPROCESS_NV: Self = Self::COMMAND_PREPROCESS_EXT;
     /// Added by extension VK_KHR_synchronization2.
-    pub const COMMAND_PREPROCESS_NV: Self = Self(0x20000);
-    pub const COMMAND_PREPROCESS_EXT: Self = Self::COMMAND_PREPROCESS_NV;
+    pub const COMMAND_PREPROCESS_EXT: Self = Self(0x20000);
     /// Added by extension VK_KHR_synchronization2.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x400000);
     pub const SHADING_RATE_IMAGE_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT_KHR;
@@ -2660,7 +2660,7 @@ impl fmt::Display for PipelineStageFlags2 {
                 (0x4000000000, "PRE_RASTERIZATION_SHADERS"),
                 (0x1000000, "TRANSFORM_FEEDBACK_EXT"),
                 (0x40000, "CONDITIONAL_RENDERING_EXT"),
-                (0x20000, "COMMAND_PREPROCESS_NV"),
+                (0x20000, "COMMAND_PREPROCESS_EXT"),
                 (0x400000, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
                 (0x2000000, "ACCELERATION_STRUCTURE_BUILD_KHR"),
                 (0x200000, "RAY_TRACING_SHADER_KHR"),

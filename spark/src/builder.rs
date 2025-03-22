@@ -17238,37 +17238,6 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceExtendedDynamicState3Features
 impl DeviceCreateInfoNext for PhysicalDeviceExtendedDynamicState3FeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceExtendedDynamicState3FeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceExtendedDynamicState3FeaturesEXT {}
-impl Builder<'_> for vk::PhysicalDeviceExtendedDynamicState3PropertiesEXT {
-    type Type = PhysicalDeviceExtendedDynamicState3PropertiesEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PhysicalDeviceExtendedDynamicState3PropertiesEXTBuilder {
-    inner: vk::PhysicalDeviceExtendedDynamicState3PropertiesEXT,
-}
-impl PhysicalDeviceExtendedDynamicState3PropertiesEXTBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn dynamic_primitive_topology_unrestricted(mut self, dynamic_primitive_topology_unrestricted: bool) -> Self {
-        self.inner.dynamic_primitive_topology_unrestricted = if dynamic_primitive_topology_unrestricted {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-}
-impl Deref for PhysicalDeviceExtendedDynamicState3PropertiesEXTBuilder {
-    type Target = vk::PhysicalDeviceExtendedDynamicState3PropertiesEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl PhysicalDeviceProperties2Next for PhysicalDeviceExtendedDynamicState3PropertiesEXTBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceExtendedDynamicState3PropertiesEXT {}
 impl Builder<'_> for vk::RenderPassTransformBeginInfoQCOM {
     type Type = RenderPassTransformBeginInfoQCOMBuilder;
@@ -17925,33 +17894,6 @@ impl PhysicalDeviceFeatures2Next for PhysicalDevicePortabilitySubsetFeaturesKHRB
 impl DeviceCreateInfoNext for PhysicalDevicePortabilitySubsetFeaturesKHRBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePortabilitySubsetFeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePortabilitySubsetFeaturesKHR {}
-impl Builder<'_> for vk::PhysicalDevicePortabilitySubsetPropertiesKHR {
-    type Type = PhysicalDevicePortabilitySubsetPropertiesKHRBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PhysicalDevicePortabilitySubsetPropertiesKHRBuilder {
-    inner: vk::PhysicalDevicePortabilitySubsetPropertiesKHR,
-}
-impl PhysicalDevicePortabilitySubsetPropertiesKHRBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn min_vertex_input_binding_stride_alignment(mut self, min_vertex_input_binding_stride_alignment: u32) -> Self {
-        self.inner.min_vertex_input_binding_stride_alignment = min_vertex_input_binding_stride_alignment;
-        self
-    }
-}
-impl Deref for PhysicalDevicePortabilitySubsetPropertiesKHRBuilder {
-    type Target = vk::PhysicalDevicePortabilitySubsetPropertiesKHR;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl PhysicalDeviceProperties2Next for PhysicalDevicePortabilitySubsetPropertiesKHRBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePortabilitySubsetPropertiesKHR {}
 impl Builder<'_> for vk::PhysicalDevice4444FormatsFeaturesEXT {
     type Type = PhysicalDevice4444FormatsFeaturesEXTBuilder;
@@ -18965,37 +18907,6 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceLegacyVertexAttributesFeature
 impl DeviceCreateInfoNext for PhysicalDeviceLegacyVertexAttributesFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceLegacyVertexAttributesFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceLegacyVertexAttributesFeaturesEXT {}
-impl Builder<'_> for vk::PhysicalDeviceLegacyVertexAttributesPropertiesEXT {
-    type Type = PhysicalDeviceLegacyVertexAttributesPropertiesEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PhysicalDeviceLegacyVertexAttributesPropertiesEXTBuilder {
-    inner: vk::PhysicalDeviceLegacyVertexAttributesPropertiesEXT,
-}
-impl PhysicalDeviceLegacyVertexAttributesPropertiesEXTBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn native_unaligned_performance(mut self, native_unaligned_performance: bool) -> Self {
-        self.inner.native_unaligned_performance = if native_unaligned_performance {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-}
-impl Deref for PhysicalDeviceLegacyVertexAttributesPropertiesEXTBuilder {
-    type Target = vk::PhysicalDeviceLegacyVertexAttributesPropertiesEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl PhysicalDeviceProperties2Next for PhysicalDeviceLegacyVertexAttributesPropertiesEXTBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceLegacyVertexAttributesPropertiesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceMutableDescriptorTypeFeaturesEXT {
     type Type = PhysicalDeviceMutableDescriptorTypeFeaturesEXTBuilder;
@@ -19940,25 +19851,17 @@ impl<'a> Deref for PipelineColorWriteCreateInfoEXTBuilder<'a> {
 }
 impl<'a> PipelineColorBlendStateCreateInfoNext for PipelineColorWriteCreateInfoEXTBuilder<'a> {}
 impl PipelineColorBlendStateCreateInfoNext for vk::PipelineColorWriteCreateInfoEXT {}
-impl<'a> Builder<'a> for vk::MemoryBarrier2 {
-    type Type = MemoryBarrier2Builder<'a>;
+impl Builder<'_> for vk::MemoryBarrier2 {
+    type Type = MemoryBarrier2Builder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-pub trait MemoryBarrier2Next {}
 #[derive(Default)]
-pub struct MemoryBarrier2Builder<'a> {
+pub struct MemoryBarrier2Builder {
     inner: vk::MemoryBarrier2,
-    phantom: PhantomData<&'a vk::Never>,
 }
-impl<'a> MemoryBarrier2Builder<'a> {
-    pub fn insert_next<T: MemoryBarrier2Next>(mut self, next: &'a mut T) -> Self {
-        unsafe {
-            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
-        }
-        self
-    }
+impl MemoryBarrier2Builder {
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19980,13 +19883,13 @@ impl<'a> MemoryBarrier2Builder<'a> {
         self
     }
 }
-impl<'a> Deref for MemoryBarrier2Builder<'a> {
+impl Deref for MemoryBarrier2Builder {
     type Target = vk::MemoryBarrier2;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> SubpassDependency2Next for MemoryBarrier2Builder<'a> {}
+impl SubpassDependency2Next for MemoryBarrier2Builder {}
 impl SubpassDependency2Next for vk::MemoryBarrier2 {}
 impl<'a> Builder<'a> for vk::ImageMemoryBarrier2 {
     type Type = ImageMemoryBarrier2Builder<'a>;
@@ -20154,10 +20057,10 @@ impl Deref for MemoryBarrierAccessFlags3KHRBuilder {
         &self.inner
     }
 }
-impl MemoryBarrier2Next for MemoryBarrierAccessFlags3KHRBuilder {}
+impl SubpassDependency2Next for MemoryBarrierAccessFlags3KHRBuilder {}
 impl BufferMemoryBarrier2Next for MemoryBarrierAccessFlags3KHRBuilder {}
 impl ImageMemoryBarrier2Next for MemoryBarrierAccessFlags3KHRBuilder {}
-impl MemoryBarrier2Next for vk::MemoryBarrierAccessFlags3KHR {}
+impl SubpassDependency2Next for vk::MemoryBarrierAccessFlags3KHR {}
 impl BufferMemoryBarrier2Next for vk::MemoryBarrierAccessFlags3KHR {}
 impl ImageMemoryBarrier2Next for vk::MemoryBarrierAccessFlags3KHR {}
 impl<'a> Builder<'a> for vk::DependencyInfo {
@@ -22936,117 +22839,7 @@ impl Deref for DevicePipelineBinaryInternalCacheControlKHRBuilder {
 }
 impl DeviceCreateInfoNext for DevicePipelineBinaryInternalCacheControlKHRBuilder {}
 impl DeviceCreateInfoNext for vk::DevicePipelineBinaryInternalCacheControlKHR {}
-impl Builder<'_> for vk::PhysicalDevicePipelineBinaryPropertiesKHR {
-    type Type = PhysicalDevicePipelineBinaryPropertiesKHRBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PhysicalDevicePipelineBinaryPropertiesKHRBuilder {
-    inner: vk::PhysicalDevicePipelineBinaryPropertiesKHR,
-}
-impl PhysicalDevicePipelineBinaryPropertiesKHRBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn pipeline_binary_internal_cache(mut self, pipeline_binary_internal_cache: bool) -> Self {
-        self.inner.pipeline_binary_internal_cache = if pipeline_binary_internal_cache {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn pipeline_binary_internal_cache_control(mut self, pipeline_binary_internal_cache_control: bool) -> Self {
-        self.inner.pipeline_binary_internal_cache_control = if pipeline_binary_internal_cache_control {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn pipeline_binary_prefers_internal_cache(mut self, pipeline_binary_prefers_internal_cache: bool) -> Self {
-        self.inner.pipeline_binary_prefers_internal_cache = if pipeline_binary_prefers_internal_cache {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn pipeline_binary_precompiled_internal_cache(
-        mut self,
-        pipeline_binary_precompiled_internal_cache: bool,
-    ) -> Self {
-        self.inner.pipeline_binary_precompiled_internal_cache = if pipeline_binary_precompiled_internal_cache {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn pipeline_binary_compressed_data(mut self, pipeline_binary_compressed_data: bool) -> Self {
-        self.inner.pipeline_binary_compressed_data = if pipeline_binary_compressed_data {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-}
-impl Deref for PhysicalDevicePipelineBinaryPropertiesKHRBuilder {
-    type Target = vk::PhysicalDevicePipelineBinaryPropertiesKHR;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl PhysicalDeviceProperties2Next for PhysicalDevicePipelineBinaryPropertiesKHRBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePipelineBinaryPropertiesKHR {}
-impl Builder<'_> for vk::PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT {
-    type Type = PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder {
-    inner: vk::PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT,
-}
-impl PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn graphics_pipeline_library_fast_linking(mut self, graphics_pipeline_library_fast_linking: bool) -> Self {
-        self.inner.graphics_pipeline_library_fast_linking = if graphics_pipeline_library_fast_linking {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn graphics_pipeline_library_independent_interpolation_decoration(
-        mut self,
-        graphics_pipeline_library_independent_interpolation_decoration: bool,
-    ) -> Self {
-        self.inner
-            .graphics_pipeline_library_independent_interpolation_decoration =
-            if graphics_pipeline_library_independent_interpolation_decoration {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
-        self
-    }
-}
-impl Deref for PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder {
-    type Target = vk::PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl PhysicalDeviceProperties2Next for PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT {}
 impl Builder<'_> for vk::GraphicsPipelineLibraryCreateInfoEXT {
     type Type = GraphicsPipelineLibraryCreateInfoEXTBuilder;
@@ -23216,33 +23009,6 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceNestedCommandBufferFeaturesEX
 impl DeviceCreateInfoNext for PhysicalDeviceNestedCommandBufferFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceNestedCommandBufferFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceNestedCommandBufferFeaturesEXT {}
-impl Builder<'_> for vk::PhysicalDeviceNestedCommandBufferPropertiesEXT {
-    type Type = PhysicalDeviceNestedCommandBufferPropertiesEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PhysicalDeviceNestedCommandBufferPropertiesEXTBuilder {
-    inner: vk::PhysicalDeviceNestedCommandBufferPropertiesEXT,
-}
-impl PhysicalDeviceNestedCommandBufferPropertiesEXTBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn max_command_buffer_nesting_level(mut self, max_command_buffer_nesting_level: u32) -> Self {
-        self.inner.max_command_buffer_nesting_level = max_command_buffer_nesting_level;
-        self
-    }
-}
-impl Deref for PhysicalDeviceNestedCommandBufferPropertiesEXTBuilder {
-    type Target = vk::PhysicalDeviceNestedCommandBufferPropertiesEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl PhysicalDeviceProperties2Next for PhysicalDeviceNestedCommandBufferPropertiesEXTBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceNestedCommandBufferPropertiesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceShaderModuleIdentifierFeaturesEXT {
     type Type = PhysicalDeviceShaderModuleIdentifierFeaturesEXTBuilder;
@@ -26418,56 +26184,6 @@ impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrixFeaturesKHRBuilder 
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCooperativeMatrixFeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrixFeaturesKHR {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCooperativeMatrixPropertiesKHR {}
-impl Builder<'_> for vk::PhysicalDeviceShaderEnqueuePropertiesAMDX {
-    type Type = PhysicalDeviceShaderEnqueuePropertiesAMDXBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PhysicalDeviceShaderEnqueuePropertiesAMDXBuilder {
-    inner: vk::PhysicalDeviceShaderEnqueuePropertiesAMDX,
-}
-impl PhysicalDeviceShaderEnqueuePropertiesAMDXBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn max_execution_graph_depth(mut self, max_execution_graph_depth: u32) -> Self {
-        self.inner.max_execution_graph_depth = max_execution_graph_depth;
-        self
-    }
-    pub fn max_execution_graph_shader_output_nodes(mut self, max_execution_graph_shader_output_nodes: u32) -> Self {
-        self.inner.max_execution_graph_shader_output_nodes = max_execution_graph_shader_output_nodes;
-        self
-    }
-    pub fn max_execution_graph_shader_payload_size(mut self, max_execution_graph_shader_payload_size: u32) -> Self {
-        self.inner.max_execution_graph_shader_payload_size = max_execution_graph_shader_payload_size;
-        self
-    }
-    pub fn max_execution_graph_shader_payload_count(mut self, max_execution_graph_shader_payload_count: u32) -> Self {
-        self.inner.max_execution_graph_shader_payload_count = max_execution_graph_shader_payload_count;
-        self
-    }
-    pub fn execution_graph_dispatch_address_alignment(
-        mut self,
-        execution_graph_dispatch_address_alignment: u32,
-    ) -> Self {
-        self.inner.execution_graph_dispatch_address_alignment = execution_graph_dispatch_address_alignment;
-        self
-    }
-    pub fn max_execution_graph_workgroups(mut self, max_execution_graph_workgroups: u32) -> Self {
-        self.inner.max_execution_graph_workgroups = max_execution_graph_workgroups;
-        self
-    }
-}
-impl Deref for PhysicalDeviceShaderEnqueuePropertiesAMDXBuilder {
-    type Target = vk::PhysicalDeviceShaderEnqueuePropertiesAMDX;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl PhysicalDeviceProperties2Next for PhysicalDeviceShaderEnqueuePropertiesAMDXBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderEnqueuePropertiesAMDX {}
 impl Builder<'_> for vk::PhysicalDeviceShaderEnqueueFeaturesAMDX {
     type Type = PhysicalDeviceShaderEnqueueFeaturesAMDXBuilder;
@@ -28361,33 +28077,6 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageAlignmentControlFeatures
 impl DeviceCreateInfoNext for PhysicalDeviceImageAlignmentControlFeaturesMESABuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageAlignmentControlFeaturesMESA {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceImageAlignmentControlFeaturesMESA {}
-impl Builder<'_> for vk::PhysicalDeviceImageAlignmentControlPropertiesMESA {
-    type Type = PhysicalDeviceImageAlignmentControlPropertiesMESABuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PhysicalDeviceImageAlignmentControlPropertiesMESABuilder {
-    inner: vk::PhysicalDeviceImageAlignmentControlPropertiesMESA,
-}
-impl PhysicalDeviceImageAlignmentControlPropertiesMESABuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn supported_image_alignment_mask(mut self, supported_image_alignment_mask: u32) -> Self {
-        self.inner.supported_image_alignment_mask = supported_image_alignment_mask;
-        self
-    }
-}
-impl Deref for PhysicalDeviceImageAlignmentControlPropertiesMESABuilder {
-    type Target = vk::PhysicalDeviceImageAlignmentControlPropertiesMESA;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl PhysicalDeviceProperties2Next for PhysicalDeviceImageAlignmentControlPropertiesMESABuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceImageAlignmentControlPropertiesMESA {}
 impl Builder<'_> for vk::ImageAlignmentControlCreateInfoMESA {
     type Type = ImageAlignmentControlCreateInfoMESABuilder;
