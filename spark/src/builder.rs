@@ -13097,17 +13097,17 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentDensityMap2FeaturesEX
 impl DeviceCreateInfoNext for PhysicalDeviceFragmentDensityMap2FeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentDensityMap2FeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentDensityMap2FeaturesEXT {}
-impl Builder<'_> for vk::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {
-    type Type = PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOMBuilder;
+impl Builder<'_> for vk::PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT {
+    type Type = PhysicalDeviceFragmentDensityMapOffsetFeaturesEXTBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOMBuilder {
-    inner: vk::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM,
+pub struct PhysicalDeviceFragmentDensityMapOffsetFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT,
 }
-impl PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOMBuilder {
+impl PhysicalDeviceFragmentDensityMapOffsetFeaturesEXTBuilder {
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13121,19 +13121,19 @@ impl PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOMBuilder {
         self
     }
 }
-impl Deref for PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOMBuilder {
-    type Target = vk::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM;
+impl Deref for PhysicalDeviceFragmentDensityMapOffsetFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOMBuilder {}
-impl DeviceCreateInfoNext for PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOMBuilder {}
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {}
-impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentDensityMapOffsetFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceFragmentDensityMapOffsetFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFragmentDensityMapPropertiesEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFragmentDensityMap2PropertiesEXT {}
-impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT {}
 impl Builder<'_> for vk::RenderPassFragmentDensityMapCreateInfoEXT {
     type Type = RenderPassFragmentDensityMapCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -13164,18 +13164,18 @@ impl RenderPassCreateInfoNext for RenderPassFragmentDensityMapCreateInfoEXTBuild
 impl RenderPassCreateInfo2Next for RenderPassFragmentDensityMapCreateInfoEXTBuilder {}
 impl RenderPassCreateInfoNext for vk::RenderPassFragmentDensityMapCreateInfoEXT {}
 impl RenderPassCreateInfo2Next for vk::RenderPassFragmentDensityMapCreateInfoEXT {}
-impl<'a> Builder<'a> for vk::SubpassFragmentDensityMapOffsetEndInfoQCOM {
-    type Type = SubpassFragmentDensityMapOffsetEndInfoQCOMBuilder<'a>;
+impl<'a> Builder<'a> for vk::RenderPassFragmentDensityMapOffsetEndInfoEXT {
+    type Type = RenderPassFragmentDensityMapOffsetEndInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct SubpassFragmentDensityMapOffsetEndInfoQCOMBuilder<'a> {
-    inner: vk::SubpassFragmentDensityMapOffsetEndInfoQCOM,
+pub struct RenderPassFragmentDensityMapOffsetEndInfoEXTBuilder<'a> {
+    inner: vk::RenderPassFragmentDensityMapOffsetEndInfoEXT,
     phantom: PhantomData<&'a vk::Never>,
 }
-impl<'a> SubpassFragmentDensityMapOffsetEndInfoQCOMBuilder<'a> {
+impl<'a> RenderPassFragmentDensityMapOffsetEndInfoEXTBuilder<'a> {
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13188,14 +13188,16 @@ impl<'a> SubpassFragmentDensityMapOffsetEndInfoQCOMBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for SubpassFragmentDensityMapOffsetEndInfoQCOMBuilder<'a> {
-    type Target = vk::SubpassFragmentDensityMapOffsetEndInfoQCOM;
+impl<'a> Deref for RenderPassFragmentDensityMapOffsetEndInfoEXTBuilder<'a> {
+    type Target = vk::RenderPassFragmentDensityMapOffsetEndInfoEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> SubpassEndInfoNext for SubpassFragmentDensityMapOffsetEndInfoQCOMBuilder<'a> {}
-impl SubpassEndInfoNext for vk::SubpassFragmentDensityMapOffsetEndInfoQCOM {}
+impl<'a> SubpassEndInfoNext for RenderPassFragmentDensityMapOffsetEndInfoEXTBuilder<'a> {}
+impl<'a> RenderingEndInfoEXTNext for RenderPassFragmentDensityMapOffsetEndInfoEXTBuilder<'a> {}
+impl SubpassEndInfoNext for vk::RenderPassFragmentDensityMapOffsetEndInfoEXT {}
+impl RenderingEndInfoEXTNext for vk::RenderPassFragmentDensityMapOffsetEndInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceScalarBlockLayoutFeatures {
     type Type = PhysicalDeviceScalarBlockLayoutFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -22322,6 +22324,36 @@ impl<'a> Deref for RenderingInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::RenderingEndInfoEXT {
+    type Type = RenderingEndInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait RenderingEndInfoEXTNext {}
+#[derive(Default)]
+pub struct RenderingEndInfoEXTBuilder<'a> {
+    inner: vk::RenderingEndInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> RenderingEndInfoEXTBuilder<'a> {
+    pub fn insert_next<T: RenderingEndInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+}
+impl<'a> Deref for RenderingEndInfoEXTBuilder<'a> {
+    type Target = vk::RenderingEndInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::RenderingAttachmentInfo {
     type Type = RenderingAttachmentInfoBuilder;
     fn builder() -> Self::Type {
@@ -27983,6 +28015,52 @@ impl Deref for MemoryMapPlacedInfoEXTBuilder {
 }
 impl MemoryMapInfoNext for MemoryMapPlacedInfoEXTBuilder {}
 impl MemoryMapInfoNext for vk::MemoryMapPlacedInfoEXT {}
+impl Builder<'_> for vk::PhysicalDeviceShaderBfloat16FeaturesKHR {
+    type Type = PhysicalDeviceShaderBfloat16FeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderBfloat16FeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceShaderBfloat16FeaturesKHR,
+}
+impl PhysicalDeviceShaderBfloat16FeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_b_float16_type(mut self, shader_b_float16_type: bool) -> Self {
+        self.inner.shader_b_float16_type = if shader_b_float16_type { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn shader_b_float16_dot_product(mut self, shader_b_float16_dot_product: bool) -> Self {
+        self.inner.shader_b_float16_dot_product = if shader_b_float16_dot_product {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_b_float16_cooperative_matrix(mut self, shader_b_float16_cooperative_matrix: bool) -> Self {
+        self.inner.shader_b_float16_cooperative_matrix = if shader_b_float16_cooperative_matrix {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderBfloat16FeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceShaderBfloat16FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderBfloat16FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderBfloat16FeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderBfloat16FeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderBfloat16FeaturesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceRawAccessChainsFeaturesNV {
     type Type = PhysicalDeviceRawAccessChainsFeaturesNVBuilder;
     fn builder() -> Self::Type {

@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 310
+//! Generated from vk.xml with `VK_HEADER_VERSION` 311
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -943,6 +943,14 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_inline_uniform_block(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_khr_shader_bfloat16(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_shader_bfloat16(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -2703,6 +2711,25 @@ impl InstanceExtensions {
     pub fn enable_ext_vertex_attribute_robustness(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_ext_fragment_density_map_offset(&self) -> bool {
+        (self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            || self.supports_khr_get_physical_device_properties2())
+            && self.supports_ext_fragment_density_map()
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_create_renderpass2())
+            && (self.core_version >= vk::Version::from_raw_parts(1, 3, 0) || self.supports_khr_dynamic_rendering())
+    }
+    pub fn enable_ext_fragment_density_map_offset(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+        self.enable_ext_fragment_density_map();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_create_renderpass2();
+        }
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            self.enable_khr_dynamic_rendering();
         }
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
@@ -5177,6 +5204,7 @@ pub struct DeviceExtensions {
     pub amd_shader_fragment_mask: bool,
     pub ext_inline_uniform_block: bool,
     pub ext_shader_stencil_export: bool,
+    pub khr_shader_bfloat16: bool,
     pub ext_sample_locations: bool,
     pub khr_relaxed_block_layout: bool,
     pub khr_get_memory_requirements2: bool,
@@ -5437,6 +5465,7 @@ pub struct DeviceExtensions {
     pub khr_depth_clamp_zero_one: bool,
     pub ext_vertex_attribute_robustness: bool,
     pub nv_present_metering: bool,
+    pub ext_fragment_density_map_offset: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -5527,6 +5556,7 @@ impl DeviceExtensions {
             b"VK_AMD_shader_fragment_mask" => self.amd_shader_fragment_mask = true,
             b"VK_EXT_inline_uniform_block" => self.ext_inline_uniform_block = true,
             b"VK_EXT_shader_stencil_export" => self.ext_shader_stencil_export = true,
+            b"VK_KHR_shader_bfloat16" => self.khr_shader_bfloat16 = true,
             b"VK_EXT_sample_locations" => self.ext_sample_locations = true,
             b"VK_KHR_relaxed_block_layout" => self.khr_relaxed_block_layout = true,
             b"VK_KHR_get_memory_requirements2" => self.khr_get_memory_requirements2 = true,
@@ -5787,6 +5817,7 @@ impl DeviceExtensions {
             b"VK_KHR_depth_clamp_zero_one" => self.khr_depth_clamp_zero_one = true,
             b"VK_EXT_vertex_attribute_robustness" => self.ext_vertex_attribute_robustness = true,
             b"VK_NV_present_metering" => self.nv_present_metering = true,
+            b"VK_EXT_fragment_density_map_offset" => self.ext_fragment_density_map_offset = true,
             _ => {}
         }
     }
@@ -5877,6 +5908,7 @@ impl DeviceExtensions {
             amd_shader_fragment_mask: false,
             ext_inline_uniform_block: false,
             ext_shader_stencil_export: false,
+            khr_shader_bfloat16: false,
             ext_sample_locations: false,
             khr_relaxed_block_layout: false,
             khr_get_memory_requirements2: false,
@@ -6137,6 +6169,7 @@ impl DeviceExtensions {
             khr_depth_clamp_zero_one: false,
             ext_vertex_attribute_robustness: false,
             nv_present_metering: false,
+            ext_fragment_density_map_offset: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -6805,6 +6838,12 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_shader_stencil_export(&mut self) {
         self.ext_shader_stencil_export = true;
+    }
+    pub fn supports_khr_shader_bfloat16(&self) -> bool {
+        self.khr_shader_bfloat16
+    }
+    pub fn enable_khr_shader_bfloat16(&mut self) {
+        self.khr_shader_bfloat16 = true;
     }
     pub fn supports_ext_sample_locations(&self) -> bool {
         self.ext_sample_locations
@@ -8857,6 +8896,22 @@ impl DeviceExtensions {
     pub fn enable_nv_present_metering(&mut self) {
         self.nv_present_metering = true;
     }
+    pub fn supports_ext_fragment_density_map_offset(&self) -> bool {
+        self.ext_fragment_density_map_offset
+            && self.supports_ext_fragment_density_map()
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_create_renderpass2())
+            && (self.core_version >= vk::Version::from_raw_parts(1, 3, 0) || self.supports_khr_dynamic_rendering())
+    }
+    pub fn enable_ext_fragment_density_map_offset(&mut self) {
+        self.ext_fragment_density_map_offset = true;
+        self.enable_ext_fragment_density_map();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_create_renderpass2();
+        }
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            self.enable_khr_dynamic_rendering();
+        }
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -9112,6 +9167,9 @@ impl DeviceExtensions {
         }
         if self.ext_shader_stencil_export {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_stencil_export\0") })
+        }
+        if self.khr_shader_bfloat16 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_bfloat16\0") })
         }
         if self.ext_sample_locations {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_sample_locations\0") })
@@ -9893,6 +9951,9 @@ impl DeviceExtensions {
         if self.nv_present_metering {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_present_metering\0") })
         }
+        if self.ext_fragment_density_map_offset {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map_offset\0") })
+        }
         v
     }
 }
@@ -10365,6 +10426,7 @@ pub struct Device {
     pub fp_cmd_cuda_launch_kernel_nv: Option<vk::FnCmdCudaLaunchKernelNV>,
     pub fp_cmd_begin_rendering: Option<vk::FnCmdBeginRendering>,
     pub fp_cmd_end_rendering: Option<vk::FnCmdEndRendering>,
+    pub fp_cmd_end_rendering2_ext: Option<vk::FnCmdEndRendering2EXT>,
     pub fp_get_descriptor_set_layout_host_mapping_info_valve: Option<vk::FnGetDescriptorSetLayoutHostMappingInfoVALVE>,
     pub fp_get_descriptor_set_host_mapping_valve: Option<vk::FnGetDescriptorSetHostMappingVALVE>,
     pub fp_create_micromap_ext: Option<vk::FnCreateMicromapEXT>,
@@ -14242,6 +14304,12 @@ impl Device {
                 fp.map(|f| mem::transmute(f))
             } else if extensions.khr_dynamic_rendering {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndRenderingKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_rendering2_ext: if extensions.ext_fragment_density_map_offset {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndRendering2EXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -22741,6 +22809,16 @@ impl Device {
     pub unsafe fn cmd_end_rendering(&self, command_buffer: vk::CommandBuffer) {
         let fp = self.fp_cmd_end_rendering.expect("vkCmdEndRendering is not loaded");
         (fp)(Some(command_buffer));
+    }
+    pub unsafe fn cmd_end_rendering2_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_rendering_end_info: Option<&vk::RenderingEndInfoEXT>,
+    ) {
+        let fp = self
+            .fp_cmd_end_rendering2_ext
+            .expect("vkCmdEndRendering2EXT is not loaded");
+        (fp)(Some(command_buffer), p_rendering_end_info.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn cmd_end_rendering_khr(&self, command_buffer: vk::CommandBuffer) {
         let fp = self.fp_cmd_end_rendering.expect("vkCmdEndRenderingKHR is not loaded");

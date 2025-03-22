@@ -1045,8 +1045,9 @@ impl ImageCreateFlags {
     /// Image is created with a layout where individual slices are capable of being used as 2D images
     /// Added by extension VK_EXT_image_2d_view_of_3d.
     pub const N2D_VIEW_COMPATIBLE_EXT: Self = Self(0x20000);
-    /// Added by extension VK_QCOM_fragment_density_map_offset.
-    pub const FRAGMENT_DENSITY_MAP_OFFSET_QCOM: Self = Self(0x8000);
+    pub const FRAGMENT_DENSITY_MAP_OFFSET_QCOM: Self = Self::FRAGMENT_DENSITY_MAP_OFFSET_EXT;
+    /// Added by extension VK_EXT_fragment_density_map_offset.
+    pub const FRAGMENT_DENSITY_MAP_OFFSET_EXT: Self = Self(0x8000);
 }
 impl_bitmask!(ImageCreateFlags, 0x7ffff);
 impl fmt::Display for ImageCreateFlags {
@@ -1072,7 +1073,7 @@ impl fmt::Display for ImageCreateFlags {
                 (0x10000, "DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT"),
                 (0x40000, "MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXT"),
                 (0x20000, "N2D_VIEW_COMPATIBLE_EXT"),
-                (0x8000, "FRAGMENT_DENSITY_MAP_OFFSET_QCOM"),
+                (0x8000, "FRAGMENT_DENSITY_MAP_OFFSET_EXT"),
             ],
             f,
         )
@@ -7574,6 +7575,8 @@ impl StructureType {
     pub const WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT: Self = Self::WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK;
     pub const DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO_EXT: Self =
         Self::DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO;
+    /// Added by extension VK_KHR_shader_bfloat16.
+    pub const PHYSICAL_DEVICE_SHADER_BFLOAT16_FEATURES_KHR: Self = Self(1000141000);
     /// Added by extension VK_EXT_sample_locations.
     pub const SAMPLE_LOCATIONS_INFO_EXT: Self = Self(1000143000);
     /// Added by extension VK_EXT_sample_locations.
@@ -8392,12 +8395,12 @@ impl StructureType {
     pub const RENDER_PASS_STRIPE_INFO_ARM: Self = Self(1000424003);
     /// Added by extension VK_ARM_render_pass_striped.
     pub const RENDER_PASS_STRIPE_SUBMIT_INFO_ARM: Self = Self(1000424004);
-    /// Added by extension VK_QCOM_fragment_density_map_offset.
-    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM: Self = Self(1000425000);
-    /// Added by extension VK_QCOM_fragment_density_map_offset.
-    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM: Self = Self(1000425001);
-    /// Added by extension VK_QCOM_fragment_density_map_offset.
-    pub const SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM: Self = Self(1000425002);
+    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM: Self =
+        Self::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_EXT;
+    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM: Self =
+        Self::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_EXT;
+    pub const SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM: Self =
+        Self::RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT;
     /// Added by extension VK_NV_copy_memory_indirect.
     pub const PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV: Self = Self(1000426000);
     /// Added by extension VK_NV_copy_memory_indirect.
@@ -8777,6 +8780,11 @@ impl StructureType {
     pub const SET_PRESENT_CONFIG_NV: Self = Self(1000613000);
     /// Added by extension VK_NV_present_metering.
     pub const PHYSICAL_DEVICE_PRESENT_METERING_FEATURES_NV: Self = Self(1000613001);
+    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_EXT: Self = Self(1000425000);
+    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_EXT: Self = Self(1000425001);
+    pub const RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT: Self = Self(1000425002);
+    /// Added by extension VK_EXT_fragment_density_map_offset.
+    pub const RENDERING_END_INFO_EXT: Self = Self(1000619003);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9169,6 +9177,7 @@ impl fmt::Display for StructureType {
             1000134003 => Some(&"EXECUTION_GRAPH_PIPELINE_CREATE_INFO_AMDX"),
             1000134004 => Some(&"PIPELINE_SHADER_STAGE_NODE_CREATE_INFO_AMDX"),
             1000044008 => Some(&"ATTACHMENT_SAMPLE_COUNT_INFO_AMD"),
+            1000141000 => Some(&"PHYSICAL_DEVICE_SHADER_BFLOAT16_FEATURES_KHR"),
             1000143000 => Some(&"SAMPLE_LOCATIONS_INFO_EXT"),
             1000143001 => Some(&"RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT"),
             1000143002 => Some(&"PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT"),
@@ -9496,9 +9505,6 @@ impl fmt::Display for StructureType {
             1000424002 => Some(&"RENDER_PASS_STRIPE_BEGIN_INFO_ARM"),
             1000424003 => Some(&"RENDER_PASS_STRIPE_INFO_ARM"),
             1000424004 => Some(&"RENDER_PASS_STRIPE_SUBMIT_INFO_ARM"),
-            1000425000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM"),
-            1000425001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM"),
-            1000425002 => Some(&"SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM"),
             1000426000 => Some(&"PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV"),
             1000426001 => Some(&"PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV"),
             1000427000 => Some(&"PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV"),
@@ -9674,6 +9680,10 @@ impl fmt::Display for StructureType {
             1000608000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT"),
             1000613000 => Some(&"SET_PRESENT_CONFIG_NV"),
             1000613001 => Some(&"PHYSICAL_DEVICE_PRESENT_METERING_FEATURES_NV"),
+            1000425000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_EXT"),
+            1000425001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_EXT"),
+            1000425002 => Some(&"RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT"),
+            1000619003 => Some(&"RENDERING_END_INFO_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11506,6 +11516,8 @@ impl ComponentTypeKHR {
     pub const UINT16: Self = Self(8);
     pub const UINT32: Self = Self(9);
     pub const UINT64: Self = Self(10);
+    /// Added by extension VK_KHR_shader_bfloat16.
+    pub const BFLOAT16: Self = Self(1000141000);
     pub const FLOAT16_NV: Self = Self::FLOAT16;
     pub const FLOAT32_NV: Self = Self::FLOAT32;
     pub const FLOAT64_NV: Self = Self::FLOAT64;
@@ -11540,6 +11552,7 @@ impl fmt::Display for ComponentTypeKHR {
             8 => Some(&"UINT16"),
             9 => Some(&"UINT32"),
             10 => Some(&"UINT64"),
+            1000141000 => Some(&"BFLOAT16"),
             1000491000 => Some(&"SINT8_PACKED_NV"),
             1000491001 => Some(&"UINT8_PACKED_NV"),
             1000491002 => Some(&"FLOAT_E4M3_NV"),
@@ -30675,31 +30688,32 @@ impl fmt::Debug for PhysicalDeviceFragmentDensityMap2FeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {
+pub struct PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub fragment_density_map_offset: Bool32,
 }
-unsafe impl Send for PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {}
-unsafe impl Sync for PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {}
-impl Default for PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {
+unsafe impl Send for PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT {}
+impl Default for PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM,
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_EXT,
             p_next: ptr::null_mut(),
             fragment_density_map_offset: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {
+impl fmt::Debug for PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM")
+        fmt.debug_struct("PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("fragment_density_map_offset", &self.fragment_density_map_offset)
             .finish()
     }
 }
+pub type PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM = PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceFragmentDensityMapPropertiesEXT {
@@ -30777,25 +30791,25 @@ impl fmt::Debug for PhysicalDeviceFragmentDensityMap2PropertiesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM {
+pub struct PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub fragment_density_offset_granularity: Extent2D,
 }
-unsafe impl Send for PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM {}
-unsafe impl Sync for PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM {}
-impl Default for PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM {
+unsafe impl Send for PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT {}
+impl Default for PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM,
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             fragment_density_offset_granularity: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM {
+impl fmt::Debug for PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM")
+        fmt.debug_struct("PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field(
@@ -30805,6 +30819,7 @@ impl fmt::Debug for PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM {
             .finish()
     }
 }
+pub type PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM = PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct RenderPassFragmentDensityMapCreateInfoEXT {
@@ -30834,27 +30849,27 @@ impl fmt::Debug for RenderPassFragmentDensityMapCreateInfoEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct SubpassFragmentDensityMapOffsetEndInfoQCOM {
+pub struct RenderPassFragmentDensityMapOffsetEndInfoEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub fragment_density_offset_count: u32,
     pub p_fragment_density_offsets: *const Offset2D,
 }
-unsafe impl Send for SubpassFragmentDensityMapOffsetEndInfoQCOM {}
-unsafe impl Sync for SubpassFragmentDensityMapOffsetEndInfoQCOM {}
-impl Default for SubpassFragmentDensityMapOffsetEndInfoQCOM {
+unsafe impl Send for RenderPassFragmentDensityMapOffsetEndInfoEXT {}
+unsafe impl Sync for RenderPassFragmentDensityMapOffsetEndInfoEXT {}
+impl Default for RenderPassFragmentDensityMapOffsetEndInfoEXT {
     fn default() -> Self {
         Self {
-            s_type: StructureType::SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM,
+            s_type: StructureType::RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT,
             p_next: ptr::null(),
             fragment_density_offset_count: Default::default(),
             p_fragment_density_offsets: ptr::null(),
         }
     }
 }
-impl fmt::Debug for SubpassFragmentDensityMapOffsetEndInfoQCOM {
+impl fmt::Debug for RenderPassFragmentDensityMapOffsetEndInfoEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SubpassFragmentDensityMapOffsetEndInfoQCOM")
+        fmt.debug_struct("RenderPassFragmentDensityMapOffsetEndInfoEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("fragment_density_offset_count", &self.fragment_density_offset_count)
@@ -30862,6 +30877,7 @@ impl fmt::Debug for SubpassFragmentDensityMapOffsetEndInfoQCOM {
             .finish()
     }
 }
+pub type SubpassFragmentDensityMapOffsetEndInfoQCOM = RenderPassFragmentDensityMapOffsetEndInfoEXT;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceScalarBlockLayoutFeatures {
@@ -42510,6 +42526,30 @@ impl fmt::Debug for RenderingInfo {
 pub type RenderingInfoKHR = RenderingInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct RenderingEndInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+}
+unsafe impl Send for RenderingEndInfoEXT {}
+unsafe impl Sync for RenderingEndInfoEXT {}
+impl Default for RenderingEndInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDERING_END_INFO_EXT,
+            p_next: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for RenderingEndInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderingEndInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct RenderingAttachmentInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -48998,6 +49038,42 @@ impl fmt::Debug for MemoryMapPlacedInfoEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderBfloat16FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_b_float16_type: Bool32,
+    pub shader_b_float16_dot_product: Bool32,
+    pub shader_b_float16_cooperative_matrix: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderBfloat16FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceShaderBfloat16FeaturesKHR {}
+impl Default for PhysicalDeviceShaderBfloat16FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_BFLOAT16_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_b_float16_type: Default::default(),
+            shader_b_float16_dot_product: Default::default(),
+            shader_b_float16_cooperative_matrix: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderBfloat16FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderBfloat16FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_b_float16_type", &self.shader_b_float16_type)
+            .field("shader_b_float16_dot_product", &self.shader_b_float16_dot_product)
+            .field(
+                "shader_b_float16_cooperative_matrix",
+                &self.shader_b_float16_cooperative_matrix,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceRawAccessChainsFeaturesNV {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -52284,6 +52360,8 @@ pub type FnCmdCudaLaunchKernelNV =
 pub type FnCmdBeginRendering =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_rendering_info: *const RenderingInfo);
 pub type FnCmdEndRendering = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>);
+pub type FnCmdEndRendering2EXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_rendering_end_info: *const RenderingEndInfoEXT);
 pub type FnGetDescriptorSetLayoutHostMappingInfoVALVE = unsafe extern "system" fn(
     device: Option<Device>,
     p_binding_reference: *const DescriptorSetBindingReferenceVALVE,
