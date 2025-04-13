@@ -3248,7 +3248,8 @@ impl<'a> Generator<'a> {
             DependencyExpr::Version(v) => {
                 write!(
                     w,
-                    "debug_assert!(self.core_version >= vk::Version::from_raw_parts({}, {}, 0));",
+                    "// depends on minimum core version, caller must specify\n\
+                     debug_assert!(self.core_version >= vk::Version::from_raw_parts({}, {}, 0));",
                     v.0, v.1
                 )?;
             }

@@ -979,6 +979,7 @@ impl InstanceExtensions {
     }
     pub fn enable_khr_acceleration_structure(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
             self.enable_ext_descriptor_indexing();
             self.enable_khr_buffer_device_address();
@@ -1347,6 +1348,7 @@ impl InstanceExtensions {
     }
     pub fn enable_khr_shader_quad_control(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
             self.enable_khr_vulkan_memory_model();
         }
@@ -1357,6 +1359,7 @@ impl InstanceExtensions {
     }
     pub fn enable_khr_spirv_1_4(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
             self.enable_khr_shader_float_controls();
         }
@@ -1384,6 +1387,7 @@ impl InstanceExtensions {
     }
     pub fn enable_khr_surface_protected_capabilities(&mut self) {
         self.khr_surface_protected_capabilities = true;
+        // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
         self.enable_khr_get_surface_capabilities2();
     }
@@ -1615,6 +1619,7 @@ impl InstanceExtensions {
     }
     pub fn enable_nv_device_generated_commands(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
             self.enable_khr_buffer_device_address();
         }
@@ -2397,6 +2402,7 @@ impl InstanceExtensions {
     }
     pub fn enable_khr_maintenance5(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
             self.enable_khr_dynamic_rendering();
         }
@@ -2570,6 +2576,7 @@ impl InstanceExtensions {
     }
     pub fn enable_khr_shader_float_controls2(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
             self.enable_khr_shader_float_controls();
         }
@@ -6898,6 +6905,7 @@ impl DeviceExtensions {
     pub fn enable_khr_acceleration_structure(&mut self) {
         self.khr_acceleration_structure = true;
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
             self.enable_ext_descriptor_indexing();
             self.enable_khr_buffer_device_address();
@@ -6945,6 +6953,7 @@ impl DeviceExtensions {
     }
     pub fn enable_nv_shader_sm_builtins(&mut self) {
         self.nv_shader_sm_builtins = true;
+        // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
     pub fn supports_ext_post_depth_coverage(&self) -> bool {
@@ -7093,6 +7102,7 @@ impl DeviceExtensions {
     pub fn enable_khr_shader_subgroup_extended_types(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
             self.khr_shader_subgroup_extended_types = true;
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
         }
     }
@@ -7207,6 +7217,7 @@ impl DeviceExtensions {
     }
     pub fn enable_nv_shader_subgroup_partitioned(&mut self) {
         self.nv_shader_subgroup_partitioned = true;
+        // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
     pub fn supports_khr_depth_stencil_resolve(&self) -> bool {
@@ -7357,6 +7368,7 @@ impl DeviceExtensions {
     pub fn enable_ext_subgroup_size_control(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             self.ext_subgroup_size_control = true;
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
         }
     }
@@ -7412,6 +7424,7 @@ impl DeviceExtensions {
     pub fn enable_khr_shader_quad_control(&mut self) {
         self.khr_shader_quad_control = true;
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
             self.enable_khr_vulkan_memory_model();
         }
@@ -7426,6 +7439,7 @@ impl DeviceExtensions {
     pub fn enable_khr_spirv_1_4(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
             self.khr_spirv_1_4 = true;
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
             self.enable_khr_shader_float_controls();
         }
@@ -7670,6 +7684,7 @@ impl DeviceExtensions {
     pub fn enable_nv_device_generated_commands(&mut self) {
         self.nv_device_generated_commands = true;
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
             self.enable_khr_buffer_device_address();
         }
@@ -7858,6 +7873,7 @@ impl DeviceExtensions {
     }
     pub fn enable_khr_shader_subgroup_uniform_control_flow(&mut self) {
         self.khr_shader_subgroup_uniform_control_flow = true;
+        // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
     pub fn supports_khr_zero_initialize_workgroup_memory(&self) -> bool {
@@ -8200,6 +8216,7 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_shader_tile_image(&mut self) {
         self.ext_shader_tile_image = true;
+        // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 3, 0));
     }
     pub fn supports_ext_opacity_micromap(&self) -> bool {
@@ -8254,6 +8271,7 @@ impl DeviceExtensions {
     pub fn enable_khr_maintenance4(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             self.khr_maintenance4 = true;
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
         }
     }
@@ -8262,6 +8280,7 @@ impl DeviceExtensions {
     }
     pub fn enable_arm_shader_core_properties(&mut self) {
         self.arm_shader_core_properties = true;
+        // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
     pub fn supports_khr_shader_subgroup_rotate(&self) -> bool {
@@ -8369,6 +8388,7 @@ impl DeviceExtensions {
     }
     pub fn enable_khr_shader_maximal_reconvergence(&mut self) {
         self.khr_shader_maximal_reconvergence = true;
+        // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
     pub fn supports_ext_image_compression_control_swapchain(&self) -> bool {
@@ -8477,6 +8497,7 @@ impl DeviceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
             self.khr_maintenance5 = true;
             if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+                // depends on minimum core version, caller must specify
                 debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
                 self.enable_khr_dynamic_rendering();
             }
@@ -8697,6 +8718,7 @@ impl DeviceExtensions {
     pub fn enable_khr_shader_float_controls2(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
             self.khr_shader_float_controls2 = true;
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
             self.enable_khr_shader_float_controls();
         }
@@ -8744,6 +8766,7 @@ impl DeviceExtensions {
     pub fn enable_khr_maintenance6(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
             self.khr_maintenance6 = true;
+            // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
         }
     }
@@ -8752,6 +8775,7 @@ impl DeviceExtensions {
     }
     pub fn enable_nv_descriptor_pool_overallocation(&mut self) {
         self.nv_descriptor_pool_overallocation = true;
+        // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
     pub fn supports_nv_raw_access_chains(&self) -> bool {
@@ -8777,6 +8801,7 @@ impl DeviceExtensions {
     }
     pub fn enable_khr_maintenance7(&mut self) {
         self.khr_maintenance7 = true;
+        // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
     pub fn supports_nv_shader_atomic_float16_vector(&self) -> bool {
@@ -8832,6 +8857,7 @@ impl DeviceExtensions {
     }
     pub fn enable_khr_maintenance8(&mut self) {
         self.khr_maintenance8 = true;
+        // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
     pub fn supports_mesa_image_alignment_control(&self) -> bool {
