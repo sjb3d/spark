@@ -59,29 +59,36 @@ impl<'a> DependencyExpr<'a> {
         }
     }
 
-    fn try_merge_and(a: &Self, b: &Self) -> Option<Self> {
-        if a.matches(b) {
-            Some(a.clone())
-        } else {
-            match (a, b) {
-                (Self::Never, _) | (_, Self::Never) => Some(Self::Never),
-                (Self::Always, other) | (other, Self::Always) => Some(other.clone()),
-                (Self::Version(a), Self::Version(b)) => Some(Self::Version(*a.max(b))),
-                _ => None,
+    // only true when "other" is true
+    fn is_subset_of(&self, other: &Self) -> bool {
+        self.matches(other)
+            || match (self, other) {
+                (Self::Never, _) => true,
+                (_, Self::Always) => true,
+                (Self::Version(a), Self::Version(b)) => a >= b,
+                (Self::And(ref a), _) => a.iter().any(|a_elem| a_elem.is_subset_of(other)),
+                (Self::Or(ref a), _) => a.iter().all(|a_elem| a_elem.is_subset_of(other)),
+                _ => false,
             }
+    }
+
+    fn try_merge_and(a: &Self, b: &Self) -> Option<Self> {
+        if a.is_subset_of(b) {
+            Some(a.clone())
+        } else if b.is_subset_of(a) {
+            Some(b.clone())
+        } else {
+            None
         }
     }
 
     fn try_merge_or(a: &Self, b: &Self) -> Option<Self> {
-        if a.matches(b) {
+        if b.is_subset_of(a) {
             Some(a.clone())
+        } else if a.is_subset_of(b) {
+            Some(b.clone())
         } else {
-            match (a, b) {
-                (Self::Never, other) | (other, Self::Never) => Some(other.clone()),
-                (Self::Always, _) | (_, Self::Always) => Some(Self::Always),
-                (Self::Version(a), Self::Version(b)) => Some(Self::Version(*a.min(b))),
-                _ => None,
-            }
+            None
         }
     }
 

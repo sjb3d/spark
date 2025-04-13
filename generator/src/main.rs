@@ -3290,7 +3290,7 @@ impl<'a> Generator<'a> {
                                 "// ambiguous dependency, caller must enable one or the other\n\
                                  debug_assert!(self.supports_{name_a}() || self.supports_{name_b}());"
                             )?;
-                        }                        
+                        }
                         _ => unimplemented!(),
                     }
                 } else {

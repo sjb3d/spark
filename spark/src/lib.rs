@@ -14860,9 +14860,7 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_depth_clamp_range_ext: if (extensions.ext_shader_object && extensions.ext_depth_clamp_control)
-                || extensions.ext_depth_clamp_control
-            {
+            fp_cmd_set_depth_clamp_range_ext: if extensions.ext_depth_clamp_control {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthClampRangeEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
