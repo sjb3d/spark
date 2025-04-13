@@ -28587,6 +28587,237 @@ impl Deref for ConvertCooperativeVectorMatrixInfoNVBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceTileShadingFeaturesQCOM {
+    type Type = PhysicalDeviceTileShadingFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceTileShadingFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceTileShadingFeaturesQCOM,
+}
+impl PhysicalDeviceTileShadingFeaturesQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tile_shading(mut self, tile_shading: bool) -> Self {
+        self.inner.tile_shading = if tile_shading { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn tile_shading_fragment_stage(mut self, tile_shading_fragment_stage: bool) -> Self {
+        self.inner.tile_shading_fragment_stage = if tile_shading_fragment_stage {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn tile_shading_color_attachments(mut self, tile_shading_color_attachments: bool) -> Self {
+        self.inner.tile_shading_color_attachments = if tile_shading_color_attachments {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn tile_shading_depth_attachments(mut self, tile_shading_depth_attachments: bool) -> Self {
+        self.inner.tile_shading_depth_attachments = if tile_shading_depth_attachments {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn tile_shading_stencil_attachments(mut self, tile_shading_stencil_attachments: bool) -> Self {
+        self.inner.tile_shading_stencil_attachments = if tile_shading_stencil_attachments {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn tile_shading_input_attachments(mut self, tile_shading_input_attachments: bool) -> Self {
+        self.inner.tile_shading_input_attachments = if tile_shading_input_attachments {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn tile_shading_sampled_attachments(mut self, tile_shading_sampled_attachments: bool) -> Self {
+        self.inner.tile_shading_sampled_attachments = if tile_shading_sampled_attachments {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn tile_shading_per_tile_draw(mut self, tile_shading_per_tile_draw: bool) -> Self {
+        self.inner.tile_shading_per_tile_draw = if tile_shading_per_tile_draw {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn tile_shading_per_tile_dispatch(mut self, tile_shading_per_tile_dispatch: bool) -> Self {
+        self.inner.tile_shading_per_tile_dispatch = if tile_shading_per_tile_dispatch {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn tile_shading_dispatch_tile(mut self, tile_shading_dispatch_tile: bool) -> Self {
+        self.inner.tile_shading_dispatch_tile = if tile_shading_dispatch_tile {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn tile_shading_apron(mut self, tile_shading_apron: bool) -> Self {
+        self.inner.tile_shading_apron = if tile_shading_apron { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn tile_shading_anisotropic_apron(mut self, tile_shading_anisotropic_apron: bool) -> Self {
+        self.inner.tile_shading_anisotropic_apron = if tile_shading_anisotropic_apron {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn tile_shading_atomic_ops(mut self, tile_shading_atomic_ops: bool) -> Self {
+        self.inner.tile_shading_atomic_ops = if tile_shading_atomic_ops { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn tile_shading_image_processing(mut self, tile_shading_image_processing: bool) -> Self {
+        self.inner.tile_shading_image_processing = if tile_shading_image_processing {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceTileShadingFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceTileShadingFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceTileShadingFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceTileShadingFeaturesQCOMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceTileShadingFeaturesQCOM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceTileShadingFeaturesQCOM {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceTileShadingPropertiesQCOM {}
+impl Builder<'_> for vk::RenderPassTileShadingCreateInfoQCOM {
+    type Type = RenderPassTileShadingCreateInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RenderPassTileShadingCreateInfoQCOMBuilder {
+    inner: vk::RenderPassTileShadingCreateInfoQCOM,
+}
+impl RenderPassTileShadingCreateInfoQCOMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::TileShadingRenderPassFlagsQCOM) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn tile_apron_size(mut self, tile_apron_size: vk::Extent2D) -> Self {
+        self.inner.tile_apron_size = tile_apron_size;
+        self
+    }
+}
+impl Deref for RenderPassTileShadingCreateInfoQCOMBuilder {
+    type Target = vk::RenderPassTileShadingCreateInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl RenderPassCreateInfoNext for RenderPassTileShadingCreateInfoQCOMBuilder {}
+impl RenderPassCreateInfo2Next for RenderPassTileShadingCreateInfoQCOMBuilder {}
+impl RenderingInfoNext for RenderPassTileShadingCreateInfoQCOMBuilder {}
+impl CommandBufferInheritanceInfoNext for RenderPassTileShadingCreateInfoQCOMBuilder {}
+impl RenderPassCreateInfoNext for vk::RenderPassTileShadingCreateInfoQCOM {}
+impl RenderPassCreateInfo2Next for vk::RenderPassTileShadingCreateInfoQCOM {}
+impl RenderingInfoNext for vk::RenderPassTileShadingCreateInfoQCOM {}
+impl CommandBufferInheritanceInfoNext for vk::RenderPassTileShadingCreateInfoQCOM {}
+impl Builder<'_> for vk::PerTileBeginInfoQCOM {
+    type Type = PerTileBeginInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PerTileBeginInfoQCOMBuilder {
+    inner: vk::PerTileBeginInfoQCOM,
+}
+impl PerTileBeginInfoQCOMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+}
+impl Deref for PerTileBeginInfoQCOMBuilder {
+    type Target = vk::PerTileBeginInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PerTileEndInfoQCOM {
+    type Type = PerTileEndInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PerTileEndInfoQCOMBuilder {
+    inner: vk::PerTileEndInfoQCOM,
+}
+impl PerTileEndInfoQCOMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+}
+impl Deref for PerTileEndInfoQCOMBuilder {
+    type Target = vk::PerTileEndInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::DispatchTileInfoQCOM {
+    type Type = DispatchTileInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DispatchTileInfoQCOMBuilder {
+    inner: vk::DispatchTileInfoQCOM,
+}
+impl DispatchTileInfoQCOMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+}
+impl Deref for DispatchTileInfoQCOMBuilder {
+    type Target = vk::DispatchTileInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::SetPresentConfigNV {
     type Type = SetPresentConfigNVBuilder;
     fn builder() -> Self::Type {
@@ -28649,3 +28880,84 @@ impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentMeteringFeaturesNVBuil
 impl DeviceCreateInfoNext for PhysicalDevicePresentMeteringFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentMeteringFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePresentMeteringFeaturesNV {}
+impl Builder<'_> for vk::ExternalComputeQueueDeviceCreateInfoNV {
+    type Type = ExternalComputeQueueDeviceCreateInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExternalComputeQueueDeviceCreateInfoNVBuilder {
+    inner: vk::ExternalComputeQueueDeviceCreateInfoNV,
+}
+impl ExternalComputeQueueDeviceCreateInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn reserved_external_queues(mut self, reserved_external_queues: u32) -> Self {
+        self.inner.reserved_external_queues = reserved_external_queues;
+        self
+    }
+}
+impl Deref for ExternalComputeQueueDeviceCreateInfoNVBuilder {
+    type Target = vk::ExternalComputeQueueDeviceCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DeviceCreateInfoNext for ExternalComputeQueueDeviceCreateInfoNVBuilder {}
+impl DeviceCreateInfoNext for vk::ExternalComputeQueueDeviceCreateInfoNV {}
+impl Builder<'_> for vk::ExternalComputeQueueCreateInfoNV {
+    type Type = ExternalComputeQueueCreateInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExternalComputeQueueCreateInfoNVBuilder {
+    inner: vk::ExternalComputeQueueCreateInfoNV,
+}
+impl ExternalComputeQueueCreateInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn preferred_queue(mut self, preferred_queue: vk::Queue) -> Self {
+        self.inner.preferred_queue = Some(preferred_queue);
+        self
+    }
+}
+impl Deref for ExternalComputeQueueCreateInfoNVBuilder {
+    type Target = vk::ExternalComputeQueueCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ExternalComputeQueueDataParamsNV {
+    type Type = ExternalComputeQueueDataParamsNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExternalComputeQueueDataParamsNVBuilder {
+    inner: vk::ExternalComputeQueueDataParamsNV,
+}
+impl ExternalComputeQueueDataParamsNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn device_index(mut self, device_index: u32) -> Self {
+        self.inner.device_index = device_index;
+        self
+    }
+}
+impl Deref for ExternalComputeQueueDataParamsNVBuilder {
+    type Target = vk::ExternalComputeQueueDataParamsNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceExternalComputeQueuePropertiesNV {}

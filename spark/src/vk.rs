@@ -1683,6 +1683,8 @@ impl SubpassDescriptionFlags {
     pub const FRAGMENT_REGION_QCOM: Self = Self(0x4);
     /// Added by extension VK_QCOM_render_pass_shader_resolve.
     pub const SHADER_RESOLVE_QCOM: Self = Self(0x8);
+    /// Added by extension VK_QCOM_tile_shading.
+    pub const TILE_SHADING_APRON_QCOM: Self = Self(0x100);
     pub const RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_ARM: Self =
         Self::RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_EXT;
     pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM: Self =
@@ -1698,7 +1700,7 @@ impl SubpassDescriptionFlags {
     /// Added by extension VK_EXT_legacy_dithering.
     pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x80);
 }
-impl_bitmask!(SubpassDescriptionFlags, 0xff);
+impl_bitmask!(SubpassDescriptionFlags, 0x1ff);
 impl fmt::Display for SubpassDescriptionFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1708,6 +1710,7 @@ impl fmt::Display for SubpassDescriptionFlags {
                 (0x2, "PER_VIEW_POSITION_X_ONLY_NVX"),
                 (0x4, "FRAGMENT_REGION_QCOM"),
                 (0x8, "SHADER_RESOLVE_QCOM"),
+                (0x100, "TILE_SHADING_APRON_QCOM"),
                 (0x10, "RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_EXT"),
                 (0x20, "RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_EXT"),
                 (0x40, "RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_EXT"),
@@ -2418,6 +2421,10 @@ impl AccessFlags2 {
     pub const SHADER_SAMPLED_READ: Self = Self(0x100000000);
     pub const SHADER_STORAGE_READ: Self = Self(0x200000000);
     pub const SHADER_STORAGE_WRITE: Self = Self(0x400000000);
+    /// Added by extension VK_QCOM_tile_shading.
+    pub const SHADER_TILE_ATTACHMENT_READ_QCOM: Self = Self(0x8000000000000);
+    /// Added by extension VK_QCOM_tile_shading.
+    pub const SHADER_TILE_ATTACHMENT_WRITE_QCOM: Self = Self(0x10000000000000);
     pub const NONE_KHR: Self = Self::NONE;
     pub const INDIRECT_COMMAND_READ_KHR: Self = Self::INDIRECT_COMMAND_READ;
     pub const INDEX_READ_KHR: Self = Self::INDEX_READ;
@@ -2482,7 +2489,7 @@ impl AccessFlags2 {
     /// Added by extension VK_NV_optical_flow.
     pub const OPTICAL_FLOW_WRITE_NV: Self = Self(0x80000000000);
 }
-impl_bitmask!(AccessFlags2, 0x3f870fffffff);
+impl_bitmask!(AccessFlags2, 0x183f870fffffff);
 impl fmt::Display for AccessFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2508,6 +2515,8 @@ impl fmt::Display for AccessFlags2 {
                 (0x100000000, "SHADER_SAMPLED_READ"),
                 (0x200000000, "SHADER_STORAGE_READ"),
                 (0x400000000, "SHADER_STORAGE_WRITE"),
+                (0x8000000000000, "SHADER_TILE_ATTACHMENT_READ_QCOM"),
+                (0x10000000000000, "SHADER_TILE_ATTACHMENT_WRITE_QCOM"),
                 (0x2000000, "TRANSFORM_FEEDBACK_WRITE_EXT"),
                 (0x4000000, "TRANSFORM_FEEDBACK_COUNTER_READ_EXT"),
                 (0x8000000, "TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT"),
@@ -4544,6 +4553,19 @@ impl fmt::Display for ShaderCreateFlagsEXT {
             ],
             f,
         )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct TileShadingRenderPassFlagsQCOM(pub(crate) u32);
+impl TileShadingRenderPassFlagsQCOM {
+    pub const ENABLE: Self = Self(0x1);
+    pub const PER_TILE_EXECUTION: Self = Self(0x2);
+}
+impl_bitmask!(TileShadingRenderPassFlagsQCOM, 0x3);
+impl fmt::Display for TileShadingRenderPassFlagsQCOM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "ENABLE"), (0x2, "PER_TILE_EXECUTION")], f)
     }
 }
 #[repr(transparent)]
@@ -8073,6 +8095,18 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_FEATURES_NV: Self = Self(1000307003);
     /// Added by extension VK_NV_cuda_kernel_launch.
     pub const PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_PROPERTIES_NV: Self = Self(1000307004);
+    /// Added by extension VK_QCOM_tile_shading.
+    pub const PHYSICAL_DEVICE_TILE_SHADING_FEATURES_QCOM: Self = Self(1000309000);
+    /// Added by extension VK_QCOM_tile_shading.
+    pub const PHYSICAL_DEVICE_TILE_SHADING_PROPERTIES_QCOM: Self = Self(1000309001);
+    /// Added by extension VK_QCOM_tile_shading.
+    pub const RENDER_PASS_TILE_SHADING_CREATE_INFO_QCOM: Self = Self(1000309002);
+    /// Added by extension VK_QCOM_tile_shading.
+    pub const PER_TILE_BEGIN_INFO_QCOM: Self = Self(1000309003);
+    /// Added by extension VK_QCOM_tile_shading.
+    pub const PER_TILE_END_INFO_QCOM: Self = Self(1000309004);
+    /// Added by extension VK_QCOM_tile_shading.
+    pub const DISPATCH_TILE_INFO_QCOM: Self = Self(1000309005);
     /// Added by extension VK_NV_low_latency.
     pub const QUERY_LOW_LATENCY_SUPPORT_NV: Self = Self(1000310000);
     /// Added by extension VK_EXT_metal_objects.
@@ -8665,6 +8699,14 @@ impl StructureType {
     pub const DISPLAY_MODE_STEREO_PROPERTIES_NV: Self = Self(1000551001);
     /// Added by extension VK_NV_raw_access_chains.
     pub const PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV: Self = Self(1000555000);
+    /// Added by extension VK_NV_external_compute_queue.
+    pub const EXTERNAL_COMPUTE_QUEUE_DEVICE_CREATE_INFO_NV: Self = Self(1000556000);
+    /// Added by extension VK_NV_external_compute_queue.
+    pub const EXTERNAL_COMPUTE_QUEUE_CREATE_INFO_NV: Self = Self(1000556001);
+    /// Added by extension VK_NV_external_compute_queue.
+    pub const EXTERNAL_COMPUTE_QUEUE_DATA_PARAMS_NV: Self = Self(1000556002);
+    /// Added by extension VK_NV_external_compute_queue.
+    pub const PHYSICAL_DEVICE_EXTERNAL_COMPUTE_QUEUE_PROPERTIES_NV: Self = Self(1000556003);
     /// Added by extension VK_KHR_shader_relaxed_extended_instruction.
     pub const PHYSICAL_DEVICE_SHADER_RELAXED_EXTENDED_INSTRUCTION_FEATURES_KHR: Self = Self(1000558000);
     /// Added by extension VK_NV_command_buffer_inheritance.
@@ -9365,6 +9407,12 @@ impl fmt::Display for StructureType {
             1000307002 => Some(&"CUDA_LAUNCH_INFO_NV"),
             1000307003 => Some(&"PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_FEATURES_NV"),
             1000307004 => Some(&"PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_PROPERTIES_NV"),
+            1000309000 => Some(&"PHYSICAL_DEVICE_TILE_SHADING_FEATURES_QCOM"),
+            1000309001 => Some(&"PHYSICAL_DEVICE_TILE_SHADING_PROPERTIES_QCOM"),
+            1000309002 => Some(&"RENDER_PASS_TILE_SHADING_CREATE_INFO_QCOM"),
+            1000309003 => Some(&"PER_TILE_BEGIN_INFO_QCOM"),
+            1000309004 => Some(&"PER_TILE_END_INFO_QCOM"),
+            1000309005 => Some(&"DISPATCH_TILE_INFO_QCOM"),
             1000310000 => Some(&"QUERY_LOW_LATENCY_SUPPORT_NV"),
             1000311000 => Some(&"EXPORT_METAL_OBJECT_CREATE_INFO_EXT"),
             1000311001 => Some(&"EXPORT_METAL_OBJECTS_INFO_EXT"),
@@ -9622,6 +9670,10 @@ impl fmt::Display for StructureType {
             1000551000 => Some(&"DISPLAY_SURFACE_STEREO_CREATE_INFO_NV"),
             1000551001 => Some(&"DISPLAY_MODE_STEREO_PROPERTIES_NV"),
             1000555000 => Some(&"PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV"),
+            1000556000 => Some(&"EXTERNAL_COMPUTE_QUEUE_DEVICE_CREATE_INFO_NV"),
+            1000556001 => Some(&"EXTERNAL_COMPUTE_QUEUE_CREATE_INFO_NV"),
+            1000556002 => Some(&"EXTERNAL_COMPUTE_QUEUE_DATA_PARAMS_NV"),
+            1000556003 => Some(&"PHYSICAL_DEVICE_EXTERNAL_COMPUTE_QUEUE_PROPERTIES_NV"),
             1000558000 => Some(&"PHYSICAL_DEVICE_SHADER_RELAXED_EXTENDED_INSTRUCTION_FEATURES_KHR"),
             1000559000 => Some(&"PHYSICAL_DEVICE_COMMAND_BUFFER_INHERITANCE_FEATURES_NV"),
             1000562000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_7_FEATURES_KHR"),
@@ -9989,6 +10041,8 @@ impl ObjectType {
     pub const SHADER_EXT: Self = Self(1000482000);
     /// Added by extension VK_KHR_pipeline_binary.
     pub const PIPELINE_BINARY_KHR: Self = Self(1000483000);
+    /// Added by extension VK_NV_external_compute_queue.
+    pub const EXTERNAL_COMPUTE_QUEUE_NV: Self = Self(1000556000);
     /// Added by extension VK_EXT_device_generated_commands.
     pub const INDIRECT_COMMANDS_LAYOUT_EXT: Self = Self(1000572000);
     /// Added by extension VK_EXT_device_generated_commands.
@@ -10047,6 +10101,7 @@ impl fmt::Display for ObjectType {
             1000464000 => Some(&"OPTICAL_FLOW_SESSION_NV"),
             1000482000 => Some(&"SHADER_EXT"),
             1000483000 => Some(&"PIPELINE_BINARY_KHR"),
+            1000556000 => Some(&"EXTERNAL_COMPUTE_QUEUE_NV"),
             1000572000 => Some(&"INDIRECT_COMMANDS_LAYOUT_EXT"),
             1000572001 => Some(&"INDIRECT_EXECUTION_SET_EXT"),
             _ => None,
@@ -49691,6 +49746,216 @@ impl fmt::Debug for ConvertCooperativeVectorMatrixInfoNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceTileShadingFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub tile_shading: Bool32,
+    pub tile_shading_fragment_stage: Bool32,
+    pub tile_shading_color_attachments: Bool32,
+    pub tile_shading_depth_attachments: Bool32,
+    pub tile_shading_stencil_attachments: Bool32,
+    pub tile_shading_input_attachments: Bool32,
+    pub tile_shading_sampled_attachments: Bool32,
+    pub tile_shading_per_tile_draw: Bool32,
+    pub tile_shading_per_tile_dispatch: Bool32,
+    pub tile_shading_dispatch_tile: Bool32,
+    pub tile_shading_apron: Bool32,
+    pub tile_shading_anisotropic_apron: Bool32,
+    pub tile_shading_atomic_ops: Bool32,
+    pub tile_shading_image_processing: Bool32,
+}
+unsafe impl Send for PhysicalDeviceTileShadingFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceTileShadingFeaturesQCOM {}
+impl Default for PhysicalDeviceTileShadingFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_TILE_SHADING_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            tile_shading: Default::default(),
+            tile_shading_fragment_stage: Default::default(),
+            tile_shading_color_attachments: Default::default(),
+            tile_shading_depth_attachments: Default::default(),
+            tile_shading_stencil_attachments: Default::default(),
+            tile_shading_input_attachments: Default::default(),
+            tile_shading_sampled_attachments: Default::default(),
+            tile_shading_per_tile_draw: Default::default(),
+            tile_shading_per_tile_dispatch: Default::default(),
+            tile_shading_dispatch_tile: Default::default(),
+            tile_shading_apron: Default::default(),
+            tile_shading_anisotropic_apron: Default::default(),
+            tile_shading_atomic_ops: Default::default(),
+            tile_shading_image_processing: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTileShadingFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTileShadingFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tile_shading", &self.tile_shading)
+            .field("tile_shading_fragment_stage", &self.tile_shading_fragment_stage)
+            .field("tile_shading_color_attachments", &self.tile_shading_color_attachments)
+            .field("tile_shading_depth_attachments", &self.tile_shading_depth_attachments)
+            .field(
+                "tile_shading_stencil_attachments",
+                &self.tile_shading_stencil_attachments,
+            )
+            .field("tile_shading_input_attachments", &self.tile_shading_input_attachments)
+            .field(
+                "tile_shading_sampled_attachments",
+                &self.tile_shading_sampled_attachments,
+            )
+            .field("tile_shading_per_tile_draw", &self.tile_shading_per_tile_draw)
+            .field("tile_shading_per_tile_dispatch", &self.tile_shading_per_tile_dispatch)
+            .field("tile_shading_dispatch_tile", &self.tile_shading_dispatch_tile)
+            .field("tile_shading_apron", &self.tile_shading_apron)
+            .field("tile_shading_anisotropic_apron", &self.tile_shading_anisotropic_apron)
+            .field("tile_shading_atomic_ops", &self.tile_shading_atomic_ops)
+            .field("tile_shading_image_processing", &self.tile_shading_image_processing)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTileShadingPropertiesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_apron_size: u32,
+    pub prefer_non_coherent: Bool32,
+    pub tile_granularity: Extent2D,
+    pub max_tile_shading_rate: Extent2D,
+}
+unsafe impl Send for PhysicalDeviceTileShadingPropertiesQCOM {}
+unsafe impl Sync for PhysicalDeviceTileShadingPropertiesQCOM {}
+impl Default for PhysicalDeviceTileShadingPropertiesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_TILE_SHADING_PROPERTIES_QCOM,
+            p_next: ptr::null_mut(),
+            max_apron_size: Default::default(),
+            prefer_non_coherent: Default::default(),
+            tile_granularity: Default::default(),
+            max_tile_shading_rate: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTileShadingPropertiesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTileShadingPropertiesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_apron_size", &self.max_apron_size)
+            .field("prefer_non_coherent", &self.prefer_non_coherent)
+            .field("tile_granularity", &self.tile_granularity)
+            .field("max_tile_shading_rate", &self.max_tile_shading_rate)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassTileShadingCreateInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: TileShadingRenderPassFlagsQCOM,
+    pub tile_apron_size: Extent2D,
+}
+unsafe impl Send for RenderPassTileShadingCreateInfoQCOM {}
+unsafe impl Sync for RenderPassTileShadingCreateInfoQCOM {}
+impl Default for RenderPassTileShadingCreateInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDER_PASS_TILE_SHADING_CREATE_INFO_QCOM,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            tile_apron_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassTileShadingCreateInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassTileShadingCreateInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("tile_apron_size", &self.tile_apron_size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerTileBeginInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+}
+unsafe impl Send for PerTileBeginInfoQCOM {}
+unsafe impl Sync for PerTileBeginInfoQCOM {}
+impl Default for PerTileBeginInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PER_TILE_BEGIN_INFO_QCOM,
+            p_next: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PerTileBeginInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerTileBeginInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerTileEndInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+}
+unsafe impl Send for PerTileEndInfoQCOM {}
+unsafe impl Sync for PerTileEndInfoQCOM {}
+impl Default for PerTileEndInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PER_TILE_END_INFO_QCOM,
+            p_next: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PerTileEndInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerTileEndInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DispatchTileInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+}
+unsafe impl Send for DispatchTileInfoQCOM {}
+unsafe impl Sync for DispatchTileInfoQCOM {}
+impl Default for DispatchTileInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DISPATCH_TILE_INFO_QCOM,
+            p_next: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DispatchTileInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DispatchTileInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct SetPresentConfigNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -49744,6 +50009,125 @@ impl fmt::Debug for PhysicalDevicePresentMeteringFeaturesNV {
             .field("p_next", &self.p_next)
             .field("present_metering", &self.present_metering)
             .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExternalComputeQueueDeviceCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub reserved_external_queues: u32,
+}
+unsafe impl Send for ExternalComputeQueueDeviceCreateInfoNV {}
+unsafe impl Sync for ExternalComputeQueueDeviceCreateInfoNV {}
+impl Default for ExternalComputeQueueDeviceCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXTERNAL_COMPUTE_QUEUE_DEVICE_CREATE_INFO_NV,
+            p_next: ptr::null(),
+            reserved_external_queues: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ExternalComputeQueueDeviceCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExternalComputeQueueDeviceCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("reserved_external_queues", &self.reserved_external_queues)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExternalComputeQueueCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub preferred_queue: Option<Queue>,
+}
+unsafe impl Send for ExternalComputeQueueCreateInfoNV {}
+unsafe impl Sync for ExternalComputeQueueCreateInfoNV {}
+impl Default for ExternalComputeQueueCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXTERNAL_COMPUTE_QUEUE_CREATE_INFO_NV,
+            p_next: ptr::null(),
+            preferred_queue: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ExternalComputeQueueCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExternalComputeQueueCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("preferred_queue", &self.preferred_queue)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExternalComputeQueueDataParamsNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub device_index: u32,
+}
+unsafe impl Send for ExternalComputeQueueDataParamsNV {}
+unsafe impl Sync for ExternalComputeQueueDataParamsNV {}
+impl Default for ExternalComputeQueueDataParamsNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXTERNAL_COMPUTE_QUEUE_DATA_PARAMS_NV,
+            p_next: ptr::null(),
+            device_index: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ExternalComputeQueueDataParamsNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExternalComputeQueueDataParamsNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("device_index", &self.device_index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceExternalComputeQueuePropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub external_data_size: u32,
+    pub max_external_queues: u32,
+}
+unsafe impl Send for PhysicalDeviceExternalComputeQueuePropertiesNV {}
+unsafe impl Sync for PhysicalDeviceExternalComputeQueuePropertiesNV {}
+impl Default for PhysicalDeviceExternalComputeQueuePropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_COMPUTE_QUEUE_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            external_data_size: Default::default(),
+            max_external_queues: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceExternalComputeQueuePropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceExternalComputeQueuePropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("external_data_size", &self.external_data_size)
+            .field("max_external_queues", &self.max_external_queues)
+            .finish()
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct ExternalComputeQueueNV(num::NonZeroUsize);
+impl ExternalComputeQueueNV {
+    pub fn from_raw(x: usize) -> Option<Self> {
+        num::NonZeroUsize::new(x).map(Self)
     }
 }
 pub type FnCreateInstance = unsafe extern "system" fn(
@@ -52680,4 +53064,27 @@ pub type FnCmdConvertCooperativeVectorMatrixNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     info_count: u32,
     p_infos: *const ConvertCooperativeVectorMatrixInfoNV,
+);
+pub type FnCmdDispatchTileQCOM = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>);
+pub type FnCmdBeginPerTileExecutionQCOM = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_per_tile_begin_info: *const PerTileBeginInfoQCOM,
+);
+pub type FnCmdEndPerTileExecutionQCOM =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_per_tile_end_info: *const PerTileEndInfoQCOM);
+pub type FnCreateExternalComputeQueueNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const ExternalComputeQueueCreateInfoNV,
+    p_allocator: *const AllocationCallbacks,
+    p_external_queue: *mut ExternalComputeQueueNV,
+) -> Result;
+pub type FnDestroyExternalComputeQueueNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    external_queue: Option<ExternalComputeQueueNV>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnGetExternalComputeQueueDataNV = unsafe extern "system" fn(
+    external_queue: Option<ExternalComputeQueueNV>,
+    params: *mut ExternalComputeQueueDataParamsNV,
+    p_data: *mut c_void,
 );

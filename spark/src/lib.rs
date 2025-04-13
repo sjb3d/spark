@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 311
+//! Generated from vk.xml with `VK_HEADER_VERSION` 312
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1735,6 +1735,13 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+    pub fn supports_qcom_tile_shading(&self) -> bool {
+        self.supports_qcom_tile_properties() || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_qcom_tile_shading(&mut self) {
+        // ambiguous dependency, caller must enable one or the other
+        debug_assert!(self.supports_qcom_tile_properties() || self.supports_khr_get_physical_device_properties2());
     }
     pub fn supports_khr_synchronization2(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -5331,6 +5338,7 @@ pub struct DeviceExtensions {
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
     pub nv_cuda_kernel_launch: bool,
+    pub qcom_tile_shading: bool,
     pub nv_low_latency: bool,
     pub ext_metal_objects: bool,
     pub khr_synchronization2: bool,
@@ -5453,6 +5461,7 @@ pub struct DeviceExtensions {
     pub khr_maintenance6: bool,
     pub nv_descriptor_pool_overallocation: bool,
     pub nv_raw_access_chains: bool,
+    pub nv_external_compute_queue: bool,
     pub khr_shader_relaxed_extended_instruction: bool,
     pub nv_command_buffer_inheritance: bool,
     pub khr_maintenance7: bool,
@@ -5683,6 +5692,7 @@ impl DeviceExtensions {
             b"VK_NV_device_diagnostics_config" => self.nv_device_diagnostics_config = true,
             b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
             b"VK_NV_cuda_kernel_launch" => self.nv_cuda_kernel_launch = true,
+            b"VK_QCOM_tile_shading" => self.qcom_tile_shading = true,
             b"VK_NV_low_latency" => self.nv_low_latency = true,
             b"VK_EXT_metal_objects" => self.ext_metal_objects = true,
             b"VK_KHR_synchronization2" => self.khr_synchronization2 = true,
@@ -5805,6 +5815,7 @@ impl DeviceExtensions {
             b"VK_KHR_maintenance6" => self.khr_maintenance6 = true,
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
             b"VK_NV_raw_access_chains" => self.nv_raw_access_chains = true,
+            b"VK_NV_external_compute_queue" => self.nv_external_compute_queue = true,
             b"VK_KHR_shader_relaxed_extended_instruction" => self.khr_shader_relaxed_extended_instruction = true,
             b"VK_NV_command_buffer_inheritance" => self.nv_command_buffer_inheritance = true,
             b"VK_KHR_maintenance7" => self.khr_maintenance7 = true,
@@ -6035,6 +6046,7 @@ impl DeviceExtensions {
             nv_device_diagnostics_config: false,
             qcom_render_pass_store_ops: false,
             nv_cuda_kernel_launch: false,
+            qcom_tile_shading: false,
             nv_low_latency: false,
             ext_metal_objects: false,
             khr_synchronization2: false,
@@ -6157,6 +6169,7 @@ impl DeviceExtensions {
             khr_maintenance6: false,
             nv_descriptor_pool_overallocation: false,
             nv_raw_access_chains: false,
+            nv_external_compute_queue: false,
             khr_shader_relaxed_extended_instruction: false,
             nv_command_buffer_inheritance: false,
             khr_maintenance7: false,
@@ -7812,6 +7825,12 @@ impl DeviceExtensions {
     pub fn enable_nv_cuda_kernel_launch(&mut self) {
         self.nv_cuda_kernel_launch = true;
     }
+    pub fn supports_qcom_tile_shading(&self) -> bool {
+        self.qcom_tile_shading
+    }
+    pub fn enable_qcom_tile_shading(&mut self) {
+        self.qcom_tile_shading = true;
+    }
     pub fn supports_nv_low_latency(&self) -> bool {
         self.nv_low_latency
     }
@@ -8784,6 +8803,12 @@ impl DeviceExtensions {
     pub fn enable_nv_raw_access_chains(&mut self) {
         self.nv_raw_access_chains = true;
     }
+    pub fn supports_nv_external_compute_queue(&self) -> bool {
+        self.nv_external_compute_queue
+    }
+    pub fn enable_nv_external_compute_queue(&mut self) {
+        self.nv_external_compute_queue = true;
+    }
     pub fn supports_khr_shader_relaxed_extended_instruction(&self) -> bool {
         self.khr_shader_relaxed_extended_instruction
     }
@@ -9554,6 +9579,9 @@ impl DeviceExtensions {
         if self.nv_cuda_kernel_launch {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cuda_kernel_launch\0") })
         }
+        if self.qcom_tile_shading {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_tile_shading\0") })
+        }
         if self.nv_low_latency {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_low_latency\0") })
         }
@@ -9919,6 +9947,9 @@ impl DeviceExtensions {
         }
         if self.nv_raw_access_chains {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_raw_access_chains\0") })
+        }
+        if self.nv_external_compute_queue {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_compute_queue\0") })
         }
         if self.khr_shader_relaxed_extended_instruction {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_relaxed_extended_instruction\0") })
@@ -10522,6 +10553,12 @@ pub struct Device {
         Option<vk::FnGetPhysicalDeviceCooperativeVectorPropertiesNV>,
     pub fp_convert_cooperative_vector_matrix_nv: Option<vk::FnConvertCooperativeVectorMatrixNV>,
     pub fp_cmd_convert_cooperative_vector_matrix_nv: Option<vk::FnCmdConvertCooperativeVectorMatrixNV>,
+    pub fp_cmd_dispatch_tile_qcom: Option<vk::FnCmdDispatchTileQCOM>,
+    pub fp_cmd_begin_per_tile_execution_qcom: Option<vk::FnCmdBeginPerTileExecutionQCOM>,
+    pub fp_cmd_end_per_tile_execution_qcom: Option<vk::FnCmdEndPerTileExecutionQCOM>,
+    pub fp_create_external_compute_queue_nv: Option<vk::FnCreateExternalComputeQueueNV>,
+    pub fp_destroy_external_compute_queue_nv: Option<vk::FnDestroyExternalComputeQueueNV>,
+    pub fp_get_external_compute_queue_data_nv: Option<vk::FnGetExternalComputeQueueDataNV>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -14874,6 +14911,46 @@ impl Device {
             fp_cmd_convert_cooperative_vector_matrix_nv: if extensions.nv_cooperative_vector {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdConvertCooperativeVectorMatrixNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_dispatch_tile_qcom: if extensions.qcom_tile_shading {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatchTileQCOM\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_per_tile_execution_qcom: if extensions.qcom_tile_shading {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginPerTileExecutionQCOM\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_per_tile_execution_qcom: if extensions.qcom_tile_shading {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndPerTileExecutionQCOM\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_external_compute_queue_nv: if extensions.nv_external_compute_queue {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateExternalComputeQueueNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_external_compute_queue_nv: if extensions.nv_external_compute_queue {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkDestroyExternalComputeQueueNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_external_compute_queue_data_nv: if extensions.nv_external_compute_queue {
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetExternalComputeQueueDataNV\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -23994,6 +24071,78 @@ impl Device {
             info_count,
             p_infos.first().map_or(ptr::null(), |s| s as *const _),
         );
+    }
+    pub unsafe fn cmd_dispatch_tile_qcom(&self, command_buffer: vk::CommandBuffer) {
+        let fp = self
+            .fp_cmd_dispatch_tile_qcom
+            .expect("vkCmdDispatchTileQCOM is not loaded");
+        (fp)(Some(command_buffer));
+    }
+    pub unsafe fn cmd_begin_per_tile_execution_qcom(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_per_tile_begin_info: &vk::PerTileBeginInfoQCOM,
+    ) {
+        let fp = self
+            .fp_cmd_begin_per_tile_execution_qcom
+            .expect("vkCmdBeginPerTileExecutionQCOM is not loaded");
+        (fp)(Some(command_buffer), p_per_tile_begin_info);
+    }
+    pub unsafe fn cmd_end_per_tile_execution_qcom(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_per_tile_end_info: &vk::PerTileEndInfoQCOM,
+    ) {
+        let fp = self
+            .fp_cmd_end_per_tile_execution_qcom
+            .expect("vkCmdEndPerTileExecutionQCOM is not loaded");
+        (fp)(Some(command_buffer), p_per_tile_end_info);
+    }
+    pub unsafe fn create_external_compute_queue_nv(
+        &self,
+        p_create_info: &vk::ExternalComputeQueueCreateInfoNV,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::ExternalComputeQueueNV> {
+        let fp = self
+            .fp_create_external_compute_queue_nv
+            .expect("vkCreateExternalComputeQueueNV is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_external_compute_queue_nv(
+        &self,
+        external_queue: vk::ExternalComputeQueueNV,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_external_compute_queue_nv
+            .expect("vkDestroyExternalComputeQueueNV is not loaded");
+        (fp)(
+            Some(self.handle),
+            Some(external_queue),
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn get_external_compute_queue_data_nv(
+        &self,
+        external_queue: vk::ExternalComputeQueueNV,
+        params: &mut vk::ExternalComputeQueueDataParamsNV,
+    ) -> c_void {
+        let fp = self
+            .fp_get_external_compute_queue_data_nv
+            .expect("vkGetExternalComputeQueueDataNV is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(external_queue), params, res.as_mut_ptr());
+        res.assume_init()
     }
 }
 
