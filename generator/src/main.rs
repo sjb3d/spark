@@ -284,7 +284,7 @@ impl GuessCommandCategory for vk::CommandDefinition {
             _ => {
                 let is_first_param_from_device = self
                     .params
-                    .get(0)
+                    .first()
                     .and_then(|param| param.definition.type_name.as_deref())
                     .map(|type_name| matches!(type_name, "VkDevice" | "VkCommandBuffer" | "VkQueue"))
                     .unwrap_or(false);
