@@ -24627,6 +24627,34 @@ impl Deref for TilePropertiesQCOMBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::TileMemoryBindInfoQCOM {
+    type Type = TileMemoryBindInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct TileMemoryBindInfoQCOMBuilder {
+    inner: vk::TileMemoryBindInfoQCOM,
+}
+impl TileMemoryBindInfoQCOMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
+        self.inner.memory = Some(memory);
+        self
+    }
+}
+impl Deref for TileMemoryBindInfoQCOMBuilder {
+    type Target = vk::TileMemoryBindInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl CommandBufferInheritanceInfoNext for TileMemoryBindInfoQCOMBuilder {}
+impl CommandBufferInheritanceInfoNext for vk::TileMemoryBindInfoQCOM {}
 impl Builder<'_> for vk::PhysicalDeviceAmigoProfilingFeaturesSEC {
     type Type = PhysicalDeviceAmigoProfilingFeaturesSECBuilder;
     fn builder() -> Self::Type {
@@ -26498,6 +26526,132 @@ impl BindBufferMemoryInfoNext for BindMemoryStatusBuilder {}
 impl BindImageMemoryInfoNext for BindMemoryStatusBuilder {}
 impl BindBufferMemoryInfoNext for vk::BindMemoryStatus {}
 impl BindImageMemoryInfoNext for vk::BindMemoryStatus {}
+impl Builder<'_> for vk::PhysicalDeviceTileMemoryHeapFeaturesQCOM {
+    type Type = PhysicalDeviceTileMemoryHeapFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceTileMemoryHeapFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceTileMemoryHeapFeaturesQCOM,
+}
+impl PhysicalDeviceTileMemoryHeapFeaturesQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tile_memory_heap(mut self, tile_memory_heap: bool) -> Self {
+        self.inner.tile_memory_heap = if tile_memory_heap { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceTileMemoryHeapFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceTileMemoryHeapFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceTileMemoryHeapFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceTileMemoryHeapFeaturesQCOMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceTileMemoryHeapFeaturesQCOM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceTileMemoryHeapFeaturesQCOM {}
+impl Builder<'_> for vk::PhysicalDeviceTileMemoryHeapPropertiesQCOM {
+    type Type = PhysicalDeviceTileMemoryHeapPropertiesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceTileMemoryHeapPropertiesQCOMBuilder {
+    inner: vk::PhysicalDeviceTileMemoryHeapPropertiesQCOM,
+}
+impl PhysicalDeviceTileMemoryHeapPropertiesQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn queue_submit_boundary(mut self, queue_submit_boundary: bool) -> Self {
+        self.inner.queue_submit_boundary = if queue_submit_boundary { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn tile_buffer_transfers(mut self, tile_buffer_transfers: bool) -> Self {
+        self.inner.tile_buffer_transfers = if tile_buffer_transfers { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceTileMemoryHeapPropertiesQCOMBuilder {
+    type Target = vk::PhysicalDeviceTileMemoryHeapPropertiesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceTileMemoryHeapPropertiesQCOMBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceTileMemoryHeapPropertiesQCOM {}
+impl Builder<'_> for vk::TileMemorySizeInfoQCOM {
+    type Type = TileMemorySizeInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct TileMemorySizeInfoQCOMBuilder {
+    inner: vk::TileMemorySizeInfoQCOM,
+}
+impl TileMemorySizeInfoQCOMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
+        self.inner.size = size;
+        self
+    }
+}
+impl Deref for TileMemorySizeInfoQCOMBuilder {
+    type Target = vk::TileMemorySizeInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl RenderPassCreateInfoNext for TileMemorySizeInfoQCOMBuilder {}
+impl RenderPassCreateInfo2Next for TileMemorySizeInfoQCOMBuilder {}
+impl RenderingInfoNext for TileMemorySizeInfoQCOMBuilder {}
+impl RenderPassCreateInfoNext for vk::TileMemorySizeInfoQCOM {}
+impl RenderPassCreateInfo2Next for vk::TileMemorySizeInfoQCOM {}
+impl RenderingInfoNext for vk::TileMemorySizeInfoQCOM {}
+impl Builder<'_> for vk::TileMemoryRequirementsQCOM {
+    type Type = TileMemoryRequirementsQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct TileMemoryRequirementsQCOMBuilder {
+    inner: vk::TileMemoryRequirementsQCOM,
+}
+impl TileMemoryRequirementsQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
+        self.inner.size = size;
+        self
+    }
+    pub fn alignment(mut self, alignment: vk::DeviceSize) -> Self {
+        self.inner.alignment = alignment;
+        self
+    }
+}
+impl Deref for TileMemoryRequirementsQCOMBuilder {
+    type Target = vk::TileMemoryRequirementsQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl MemoryRequirements2Next for TileMemoryRequirementsQCOMBuilder {}
+impl MemoryRequirements2Next for vk::TileMemoryRequirementsQCOM {}
 impl<'a> Builder<'a> for vk::BindDescriptorSetsInfo {
     type Type = BindDescriptorSetsInfoBuilder<'a>;
     fn builder() -> Self::Type {

@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 312
+//! Generated from vk.xml with `VK_HEADER_VERSION` 313
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2624,6 +2624,14 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_shader_expect_assume(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_qcom_tile_memory_heap(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_qcom_tile_memory_heap(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -5460,6 +5468,7 @@ pub struct DeviceExtensions {
     pub khr_shader_expect_assume: bool,
     pub khr_maintenance6: bool,
     pub nv_descriptor_pool_overallocation: bool,
+    pub qcom_tile_memory_heap: bool,
     pub nv_raw_access_chains: bool,
     pub nv_external_compute_queue: bool,
     pub khr_shader_relaxed_extended_instruction: bool,
@@ -5814,6 +5823,7 @@ impl DeviceExtensions {
             b"VK_KHR_shader_expect_assume" => self.khr_shader_expect_assume = true,
             b"VK_KHR_maintenance6" => self.khr_maintenance6 = true,
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
+            b"VK_QCOM_tile_memory_heap" => self.qcom_tile_memory_heap = true,
             b"VK_NV_raw_access_chains" => self.nv_raw_access_chains = true,
             b"VK_NV_external_compute_queue" => self.nv_external_compute_queue = true,
             b"VK_KHR_shader_relaxed_extended_instruction" => self.khr_shader_relaxed_extended_instruction = true,
@@ -6168,6 +6178,7 @@ impl DeviceExtensions {
             khr_shader_expect_assume: false,
             khr_maintenance6: false,
             nv_descriptor_pool_overallocation: false,
+            qcom_tile_memory_heap: false,
             nv_raw_access_chains: false,
             nv_external_compute_queue: false,
             khr_shader_relaxed_extended_instruction: false,
@@ -8797,6 +8808,17 @@ impl DeviceExtensions {
         // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
+    pub fn supports_qcom_tile_memory_heap(&self) -> bool {
+        self.qcom_tile_memory_heap
+            && (self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+                || self.supports_khr_get_memory_requirements2())
+    }
+    pub fn enable_qcom_tile_memory_heap(&mut self) {
+        self.qcom_tile_memory_heap = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_memory_requirements2();
+        }
+    }
     pub fn supports_nv_raw_access_chains(&self) -> bool {
         self.nv_raw_access_chains
     }
@@ -9945,6 +9967,9 @@ impl DeviceExtensions {
         if self.nv_descriptor_pool_overallocation {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_descriptor_pool_overallocation\0") })
         }
+        if self.qcom_tile_memory_heap {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_tile_memory_heap\0") })
+        }
         if self.nv_raw_access_chains {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_raw_access_chains\0") })
         }
@@ -10505,6 +10530,7 @@ pub struct Device {
     pub fp_get_image_subresource_layout2: Option<vk::FnGetImageSubresourceLayout2>,
     pub fp_get_pipeline_properties_ext: Option<vk::FnGetPipelinePropertiesEXT>,
     pub fp_export_metal_objects_ext: Option<vk::FnExportMetalObjectsEXT>,
+    pub fp_cmd_bind_tile_memory_qcom: Option<vk::FnCmdBindTileMemoryQCOM>,
     pub fp_get_framebuffer_tile_properties_qcom: Option<vk::FnGetFramebufferTilePropertiesQCOM>,
     pub fp_get_dynamic_rendering_tile_properties_qcom: Option<vk::FnGetDynamicRenderingTilePropertiesQCOM>,
     pub fp_get_physical_device_optical_flow_image_formats_nv: Option<vk::FnGetPhysicalDeviceOpticalFlowImageFormatsNV>,
@@ -14522,6 +14548,12 @@ impl Device {
             },
             fp_export_metal_objects_ext: if extensions.ext_metal_objects {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkExportMetalObjectsEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_tile_memory_qcom: if extensions.qcom_tile_memory_heap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindTileMemoryQCOM\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -23223,6 +23255,16 @@ impl Device {
             .fp_export_metal_objects_ext
             .expect("vkExportMetalObjectsEXT is not loaded");
         (fp)(Some(self.handle), p_metal_objects_info);
+    }
+    pub unsafe fn cmd_bind_tile_memory_qcom(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_tile_memory_bind_info: Option<&vk::TileMemoryBindInfoQCOM>,
+    ) {
+        let fp = self
+            .fp_cmd_bind_tile_memory_qcom
+            .expect("vkCmdBindTileMemoryQCOM is not loaded");
+        (fp)(Some(command_buffer), p_tile_memory_bind_info.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn get_framebuffer_tile_properties_qcom_to_vec(
         &self,

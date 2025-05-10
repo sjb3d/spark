@@ -635,11 +635,21 @@ impl MemoryHeapFlags {
     /// If set, heap allocations allocate multiple instances by default
     pub const MULTI_INSTANCE: Self = Self(0x2);
     pub const MULTI_INSTANCE_KHR: Self = Self::MULTI_INSTANCE;
+    /// Added by extension VK_QCOM_tile_memory_heap.
+    pub const TILE_MEMORY_QCOM: Self = Self(0x8);
 }
-impl_bitmask!(MemoryHeapFlags, 0x3);
+impl_bitmask!(MemoryHeapFlags, 0xb);
 impl fmt::Display for MemoryHeapFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x1, "DEVICE_LOCAL"), (0x2, "MULTI_INSTANCE")], f)
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "DEVICE_LOCAL"),
+                (0x2, "MULTI_INSTANCE"),
+                (0x8, "TILE_MEMORY_QCOM"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -801,8 +811,10 @@ impl BufferUsageFlags {
     pub const MICROMAP_BUILD_INPUT_READ_ONLY_EXT: Self = Self(0x800000);
     /// Added by extension VK_EXT_opacity_micromap.
     pub const MICROMAP_STORAGE_EXT: Self = Self(0x1000000);
+    /// Added by extension VK_QCOM_tile_memory_heap.
+    pub const TILE_MEMORY_QCOM: Self = Self(0x8000000);
 }
-impl_bitmask!(BufferUsageFlags, 0x7fa1fff);
+impl_bitmask!(BufferUsageFlags, 0xffa1fff);
 impl fmt::Display for BufferUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -830,6 +842,7 @@ impl fmt::Display for BufferUsageFlags {
                 (0x4000000, "PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT"),
                 (0x800000, "MICROMAP_BUILD_INPUT_READ_ONLY_EXT"),
                 (0x1000000, "MICROMAP_STORAGE_EXT"),
+                (0x8000000, "TILE_MEMORY_QCOM"),
             ],
             f,
         )
@@ -975,8 +988,10 @@ impl ImageUsageFlags {
     pub const SAMPLE_WEIGHT_QCOM: Self = Self(0x100000);
     /// Added by extension VK_QCOM_image_processing.
     pub const SAMPLE_BLOCK_MATCH_QCOM: Self = Self(0x200000);
+    /// Added by extension VK_QCOM_tile_memory_heap.
+    pub const TILE_MEMORY_QCOM: Self = Self(0x8000000);
 }
-impl_bitmask!(ImageUsageFlags, 0x7c03ff);
+impl_bitmask!(ImageUsageFlags, 0x87c03ff);
 impl fmt::Display for ImageUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -997,6 +1012,7 @@ impl fmt::Display for ImageUsageFlags {
                 (0x40000, "INVOCATION_MASK_HUAWEI"),
                 (0x100000, "SAMPLE_WEIGHT_QCOM"),
                 (0x200000, "SAMPLE_BLOCK_MATCH_QCOM"),
+                (0x8000000, "TILE_MEMORY_QCOM"),
             ],
             f,
         )
@@ -3169,10 +3185,12 @@ impl BufferUsageFlags2 {
     pub const MICROMAP_BUILD_INPUT_READ_ONLY_EXT: Self = Self(0x800000);
     /// Added by extension VK_KHR_maintenance5.
     pub const MICROMAP_STORAGE_EXT: Self = Self(0x1000000);
+    /// Added by extension VK_QCOM_tile_memory_heap.
+    pub const TILE_MEMORY_QCOM: Self = Self(0x8000000);
     /// Added by extension VK_EXT_device_generated_commands.
     pub const PREPROCESS_BUFFER_EXT: Self = Self(0x80000000);
 }
-impl_bitmask!(BufferUsageFlags2, 0x87fbffff);
+impl_bitmask!(BufferUsageFlags2, 0x8ffbffff);
 impl fmt::Display for BufferUsageFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -3204,6 +3222,7 @@ impl fmt::Display for BufferUsageFlags2 {
                 (0x4000000, "PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT"),
                 (0x800000, "MICROMAP_BUILD_INPUT_READ_ONLY_EXT"),
                 (0x1000000, "MICROMAP_STORAGE_EXT"),
+                (0x8000000, "TILE_MEMORY_QCOM"),
                 (0x80000000, "PREPROCESS_BUFFER_EXT"),
             ],
             f,
@@ -8693,6 +8712,16 @@ impl StructureType {
     pub const BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT: Self = Self(1000545008);
     /// Added by extension VK_NV_descriptor_pool_overallocation.
     pub const PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV: Self = Self(1000546000);
+    /// Added by extension VK_QCOM_tile_memory_heap.
+    pub const PHYSICAL_DEVICE_TILE_MEMORY_HEAP_FEATURES_QCOM: Self = Self(1000547000);
+    /// Added by extension VK_QCOM_tile_memory_heap.
+    pub const PHYSICAL_DEVICE_TILE_MEMORY_HEAP_PROPERTIES_QCOM: Self = Self(1000547001);
+    /// Added by extension VK_QCOM_tile_memory_heap.
+    pub const TILE_MEMORY_REQUIREMENTS_QCOM: Self = Self(1000547002);
+    /// Added by extension VK_QCOM_tile_memory_heap.
+    pub const TILE_MEMORY_BIND_INFO_QCOM: Self = Self(1000547003);
+    /// Added by extension VK_QCOM_tile_memory_heap.
+    pub const TILE_MEMORY_SIZE_INFO_QCOM: Self = Self(1000547004);
     /// Added by extension VK_NV_display_stereo.
     pub const DISPLAY_SURFACE_STEREO_CREATE_INFO_NV: Self = Self(1000551000);
     /// Added by extension VK_NV_display_stereo.
@@ -9667,6 +9696,11 @@ impl fmt::Display for StructureType {
             1000545007 => Some(&"SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT"),
             1000545008 => Some(&"BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT"),
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
+            1000547000 => Some(&"PHYSICAL_DEVICE_TILE_MEMORY_HEAP_FEATURES_QCOM"),
+            1000547001 => Some(&"PHYSICAL_DEVICE_TILE_MEMORY_HEAP_PROPERTIES_QCOM"),
+            1000547002 => Some(&"TILE_MEMORY_REQUIREMENTS_QCOM"),
+            1000547003 => Some(&"TILE_MEMORY_BIND_INFO_QCOM"),
+            1000547004 => Some(&"TILE_MEMORY_SIZE_INFO_QCOM"),
             1000551000 => Some(&"DISPLAY_SURFACE_STEREO_CREATE_INFO_NV"),
             1000551001 => Some(&"DISPLAY_MODE_STEREO_PROPERTIES_NV"),
             1000555000 => Some(&"PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV"),
@@ -45093,6 +45127,33 @@ impl fmt::Debug for TilePropertiesQCOM {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct TileMemoryBindInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub memory: Option<DeviceMemory>,
+}
+unsafe impl Send for TileMemoryBindInfoQCOM {}
+unsafe impl Sync for TileMemoryBindInfoQCOM {}
+impl Default for TileMemoryBindInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TILE_MEMORY_BIND_INFO_QCOM,
+            p_next: ptr::null(),
+            memory: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TileMemoryBindInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TileMemoryBindInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory", &self.memory)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceAmigoProfilingFeaturesSEC {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -47424,6 +47485,120 @@ impl fmt::Debug for BindMemoryStatus {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("p_result", &self.p_result)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTileMemoryHeapFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub tile_memory_heap: Bool32,
+}
+unsafe impl Send for PhysicalDeviceTileMemoryHeapFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceTileMemoryHeapFeaturesQCOM {}
+impl Default for PhysicalDeviceTileMemoryHeapFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_TILE_MEMORY_HEAP_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            tile_memory_heap: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTileMemoryHeapFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTileMemoryHeapFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tile_memory_heap", &self.tile_memory_heap)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTileMemoryHeapPropertiesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub queue_submit_boundary: Bool32,
+    pub tile_buffer_transfers: Bool32,
+}
+unsafe impl Send for PhysicalDeviceTileMemoryHeapPropertiesQCOM {}
+unsafe impl Sync for PhysicalDeviceTileMemoryHeapPropertiesQCOM {}
+impl Default for PhysicalDeviceTileMemoryHeapPropertiesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_TILE_MEMORY_HEAP_PROPERTIES_QCOM,
+            p_next: ptr::null_mut(),
+            queue_submit_boundary: Default::default(),
+            tile_buffer_transfers: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTileMemoryHeapPropertiesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTileMemoryHeapPropertiesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("queue_submit_boundary", &self.queue_submit_boundary)
+            .field("tile_buffer_transfers", &self.tile_buffer_transfers)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TileMemorySizeInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub size: DeviceSize,
+}
+unsafe impl Send for TileMemorySizeInfoQCOM {}
+unsafe impl Sync for TileMemorySizeInfoQCOM {}
+impl Default for TileMemorySizeInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TILE_MEMORY_SIZE_INFO_QCOM,
+            p_next: ptr::null(),
+            size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TileMemorySizeInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TileMemorySizeInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("size", &self.size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TileMemoryRequirementsQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub size: DeviceSize,
+    pub alignment: DeviceSize,
+}
+unsafe impl Send for TileMemoryRequirementsQCOM {}
+unsafe impl Sync for TileMemoryRequirementsQCOM {}
+impl Default for TileMemoryRequirementsQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TILE_MEMORY_REQUIREMENTS_QCOM,
+            p_next: ptr::null_mut(),
+            size: Default::default(),
+            alignment: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TileMemoryRequirementsQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TileMemoryRequirementsQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("size", &self.size)
+            .field("alignment", &self.alignment)
             .finish()
     }
 }
@@ -52847,6 +53022,10 @@ pub type FnGetPipelinePropertiesEXT = unsafe extern "system" fn(
 ) -> Result;
 pub type FnExportMetalObjectsEXT =
     unsafe extern "system" fn(device: Option<Device>, p_metal_objects_info: *mut ExportMetalObjectsInfoEXT);
+pub type FnCmdBindTileMemoryQCOM = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_tile_memory_bind_info: *const TileMemoryBindInfoQCOM,
+);
 pub type FnGetFramebufferTilePropertiesQCOM = unsafe extern "system" fn(
     device: Option<Device>,
     framebuffer: Option<Framebuffer>,
