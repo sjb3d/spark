@@ -8073,10 +8073,8 @@ impl StructureType {
     pub const DEVICE_DEVICE_MEMORY_REPORT_CREATE_INFO_EXT: Self = Self(1000284001);
     /// Added by extension VK_EXT_device_memory_report.
     pub const DEVICE_MEMORY_REPORT_CALLBACK_DATA_EXT: Self = Self(1000284002);
-    /// Added by extension VK_EXT_robustness2.
-    pub const PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT: Self = Self(1000286000);
-    /// Added by extension VK_EXT_robustness2.
-    pub const PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT: Self = Self(1000286001);
+    pub const PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT: Self = Self::PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_KHR;
+    pub const PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT: Self = Self::PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_KHR;
     /// Added by extension VK_EXT_custom_border_color.
     pub const SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT: Self = Self(1000287000);
     /// Added by extension VK_EXT_custom_border_color.
@@ -8847,6 +8845,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR: Self = Self(1000421000);
     /// Added by extension VK_EXT_vertex_attribute_robustness.
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000608000);
+    pub const PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_KHR: Self = Self(1000286000);
+    pub const PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_KHR: Self = Self(1000286001);
     /// Added by extension VK_NV_present_metering.
     pub const SET_PRESENT_CONFIG_NV: Self = Self(1000613000);
     /// Added by extension VK_NV_present_metering.
@@ -9418,8 +9418,6 @@ impl fmt::Display for StructureType {
             1000284000 => Some(&"PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT"),
             1000284001 => Some(&"DEVICE_DEVICE_MEMORY_REPORT_CREATE_INFO_EXT"),
             1000284002 => Some(&"DEVICE_MEMORY_REPORT_CALLBACK_DATA_EXT"),
-            1000286000 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT"),
-            1000286001 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT"),
             1000287000 => Some(&"SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT"),
             1000287001 => Some(&"PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT"),
             1000287002 => Some(&"PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT"),
@@ -9764,6 +9762,8 @@ impl fmt::Display for StructureType {
             1000602002 => Some(&"MEMORY_GET_METAL_HANDLE_INFO_EXT"),
             1000421000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR"),
             1000608000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT"),
+            1000286000 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_KHR"),
+            1000286001 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_KHR"),
             1000613000 => Some(&"SET_PRESENT_CONFIG_NV"),
             1000613001 => Some(&"PHYSICAL_DEVICE_PRESENT_METERING_FEATURES_NV"),
             1000425000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_EXT"),
@@ -36773,19 +36773,19 @@ impl fmt::Debug for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceRobustness2FeaturesEXT {
+pub struct PhysicalDeviceRobustness2FeaturesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub robust_buffer_access2: Bool32,
     pub robust_image_access2: Bool32,
     pub null_descriptor: Bool32,
 }
-unsafe impl Send for PhysicalDeviceRobustness2FeaturesEXT {}
-unsafe impl Sync for PhysicalDeviceRobustness2FeaturesEXT {}
-impl Default for PhysicalDeviceRobustness2FeaturesEXT {
+unsafe impl Send for PhysicalDeviceRobustness2FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceRobustness2FeaturesKHR {}
+impl Default for PhysicalDeviceRobustness2FeaturesKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT,
+            s_type: StructureType::PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_KHR,
             p_next: ptr::null_mut(),
             robust_buffer_access2: Default::default(),
             robust_image_access2: Default::default(),
@@ -36793,9 +36793,9 @@ impl Default for PhysicalDeviceRobustness2FeaturesEXT {
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceRobustness2FeaturesEXT {
+impl fmt::Debug for PhysicalDeviceRobustness2FeaturesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceRobustness2FeaturesEXT")
+        fmt.debug_struct("PhysicalDeviceRobustness2FeaturesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("robust_buffer_access2", &self.robust_buffer_access2)
@@ -36804,29 +36804,30 @@ impl fmt::Debug for PhysicalDeviceRobustness2FeaturesEXT {
             .finish()
     }
 }
+pub type PhysicalDeviceRobustness2FeaturesEXT = PhysicalDeviceRobustness2FeaturesKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceRobustness2PropertiesEXT {
+pub struct PhysicalDeviceRobustness2PropertiesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub robust_storage_buffer_access_size_alignment: DeviceSize,
     pub robust_uniform_buffer_access_size_alignment: DeviceSize,
 }
-unsafe impl Send for PhysicalDeviceRobustness2PropertiesEXT {}
-unsafe impl Sync for PhysicalDeviceRobustness2PropertiesEXT {}
-impl Default for PhysicalDeviceRobustness2PropertiesEXT {
+unsafe impl Send for PhysicalDeviceRobustness2PropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceRobustness2PropertiesKHR {}
+impl Default for PhysicalDeviceRobustness2PropertiesKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT,
+            s_type: StructureType::PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
             robust_storage_buffer_access_size_alignment: Default::default(),
             robust_uniform_buffer_access_size_alignment: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceRobustness2PropertiesEXT {
+impl fmt::Debug for PhysicalDeviceRobustness2PropertiesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceRobustness2PropertiesEXT")
+        fmt.debug_struct("PhysicalDeviceRobustness2PropertiesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field(
@@ -36840,6 +36841,7 @@ impl fmt::Debug for PhysicalDeviceRobustness2PropertiesEXT {
             .finish()
     }
 }
+pub type PhysicalDeviceRobustness2PropertiesEXT = PhysicalDeviceRobustness2PropertiesKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceImageRobustnessFeatures {

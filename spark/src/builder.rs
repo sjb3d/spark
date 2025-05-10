@@ -17650,17 +17650,17 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderSubgroupUniformControlF
 impl DeviceCreateInfoNext for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHRBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {}
-impl Builder<'_> for vk::PhysicalDeviceRobustness2FeaturesEXT {
-    type Type = PhysicalDeviceRobustness2FeaturesEXTBuilder;
+impl Builder<'_> for vk::PhysicalDeviceRobustness2FeaturesKHR {
+    type Type = PhysicalDeviceRobustness2FeaturesKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct PhysicalDeviceRobustness2FeaturesEXTBuilder {
-    inner: vk::PhysicalDeviceRobustness2FeaturesEXT,
+pub struct PhysicalDeviceRobustness2FeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceRobustness2FeaturesKHR,
 }
-impl PhysicalDeviceRobustness2FeaturesEXTBuilder {
+impl PhysicalDeviceRobustness2FeaturesKHRBuilder {
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17678,17 +17678,17 @@ impl PhysicalDeviceRobustness2FeaturesEXTBuilder {
         self
     }
 }
-impl Deref for PhysicalDeviceRobustness2FeaturesEXTBuilder {
-    type Target = vk::PhysicalDeviceRobustness2FeaturesEXT;
+impl Deref for PhysicalDeviceRobustness2FeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceRobustness2FeaturesKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceFeatures2Next for PhysicalDeviceRobustness2FeaturesEXTBuilder {}
-impl DeviceCreateInfoNext for PhysicalDeviceRobustness2FeaturesEXTBuilder {}
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRobustness2FeaturesEXT {}
-impl DeviceCreateInfoNext for vk::PhysicalDeviceRobustness2FeaturesEXT {}
-impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRobustness2PropertiesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRobustness2FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRobustness2FeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRobustness2FeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRobustness2FeaturesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRobustness2PropertiesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceImageRobustnessFeatures {
     type Type = PhysicalDeviceImageRobustnessFeaturesBuilder;
     fn builder() -> Self::Type {
