@@ -19031,6 +19031,40 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceDepthClipControlFeaturesEXTBu
 impl DeviceCreateInfoNext for PhysicalDeviceDepthClipControlFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDepthClipControlFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceDepthClipControlFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT {
+    type Type = PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT,
+}
+impl PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn zero_initialize_device_memory(mut self, zero_initialize_device_memory: bool) -> Self {
+        self.inner.zero_initialize_device_memory = if zero_initialize_device_memory {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT {
     type Type = PhysicalDeviceDeviceGeneratedCommandsFeaturesEXTBuilder;
     fn builder() -> Self::Type {

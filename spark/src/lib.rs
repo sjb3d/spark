@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 314
+//! Generated from vk.xml with `VK_HEADER_VERSION` 315
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2762,6 +2762,14 @@ impl InstanceExtensions {
             self.enable_khr_dynamic_rendering();
         }
     }
+    pub fn supports_ext_zero_initialize_device_memory(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_zero_initialize_device_memory(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_surface {
@@ -5500,6 +5508,7 @@ pub struct DeviceExtensions {
     pub khr_robustness2: bool,
     pub nv_present_metering: bool,
     pub ext_fragment_density_map_offset: bool,
+    pub ext_zero_initialize_device_memory: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -5856,6 +5865,7 @@ impl DeviceExtensions {
             b"VK_KHR_robustness2" => self.khr_robustness2 = true,
             b"VK_NV_present_metering" => self.nv_present_metering = true,
             b"VK_EXT_fragment_density_map_offset" => self.ext_fragment_density_map_offset = true,
+            b"VK_EXT_zero_initialize_device_memory" => self.ext_zero_initialize_device_memory = true,
             _ => {}
         }
     }
@@ -6212,6 +6222,7 @@ impl DeviceExtensions {
             khr_robustness2: false,
             nv_present_metering: false,
             ext_fragment_density_map_offset: false,
+            ext_zero_initialize_device_memory: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -9002,6 +9013,12 @@ impl DeviceExtensions {
             self.enable_khr_dynamic_rendering();
         }
     }
+    pub fn supports_ext_zero_initialize_device_memory(&self) -> bool {
+        self.ext_zero_initialize_device_memory
+    }
+    pub fn enable_ext_zero_initialize_device_memory(&mut self) {
+        self.ext_zero_initialize_device_memory = true;
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -10055,6 +10072,9 @@ impl DeviceExtensions {
         }
         if self.ext_fragment_density_map_offset {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map_offset\0") })
+        }
+        if self.ext_zero_initialize_device_memory {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_zero_initialize_device_memory\0") })
         }
         v
     }

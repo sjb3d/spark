@@ -3526,8 +3526,10 @@ impl MemoryAllocateFlags {
     pub const DEVICE_MASK_KHR: Self = Self::DEVICE_MASK;
     pub const DEVICE_ADDRESS_KHR: Self = Self::DEVICE_ADDRESS;
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY_KHR: Self = Self::DEVICE_ADDRESS_CAPTURE_REPLAY;
+    /// Added by extension VK_EXT_zero_initialize_device_memory.
+    pub const ZERO_INITIALIZE_EXT: Self = Self(0x8);
 }
-impl_bitmask!(MemoryAllocateFlags, 0x7);
+impl_bitmask!(MemoryAllocateFlags, 0xf);
 impl fmt::Display for MemoryAllocateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -3536,6 +3538,7 @@ impl fmt::Display for MemoryAllocateFlags {
                 (0x1, "DEVICE_MASK"),
                 (0x2, "DEVICE_ADDRESS"),
                 (0x4, "DEVICE_ADDRESS_CAPTURE_REPLAY"),
+                (0x8, "ZERO_INITIALIZE_EXT"),
             ],
             f,
         )
@@ -6388,6 +6391,8 @@ impl ImageLayout {
     pub const ATTACHMENT_OPTIMAL_KHR: Self = Self::ATTACHMENT_OPTIMAL;
     /// Added by extension VK_EXT_attachment_feedback_loop_layout.
     pub const ATTACHMENT_FEEDBACK_LOOP_OPTIMAL_EXT: Self = Self(1000339000);
+    /// Added by extension VK_EXT_zero_initialize_device_memory.
+    pub const ZERO_INITIALIZED_EXT: Self = Self(1000620000);
 }
 impl fmt::Display for ImageLayout {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6415,6 +6420,7 @@ impl fmt::Display for ImageLayout {
             1000218000 => Some(&"FRAGMENT_DENSITY_MAP_OPTIMAL_EXT"),
             1000164003 => Some(&"FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR"),
             1000339000 => Some(&"ATTACHMENT_FEEDBACK_LOOP_OPTIMAL_EXT"),
+            1000620000 => Some(&"ZERO_INITIALIZED_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -8856,6 +8862,8 @@ impl StructureType {
     pub const RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT: Self = Self(1000425002);
     /// Added by extension VK_EXT_fragment_density_map_offset.
     pub const RENDERING_END_INFO_EXT: Self = Self(1000619003);
+    /// Added by extension VK_EXT_zero_initialize_device_memory.
+    pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT: Self = Self(1000620000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9770,6 +9778,7 @@ impl fmt::Display for StructureType {
             1000425001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_EXT"),
             1000425002 => Some(&"RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT"),
             1000619003 => Some(&"RENDERING_END_INFO_EXT"),
+            1000620000 => Some(&"PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -38298,6 +38307,33 @@ impl fmt::Debug for PhysicalDeviceDepthClipControlFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("depth_clip_control", &self.depth_clip_control)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub zero_initialize_device_memory: Bool32,
+}
+unsafe impl Send for PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT {}
+impl Default for PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            zero_initialize_device_memory: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("zero_initialize_device_memory", &self.zero_initialize_device_memory)
             .finish()
     }
 }
