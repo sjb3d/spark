@@ -29149,3 +29149,33 @@ impl Deref for ExternalComputeQueueDataParamsNVBuilder {
     }
 }
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceExternalComputeQueuePropertiesNV {}
+impl Builder<'_> for vk::PhysicalDeviceFormatPackFeaturesARM {
+    type Type = PhysicalDeviceFormatPackFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceFormatPackFeaturesARMBuilder {
+    inner: vk::PhysicalDeviceFormatPackFeaturesARM,
+}
+impl PhysicalDeviceFormatPackFeaturesARMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn format_pack(mut self, format_pack: bool) -> Self {
+        self.inner.format_pack = if format_pack { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceFormatPackFeaturesARMBuilder {
+    type Target = vk::PhysicalDeviceFormatPackFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFormatPackFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceFormatPackFeaturesARMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFormatPackFeaturesARM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFormatPackFeaturesARM {}

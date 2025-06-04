@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 315
+//! Generated from vk.xml with `VK_HEADER_VERSION` 316
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -5505,6 +5505,7 @@ pub struct DeviceExtensions {
     pub ext_external_memory_metal: bool,
     pub khr_depth_clamp_zero_one: bool,
     pub ext_vertex_attribute_robustness: bool,
+    pub arm_format_pack: bool,
     pub khr_robustness2: bool,
     pub nv_present_metering: bool,
     pub ext_fragment_density_map_offset: bool,
@@ -5862,6 +5863,7 @@ impl DeviceExtensions {
             b"VK_EXT_external_memory_metal" => self.ext_external_memory_metal = true,
             b"VK_KHR_depth_clamp_zero_one" => self.khr_depth_clamp_zero_one = true,
             b"VK_EXT_vertex_attribute_robustness" => self.ext_vertex_attribute_robustness = true,
+            b"VK_ARM_format_pack" => self.arm_format_pack = true,
             b"VK_KHR_robustness2" => self.khr_robustness2 = true,
             b"VK_NV_present_metering" => self.nv_present_metering = true,
             b"VK_EXT_fragment_density_map_offset" => self.ext_fragment_density_map_offset = true,
@@ -6219,6 +6221,7 @@ impl DeviceExtensions {
             ext_external_memory_metal: false,
             khr_depth_clamp_zero_one: false,
             ext_vertex_attribute_robustness: false,
+            arm_format_pack: false,
             khr_robustness2: false,
             nv_present_metering: false,
             ext_fragment_density_map_offset: false,
@@ -8985,6 +8988,12 @@ impl DeviceExtensions {
     pub fn enable_ext_vertex_attribute_robustness(&mut self) {
         self.ext_vertex_attribute_robustness = true;
     }
+    pub fn supports_arm_format_pack(&self) -> bool {
+        self.arm_format_pack
+    }
+    pub fn enable_arm_format_pack(&mut self) {
+        self.arm_format_pack = true;
+    }
     pub fn supports_khr_robustness2(&self) -> bool {
         self.khr_robustness2
     }
@@ -10063,6 +10072,9 @@ impl DeviceExtensions {
         }
         if self.ext_vertex_attribute_robustness {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_vertex_attribute_robustness\0") })
+        }
+        if self.arm_format_pack {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_format_pack\0") })
         }
         if self.khr_robustness2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_robustness2\0") })
@@ -24152,11 +24164,15 @@ impl Device {
             p_infos.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
-    pub unsafe fn cmd_dispatch_tile_qcom(&self, command_buffer: vk::CommandBuffer) {
+    pub unsafe fn cmd_dispatch_tile_qcom(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_dispatch_tile_info: &vk::DispatchTileInfoQCOM,
+    ) {
         let fp = self
             .fp_cmd_dispatch_tile_qcom
             .expect("vkCmdDispatchTileQCOM is not loaded");
-        (fp)(Some(command_buffer));
+        (fp)(Some(command_buffer), p_dispatch_tile_info);
     }
     pub unsafe fn cmd_begin_per_tile_execution_qcom(
         &self,

@@ -6057,6 +6057,34 @@ impl Format {
     pub const R16G16_S10_5_NV: Self = Self::R16G16_SFIXED5_NV;
     pub const A1B5G5R5_UNORM_PACK16_KHR: Self = Self::A1B5G5R5_UNORM_PACK16;
     pub const A8_UNORM_KHR: Self = Self::A8_UNORM;
+    /// Added by extension VK_ARM_format_pack.
+    pub const R10X6_UINT_PACK16_ARM: Self = Self(1000609000);
+    /// Added by extension VK_ARM_format_pack.
+    pub const R10X6G10X6_UINT_2PACK16_ARM: Self = Self(1000609001);
+    /// Added by extension VK_ARM_format_pack.
+    pub const R10X6G10X6B10X6A10X6_UINT_4PACK16_ARM: Self = Self(1000609002);
+    /// Added by extension VK_ARM_format_pack.
+    pub const R12X4_UINT_PACK16_ARM: Self = Self(1000609003);
+    /// Added by extension VK_ARM_format_pack.
+    pub const R12X4G12X4_UINT_2PACK16_ARM: Self = Self(1000609004);
+    /// Added by extension VK_ARM_format_pack.
+    pub const R12X4G12X4B12X4A12X4_UINT_4PACK16_ARM: Self = Self(1000609005);
+    /// Added by extension VK_ARM_format_pack.
+    pub const R14X2_UINT_PACK16_ARM: Self = Self(1000609006);
+    /// Added by extension VK_ARM_format_pack.
+    pub const R14X2G14X2_UINT_2PACK16_ARM: Self = Self(1000609007);
+    /// Added by extension VK_ARM_format_pack.
+    pub const R14X2G14X2B14X2A14X2_UINT_4PACK16_ARM: Self = Self(1000609008);
+    /// Added by extension VK_ARM_format_pack.
+    pub const R14X2_UNORM_PACK16_ARM: Self = Self(1000609009);
+    /// Added by extension VK_ARM_format_pack.
+    pub const R14X2G14X2_UNORM_2PACK16_ARM: Self = Self(1000609010);
+    /// Added by extension VK_ARM_format_pack.
+    pub const R14X2G14X2B14X2A14X2_UNORM_4PACK16_ARM: Self = Self(1000609011);
+    /// Added by extension VK_ARM_format_pack.
+    pub const G14X2_B14X2R14X2_2PLANE_420_UNORM_3PACK16_ARM: Self = Self(1000609012);
+    /// Added by extension VK_ARM_format_pack.
+    pub const G14X2_B14X2R14X2_2PLANE_422_UNORM_3PACK16_ARM: Self = Self(1000609013);
 }
 impl fmt::Display for Format {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6311,6 +6339,20 @@ impl fmt::Display for Format {
             1000054006 => Some(&"PVRTC2_2BPP_SRGB_BLOCK_IMG"),
             1000054007 => Some(&"PVRTC2_4BPP_SRGB_BLOCK_IMG"),
             1000464000 => Some(&"R16G16_SFIXED5_NV"),
+            1000609000 => Some(&"R10X6_UINT_PACK16_ARM"),
+            1000609001 => Some(&"R10X6G10X6_UINT_2PACK16_ARM"),
+            1000609002 => Some(&"R10X6G10X6B10X6A10X6_UINT_4PACK16_ARM"),
+            1000609003 => Some(&"R12X4_UINT_PACK16_ARM"),
+            1000609004 => Some(&"R12X4G12X4_UINT_2PACK16_ARM"),
+            1000609005 => Some(&"R12X4G12X4B12X4A12X4_UINT_4PACK16_ARM"),
+            1000609006 => Some(&"R14X2_UINT_PACK16_ARM"),
+            1000609007 => Some(&"R14X2G14X2_UINT_2PACK16_ARM"),
+            1000609008 => Some(&"R14X2G14X2B14X2A14X2_UINT_4PACK16_ARM"),
+            1000609009 => Some(&"R14X2_UNORM_PACK16_ARM"),
+            1000609010 => Some(&"R14X2G14X2_UNORM_2PACK16_ARM"),
+            1000609011 => Some(&"R14X2G14X2B14X2A14X2_UNORM_4PACK16_ARM"),
+            1000609012 => Some(&"G14X2_B14X2R14X2_2PLANE_420_UNORM_3PACK16_ARM"),
+            1000609013 => Some(&"G14X2_B14X2R14X2_2PLANE_422_UNORM_3PACK16_ARM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -8851,6 +8893,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR: Self = Self(1000421000);
     /// Added by extension VK_EXT_vertex_attribute_robustness.
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000608000);
+    /// Added by extension VK_ARM_format_pack.
+    pub const PHYSICAL_DEVICE_FORMAT_PACK_FEATURES_ARM: Self = Self(1000609000);
     pub const PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_KHR: Self = Self(1000286000);
     pub const PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_KHR: Self = Self(1000286001);
     /// Added by extension VK_NV_present_metering.
@@ -9770,6 +9814,7 @@ impl fmt::Display for StructureType {
             1000602002 => Some(&"MEMORY_GET_METAL_HANDLE_INFO_EXT"),
             1000421000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR"),
             1000608000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT"),
+            1000609000 => Some(&"PHYSICAL_DEVICE_FORMAT_PACK_FEATURES_ARM"),
             1000286000 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_KHR"),
             1000286001 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_KHR"),
             1000613000 => Some(&"SET_PRESENT_CONFIG_NV"),
@@ -50343,6 +50388,33 @@ impl ExternalComputeQueueNV {
         num::NonZeroUsize::new(x).map(Self)
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFormatPackFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub format_pack: Bool32,
+}
+unsafe impl Send for PhysicalDeviceFormatPackFeaturesARM {}
+unsafe impl Sync for PhysicalDeviceFormatPackFeaturesARM {}
+impl Default for PhysicalDeviceFormatPackFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FORMAT_PACK_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            format_pack: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFormatPackFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFormatPackFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("format_pack", &self.format_pack)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -53282,7 +53354,8 @@ pub type FnCmdConvertCooperativeVectorMatrixNV = unsafe extern "system" fn(
     info_count: u32,
     p_infos: *const ConvertCooperativeVectorMatrixInfoNV,
 );
-pub type FnCmdDispatchTileQCOM = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>);
+pub type FnCmdDispatchTileQCOM =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_dispatch_tile_info: *const DispatchTileInfoQCOM);
 pub type FnCmdBeginPerTileExecutionQCOM = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_per_tile_begin_info: *const PerTileBeginInfoQCOM,
