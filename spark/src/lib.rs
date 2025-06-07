@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 316
+//! Generated from vk.xml with `VK_HEADER_VERSION` 317
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2414,6 +2414,26 @@ impl InstanceExtensions {
             self.enable_khr_dynamic_rendering();
         }
     }
+    pub fn supports_khr_present_id2(&self) -> bool {
+        self.supports_khr_get_surface_capabilities2() && self.supports_khr_surface() && self.supports_khr_swapchain()
+    }
+    pub fn enable_khr_present_id2(&mut self) {
+        self.enable_khr_get_surface_capabilities2();
+        self.enable_khr_surface();
+        self.enable_khr_swapchain();
+    }
+    pub fn supports_khr_present_wait2(&self) -> bool {
+        self.supports_khr_get_surface_capabilities2()
+            && self.supports_khr_surface()
+            && self.supports_khr_swapchain()
+            && self.supports_khr_present_id2()
+    }
+    pub fn enable_khr_present_wait2(&mut self) {
+        self.enable_khr_get_surface_capabilities2();
+        self.enable_khr_surface();
+        self.enable_khr_swapchain();
+        self.enable_khr_present_id2();
+    }
     pub fn supports_khr_ray_tracing_position_fetch(&self) -> bool {
         self.supports_khr_acceleration_structure()
     }
@@ -2521,12 +2541,15 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_nv_low_latency2(&self) -> bool {
-        self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_timeline_semaphore()
+        (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_timeline_semaphore())
+            && (self.supports_khr_present_id() || self.supports_khr_present_id2())
     }
     pub fn enable_nv_low_latency2(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
             self.enable_khr_timeline_semaphore();
         }
+        // ambiguous dependency, caller must enable one or the other
+        debug_assert!(self.supports_khr_present_id() || self.supports_khr_present_id2());
     }
     pub fn supports_khr_cooperative_matrix(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -2682,6 +2705,14 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_depth_clamp_control(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_khr_maintenance9(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_maintenance9(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -5442,6 +5473,7 @@ pub struct DeviceExtensions {
     pub ext_external_memory_acquire_unmodified: bool,
     pub ext_extended_dynamic_state3: bool,
     pub ext_subpass_merge_feedback: bool,
+    pub arm_tensors: bool,
     pub ext_shader_module_identifier: bool,
     pub ext_rasterization_order_attachment_access: bool,
     pub nv_optical_flow: bool,
@@ -5450,6 +5482,8 @@ pub struct DeviceExtensions {
     pub android_external_format_resolve: bool,
     pub khr_maintenance5: bool,
     pub amd_anti_lag: bool,
+    pub khr_present_id2: bool,
+    pub khr_present_wait2: bool,
     pub khr_ray_tracing_position_fetch: bool,
     pub ext_shader_object: bool,
     pub khr_pipeline_binary: bool,
@@ -5476,6 +5510,7 @@ pub struct DeviceExtensions {
     pub ext_attachment_feedback_loop_dynamic_state: bool,
     pub khr_vertex_attribute_divisor: bool,
     pub khr_load_store_op_none: bool,
+    pub khr_unified_image_layouts: bool,
     pub khr_shader_float_controls2: bool,
     pub msft_layered_driver: bool,
     pub khr_index_type_uint8: bool,
@@ -5492,6 +5527,7 @@ pub struct DeviceExtensions {
     pub khr_maintenance7: bool,
     pub nv_shader_atomic_float16_vector: bool,
     pub ext_shader_replicated_composites: bool,
+    pub ext_shader_float8: bool,
     pub nv_ray_tracing_validation: bool,
     pub nv_cluster_acceleration_structure: bool,
     pub nv_partitioned_acceleration_structure: bool,
@@ -5499,6 +5535,7 @@ pub struct DeviceExtensions {
     pub khr_maintenance8: bool,
     pub mesa_image_alignment_control: bool,
     pub ext_depth_clamp_control: bool,
+    pub khr_maintenance9: bool,
     pub huawei_hdr_vivid: bool,
     pub nv_cooperative_matrix2: bool,
     pub arm_pipeline_opacity_micromap: bool,
@@ -5800,6 +5837,7 @@ impl DeviceExtensions {
             b"VK_EXT_external_memory_acquire_unmodified" => self.ext_external_memory_acquire_unmodified = true,
             b"VK_EXT_extended_dynamic_state3" => self.ext_extended_dynamic_state3 = true,
             b"VK_EXT_subpass_merge_feedback" => self.ext_subpass_merge_feedback = true,
+            b"VK_ARM_tensors" => self.arm_tensors = true,
             b"VK_EXT_shader_module_identifier" => self.ext_shader_module_identifier = true,
             b"VK_EXT_rasterization_order_attachment_access" => self.ext_rasterization_order_attachment_access = true,
             b"VK_NV_optical_flow" => self.nv_optical_flow = true,
@@ -5808,6 +5846,8 @@ impl DeviceExtensions {
             b"VK_ANDROID_external_format_resolve" => self.android_external_format_resolve = true,
             b"VK_KHR_maintenance5" => self.khr_maintenance5 = true,
             b"VK_AMD_anti_lag" => self.amd_anti_lag = true,
+            b"VK_KHR_present_id2" => self.khr_present_id2 = true,
+            b"VK_KHR_present_wait2" => self.khr_present_wait2 = true,
             b"VK_KHR_ray_tracing_position_fetch" => self.khr_ray_tracing_position_fetch = true,
             b"VK_EXT_shader_object" => self.ext_shader_object = true,
             b"VK_KHR_pipeline_binary" => self.khr_pipeline_binary = true,
@@ -5834,6 +5874,7 @@ impl DeviceExtensions {
             b"VK_EXT_attachment_feedback_loop_dynamic_state" => self.ext_attachment_feedback_loop_dynamic_state = true,
             b"VK_KHR_vertex_attribute_divisor" => self.khr_vertex_attribute_divisor = true,
             b"VK_KHR_load_store_op_none" => self.khr_load_store_op_none = true,
+            b"VK_KHR_unified_image_layouts" => self.khr_unified_image_layouts = true,
             b"VK_KHR_shader_float_controls2" => self.khr_shader_float_controls2 = true,
             b"VK_MSFT_layered_driver" => self.msft_layered_driver = true,
             b"VK_KHR_index_type_uint8" => self.khr_index_type_uint8 = true,
@@ -5850,6 +5891,7 @@ impl DeviceExtensions {
             b"VK_KHR_maintenance7" => self.khr_maintenance7 = true,
             b"VK_NV_shader_atomic_float16_vector" => self.nv_shader_atomic_float16_vector = true,
             b"VK_EXT_shader_replicated_composites" => self.ext_shader_replicated_composites = true,
+            b"VK_EXT_shader_float8" => self.ext_shader_float8 = true,
             b"VK_NV_ray_tracing_validation" => self.nv_ray_tracing_validation = true,
             b"VK_NV_cluster_acceleration_structure" => self.nv_cluster_acceleration_structure = true,
             b"VK_NV_partitioned_acceleration_structure" => self.nv_partitioned_acceleration_structure = true,
@@ -5857,6 +5899,7 @@ impl DeviceExtensions {
             b"VK_KHR_maintenance8" => self.khr_maintenance8 = true,
             b"VK_MESA_image_alignment_control" => self.mesa_image_alignment_control = true,
             b"VK_EXT_depth_clamp_control" => self.ext_depth_clamp_control = true,
+            b"VK_KHR_maintenance9" => self.khr_maintenance9 = true,
             b"VK_HUAWEI_hdr_vivid" => self.huawei_hdr_vivid = true,
             b"VK_NV_cooperative_matrix2" => self.nv_cooperative_matrix2 = true,
             b"VK_ARM_pipeline_opacity_micromap" => self.arm_pipeline_opacity_micromap = true,
@@ -6158,6 +6201,7 @@ impl DeviceExtensions {
             ext_external_memory_acquire_unmodified: false,
             ext_extended_dynamic_state3: false,
             ext_subpass_merge_feedback: false,
+            arm_tensors: false,
             ext_shader_module_identifier: false,
             ext_rasterization_order_attachment_access: false,
             nv_optical_flow: false,
@@ -6166,6 +6210,8 @@ impl DeviceExtensions {
             android_external_format_resolve: false,
             khr_maintenance5: false,
             amd_anti_lag: false,
+            khr_present_id2: false,
+            khr_present_wait2: false,
             khr_ray_tracing_position_fetch: false,
             ext_shader_object: false,
             khr_pipeline_binary: false,
@@ -6192,6 +6238,7 @@ impl DeviceExtensions {
             ext_attachment_feedback_loop_dynamic_state: false,
             khr_vertex_attribute_divisor: false,
             khr_load_store_op_none: false,
+            khr_unified_image_layouts: false,
             khr_shader_float_controls2: false,
             msft_layered_driver: false,
             khr_index_type_uint8: false,
@@ -6208,6 +6255,7 @@ impl DeviceExtensions {
             khr_maintenance7: false,
             nv_shader_atomic_float16_vector: false,
             ext_shader_replicated_composites: false,
+            ext_shader_float8: false,
             nv_ray_tracing_validation: false,
             nv_cluster_acceleration_structure: false,
             nv_partitioned_acceleration_structure: false,
@@ -6215,6 +6263,7 @@ impl DeviceExtensions {
             khr_maintenance8: false,
             mesa_image_alignment_control: false,
             ext_depth_clamp_control: false,
+            khr_maintenance9: false,
             huawei_hdr_vivid: false,
             nv_cooperative_matrix2: false,
             arm_pipeline_opacity_micromap: false,
@@ -8491,6 +8540,14 @@ impl DeviceExtensions {
     pub fn enable_ext_subpass_merge_feedback(&mut self) {
         self.ext_subpass_merge_feedback = true;
     }
+    pub fn supports_arm_tensors(&self) -> bool {
+        self.arm_tensors && self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+    }
+    pub fn enable_arm_tensors(&mut self) {
+        self.arm_tensors = true;
+        // depends on minimum core version, caller must specify
+        debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 3, 0));
+    }
     pub fn supports_ext_shader_module_identifier(&self) -> bool {
         self.ext_shader_module_identifier
             && (self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
@@ -8563,6 +8620,21 @@ impl DeviceExtensions {
     }
     pub fn enable_amd_anti_lag(&mut self) {
         self.amd_anti_lag = true;
+    }
+    pub fn supports_khr_present_id2(&self) -> bool {
+        self.khr_present_id2 && self.supports_khr_swapchain()
+    }
+    pub fn enable_khr_present_id2(&mut self) {
+        self.khr_present_id2 = true;
+        self.enable_khr_swapchain();
+    }
+    pub fn supports_khr_present_wait2(&self) -> bool {
+        self.khr_present_wait2 && self.supports_khr_swapchain() && self.supports_khr_present_id2()
+    }
+    pub fn enable_khr_present_wait2(&mut self) {
+        self.khr_present_wait2 = true;
+        self.enable_khr_swapchain();
+        self.enable_khr_present_id2();
     }
     pub fn supports_khr_ray_tracing_position_fetch(&self) -> bool {
         self.khr_ray_tracing_position_fetch && self.supports_khr_acceleration_structure()
@@ -8674,12 +8746,15 @@ impl DeviceExtensions {
     pub fn supports_nv_low_latency2(&self) -> bool {
         self.nv_low_latency2
             && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_timeline_semaphore())
+            && (self.supports_khr_present_id() || self.supports_khr_present_id2())
     }
     pub fn enable_nv_low_latency2(&mut self) {
         self.nv_low_latency2 = true;
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
             self.enable_khr_timeline_semaphore();
         }
+        // ambiguous dependency, caller must enable one or the other
+        debug_assert!(self.supports_khr_present_id() || self.supports_khr_present_id2());
     }
     pub fn supports_khr_cooperative_matrix(&self) -> bool {
         self.khr_cooperative_matrix
@@ -8763,6 +8838,12 @@ impl DeviceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
             self.khr_load_store_op_none = true;
         }
+    }
+    pub fn supports_khr_unified_image_layouts(&self) -> bool {
+        self.khr_unified_image_layouts
+    }
+    pub fn enable_khr_unified_image_layouts(&mut self) {
+        self.khr_unified_image_layouts = true;
     }
     pub fn supports_khr_shader_float_controls2(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
@@ -8888,6 +8969,12 @@ impl DeviceExtensions {
     pub fn enable_ext_shader_replicated_composites(&mut self) {
         self.ext_shader_replicated_composites = true;
     }
+    pub fn supports_ext_shader_float8(&self) -> bool {
+        self.ext_shader_float8
+    }
+    pub fn enable_ext_shader_float8(&mut self) {
+        self.ext_shader_float8 = true;
+    }
     pub fn supports_nv_ray_tracing_validation(&self) -> bool {
         self.nv_ray_tracing_validation
     }
@@ -8943,6 +9030,12 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_depth_clamp_control(&mut self) {
         self.ext_depth_clamp_control = true;
+    }
+    pub fn supports_khr_maintenance9(&self) -> bool {
+        self.khr_maintenance9
+    }
+    pub fn enable_khr_maintenance9(&mut self) {
+        self.khr_maintenance9 = true;
     }
     pub fn supports_huawei_hdr_vivid(&self) -> bool {
         self.huawei_hdr_vivid && self.supports_khr_swapchain() && self.supports_ext_hdr_metadata()
@@ -9884,6 +9977,9 @@ impl DeviceExtensions {
         if self.ext_subpass_merge_feedback {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_subpass_merge_feedback\0") })
         }
+        if self.arm_tensors {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_tensors\0") })
+        }
         if self.ext_shader_module_identifier {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_module_identifier\0") })
         }
@@ -9907,6 +10003,12 @@ impl DeviceExtensions {
         }
         if self.amd_anti_lag {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_anti_lag\0") })
+        }
+        if self.khr_present_id2 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_present_id2\0") })
+        }
+        if self.khr_present_wait2 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_present_wait2\0") })
         }
         if self.khr_ray_tracing_position_fetch {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_ray_tracing_position_fetch\0") })
@@ -9986,6 +10088,9 @@ impl DeviceExtensions {
         if self.khr_load_store_op_none {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_load_store_op_none\0") })
         }
+        if self.khr_unified_image_layouts {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_unified_image_layouts\0") })
+        }
         if self.khr_shader_float_controls2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_float_controls2\0") })
         }
@@ -10034,6 +10139,9 @@ impl DeviceExtensions {
         if self.ext_shader_replicated_composites {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_replicated_composites\0") })
         }
+        if self.ext_shader_float8 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_float8\0") })
+        }
         if self.nv_ray_tracing_validation {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing_validation\0") })
         }
@@ -10054,6 +10162,9 @@ impl DeviceExtensions {
         }
         if self.ext_depth_clamp_control {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_clamp_control\0") })
+        }
+        if self.khr_maintenance9 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance9\0") })
         }
         if self.huawei_hdr_vivid {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_HUAWEI_hdr_vivid\0") })
@@ -10546,6 +10657,7 @@ pub struct Device {
     pub fp_get_acceleration_structure_opaque_capture_descriptor_data_ext:
         Option<vk::FnGetAccelerationStructureOpaqueCaptureDescriptorDataEXT>,
     pub fp_set_device_memory_priority_ext: Option<vk::FnSetDeviceMemoryPriorityEXT>,
+    pub fp_wait_for_present2_khr: Option<vk::FnWaitForPresent2KHR>,
     pub fp_wait_for_present_khr: Option<vk::FnWaitForPresentKHR>,
     pub fp_create_buffer_collection_fuchsia: Option<vk::FnCreateBufferCollectionFUCHSIA>,
     pub fp_set_buffer_collection_buffer_constraints_fuchsia: Option<vk::FnSetBufferCollectionBufferConstraintsFUCHSIA>,
@@ -10637,6 +10749,19 @@ pub struct Device {
     pub fp_create_external_compute_queue_nv: Option<vk::FnCreateExternalComputeQueueNV>,
     pub fp_destroy_external_compute_queue_nv: Option<vk::FnDestroyExternalComputeQueueNV>,
     pub fp_get_external_compute_queue_data_nv: Option<vk::FnGetExternalComputeQueueDataNV>,
+    pub fp_create_tensor_arm: Option<vk::FnCreateTensorARM>,
+    pub fp_destroy_tensor_arm: Option<vk::FnDestroyTensorARM>,
+    pub fp_create_tensor_view_arm: Option<vk::FnCreateTensorViewARM>,
+    pub fp_destroy_tensor_view_arm: Option<vk::FnDestroyTensorViewARM>,
+    pub fp_get_tensor_memory_requirements_arm: Option<vk::FnGetTensorMemoryRequirementsARM>,
+    pub fp_bind_tensor_memory_arm: Option<vk::FnBindTensorMemoryARM>,
+    pub fp_get_device_tensor_memory_requirements_arm: Option<vk::FnGetDeviceTensorMemoryRequirementsARM>,
+    pub fp_cmd_copy_tensor_arm: Option<vk::FnCmdCopyTensorARM>,
+    pub fp_get_tensor_opaque_capture_descriptor_data_arm: Option<vk::FnGetTensorOpaqueCaptureDescriptorDataARM>,
+    pub fp_get_tensor_view_opaque_capture_descriptor_data_arm:
+        Option<vk::FnGetTensorViewOpaqueCaptureDescriptorDataARM>,
+    pub fp_get_physical_device_external_tensor_properties_arm:
+        Option<vk::FnGetPhysicalDeviceExternalTensorPropertiesARM>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -14343,6 +14468,12 @@ impl Device {
             } else {
                 None
             },
+            fp_wait_for_present2_khr: if extensions.khr_present_wait2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkWaitForPresent2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_wait_for_present_khr: if extensions.khr_present_wait {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkWaitForPresentKHR\0"));
                 fp.map(|f| mem::transmute(f))
@@ -15033,6 +15164,86 @@ impl Device {
             fp_get_external_compute_queue_data_nv: if extensions.nv_external_compute_queue {
                 let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetExternalComputeQueueDataNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_tensor_arm: if extensions.arm_tensors {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateTensorARM\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_tensor_arm: if extensions.arm_tensors {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyTensorARM\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_tensor_view_arm: if extensions.arm_tensors {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateTensorViewARM\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_tensor_view_arm: if extensions.arm_tensors {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyTensorViewARM\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_tensor_memory_requirements_arm: if extensions.arm_tensors {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetTensorMemoryRequirementsARM\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_bind_tensor_memory_arm: if extensions.arm_tensors {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkBindTensorMemoryARM\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_tensor_memory_requirements_arm: if extensions.arm_tensors {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceTensorMemoryRequirementsARM\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_tensor_arm: if extensions.arm_tensors {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyTensorARM\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_tensor_opaque_capture_descriptor_data_arm: if extensions.arm_tensors
+                && extensions.ext_descriptor_buffer
+            {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetTensorOpaqueCaptureDescriptorDataARM\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_tensor_view_opaque_capture_descriptor_data_arm: if extensions.arm_tensors
+                && extensions.ext_descriptor_buffer
+            {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetTensorViewOpaqueCaptureDescriptorDataARM\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_external_tensor_properties_arm: if extensions.arm_tensors {
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceExternalTensorPropertiesARM\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -22796,6 +23007,20 @@ impl Device {
             .expect("vkSetDeviceMemoryPriorityEXT is not loaded");
         (fp)(Some(self.handle), Some(memory), priority);
     }
+    pub unsafe fn wait_for_present2_khr(
+        &self,
+        swapchain: vk::SwapchainKHR,
+        p_present_wait2_info: &vk::PresentWait2InfoKHR,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_wait_for_present2_khr
+            .expect("vkWaitForPresent2KHR is not loaded");
+        let err = (fp)(Some(self.handle), Some(swapchain), p_present_wait2_info);
+        match err {
+            vk::Result::SUCCESS | vk::Result::TIMEOUT | vk::Result::SUBOPTIMAL_KHR => Ok(err),
+            _ => Err(err),
+        }
+    }
     pub unsafe fn wait_for_present_khr(
         &self,
         swapchain: vk::SwapchainKHR,
@@ -24239,6 +24464,148 @@ impl Device {
         let mut res = MaybeUninit::<_>::uninit();
         (fp)(Some(external_queue), params, res.as_mut_ptr());
         res.assume_init()
+    }
+    pub unsafe fn create_tensor_arm(
+        &self,
+        p_create_info: &vk::TensorCreateInfoARM,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::TensorARM> {
+        let fp = self.fp_create_tensor_arm.expect("vkCreateTensorARM is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_tensor_arm(
+        &self,
+        tensor: Option<vk::TensorARM>,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self.fp_destroy_tensor_arm.expect("vkDestroyTensorARM is not loaded");
+        (fp)(Some(self.handle), tensor, p_allocator.map_or(ptr::null(), |r| r));
+    }
+    pub unsafe fn create_tensor_view_arm(
+        &self,
+        p_create_info: &vk::TensorViewCreateInfoARM,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::TensorViewARM> {
+        let fp = self
+            .fp_create_tensor_view_arm
+            .expect("vkCreateTensorViewARM is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_tensor_view_arm(
+        &self,
+        tensor_view: Option<vk::TensorViewARM>,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_tensor_view_arm
+            .expect("vkDestroyTensorViewARM is not loaded");
+        (fp)(Some(self.handle), tensor_view, p_allocator.map_or(ptr::null(), |r| r));
+    }
+    pub unsafe fn get_tensor_memory_requirements_arm(
+        &self,
+        p_info: &vk::TensorMemoryRequirementsInfoARM,
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
+        let fp = self
+            .fp_get_tensor_memory_requirements_arm
+            .expect("vkGetTensorMemoryRequirementsARM is not loaded");
+        (fp)(Some(self.handle), p_info, p_memory_requirements);
+    }
+    pub unsafe fn bind_tensor_memory_arm(&self, p_bind_infos: &[vk::BindTensorMemoryInfoARM]) -> Result<()> {
+        let fp = self
+            .fp_bind_tensor_memory_arm
+            .expect("vkBindTensorMemoryARM is not loaded");
+        let bind_info_count = p_bind_infos.len() as u32;
+        let err = (fp)(
+            Some(self.handle),
+            bind_info_count,
+            p_bind_infos.first().map_or(ptr::null(), |s| s as *const _),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_device_tensor_memory_requirements_arm(
+        &self,
+        p_info: &vk::DeviceTensorMemoryRequirementsARM,
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
+        let fp = self
+            .fp_get_device_tensor_memory_requirements_arm
+            .expect("vkGetDeviceTensorMemoryRequirementsARM is not loaded");
+        (fp)(Some(self.handle), p_info, p_memory_requirements);
+    }
+    pub unsafe fn cmd_copy_tensor_arm(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_copy_tensor_info: &vk::CopyTensorInfoARM,
+    ) {
+        let fp = self.fp_cmd_copy_tensor_arm.expect("vkCmdCopyTensorARM is not loaded");
+        (fp)(Some(command_buffer), p_copy_tensor_info);
+    }
+    pub unsafe fn get_tensor_opaque_capture_descriptor_data_arm(
+        &self,
+        p_info: &vk::TensorCaptureDescriptorDataInfoARM,
+    ) -> Result<c_void> {
+        let fp = self
+            .fp_get_tensor_opaque_capture_descriptor_data_arm
+            .expect("vkGetTensorOpaqueCaptureDescriptorDataARM is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_tensor_view_opaque_capture_descriptor_data_arm(
+        &self,
+        p_info: &vk::TensorViewCaptureDescriptorDataInfoARM,
+    ) -> Result<c_void> {
+        let fp = self
+            .fp_get_tensor_view_opaque_capture_descriptor_data_arm
+            .expect("vkGetTensorViewOpaqueCaptureDescriptorDataARM is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_physical_device_external_tensor_properties_arm(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_external_tensor_info: &vk::PhysicalDeviceExternalTensorInfoARM,
+        p_external_tensor_properties: &mut vk::ExternalTensorPropertiesARM,
+    ) {
+        let fp = self
+            .fp_get_physical_device_external_tensor_properties_arm
+            .expect("vkGetPhysicalDeviceExternalTensorPropertiesARM is not loaded");
+        (fp)(
+            Some(physical_device),
+            p_external_tensor_info,
+            p_external_tensor_properties,
+        );
     }
 }
 

@@ -7198,6 +7198,96 @@ impl<'a> Deref for PresentIdKHRBuilder<'a> {
 }
 impl<'a> PresentInfoKHRNext for PresentIdKHRBuilder<'a> {}
 impl PresentInfoKHRNext for vk::PresentIdKHR {}
+impl Builder<'_> for vk::PhysicalDevicePresentId2FeaturesKHR {
+    type Type = PhysicalDevicePresentId2FeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePresentId2FeaturesKHRBuilder {
+    inner: vk::PhysicalDevicePresentId2FeaturesKHR,
+}
+impl PhysicalDevicePresentId2FeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_id2(mut self, present_id2: bool) -> Self {
+        self.inner.present_id2 = if present_id2 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePresentId2FeaturesKHRBuilder {
+    type Target = vk::PhysicalDevicePresentId2FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentId2FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePresentId2FeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentId2FeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePresentId2FeaturesKHR {}
+impl<'a> Builder<'a> for vk::PresentId2KHR {
+    type Type = PresentId2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PresentId2KHRBuilder<'a> {
+    inner: vk::PresentId2KHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PresentId2KHRBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_present_ids(mut self, p_present_ids: &'a [u64]) -> Self {
+        self.inner.swapchain_count = p_present_ids.len() as u32;
+        self.inner.p_present_ids = p_present_ids.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for PresentId2KHRBuilder<'a> {
+    type Target = vk::PresentId2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> PresentInfoKHRNext for PresentId2KHRBuilder<'a> {}
+impl PresentInfoKHRNext for vk::PresentId2KHR {}
+impl Builder<'_> for vk::PresentWait2InfoKHR {
+    type Type = PresentWait2InfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PresentWait2InfoKHRBuilder {
+    inner: vk::PresentWait2InfoKHR,
+}
+impl PresentWait2InfoKHRBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_id(mut self, present_id: u64) -> Self {
+        self.inner.present_id = present_id;
+        self
+    }
+    pub fn timeout(mut self, timeout: u64) -> Self {
+        self.inner.timeout = timeout;
+        self
+    }
+}
+impl Deref for PresentWait2InfoKHRBuilder {
+    type Target = vk::PresentWait2InfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::PhysicalDevicePresentWaitFeaturesKHR {
     type Type = PhysicalDevicePresentWaitFeaturesKHRBuilder;
     fn builder() -> Self::Type {
@@ -7228,6 +7318,36 @@ impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentWaitFeaturesKHRBuilder
 impl DeviceCreateInfoNext for PhysicalDevicePresentWaitFeaturesKHRBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentWaitFeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePresentWaitFeaturesKHR {}
+impl Builder<'_> for vk::PhysicalDevicePresentWait2FeaturesKHR {
+    type Type = PhysicalDevicePresentWait2FeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePresentWait2FeaturesKHRBuilder {
+    inner: vk::PhysicalDevicePresentWait2FeaturesKHR,
+}
+impl PhysicalDevicePresentWait2FeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_wait2(mut self, present_wait2: bool) -> Self {
+        self.inner.present_wait2 = if present_wait2 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePresentWait2FeaturesKHRBuilder {
+    type Target = vk::PhysicalDevicePresentWait2FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentWait2FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePresentWait2FeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentWait2FeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePresentWait2FeaturesKHR {}
 impl<'a> Builder<'a> for vk::HdrMetadataEXT {
     type Type = HdrMetadataEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -9203,6 +9323,38 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceMaintenance8FeaturesKHRBuilde
 impl DeviceCreateInfoNext for PhysicalDeviceMaintenance8FeaturesKHRBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMaintenance8FeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceMaintenance8FeaturesKHR {}
+impl Builder<'_> for vk::PhysicalDeviceMaintenance9FeaturesKHR {
+    type Type = PhysicalDeviceMaintenance9FeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMaintenance9FeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceMaintenance9FeaturesKHR,
+}
+impl PhysicalDeviceMaintenance9FeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn maintenance9(mut self, maintenance9: bool) -> Self {
+        self.inner.maintenance9 = if maintenance9 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMaintenance9FeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceMaintenance9FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMaintenance9FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMaintenance9FeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMaintenance9FeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMaintenance9FeaturesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMaintenance9PropertiesKHR {}
+impl QueueFamilyProperties2Next for vk::QueueFamilyOwnershipTransferPropertiesKHR {}
 impl<'a> Builder<'a> for vk::RenderingAreaInfo {
     type Type = RenderingAreaInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -20105,12 +20257,19 @@ impl<'a> Builder<'a> for vk::DependencyInfo {
         Default::default()
     }
 }
+pub trait DependencyInfoNext {}
 #[derive(Default)]
 pub struct DependencyInfoBuilder<'a> {
     inner: vk::DependencyInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DependencyInfoBuilder<'a> {
+    pub fn insert_next<T: DependencyInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20297,6 +20456,44 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceSynchronization2FeaturesBuild
 impl DeviceCreateInfoNext for PhysicalDeviceSynchronization2FeaturesBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSynchronization2Features {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceSynchronization2Features {}
+impl Builder<'_> for vk::PhysicalDeviceUnifiedImageLayoutsFeaturesKHR {
+    type Type = PhysicalDeviceUnifiedImageLayoutsFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceUnifiedImageLayoutsFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceUnifiedImageLayoutsFeaturesKHR,
+}
+impl PhysicalDeviceUnifiedImageLayoutsFeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn unified_image_layouts(mut self, unified_image_layouts: bool) -> Self {
+        self.inner.unified_image_layouts = if unified_image_layouts { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn unified_image_layouts_video(mut self, unified_image_layouts_video: bool) -> Self {
+        self.inner.unified_image_layouts_video = if unified_image_layouts_video {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceUnifiedImageLayoutsFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceUnifiedImageLayoutsFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceUnifiedImageLayoutsFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceUnifiedImageLayoutsFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceUnifiedImageLayoutsFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceUnifiedImageLayoutsFeaturesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceHostImageCopyFeatures {
     type Type = PhysicalDeviceHostImageCopyFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -20757,6 +20954,62 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceMultisampledRenderToSingleSam
 impl DeviceCreateInfoNext for PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {}
+impl Builder<'_> for vk::SurfaceCapabilitiesPresentId2KHR {
+    type Type = SurfaceCapabilitiesPresentId2KHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SurfaceCapabilitiesPresentId2KHRBuilder {
+    inner: vk::SurfaceCapabilitiesPresentId2KHR,
+}
+impl SurfaceCapabilitiesPresentId2KHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_id2_supported(mut self, present_id2_supported: bool) -> Self {
+        self.inner.present_id2_supported = if present_id2_supported { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for SurfaceCapabilitiesPresentId2KHRBuilder {
+    type Target = vk::SurfaceCapabilitiesPresentId2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SurfaceCapabilities2KHRNext for SurfaceCapabilitiesPresentId2KHRBuilder {}
+impl SurfaceCapabilities2KHRNext for vk::SurfaceCapabilitiesPresentId2KHR {}
+impl Builder<'_> for vk::SurfaceCapabilitiesPresentWait2KHR {
+    type Type = SurfaceCapabilitiesPresentWait2KHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SurfaceCapabilitiesPresentWait2KHRBuilder {
+    inner: vk::SurfaceCapabilitiesPresentWait2KHR,
+}
+impl SurfaceCapabilitiesPresentWait2KHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_wait2_supported(mut self, present_wait2_supported: bool) -> Self {
+        self.inner.present_wait2_supported = if present_wait2_supported { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for SurfaceCapabilitiesPresentWait2KHRBuilder {
+    type Target = vk::SurfaceCapabilitiesPresentWait2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SurfaceCapabilities2KHRNext for SurfaceCapabilitiesPresentWait2KHRBuilder {}
+impl SurfaceCapabilities2KHRNext for vk::SurfaceCapabilitiesPresentWait2KHR {}
 impl FormatProperties2Next for vk::SubpassResolvePerformanceQueryEXT {}
 impl Builder<'_> for vk::MultisampledRenderToSingleSampledInfoEXT {
     type Type = MultisampledRenderToSingleSampledInfoEXTBuilder;
@@ -21315,17 +21568,25 @@ impl Deref for DescriptorBufferBindingPushDescriptorBufferHandleEXTBuilder {
 }
 impl DescriptorBufferBindingInfoEXTNext for DescriptorBufferBindingPushDescriptorBufferHandleEXTBuilder {}
 impl DescriptorBufferBindingInfoEXTNext for vk::DescriptorBufferBindingPushDescriptorBufferHandleEXT {}
-impl Builder<'_> for vk::DescriptorGetInfoEXT {
-    type Type = DescriptorGetInfoEXTBuilder;
+impl<'a> Builder<'a> for vk::DescriptorGetInfoEXT {
+    type Type = DescriptorGetInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait DescriptorGetInfoEXTNext {}
 #[derive(Default)]
-pub struct DescriptorGetInfoEXTBuilder {
+pub struct DescriptorGetInfoEXTBuilder<'a> {
     inner: vk::DescriptorGetInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl DescriptorGetInfoEXTBuilder {
+impl<'a> DescriptorGetInfoEXTBuilder<'a> {
+    pub fn insert_next<T: DescriptorGetInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -21339,7 +21600,7 @@ impl DescriptorGetInfoEXTBuilder {
         self
     }
 }
-impl Deref for DescriptorGetInfoEXTBuilder {
+impl<'a> Deref for DescriptorGetInfoEXTBuilder<'a> {
     type Target = vk::DescriptorGetInfoEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -21511,12 +21772,16 @@ impl ImageViewCreateInfoNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder
 impl SamplerCreateInfoNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {}
 impl AccelerationStructureCreateInfoKHRNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {}
 impl AccelerationStructureCreateInfoNVNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {}
+impl TensorCreateInfoARMNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {}
+impl TensorViewCreateInfoARMNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {}
 impl BufferCreateInfoNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
 impl ImageCreateInfoNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
 impl ImageViewCreateInfoNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
 impl SamplerCreateInfoNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
 impl AccelerationStructureCreateInfoKHRNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
 impl AccelerationStructureCreateInfoNVNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
+impl TensorCreateInfoARMNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
+impl TensorViewCreateInfoARMNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceShaderIntegerDotProductFeatures {
     type Type = PhysicalDeviceShaderIntegerDotProductFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -22388,17 +22653,25 @@ impl<'a> Deref for RenderingEndInfoEXTBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::RenderingAttachmentInfo {
-    type Type = RenderingAttachmentInfoBuilder;
+impl<'a> Builder<'a> for vk::RenderingAttachmentInfo {
+    type Type = RenderingAttachmentInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait RenderingAttachmentInfoNext {}
 #[derive(Default)]
-pub struct RenderingAttachmentInfoBuilder {
+pub struct RenderingAttachmentInfoBuilder<'a> {
     inner: vk::RenderingAttachmentInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl RenderingAttachmentInfoBuilder {
+impl<'a> RenderingAttachmentInfoBuilder<'a> {
+    pub fn insert_next<T: RenderingAttachmentInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -22436,7 +22709,7 @@ impl RenderingAttachmentInfoBuilder {
         self
     }
 }
-impl Deref for RenderingAttachmentInfoBuilder {
+impl<'a> Deref for RenderingAttachmentInfoBuilder<'a> {
     type Target = vk::RenderingAttachmentInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -24785,6 +25058,34 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceAttachmentFeedbackLoopLayoutF
 impl DeviceCreateInfoNext for PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {}
+impl Builder<'_> for vk::AttachmentFeedbackLoopInfoEXT {
+    type Type = AttachmentFeedbackLoopInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AttachmentFeedbackLoopInfoEXTBuilder {
+    inner: vk::AttachmentFeedbackLoopInfoEXT,
+}
+impl AttachmentFeedbackLoopInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn feedback_loop_enable(mut self, feedback_loop_enable: bool) -> Self {
+        self.inner.feedback_loop_enable = if feedback_loop_enable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for AttachmentFeedbackLoopInfoEXTBuilder {
+    type Target = vk::AttachmentFeedbackLoopInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl RenderingAttachmentInfoNext for AttachmentFeedbackLoopInfoEXTBuilder {}
+impl RenderingAttachmentInfoNext for vk::AttachmentFeedbackLoopInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceAddressBindingReportFeaturesEXT {
     type Type = PhysicalDeviceAddressBindingReportFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -29179,3 +29480,848 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceFormatPackFeaturesARMBuilder 
 impl DeviceCreateInfoNext for PhysicalDeviceFormatPackFeaturesARMBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFormatPackFeaturesARM {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceFormatPackFeaturesARM {}
+impl<'a> Builder<'a> for vk::TensorDescriptionARM {
+    type Type = TensorDescriptionARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct TensorDescriptionARMBuilder<'a> {
+    inner: vk::TensorDescriptionARM,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> TensorDescriptionARMBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tiling(mut self, tiling: vk::TensorTilingARM) -> Self {
+        self.inner.tiling = tiling;
+        self
+    }
+    pub fn format(mut self, format: vk::Format) -> Self {
+        self.inner.format = format;
+        self
+    }
+    pub fn p_dimensions(mut self, p_dimensions: &'a [i64], p_strides: Option<&'a [i64]>) -> Self {
+        self.inner.dimension_count = p_dimensions.len() as u32;
+        if let Some(s) = p_strides {
+            assert_eq!(self.inner.dimension_count, s.len() as u32);
+        }
+        self.inner.p_dimensions = p_dimensions.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_strides = p_strides.and_then(|s| s.first()).map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn usage(mut self, usage: vk::TensorUsageFlagsARM) -> Self {
+        self.inner.usage = usage;
+        self
+    }
+}
+impl<'a> Deref for TensorDescriptionARMBuilder<'a> {
+    type Target = vk::TensorDescriptionARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::TensorCreateInfoARM {
+    type Type = TensorCreateInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait TensorCreateInfoARMNext {}
+#[derive(Default)]
+pub struct TensorCreateInfoARMBuilder<'a> {
+    inner: vk::TensorCreateInfoARM,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> TensorCreateInfoARMBuilder<'a> {
+    pub fn insert_next<T: TensorCreateInfoARMNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::TensorCreateFlagsARM) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn p_description(mut self, p_description: &'a vk::TensorDescriptionARM) -> Self {
+        self.inner.p_description = p_description;
+        self
+    }
+    pub fn sharing_mode(mut self, sharing_mode: vk::SharingMode) -> Self {
+        self.inner.sharing_mode = sharing_mode;
+        self
+    }
+    pub fn p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
+        self.inner.queue_family_index_count = p_queue_family_indices.len() as u32;
+        self.inner.p_queue_family_indices = p_queue_family_indices.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for TensorCreateInfoARMBuilder<'a> {
+    type Target = vk::TensorCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::TensorViewCreateInfoARM {
+    type Type = TensorViewCreateInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait TensorViewCreateInfoARMNext {}
+#[derive(Default)]
+pub struct TensorViewCreateInfoARMBuilder<'a> {
+    inner: vk::TensorViewCreateInfoARM,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> TensorViewCreateInfoARMBuilder<'a> {
+    pub fn insert_next<T: TensorViewCreateInfoARMNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::TensorViewCreateFlagsARM) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn tensor(mut self, tensor: vk::TensorARM) -> Self {
+        self.inner.tensor = Some(tensor);
+        self
+    }
+    pub fn format(mut self, format: vk::Format) -> Self {
+        self.inner.format = format;
+        self
+    }
+}
+impl<'a> Deref for TensorViewCreateInfoARMBuilder<'a> {
+    type Target = vk::TensorViewCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::TensorMemoryRequirementsInfoARM {
+    type Type = TensorMemoryRequirementsInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct TensorMemoryRequirementsInfoARMBuilder {
+    inner: vk::TensorMemoryRequirementsInfoARM,
+}
+impl TensorMemoryRequirementsInfoARMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tensor(mut self, tensor: vk::TensorARM) -> Self {
+        self.inner.tensor = Some(tensor);
+        self
+    }
+}
+impl Deref for TensorMemoryRequirementsInfoARMBuilder {
+    type Target = vk::TensorMemoryRequirementsInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::BindTensorMemoryInfoARM {
+    type Type = BindTensorMemoryInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BindTensorMemoryInfoARMBuilder {
+    inner: vk::BindTensorMemoryInfoARM,
+}
+impl BindTensorMemoryInfoARMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tensor(mut self, tensor: vk::TensorARM) -> Self {
+        self.inner.tensor = Some(tensor);
+        self
+    }
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
+        self.inner.memory = Some(memory);
+        self
+    }
+    pub fn memory_offset(mut self, memory_offset: vk::DeviceSize) -> Self {
+        self.inner.memory_offset = memory_offset;
+        self
+    }
+}
+impl Deref for BindTensorMemoryInfoARMBuilder {
+    type Target = vk::BindTensorMemoryInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::WriteDescriptorSetTensorARM {
+    type Type = WriteDescriptorSetTensorARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct WriteDescriptorSetTensorARMBuilder<'a> {
+    inner: vk::WriteDescriptorSetTensorARM,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> WriteDescriptorSetTensorARMBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_tensor_views(mut self, p_tensor_views: &'a [vk::TensorViewARM]) -> Self {
+        self.inner.tensor_view_count = p_tensor_views.len() as u32;
+        self.inner.p_tensor_views = p_tensor_views.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for WriteDescriptorSetTensorARMBuilder<'a> {
+    type Target = vk::WriteDescriptorSetTensorARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> WriteDescriptorSetNext for WriteDescriptorSetTensorARMBuilder<'a> {}
+impl WriteDescriptorSetNext for vk::WriteDescriptorSetTensorARM {}
+impl FormatProperties2Next for vk::TensorFormatPropertiesARM {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceTensorPropertiesARM {}
+impl Builder<'_> for vk::TensorMemoryBarrierARM {
+    type Type = TensorMemoryBarrierARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct TensorMemoryBarrierARMBuilder {
+    inner: vk::TensorMemoryBarrierARM,
+}
+impl TensorMemoryBarrierARMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_stage_mask(mut self, src_stage_mask: vk::PipelineStageFlags2) -> Self {
+        self.inner.src_stage_mask = src_stage_mask;
+        self
+    }
+    pub fn src_access_mask(mut self, src_access_mask: vk::AccessFlags2) -> Self {
+        self.inner.src_access_mask = src_access_mask;
+        self
+    }
+    pub fn dst_stage_mask(mut self, dst_stage_mask: vk::PipelineStageFlags2) -> Self {
+        self.inner.dst_stage_mask = dst_stage_mask;
+        self
+    }
+    pub fn dst_access_mask(mut self, dst_access_mask: vk::AccessFlags2) -> Self {
+        self.inner.dst_access_mask = dst_access_mask;
+        self
+    }
+    pub fn src_queue_family_index(mut self, src_queue_family_index: u32) -> Self {
+        self.inner.src_queue_family_index = src_queue_family_index;
+        self
+    }
+    pub fn dst_queue_family_index(mut self, dst_queue_family_index: u32) -> Self {
+        self.inner.dst_queue_family_index = dst_queue_family_index;
+        self
+    }
+    pub fn tensor(mut self, tensor: vk::TensorARM) -> Self {
+        self.inner.tensor = Some(tensor);
+        self
+    }
+}
+impl Deref for TensorMemoryBarrierARMBuilder {
+    type Target = vk::TensorMemoryBarrierARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DependencyInfoNext for TensorMemoryBarrierARMBuilder {}
+impl DependencyInfoNext for vk::TensorMemoryBarrierARM {}
+impl<'a> Builder<'a> for vk::TensorDependencyInfoARM {
+    type Type = TensorDependencyInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct TensorDependencyInfoARMBuilder<'a> {
+    inner: vk::TensorDependencyInfoARM,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> TensorDependencyInfoARMBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tensor_memory_barrier_count(mut self, tensor_memory_barrier_count: u32) -> Self {
+        self.inner.tensor_memory_barrier_count = tensor_memory_barrier_count;
+        self
+    }
+    pub fn p_tensor_memory_barriers(mut self, p_tensor_memory_barriers: &'a vk::TensorMemoryBarrierARM) -> Self {
+        self.inner.p_tensor_memory_barriers = p_tensor_memory_barriers;
+        self
+    }
+}
+impl<'a> Deref for TensorDependencyInfoARMBuilder<'a> {
+    type Target = vk::TensorDependencyInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> DependencyInfoNext for TensorDependencyInfoARMBuilder<'a> {}
+impl DependencyInfoNext for vk::TensorDependencyInfoARM {}
+impl Builder<'_> for vk::PhysicalDeviceTensorFeaturesARM {
+    type Type = PhysicalDeviceTensorFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceTensorFeaturesARMBuilder {
+    inner: vk::PhysicalDeviceTensorFeaturesARM,
+}
+impl PhysicalDeviceTensorFeaturesARMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tensor_non_packed(mut self, tensor_non_packed: bool) -> Self {
+        self.inner.tensor_non_packed = if tensor_non_packed { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn shader_tensor_access(mut self, shader_tensor_access: bool) -> Self {
+        self.inner.shader_tensor_access = if shader_tensor_access { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn shader_storage_tensor_array_dynamic_indexing(
+        mut self,
+        shader_storage_tensor_array_dynamic_indexing: bool,
+    ) -> Self {
+        self.inner.shader_storage_tensor_array_dynamic_indexing = if shader_storage_tensor_array_dynamic_indexing {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_storage_tensor_array_non_uniform_indexing(
+        mut self,
+        shader_storage_tensor_array_non_uniform_indexing: bool,
+    ) -> Self {
+        self.inner.shader_storage_tensor_array_non_uniform_indexing =
+            if shader_storage_tensor_array_non_uniform_indexing {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn descriptor_binding_storage_tensor_update_after_bind(
+        mut self,
+        descriptor_binding_storage_tensor_update_after_bind: bool,
+    ) -> Self {
+        self.inner.descriptor_binding_storage_tensor_update_after_bind =
+            if descriptor_binding_storage_tensor_update_after_bind {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn tensors(mut self, tensors: bool) -> Self {
+        self.inner.tensors = if tensors { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceTensorFeaturesARMBuilder {
+    type Target = vk::PhysicalDeviceTensorFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceTensorFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceTensorFeaturesARMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceTensorFeaturesARM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceTensorFeaturesARM {}
+impl<'a> Builder<'a> for vk::DeviceTensorMemoryRequirementsARM {
+    type Type = DeviceTensorMemoryRequirementsARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DeviceTensorMemoryRequirementsARMBuilder<'a> {
+    inner: vk::DeviceTensorMemoryRequirementsARM,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> DeviceTensorMemoryRequirementsARMBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_create_info(mut self, p_create_info: &'a vk::TensorCreateInfoARM) -> Self {
+        self.inner.p_create_info = p_create_info;
+        self
+    }
+}
+impl<'a> Deref for DeviceTensorMemoryRequirementsARMBuilder<'a> {
+    type Target = vk::DeviceTensorMemoryRequirementsARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CopyTensorInfoARM {
+    type Type = CopyTensorInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyTensorInfoARMBuilder<'a> {
+    inner: vk::CopyTensorInfoARM,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CopyTensorInfoARMBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_tensor(mut self, src_tensor: vk::TensorARM) -> Self {
+        self.inner.src_tensor = Some(src_tensor);
+        self
+    }
+    pub fn dst_tensor(mut self, dst_tensor: vk::TensorARM) -> Self {
+        self.inner.dst_tensor = Some(dst_tensor);
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::TensorCopyARM]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for CopyTensorInfoARMBuilder<'a> {
+    type Target = vk::CopyTensorInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::TensorCopyARM {
+    type Type = TensorCopyARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct TensorCopyARMBuilder<'a> {
+    inner: vk::TensorCopyARM,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> TensorCopyARMBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_src_offset(
+        mut self,
+        p_src_offset: Option<&'a [u64]>,
+        p_dst_offset: Option<&'a [u64]>,
+        p_extent: Option<&'a [u64]>,
+    ) -> Self {
+        self.inner.dimension_count = p_src_offset
+            .map(|s| s.len() as u32)
+            .or(p_dst_offset.map(|s| s.len() as u32))
+            .or(p_extent.map(|s| s.len() as u32))
+            .unwrap_or(0);
+        if let Some(s) = p_src_offset {
+            assert_eq!(self.inner.dimension_count, s.len() as u32);
+        }
+        if let Some(s) = p_dst_offset {
+            assert_eq!(self.inner.dimension_count, s.len() as u32);
+        }
+        if let Some(s) = p_extent {
+            assert_eq!(self.inner.dimension_count, s.len() as u32);
+        }
+        self.inner.p_src_offset = p_src_offset
+            .and_then(|s| s.first())
+            .map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_dst_offset = p_dst_offset
+            .and_then(|s| s.first())
+            .map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_extent = p_extent.and_then(|s| s.first()).map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for TensorCopyARMBuilder<'a> {
+    type Target = vk::TensorCopyARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::MemoryDedicatedAllocateInfoTensorARM {
+    type Type = MemoryDedicatedAllocateInfoTensorARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MemoryDedicatedAllocateInfoTensorARMBuilder {
+    inner: vk::MemoryDedicatedAllocateInfoTensorARM,
+}
+impl MemoryDedicatedAllocateInfoTensorARMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tensor(mut self, tensor: vk::TensorARM) -> Self {
+        self.inner.tensor = Some(tensor);
+        self
+    }
+}
+impl Deref for MemoryDedicatedAllocateInfoTensorARMBuilder {
+    type Target = vk::MemoryDedicatedAllocateInfoTensorARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl MemoryAllocateInfoNext for MemoryDedicatedAllocateInfoTensorARMBuilder {}
+impl MemoryAllocateInfoNext for vk::MemoryDedicatedAllocateInfoTensorARM {}
+impl Builder<'_> for vk::PhysicalDeviceDescriptorBufferTensorPropertiesARM {
+    type Type = PhysicalDeviceDescriptorBufferTensorPropertiesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDescriptorBufferTensorPropertiesARMBuilder {
+    inner: vk::PhysicalDeviceDescriptorBufferTensorPropertiesARM,
+}
+impl PhysicalDeviceDescriptorBufferTensorPropertiesARMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tensor_capture_replay_descriptor_data_size(
+        mut self,
+        tensor_capture_replay_descriptor_data_size: usize,
+    ) -> Self {
+        self.inner.tensor_capture_replay_descriptor_data_size = tensor_capture_replay_descriptor_data_size;
+        self
+    }
+    pub fn tensor_view_capture_replay_descriptor_data_size(
+        mut self,
+        tensor_view_capture_replay_descriptor_data_size: usize,
+    ) -> Self {
+        self.inner.tensor_view_capture_replay_descriptor_data_size = tensor_view_capture_replay_descriptor_data_size;
+        self
+    }
+    pub fn tensor_descriptor_size(mut self, tensor_descriptor_size: usize) -> Self {
+        self.inner.tensor_descriptor_size = tensor_descriptor_size;
+        self
+    }
+}
+impl Deref for PhysicalDeviceDescriptorBufferTensorPropertiesARMBuilder {
+    type Target = vk::PhysicalDeviceDescriptorBufferTensorPropertiesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceDescriptorBufferTensorPropertiesARMBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDescriptorBufferTensorPropertiesARM {}
+impl Builder<'_> for vk::PhysicalDeviceDescriptorBufferTensorFeaturesARM {
+    type Type = PhysicalDeviceDescriptorBufferTensorFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDescriptorBufferTensorFeaturesARMBuilder {
+    inner: vk::PhysicalDeviceDescriptorBufferTensorFeaturesARM,
+}
+impl PhysicalDeviceDescriptorBufferTensorFeaturesARMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn descriptor_buffer_tensor_descriptors(mut self, descriptor_buffer_tensor_descriptors: bool) -> Self {
+        self.inner.descriptor_buffer_tensor_descriptors = if descriptor_buffer_tensor_descriptors {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDescriptorBufferTensorFeaturesARMBuilder {
+    type Target = vk::PhysicalDeviceDescriptorBufferTensorFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDescriptorBufferTensorFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDescriptorBufferTensorFeaturesARMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDescriptorBufferTensorFeaturesARM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDescriptorBufferTensorFeaturesARM {}
+impl Builder<'_> for vk::TensorCaptureDescriptorDataInfoARM {
+    type Type = TensorCaptureDescriptorDataInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct TensorCaptureDescriptorDataInfoARMBuilder {
+    inner: vk::TensorCaptureDescriptorDataInfoARM,
+}
+impl TensorCaptureDescriptorDataInfoARMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tensor(mut self, tensor: vk::TensorARM) -> Self {
+        self.inner.tensor = Some(tensor);
+        self
+    }
+}
+impl Deref for TensorCaptureDescriptorDataInfoARMBuilder {
+    type Target = vk::TensorCaptureDescriptorDataInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::TensorViewCaptureDescriptorDataInfoARM {
+    type Type = TensorViewCaptureDescriptorDataInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct TensorViewCaptureDescriptorDataInfoARMBuilder {
+    inner: vk::TensorViewCaptureDescriptorDataInfoARM,
+}
+impl TensorViewCaptureDescriptorDataInfoARMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tensor_view(mut self, tensor_view: vk::TensorViewARM) -> Self {
+        self.inner.tensor_view = Some(tensor_view);
+        self
+    }
+}
+impl Deref for TensorViewCaptureDescriptorDataInfoARMBuilder {
+    type Target = vk::TensorViewCaptureDescriptorDataInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::DescriptorGetTensorInfoARM {
+    type Type = DescriptorGetTensorInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DescriptorGetTensorInfoARMBuilder {
+    inner: vk::DescriptorGetTensorInfoARM,
+}
+impl DescriptorGetTensorInfoARMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tensor_view(mut self, tensor_view: vk::TensorViewARM) -> Self {
+        self.inner.tensor_view = Some(tensor_view);
+        self
+    }
+}
+impl Deref for DescriptorGetTensorInfoARMBuilder {
+    type Target = vk::DescriptorGetTensorInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DescriptorGetInfoEXTNext for DescriptorGetTensorInfoARMBuilder {}
+impl DescriptorGetInfoEXTNext for vk::DescriptorGetTensorInfoARM {}
+impl<'a> Builder<'a> for vk::FrameBoundaryTensorsARM {
+    type Type = FrameBoundaryTensorsARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct FrameBoundaryTensorsARMBuilder<'a> {
+    inner: vk::FrameBoundaryTensorsARM,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> FrameBoundaryTensorsARMBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_tensors(mut self, p_tensors: &'a [vk::TensorARM]) -> Self {
+        self.inner.tensor_count = p_tensors.len() as u32;
+        self.inner.p_tensors = p_tensors.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for FrameBoundaryTensorsARMBuilder<'a> {
+    type Target = vk::FrameBoundaryTensorsARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> SubmitInfoNext for FrameBoundaryTensorsARMBuilder<'a> {}
+impl<'a> SubmitInfo2Next for FrameBoundaryTensorsARMBuilder<'a> {}
+impl<'a> PresentInfoKHRNext for FrameBoundaryTensorsARMBuilder<'a> {}
+impl<'a> BindSparseInfoNext for FrameBoundaryTensorsARMBuilder<'a> {}
+impl SubmitInfoNext for vk::FrameBoundaryTensorsARM {}
+impl SubmitInfo2Next for vk::FrameBoundaryTensorsARM {}
+impl PresentInfoKHRNext for vk::FrameBoundaryTensorsARM {}
+impl BindSparseInfoNext for vk::FrameBoundaryTensorsARM {}
+impl<'a> Builder<'a> for vk::PhysicalDeviceExternalTensorInfoARM {
+    type Type = PhysicalDeviceExternalTensorInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceExternalTensorInfoARMBuilder<'a> {
+    inner: vk::PhysicalDeviceExternalTensorInfoARM,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PhysicalDeviceExternalTensorInfoARMBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::TensorCreateFlagsARM) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn p_description(mut self, p_description: &'a vk::TensorDescriptionARM) -> Self {
+        self.inner.p_description = p_description;
+        self
+    }
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+        self.inner.handle_type = handle_type;
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceExternalTensorInfoARMBuilder<'a> {
+    type Target = vk::PhysicalDeviceExternalTensorInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ExternalTensorPropertiesARM {
+    type Type = ExternalTensorPropertiesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExternalTensorPropertiesARMBuilder {
+    inner: vk::ExternalTensorPropertiesARM,
+}
+impl ExternalTensorPropertiesARMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn external_memory_properties(mut self, external_memory_properties: vk::ExternalMemoryProperties) -> Self {
+        self.inner.external_memory_properties = external_memory_properties;
+        self
+    }
+}
+impl Deref for ExternalTensorPropertiesARMBuilder {
+    type Target = vk::ExternalTensorPropertiesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ExternalMemoryTensorCreateInfoARM {
+    type Type = ExternalMemoryTensorCreateInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExternalMemoryTensorCreateInfoARMBuilder {
+    inner: vk::ExternalMemoryTensorCreateInfoARM,
+}
+impl ExternalMemoryTensorCreateInfoARMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn handle_types(mut self, handle_types: vk::ExternalMemoryHandleTypeFlags) -> Self {
+        self.inner.handle_types = handle_types;
+        self
+    }
+}
+impl Deref for ExternalMemoryTensorCreateInfoARMBuilder {
+    type Target = vk::ExternalMemoryTensorCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl TensorCreateInfoARMNext for ExternalMemoryTensorCreateInfoARMBuilder {}
+impl TensorCreateInfoARMNext for vk::ExternalMemoryTensorCreateInfoARM {}
+impl Builder<'_> for vk::PhysicalDeviceShaderFloat8FeaturesEXT {
+    type Type = PhysicalDeviceShaderFloat8FeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderFloat8FeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderFloat8FeaturesEXT,
+}
+impl PhysicalDeviceShaderFloat8FeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_float8(mut self, shader_float8: bool) -> Self {
+        self.inner.shader_float8 = if shader_float8 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn shader_float8_cooperative_matrix(mut self, shader_float8_cooperative_matrix: bool) -> Self {
+        self.inner.shader_float8_cooperative_matrix = if shader_float8_cooperative_matrix {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderFloat8FeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderFloat8FeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderFloat8FeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderFloat8FeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderFloat8FeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderFloat8FeaturesEXT {}

@@ -226,6 +226,7 @@ pub const MAX_GLOBAL_PRIORITY_SIZE: usize = 16;
 pub const MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT: usize = 32;
 pub const MAX_PIPELINE_BINARY_KEY_SIZE_KHR: usize = 32;
 pub const MAX_VIDEO_AV1_REFERENCES_PER_FRAME_KHR: usize = 7;
+pub const MAX_VIDEO_VP9_REFERENCES_PER_FRAME_KHR: usize = 3;
 pub const SHADER_INDEX_UNUSED_AMDX: u32 = 0xffffffff;
 pub const PARTITIONED_ACCELERATION_STRUCTURE_PARTITION_INDEX_GLOBAL_NV: u32 = 0xffffffff;
 pub type SampleMask = u32;
@@ -250,11 +251,14 @@ impl fmt::Display for FramebufferCreateFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct QueryPoolCreateFlags(pub(crate) u32);
-impl QueryPoolCreateFlags {}
-impl_bitmask!(QueryPoolCreateFlags, 0x0);
+impl QueryPoolCreateFlags {
+    /// Added by extension VK_KHR_maintenance9.
+    pub const RESET_KHR: Self = Self(0x1);
+}
+impl_bitmask!(QueryPoolCreateFlags, 0x1);
 impl fmt::Display for QueryPoolCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[], f)
+        display_bitmask(self.0 as _, &[(0x1, "RESET_KHR")], f)
     }
 }
 #[repr(transparent)]
@@ -988,10 +992,12 @@ impl ImageUsageFlags {
     pub const SAMPLE_WEIGHT_QCOM: Self = Self(0x100000);
     /// Added by extension VK_QCOM_image_processing.
     pub const SAMPLE_BLOCK_MATCH_QCOM: Self = Self(0x200000);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_ALIASING_ARM: Self = Self(0x800000);
     /// Added by extension VK_QCOM_tile_memory_heap.
     pub const TILE_MEMORY_QCOM: Self = Self(0x8000000);
 }
-impl_bitmask!(ImageUsageFlags, 0x87c03ff);
+impl_bitmask!(ImageUsageFlags, 0x8fc03ff);
 impl fmt::Display for ImageUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1012,6 +1018,7 @@ impl fmt::Display for ImageUsageFlags {
                 (0x40000, "INVOCATION_MASK_HUAWEI"),
                 (0x100000, "SAMPLE_WEIGHT_QCOM"),
                 (0x200000, "SAMPLE_BLOCK_MATCH_QCOM"),
+                (0x800000, "TENSOR_ALIASING_ARM"),
                 (0x8000000, "TILE_MEMORY_QCOM"),
             ],
             f,
@@ -1987,8 +1994,10 @@ impl DependencyFlags {
     pub const FEEDBACK_LOOP_EXT: Self = Self(0x8);
     /// Added by extension VK_KHR_maintenance8.
     pub const QUEUE_FAMILY_OWNERSHIP_TRANSFER_USE_ALL_STAGES_KHR: Self = Self(0x20);
+    /// Added by extension VK_KHR_maintenance9.
+    pub const ASYMMETRIC_EVENT_KHR: Self = Self(0x40);
 }
-impl_bitmask!(DependencyFlags, 0x2f);
+impl_bitmask!(DependencyFlags, 0x6f);
 impl fmt::Display for DependencyFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1999,6 +2008,7 @@ impl fmt::Display for DependencyFlags {
                 (0x2, "VIEW_LOCAL"),
                 (0x8, "FEEDBACK_LOOP_EXT"),
                 (0x20, "QUEUE_FAMILY_OWNERSHIP_TRANSFER_USE_ALL_STAGES_KHR"),
+                (0x40, "ASYMMETRIC_EVENT_KHR"),
             ],
             f,
         )
@@ -2810,6 +2820,10 @@ impl FormatFeatureFlags2 {
     pub const BLOCK_MATCHING_QCOM: Self = Self(0x1000000000);
     /// Added by extension VK_QCOM_image_processing.
     pub const BOX_FILTER_SAMPLED_QCOM: Self = Self(0x2000000000);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_SHADER_ARM: Self = Self(0x8000000000);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_IMAGE_ALIASING_ARM: Self = Self(0x80000000000);
     /// Added by extension VK_NV_optical_flow.
     pub const OPTICAL_FLOW_IMAGE_NV: Self = Self(0x10000000000);
     /// Added by extension VK_NV_optical_flow.
@@ -2817,7 +2831,7 @@ impl FormatFeatureFlags2 {
     /// Added by extension VK_NV_optical_flow.
     pub const OPTICAL_FLOW_COST_NV: Self = Self(0x40000000000);
 }
-impl_bitmask!(FormatFeatureFlags2, 0x8477fe1ffffff);
+impl_bitmask!(FormatFeatureFlags2, 0x84fffe1ffffff);
 impl fmt::Display for FormatFeatureFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2866,6 +2880,8 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x800000000, "WEIGHT_SAMPLED_IMAGE_QCOM"),
                 (0x1000000000, "BLOCK_MATCHING_QCOM"),
                 (0x2000000000, "BOX_FILTER_SAMPLED_QCOM"),
+                (0x8000000000, "TENSOR_SHADER_ARM"),
+                (0x80000000000, "TENSOR_IMAGE_ALIASING_ARM"),
                 (0x10000000000, "OPTICAL_FLOW_IMAGE_NV"),
                 (0x20000000000, "OPTICAL_FLOW_VECTOR_NV"),
                 (0x40000000000, "OPTICAL_FLOW_COST_NV"),
@@ -3232,6 +3248,70 @@ impl fmt::Display for BufferUsageFlags2 {
 pub type BufferUsageFlags2KHR = BufferUsageFlags2;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct TensorCreateFlagsARM(pub(crate) u64);
+impl TensorCreateFlagsARM {
+    pub const MUTABLE_FORMAT: Self = Self(0x1);
+    pub const PROTECTED: Self = Self(0x2);
+    /// Added by extension VK_ARM_tensors.
+    pub const DESCRIPTOR_BUFFER_CAPTURE_REPLAY: Self = Self(0x4);
+}
+impl_bitmask!(TensorCreateFlagsARM, 0x7);
+impl fmt::Display for TensorCreateFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "MUTABLE_FORMAT"),
+                (0x2, "PROTECTED"),
+                (0x4, "DESCRIPTOR_BUFFER_CAPTURE_REPLAY"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct TensorUsageFlagsARM(pub(crate) u64);
+impl TensorUsageFlagsARM {
+    /// Tensor written/read through shader descriptor
+    pub const SHADER: Self = Self(0x2);
+    /// Tensor can be src of a transfer operation
+    pub const TRANSFER_SRC: Self = Self(0x4);
+    /// Tensor can be dst of a transfer operation
+    pub const TRANSFER_DST: Self = Self(0x8);
+    /// Tensor can be aliased with an image
+    pub const IMAGE_ALIASING: Self = Self(0x10);
+}
+impl_bitmask!(TensorUsageFlagsARM, 0x1e);
+impl fmt::Display for TensorUsageFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x2, "SHADER"),
+                (0x4, "TRANSFER_SRC"),
+                (0x8, "TRANSFER_DST"),
+                (0x10, "IMAGE_ALIASING"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct TensorViewCreateFlagsARM(pub(crate) u64);
+impl TensorViewCreateFlagsARM {
+    /// Added by extension VK_ARM_tensors.
+    pub const DESCRIPTOR_BUFFER_CAPTURE_REPLAY: Self = Self(0x1);
+}
+impl_bitmask!(TensorViewCreateFlagsARM, 0x1);
+impl fmt::Display for TensorViewCreateFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "DESCRIPTOR_BUFFER_CAPTURE_REPLAY")], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct CompositeAlphaFlagsKHR(pub(crate) u32);
 impl CompositeAlphaFlagsKHR {
     pub const OPAQUE: Self = Self(0x1);
@@ -3326,8 +3406,14 @@ impl SwapchainCreateFlagsKHR {
     pub const MUTABLE_FORMAT: Self = Self(0x4);
     /// Added by extension VK_EXT_swapchain_maintenance1.
     pub const DEFERRED_MEMORY_ALLOCATION_EXT: Self = Self(0x8);
+    /// Allow use of VK_KHR_present_id2 with this swapchain
+    /// Added by extension VK_KHR_present_id2.
+    pub const PRESENT_ID_2: Self = Self(0x40);
+    /// Allow use of VK_KHR_present_wait2 with this swapchain
+    /// Added by extension VK_KHR_present_wait2.
+    pub const PRESENT_WAIT_2: Self = Self(0x80);
 }
-impl_bitmask!(SwapchainCreateFlagsKHR, 0xf);
+impl_bitmask!(SwapchainCreateFlagsKHR, 0xcf);
 impl fmt::Display for SwapchainCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -3337,6 +3423,8 @@ impl fmt::Display for SwapchainCreateFlagsKHR {
                 (0x2, "PROTECTED"),
                 (0x4, "MUTABLE_FORMAT"),
                 (0x8, "DEFERRED_MEMORY_ALLOCATION_EXT"),
+                (0x40, "PRESENT_ID_2"),
+                (0x80, "PRESENT_WAIT_2"),
             ],
             f,
         )
@@ -4963,6 +5051,22 @@ impl ShaderEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct TensorARM(num::NonZeroU64);
+impl TensorARM {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct TensorViewARM(num::NonZeroU64);
+impl TensorViewARM {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DisplayKHR(num::NonZeroU64);
 impl DisplayKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
@@ -5447,6 +5551,8 @@ impl DescriptorType {
     pub const SAMPLE_WEIGHT_IMAGE_QCOM: Self = Self(1000440000);
     /// Added by extension VK_QCOM_image_processing.
     pub const BLOCK_MATCH_IMAGE_QCOM: Self = Self(1000440001);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_ARM: Self = Self(1000460000);
     pub const MUTABLE_EXT: Self = Self(1000351000);
     /// Added by extension VK_NV_partitioned_acceleration_structure.
     pub const PARTITIONED_ACCELERATION_STRUCTURE_NV: Self = Self(1000570000);
@@ -5470,6 +5576,7 @@ impl fmt::Display for DescriptorType {
             1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
             1000440000 => Some(&"SAMPLE_WEIGHT_IMAGE_QCOM"),
             1000440001 => Some(&"BLOCK_MATCH_IMAGE_QCOM"),
+            1000460000 => Some(&"TENSOR_ARM"),
             1000351000 => Some(&"MUTABLE_EXT"),
             1000570000 => Some(&"PARTITIONED_ACCELERATION_STRUCTURE_NV"),
             _ => None,
@@ -6052,6 +6159,8 @@ impl Format {
     pub const G16_B16R16_2PLANE_444_UNORM_EXT: Self = Self::G16_B16R16_2PLANE_444_UNORM;
     pub const A4R4G4B4_UNORM_PACK16_EXT: Self = Self::A4R4G4B4_UNORM_PACK16;
     pub const A4B4G4R4_UNORM_PACK16_EXT: Self = Self::A4B4G4R4_UNORM_PACK16;
+    /// Added by extension VK_ARM_tensors.
+    pub const R8_BOOL_ARM: Self = Self(1000460000);
     /// Added by extension VK_NV_optical_flow.
     pub const R16G16_SFIXED5_NV: Self = Self(1000464000);
     pub const R16G16_S10_5_NV: Self = Self::R16G16_SFIXED5_NV;
@@ -6338,6 +6447,7 @@ impl fmt::Display for Format {
             1000054005 => Some(&"PVRTC1_4BPP_SRGB_BLOCK_IMG"),
             1000054006 => Some(&"PVRTC2_2BPP_SRGB_BLOCK_IMG"),
             1000054007 => Some(&"PVRTC2_4BPP_SRGB_BLOCK_IMG"),
+            1000460000 => Some(&"R8_BOOL_ARM"),
             1000464000 => Some(&"R16G16_SFIXED5_NV"),
             1000609000 => Some(&"R10X6_UINT_PACK16_ARM"),
             1000609001 => Some(&"R10X6G10X6_UINT_2PACK16_ARM"),
@@ -6433,6 +6543,8 @@ impl ImageLayout {
     pub const ATTACHMENT_OPTIMAL_KHR: Self = Self::ATTACHMENT_OPTIMAL;
     /// Added by extension VK_EXT_attachment_feedback_loop_layout.
     pub const ATTACHMENT_FEEDBACK_LOOP_OPTIMAL_EXT: Self = Self(1000339000);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_ALIASING_ARM: Self = Self(1000460000);
     /// Added by extension VK_EXT_zero_initialize_device_memory.
     pub const ZERO_INITIALIZED_EXT: Self = Self(1000620000);
 }
@@ -6462,6 +6574,7 @@ impl fmt::Display for ImageLayout {
             1000218000 => Some(&"FRAGMENT_DENSITY_MAP_OPTIMAL_EXT"),
             1000164003 => Some(&"FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR"),
             1000339000 => Some(&"ATTACHMENT_FEEDBACK_LOOP_OPTIMAL_EXT"),
+            1000460000 => Some(&"TENSOR_ALIASING_ARM"),
             1000620000 => Some(&"ZERO_INITIALIZED_EXT"),
             _ => None,
         };
@@ -8554,6 +8667,54 @@ impl StructureType {
     pub const DIRECT_DRIVER_LOADING_INFO_LUNARG: Self = Self(1000459000);
     /// Added by extension VK_LUNARG_direct_driver_loading.
     pub const DIRECT_DRIVER_LOADING_LIST_LUNARG: Self = Self(1000459001);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_CREATE_INFO_ARM: Self = Self(1000460000);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_VIEW_CREATE_INFO_ARM: Self = Self(1000460001);
+    /// Added by extension VK_ARM_tensors.
+    pub const BIND_TENSOR_MEMORY_INFO_ARM: Self = Self(1000460002);
+    /// Added by extension VK_ARM_tensors.
+    pub const WRITE_DESCRIPTOR_SET_TENSOR_ARM: Self = Self(1000460003);
+    /// Added by extension VK_ARM_tensors.
+    pub const PHYSICAL_DEVICE_TENSOR_PROPERTIES_ARM: Self = Self(1000460004);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_FORMAT_PROPERTIES_ARM: Self = Self(1000460005);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_DESCRIPTION_ARM: Self = Self(1000460006);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_MEMORY_REQUIREMENTS_INFO_ARM: Self = Self(1000460007);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_MEMORY_BARRIER_ARM: Self = Self(1000460008);
+    /// Added by extension VK_ARM_tensors.
+    pub const PHYSICAL_DEVICE_TENSOR_FEATURES_ARM: Self = Self(1000460009);
+    /// Added by extension VK_ARM_tensors.
+    pub const DEVICE_TENSOR_MEMORY_REQUIREMENTS_ARM: Self = Self(1000460010);
+    /// Added by extension VK_ARM_tensors.
+    pub const COPY_TENSOR_INFO_ARM: Self = Self(1000460011);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_COPY_ARM: Self = Self(1000460012);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_DEPENDENCY_INFO_ARM: Self = Self(1000460013);
+    /// Added by extension VK_ARM_tensors.
+    pub const MEMORY_DEDICATED_ALLOCATE_INFO_TENSOR_ARM: Self = Self(1000460014);
+    /// Added by extension VK_ARM_tensors.
+    pub const PHYSICAL_DEVICE_EXTERNAL_TENSOR_INFO_ARM: Self = Self(1000460015);
+    /// Added by extension VK_ARM_tensors.
+    pub const EXTERNAL_TENSOR_PROPERTIES_ARM: Self = Self(1000460016);
+    /// Added by extension VK_ARM_tensors.
+    pub const EXTERNAL_MEMORY_TENSOR_CREATE_INFO_ARM: Self = Self(1000460017);
+    /// Added by extension VK_ARM_tensors.
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_TENSOR_FEATURES_ARM: Self = Self(1000460018);
+    /// Added by extension VK_ARM_tensors.
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_TENSOR_PROPERTIES_ARM: Self = Self(1000460019);
+    /// Added by extension VK_ARM_tensors.
+    pub const DESCRIPTOR_GET_TENSOR_INFO_ARM: Self = Self(1000460020);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_CAPTURE_DESCRIPTOR_DATA_INFO_ARM: Self = Self(1000460021);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_VIEW_CAPTURE_DESCRIPTOR_DATA_INFO_ARM: Self = Self(1000460022);
+    /// Added by extension VK_ARM_tensors.
+    pub const FRAME_BOUNDARY_TENSORS_ARM: Self = Self(1000460023);
     /// Added by extension VK_EXT_shader_module_identifier.
     pub const PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_FEATURES_EXT: Self = Self(1000462000);
     /// Added by extension VK_EXT_shader_module_identifier.
@@ -8601,6 +8762,18 @@ impl StructureType {
     pub const ANTI_LAG_DATA_AMD: Self = Self(1000476001);
     /// Added by extension VK_AMD_anti_lag.
     pub const ANTI_LAG_PRESENTATION_INFO_AMD: Self = Self(1000476002);
+    /// Added by extension VK_KHR_present_id2.
+    pub const SURFACE_CAPABILITIES_PRESENT_ID_2_KHR: Self = Self(1000479000);
+    /// Added by extension VK_KHR_present_id2.
+    pub const PRESENT_ID_2_KHR: Self = Self(1000479001);
+    /// Added by extension VK_KHR_present_id2.
+    pub const PHYSICAL_DEVICE_PRESENT_ID_2_FEATURES_KHR: Self = Self(1000479002);
+    /// Added by extension VK_KHR_present_wait2.
+    pub const SURFACE_CAPABILITIES_PRESENT_WAIT_2_KHR: Self = Self(1000480000);
+    /// Added by extension VK_KHR_present_wait2.
+    pub const PHYSICAL_DEVICE_PRESENT_WAIT_2_FEATURES_KHR: Self = Self(1000480001);
+    /// Added by extension VK_KHR_present_wait2.
+    pub const PRESENT_WAIT_2_INFO_KHR: Self = Self(1000480002);
     /// Added by extension VK_KHR_ray_tracing_position_fetch.
     pub const PHYSICAL_DEVICE_RAY_TRACING_POSITION_FETCH_FEATURES_KHR: Self = Self(1000481000);
     /// Added by extension VK_EXT_shader_object.
@@ -8732,6 +8905,10 @@ impl StructureType {
         Self::PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO;
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR: Self =
         Self::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES;
+    /// Added by extension VK_KHR_unified_image_layouts.
+    pub const PHYSICAL_DEVICE_UNIFIED_IMAGE_LAYOUTS_FEATURES_KHR: Self = Self(1000527000);
+    /// Added by extension VK_KHR_unified_image_layouts.
+    pub const ATTACHMENT_FEEDBACK_LOOP_INFO_EXT: Self = Self(1000527001);
     pub const PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES_KHR: Self =
         Self::PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES;
     /// Added by extension VK_MSFT_layered_driver.
@@ -8800,6 +8977,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV: Self = Self(1000563000);
     /// Added by extension VK_EXT_shader_replicated_composites.
     pub const PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT: Self = Self(1000564000);
+    /// Added by extension VK_EXT_shader_float8.
+    pub const PHYSICAL_DEVICE_SHADER_FLOAT8_FEATURES_EXT: Self = Self(1000567000);
     /// Added by extension VK_NV_ray_tracing_validation.
     pub const PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV: Self = Self(1000568000);
     /// Added by extension VK_NV_cluster_acceleration_structure.
@@ -8872,6 +9051,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT: Self = Self(1000582000);
     /// Added by extension VK_EXT_depth_clamp_control.
     pub const PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT: Self = Self(1000582001);
+    /// Added by extension VK_KHR_maintenance9.
+    pub const PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR: Self = Self(1000584000);
+    /// Added by extension VK_KHR_maintenance9.
+    pub const PHYSICAL_DEVICE_MAINTENANCE_9_PROPERTIES_KHR: Self = Self(1000584001);
+    /// Added by extension VK_KHR_maintenance9.
+    pub const QUEUE_FAMILY_OWNERSHIP_TRANSFER_PROPERTIES_KHR: Self = Self(1000584002);
     /// Added by extension VK_HUAWEI_hdr_vivid.
     pub const PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI: Self = Self(1000590000);
     /// Added by extension VK_HUAWEI_hdr_vivid.
@@ -9659,6 +9844,30 @@ impl fmt::Display for StructureType {
             1000458003 => Some(&"RENDER_PASS_SUBPASS_FEEDBACK_CREATE_INFO_EXT"),
             1000459000 => Some(&"DIRECT_DRIVER_LOADING_INFO_LUNARG"),
             1000459001 => Some(&"DIRECT_DRIVER_LOADING_LIST_LUNARG"),
+            1000460000 => Some(&"TENSOR_CREATE_INFO_ARM"),
+            1000460001 => Some(&"TENSOR_VIEW_CREATE_INFO_ARM"),
+            1000460002 => Some(&"BIND_TENSOR_MEMORY_INFO_ARM"),
+            1000460003 => Some(&"WRITE_DESCRIPTOR_SET_TENSOR_ARM"),
+            1000460004 => Some(&"PHYSICAL_DEVICE_TENSOR_PROPERTIES_ARM"),
+            1000460005 => Some(&"TENSOR_FORMAT_PROPERTIES_ARM"),
+            1000460006 => Some(&"TENSOR_DESCRIPTION_ARM"),
+            1000460007 => Some(&"TENSOR_MEMORY_REQUIREMENTS_INFO_ARM"),
+            1000460008 => Some(&"TENSOR_MEMORY_BARRIER_ARM"),
+            1000460009 => Some(&"PHYSICAL_DEVICE_TENSOR_FEATURES_ARM"),
+            1000460010 => Some(&"DEVICE_TENSOR_MEMORY_REQUIREMENTS_ARM"),
+            1000460011 => Some(&"COPY_TENSOR_INFO_ARM"),
+            1000460012 => Some(&"TENSOR_COPY_ARM"),
+            1000460013 => Some(&"TENSOR_DEPENDENCY_INFO_ARM"),
+            1000460014 => Some(&"MEMORY_DEDICATED_ALLOCATE_INFO_TENSOR_ARM"),
+            1000460015 => Some(&"PHYSICAL_DEVICE_EXTERNAL_TENSOR_INFO_ARM"),
+            1000460016 => Some(&"EXTERNAL_TENSOR_PROPERTIES_ARM"),
+            1000460017 => Some(&"EXTERNAL_MEMORY_TENSOR_CREATE_INFO_ARM"),
+            1000460018 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_TENSOR_FEATURES_ARM"),
+            1000460019 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_TENSOR_PROPERTIES_ARM"),
+            1000460020 => Some(&"DESCRIPTOR_GET_TENSOR_INFO_ARM"),
+            1000460021 => Some(&"TENSOR_CAPTURE_DESCRIPTOR_DATA_INFO_ARM"),
+            1000460022 => Some(&"TENSOR_VIEW_CAPTURE_DESCRIPTOR_DATA_INFO_ARM"),
+            1000460023 => Some(&"FRAME_BOUNDARY_TENSORS_ARM"),
             1000462000 => Some(&"PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_FEATURES_EXT"),
             1000462001 => Some(&"PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_PROPERTIES_EXT"),
             1000462002 => Some(&"PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT"),
@@ -9678,6 +9887,12 @@ impl fmt::Display for StructureType {
             1000476000 => Some(&"PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD"),
             1000476001 => Some(&"ANTI_LAG_DATA_AMD"),
             1000476002 => Some(&"ANTI_LAG_PRESENTATION_INFO_AMD"),
+            1000479000 => Some(&"SURFACE_CAPABILITIES_PRESENT_ID_2_KHR"),
+            1000479001 => Some(&"PRESENT_ID_2_KHR"),
+            1000479002 => Some(&"PHYSICAL_DEVICE_PRESENT_ID_2_FEATURES_KHR"),
+            1000480000 => Some(&"SURFACE_CAPABILITIES_PRESENT_WAIT_2_KHR"),
+            1000480001 => Some(&"PHYSICAL_DEVICE_PRESENT_WAIT_2_FEATURES_KHR"),
+            1000480002 => Some(&"PRESENT_WAIT_2_INFO_KHR"),
             1000481000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_POSITION_FETCH_FEATURES_KHR"),
             1000482000 => Some(&"PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT"),
             1000482001 => Some(&"PHYSICAL_DEVICE_SHADER_OBJECT_PROPERTIES_EXT"),
@@ -9741,6 +9956,8 @@ impl fmt::Display for StructureType {
             1000520001 => Some(&"SAMPLER_YCBCR_CONVERSION_YCBCR_DEGAMMA_CREATE_INFO_QCOM"),
             1000521000 => Some(&"PHYSICAL_DEVICE_CUBIC_CLAMP_FEATURES_QCOM"),
             1000524000 => Some(&"PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT"),
+            1000527000 => Some(&"PHYSICAL_DEVICE_UNIFIED_IMAGE_LAYOUTS_FEATURES_KHR"),
+            1000527001 => Some(&"ATTACHMENT_FEEDBACK_LOOP_INFO_EXT"),
             1000530000 => Some(&"PHYSICAL_DEVICE_LAYERED_DRIVER_PROPERTIES_MSFT"),
             1000184000 => Some(&"CALIBRATED_TIMESTAMP_INFO_KHR"),
             1000545007 => Some(&"SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT"),
@@ -9767,6 +9984,7 @@ impl fmt::Display for StructureType {
             1000562004 => Some(&"PHYSICAL_DEVICE_LAYERED_API_VULKAN_PROPERTIES_KHR"),
             1000563000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV"),
             1000564000 => Some(&"PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT"),
+            1000567000 => Some(&"PHYSICAL_DEVICE_SHADER_FLOAT8_FEATURES_EXT"),
             1000568000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV"),
             1000569000 => Some(&"PHYSICAL_DEVICE_CLUSTER_ACCELERATION_STRUCTURE_FEATURES_NV"),
             1000569001 => Some(&"PHYSICAL_DEVICE_CLUSTER_ACCELERATION_STRUCTURE_PROPERTIES_NV"),
@@ -9803,6 +10021,9 @@ impl fmt::Display for StructureType {
             1000575002 => Some(&"IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA"),
             1000582000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT"),
             1000582001 => Some(&"PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT"),
+            1000584000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR"),
+            1000584001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_9_PROPERTIES_KHR"),
+            1000584002 => Some(&"QUEUE_FAMILY_OWNERSHIP_TRANSFER_PROPERTIES_KHR"),
             1000590000 => Some(&"PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI"),
             1000590001 => Some(&"HDR_VIVID_DYNAMIC_METADATA_HUAWEI"),
             1000593000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV"),
@@ -10123,6 +10344,10 @@ impl ObjectType {
     pub const BUFFER_COLLECTION_FUCHSIA: Self = Self(1000366000);
     /// Added by extension VK_EXT_opacity_micromap.
     pub const MICROMAP_EXT: Self = Self(1000396000);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_ARM: Self = Self(1000460000);
+    /// Added by extension VK_ARM_tensors.
+    pub const TENSOR_VIEW_ARM: Self = Self(1000460001);
     /// Added by extension VK_NV_optical_flow.
     pub const OPTICAL_FLOW_SESSION_NV: Self = Self(1000464000);
     /// Added by extension VK_EXT_shader_object.
@@ -10186,6 +10411,8 @@ impl fmt::Display for ObjectType {
             1000307001 => Some(&"CUDA_FUNCTION_NV"),
             1000366000 => Some(&"BUFFER_COLLECTION_FUCHSIA"),
             1000396000 => Some(&"MICROMAP_EXT"),
+            1000460000 => Some(&"TENSOR_ARM"),
+            1000460001 => Some(&"TENSOR_VIEW_ARM"),
             1000464000 => Some(&"OPTICAL_FLOW_SESSION_NV"),
             1000482000 => Some(&"SHADER_EXT"),
             1000483000 => Some(&"PIPELINE_BINARY_KHR"),
@@ -11680,6 +11907,10 @@ impl ComponentTypeKHR {
     pub const FLOAT_E4M3_NV: Self = Self(1000491002);
     /// Added by extension VK_NV_cooperative_vector.
     pub const FLOAT_E5M2_NV: Self = Self(1000491003);
+    /// Added by extension VK_EXT_shader_float8.
+    pub const FLOAT8_E4M3_EXT: Self = Self(1000567000);
+    /// Added by extension VK_EXT_shader_float8.
+    pub const FLOAT8_E5M2_EXT: Self = Self(1000567001);
 }
 impl fmt::Display for ComponentTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -11700,6 +11931,8 @@ impl fmt::Display for ComponentTypeKHR {
             1000491001 => Some(&"UINT8_PACKED_NV"),
             1000491002 => Some(&"FLOAT_E4M3_NV"),
             1000491003 => Some(&"FLOAT_E5M2_NV"),
+            1000567000 => Some(&"FLOAT8_E4M3_EXT"),
+            1000567001 => Some(&"FLOAT8_E5M2_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11842,6 +12075,27 @@ impl fmt::Display for CooperativeVectorMatrixLayoutNV {
             1 => Some(&"COLUMN_MAJOR"),
             2 => Some(&"INFERENCING_OPTIMAL"),
             3 => Some(&"TRAINING_OPTIMAL"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct TensorTilingARM(pub(crate) i32);
+impl TensorTilingARM {
+    pub const OPTIMAL: Self = Self(0);
+    pub const LINEAR: Self = Self(1);
+}
+impl fmt::Display for TensorTilingARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"OPTIMAL"),
+            1 => Some(&"LINEAR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12941,6 +13195,27 @@ impl fmt::Display for PipelineExecutableStatisticFormatKHR {
             1 => Some(&"INT64"),
             2 => Some(&"UINT64"),
             3 => Some(&"FLOAT64"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DefaultVertexAttributeValueKHR(pub(crate) i32);
+impl DefaultVertexAttributeValueKHR {
+    pub const ZERO_ZERO_ZERO_ZERO: Self = Self(0);
+    pub const ZERO_ZERO_ZERO_ONE: Self = Self(1);
+}
+impl fmt::Display for DefaultVertexAttributeValueKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"ZERO_ZERO_ZERO_ZERO"),
+            1 => Some(&"ZERO_ZERO_ZERO_ONE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -22726,6 +23001,96 @@ impl fmt::Debug for PresentIdKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDevicePresentId2FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// Present ID2 in VkPresentInfoKHR
+    pub present_id2: Bool32,
+}
+unsafe impl Send for PhysicalDevicePresentId2FeaturesKHR {}
+unsafe impl Sync for PhysicalDevicePresentId2FeaturesKHR {}
+impl Default for PhysicalDevicePresentId2FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRESENT_ID_2_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            present_id2: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePresentId2FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePresentId2FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_id2", &self.present_id2)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PresentId2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Copy of VkPresentInfoKHR::swapchainCount
+    pub swapchain_count: u32,
+    /// Present ID values for each swapchain
+    pub p_present_ids: *const u64,
+}
+unsafe impl Send for PresentId2KHR {}
+unsafe impl Sync for PresentId2KHR {}
+impl Default for PresentId2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PRESENT_ID_2_KHR,
+            p_next: ptr::null(),
+            swapchain_count: Default::default(),
+            p_present_ids: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PresentId2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PresentId2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("swapchain_count", &self.swapchain_count)
+            .field("p_present_ids", &self.p_present_ids)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PresentWait2InfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub present_id: u64,
+    pub timeout: u64,
+}
+unsafe impl Send for PresentWait2InfoKHR {}
+unsafe impl Sync for PresentWait2InfoKHR {}
+impl Default for PresentWait2InfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PRESENT_WAIT_2_INFO_KHR,
+            p_next: ptr::null(),
+            present_id: Default::default(),
+            timeout: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PresentWait2InfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PresentWait2InfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_id", &self.present_id)
+            .field("timeout", &self.timeout)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDevicePresentWaitFeaturesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -22749,6 +23114,34 @@ impl fmt::Debug for PhysicalDevicePresentWaitFeaturesKHR {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("present_wait", &self.present_wait)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePresentWait2FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// vkWaitForPresent2KHR is supported
+    pub present_wait2: Bool32,
+}
+unsafe impl Send for PhysicalDevicePresentWait2FeaturesKHR {}
+unsafe impl Sync for PhysicalDevicePresentWait2FeaturesKHR {}
+impl Default for PhysicalDevicePresentWait2FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRESENT_WAIT_2_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            present_wait2: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePresentWait2FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePresentWait2FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_wait2", &self.present_wait2)
             .finish()
     }
 }
@@ -25657,6 +26050,93 @@ impl fmt::Debug for PhysicalDeviceMaintenance8FeaturesKHR {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("maintenance8", &self.maintenance8)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance9FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub maintenance9: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMaintenance9FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance9FeaturesKHR {}
+impl Default for PhysicalDeviceMaintenance9FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            maintenance9: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance9FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance9FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("maintenance9", &self.maintenance9)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance9PropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub image_2d_view_of_3d_sparse: Bool32,
+    pub default_vertex_attribute_value: DefaultVertexAttributeValueKHR,
+}
+unsafe impl Send for PhysicalDeviceMaintenance9PropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance9PropertiesKHR {}
+impl Default for PhysicalDeviceMaintenance9PropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_9_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            image_2d_view_of_3d_sparse: Default::default(),
+            default_vertex_attribute_value: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance9PropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance9PropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_2d_view_of_3d_sparse", &self.image_2d_view_of_3d_sparse)
+            .field("default_vertex_attribute_value", &self.default_vertex_attribute_value)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct QueueFamilyOwnershipTransferPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub optimal_image_transfer_to_queue_families: u32,
+}
+unsafe impl Send for QueueFamilyOwnershipTransferPropertiesKHR {}
+unsafe impl Sync for QueueFamilyOwnershipTransferPropertiesKHR {}
+impl Default for QueueFamilyOwnershipTransferPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::QUEUE_FAMILY_OWNERSHIP_TRANSFER_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            optimal_image_transfer_to_queue_families: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for QueueFamilyOwnershipTransferPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("QueueFamilyOwnershipTransferPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "optimal_image_transfer_to_queue_families",
+                &self.optimal_image_transfer_to_queue_families,
+            )
             .finish()
     }
 }
@@ -39786,6 +40266,36 @@ impl fmt::Debug for PhysicalDeviceSynchronization2Features {
 pub type PhysicalDeviceSynchronization2FeaturesKHR = PhysicalDeviceSynchronization2Features;
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceUnifiedImageLayoutsFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub unified_image_layouts: Bool32,
+    pub unified_image_layouts_video: Bool32,
+}
+unsafe impl Send for PhysicalDeviceUnifiedImageLayoutsFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceUnifiedImageLayoutsFeaturesKHR {}
+impl Default for PhysicalDeviceUnifiedImageLayoutsFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_UNIFIED_IMAGE_LAYOUTS_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            unified_image_layouts: Default::default(),
+            unified_image_layouts_video: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceUnifiedImageLayoutsFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceUnifiedImageLayoutsFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("unified_image_layouts", &self.unified_image_layouts)
+            .field("unified_image_layouts_video", &self.unified_image_layouts_video)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceHostImageCopyFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -40264,6 +40774,60 @@ impl fmt::Debug for PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {
                 "multisampled_render_to_single_sampled",
                 &self.multisampled_render_to_single_sampled,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SurfaceCapabilitiesPresentId2KHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_id2_supported: Bool32,
+}
+unsafe impl Send for SurfaceCapabilitiesPresentId2KHR {}
+unsafe impl Sync for SurfaceCapabilitiesPresentId2KHR {}
+impl Default for SurfaceCapabilitiesPresentId2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SURFACE_CAPABILITIES_PRESENT_ID_2_KHR,
+            p_next: ptr::null_mut(),
+            present_id2_supported: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SurfaceCapabilitiesPresentId2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SurfaceCapabilitiesPresentId2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_id2_supported", &self.present_id2_supported)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SurfaceCapabilitiesPresentWait2KHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_wait2_supported: Bool32,
+}
+unsafe impl Send for SurfaceCapabilitiesPresentWait2KHR {}
+unsafe impl Sync for SurfaceCapabilitiesPresentWait2KHR {}
+impl Default for SurfaceCapabilitiesPresentWait2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SURFACE_CAPABILITIES_PRESENT_WAIT_2_KHR,
+            p_next: ptr::null_mut(),
+            present_wait2_supported: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SurfaceCapabilitiesPresentWait2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SurfaceCapabilitiesPresentWait2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_wait2_supported", &self.present_wait2_supported)
             .finish()
     }
 }
@@ -45320,6 +45884,33 @@ impl fmt::Debug for PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {
     }
 }
 pub type PhysicalDeviceDepthClampZeroOneFeaturesEXT = PhysicalDeviceDepthClampZeroOneFeaturesKHR;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AttachmentFeedbackLoopInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub feedback_loop_enable: Bool32,
+}
+unsafe impl Send for AttachmentFeedbackLoopInfoEXT {}
+unsafe impl Sync for AttachmentFeedbackLoopInfoEXT {}
+impl Default for AttachmentFeedbackLoopInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ATTACHMENT_FEEDBACK_LOOP_INFO_EXT,
+            p_next: ptr::null(),
+            feedback_loop_enable: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AttachmentFeedbackLoopInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AttachmentFeedbackLoopInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("feedback_loop_enable", &self.feedback_loop_enable)
+            .finish()
+    }
+}
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceAddressBindingReportFeaturesEXT {
@@ -50415,6 +51006,877 @@ impl fmt::Debug for PhysicalDeviceFormatPackFeaturesARM {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TensorDescriptionARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub tiling: TensorTilingARM,
+    pub format: Format,
+    pub dimension_count: u32,
+    pub p_dimensions: *const i64,
+    pub p_strides: *const i64,
+    pub usage: TensorUsageFlagsARM,
+}
+unsafe impl Send for TensorDescriptionARM {}
+unsafe impl Sync for TensorDescriptionARM {}
+impl Default for TensorDescriptionARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TENSOR_DESCRIPTION_ARM,
+            p_next: ptr::null(),
+            tiling: Default::default(),
+            format: Default::default(),
+            dimension_count: Default::default(),
+            p_dimensions: ptr::null(),
+            p_strides: ptr::null(),
+            usage: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TensorDescriptionARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TensorDescriptionARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tiling", &self.tiling)
+            .field("format", &self.format)
+            .field("dimension_count", &self.dimension_count)
+            .field("p_dimensions", &self.p_dimensions)
+            .field("p_strides", &self.p_strides)
+            .field("usage", &self.usage)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TensorCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: TensorCreateFlagsARM,
+    pub p_description: *const TensorDescriptionARM,
+    pub sharing_mode: SharingMode,
+    pub queue_family_index_count: u32,
+    pub p_queue_family_indices: *const u32,
+}
+unsafe impl Send for TensorCreateInfoARM {}
+unsafe impl Sync for TensorCreateInfoARM {}
+impl Default for TensorCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TENSOR_CREATE_INFO_ARM,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            p_description: ptr::null(),
+            sharing_mode: Default::default(),
+            queue_family_index_count: Default::default(),
+            p_queue_family_indices: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for TensorCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TensorCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("p_description", &self.p_description)
+            .field("sharing_mode", &self.sharing_mode)
+            .field("queue_family_index_count", &self.queue_family_index_count)
+            .field("p_queue_family_indices", &self.p_queue_family_indices)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TensorViewCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: TensorViewCreateFlagsARM,
+    pub tensor: Option<TensorARM>,
+    pub format: Format,
+}
+unsafe impl Send for TensorViewCreateInfoARM {}
+unsafe impl Sync for TensorViewCreateInfoARM {}
+impl Default for TensorViewCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TENSOR_VIEW_CREATE_INFO_ARM,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            tensor: Default::default(),
+            format: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TensorViewCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TensorViewCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("tensor", &self.tensor)
+            .field("format", &self.format)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TensorMemoryRequirementsInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub tensor: Option<TensorARM>,
+}
+unsafe impl Send for TensorMemoryRequirementsInfoARM {}
+unsafe impl Sync for TensorMemoryRequirementsInfoARM {}
+impl Default for TensorMemoryRequirementsInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TENSOR_MEMORY_REQUIREMENTS_INFO_ARM,
+            p_next: ptr::null(),
+            tensor: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TensorMemoryRequirementsInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TensorMemoryRequirementsInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tensor", &self.tensor)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BindTensorMemoryInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub tensor: Option<TensorARM>,
+    pub memory: Option<DeviceMemory>,
+    pub memory_offset: DeviceSize,
+}
+unsafe impl Send for BindTensorMemoryInfoARM {}
+unsafe impl Sync for BindTensorMemoryInfoARM {}
+impl Default for BindTensorMemoryInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BIND_TENSOR_MEMORY_INFO_ARM,
+            p_next: ptr::null(),
+            tensor: Default::default(),
+            memory: Default::default(),
+            memory_offset: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for BindTensorMemoryInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindTensorMemoryInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tensor", &self.tensor)
+            .field("memory", &self.memory)
+            .field("memory_offset", &self.memory_offset)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct WriteDescriptorSetTensorARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub tensor_view_count: u32,
+    pub p_tensor_views: *const TensorViewARM,
+}
+unsafe impl Send for WriteDescriptorSetTensorARM {}
+unsafe impl Sync for WriteDescriptorSetTensorARM {}
+impl Default for WriteDescriptorSetTensorARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::WRITE_DESCRIPTOR_SET_TENSOR_ARM,
+            p_next: ptr::null(),
+            tensor_view_count: Default::default(),
+            p_tensor_views: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for WriteDescriptorSetTensorARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("WriteDescriptorSetTensorARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tensor_view_count", &self.tensor_view_count)
+            .field("p_tensor_views", &self.p_tensor_views)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TensorFormatPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub optimal_tiling_tensor_features: FormatFeatureFlags2,
+    pub linear_tiling_tensor_features: FormatFeatureFlags2,
+}
+unsafe impl Send for TensorFormatPropertiesARM {}
+unsafe impl Sync for TensorFormatPropertiesARM {}
+impl Default for TensorFormatPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TENSOR_FORMAT_PROPERTIES_ARM,
+            p_next: ptr::null(),
+            optimal_tiling_tensor_features: Default::default(),
+            linear_tiling_tensor_features: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TensorFormatPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TensorFormatPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("optimal_tiling_tensor_features", &self.optimal_tiling_tensor_features)
+            .field("linear_tiling_tensor_features", &self.linear_tiling_tensor_features)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTensorPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_tensor_dimension_count: u32,
+    pub max_tensor_elements: u64,
+    pub max_per_dimension_tensor_elements: u64,
+    pub max_tensor_stride: i64,
+    pub max_tensor_size: u64,
+    pub max_tensor_shader_access_array_length: u32,
+    pub max_tensor_shader_access_size: u32,
+    pub max_descriptor_set_storage_tensors: u32,
+    pub max_per_stage_descriptor_set_storage_tensors: u32,
+    pub max_descriptor_set_update_after_bind_storage_tensors: u32,
+    pub max_per_stage_descriptor_update_after_bind_storage_tensors: u32,
+    pub shader_storage_tensor_array_non_uniform_indexing_native: Bool32,
+    pub shader_tensor_supported_stages: ShaderStageFlags,
+}
+unsafe impl Send for PhysicalDeviceTensorPropertiesARM {}
+unsafe impl Sync for PhysicalDeviceTensorPropertiesARM {}
+impl Default for PhysicalDeviceTensorPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_TENSOR_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            max_tensor_dimension_count: Default::default(),
+            max_tensor_elements: Default::default(),
+            max_per_dimension_tensor_elements: Default::default(),
+            max_tensor_stride: Default::default(),
+            max_tensor_size: Default::default(),
+            max_tensor_shader_access_array_length: Default::default(),
+            max_tensor_shader_access_size: Default::default(),
+            max_descriptor_set_storage_tensors: Default::default(),
+            max_per_stage_descriptor_set_storage_tensors: Default::default(),
+            max_descriptor_set_update_after_bind_storage_tensors: Default::default(),
+            max_per_stage_descriptor_update_after_bind_storage_tensors: Default::default(),
+            shader_storage_tensor_array_non_uniform_indexing_native: Default::default(),
+            shader_tensor_supported_stages: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTensorPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTensorPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_tensor_dimension_count", &self.max_tensor_dimension_count)
+            .field("max_tensor_elements", &self.max_tensor_elements)
+            .field(
+                "max_per_dimension_tensor_elements",
+                &self.max_per_dimension_tensor_elements,
+            )
+            .field("max_tensor_stride", &self.max_tensor_stride)
+            .field("max_tensor_size", &self.max_tensor_size)
+            .field(
+                "max_tensor_shader_access_array_length",
+                &self.max_tensor_shader_access_array_length,
+            )
+            .field("max_tensor_shader_access_size", &self.max_tensor_shader_access_size)
+            .field(
+                "max_descriptor_set_storage_tensors",
+                &self.max_descriptor_set_storage_tensors,
+            )
+            .field(
+                "max_per_stage_descriptor_set_storage_tensors",
+                &self.max_per_stage_descriptor_set_storage_tensors,
+            )
+            .field(
+                "max_descriptor_set_update_after_bind_storage_tensors",
+                &self.max_descriptor_set_update_after_bind_storage_tensors,
+            )
+            .field(
+                "max_per_stage_descriptor_update_after_bind_storage_tensors",
+                &self.max_per_stage_descriptor_update_after_bind_storage_tensors,
+            )
+            .field(
+                "shader_storage_tensor_array_non_uniform_indexing_native",
+                &self.shader_storage_tensor_array_non_uniform_indexing_native,
+            )
+            .field("shader_tensor_supported_stages", &self.shader_tensor_supported_stages)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TensorMemoryBarrierARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_stage_mask: PipelineStageFlags2,
+    pub src_access_mask: AccessFlags2,
+    pub dst_stage_mask: PipelineStageFlags2,
+    pub dst_access_mask: AccessFlags2,
+    pub src_queue_family_index: u32,
+    pub dst_queue_family_index: u32,
+    pub tensor: Option<TensorARM>,
+}
+unsafe impl Send for TensorMemoryBarrierARM {}
+unsafe impl Sync for TensorMemoryBarrierARM {}
+impl Default for TensorMemoryBarrierARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TENSOR_MEMORY_BARRIER_ARM,
+            p_next: ptr::null(),
+            src_stage_mask: Default::default(),
+            src_access_mask: Default::default(),
+            dst_stage_mask: Default::default(),
+            dst_access_mask: Default::default(),
+            src_queue_family_index: Default::default(),
+            dst_queue_family_index: Default::default(),
+            tensor: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TensorMemoryBarrierARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TensorMemoryBarrierARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_stage_mask", &self.src_stage_mask)
+            .field("src_access_mask", &self.src_access_mask)
+            .field("dst_stage_mask", &self.dst_stage_mask)
+            .field("dst_access_mask", &self.dst_access_mask)
+            .field("src_queue_family_index", &self.src_queue_family_index)
+            .field("dst_queue_family_index", &self.dst_queue_family_index)
+            .field("tensor", &self.tensor)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TensorDependencyInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub tensor_memory_barrier_count: u32,
+    pub p_tensor_memory_barriers: *const TensorMemoryBarrierARM,
+}
+unsafe impl Send for TensorDependencyInfoARM {}
+unsafe impl Sync for TensorDependencyInfoARM {}
+impl Default for TensorDependencyInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TENSOR_DEPENDENCY_INFO_ARM,
+            p_next: ptr::null(),
+            tensor_memory_barrier_count: Default::default(),
+            p_tensor_memory_barriers: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for TensorDependencyInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TensorDependencyInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tensor_memory_barrier_count", &self.tensor_memory_barrier_count)
+            .field("p_tensor_memory_barriers", &self.p_tensor_memory_barriers)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTensorFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub tensor_non_packed: Bool32,
+    pub shader_tensor_access: Bool32,
+    pub shader_storage_tensor_array_dynamic_indexing: Bool32,
+    pub shader_storage_tensor_array_non_uniform_indexing: Bool32,
+    pub descriptor_binding_storage_tensor_update_after_bind: Bool32,
+    pub tensors: Bool32,
+}
+unsafe impl Send for PhysicalDeviceTensorFeaturesARM {}
+unsafe impl Sync for PhysicalDeviceTensorFeaturesARM {}
+impl Default for PhysicalDeviceTensorFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_TENSOR_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            tensor_non_packed: Default::default(),
+            shader_tensor_access: Default::default(),
+            shader_storage_tensor_array_dynamic_indexing: Default::default(),
+            shader_storage_tensor_array_non_uniform_indexing: Default::default(),
+            descriptor_binding_storage_tensor_update_after_bind: Default::default(),
+            tensors: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTensorFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTensorFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tensor_non_packed", &self.tensor_non_packed)
+            .field("shader_tensor_access", &self.shader_tensor_access)
+            .field(
+                "shader_storage_tensor_array_dynamic_indexing",
+                &self.shader_storage_tensor_array_dynamic_indexing,
+            )
+            .field(
+                "shader_storage_tensor_array_non_uniform_indexing",
+                &self.shader_storage_tensor_array_non_uniform_indexing,
+            )
+            .field(
+                "descriptor_binding_storage_tensor_update_after_bind",
+                &self.descriptor_binding_storage_tensor_update_after_bind,
+            )
+            .field("tensors", &self.tensors)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceTensorMemoryRequirementsARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_create_info: *const TensorCreateInfoARM,
+}
+unsafe impl Send for DeviceTensorMemoryRequirementsARM {}
+unsafe impl Sync for DeviceTensorMemoryRequirementsARM {}
+impl Default for DeviceTensorMemoryRequirementsARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_TENSOR_MEMORY_REQUIREMENTS_ARM,
+            p_next: ptr::null(),
+            p_create_info: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DeviceTensorMemoryRequirementsARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceTensorMemoryRequirementsARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_create_info", &self.p_create_info)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyTensorInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_tensor: Option<TensorARM>,
+    pub dst_tensor: Option<TensorARM>,
+    pub region_count: u32,
+    pub p_regions: *const TensorCopyARM,
+}
+unsafe impl Send for CopyTensorInfoARM {}
+unsafe impl Sync for CopyTensorInfoARM {}
+impl Default for CopyTensorInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_TENSOR_INFO_ARM,
+            p_next: ptr::null(),
+            src_tensor: Default::default(),
+            dst_tensor: Default::default(),
+            region_count: Default::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CopyTensorInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyTensorInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_tensor", &self.src_tensor)
+            .field("dst_tensor", &self.dst_tensor)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TensorCopyARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub dimension_count: u32,
+    pub p_src_offset: *const u64,
+    pub p_dst_offset: *const u64,
+    pub p_extent: *const u64,
+}
+unsafe impl Send for TensorCopyARM {}
+unsafe impl Sync for TensorCopyARM {}
+impl Default for TensorCopyARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TENSOR_COPY_ARM,
+            p_next: ptr::null(),
+            dimension_count: Default::default(),
+            p_src_offset: ptr::null(),
+            p_dst_offset: ptr::null(),
+            p_extent: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for TensorCopyARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TensorCopyARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("dimension_count", &self.dimension_count)
+            .field("p_src_offset", &self.p_src_offset)
+            .field("p_dst_offset", &self.p_dst_offset)
+            .field("p_extent", &self.p_extent)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryDedicatedAllocateInfoTensorARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Tensor that this allocation will be bound to
+    pub tensor: Option<TensorARM>,
+}
+unsafe impl Send for MemoryDedicatedAllocateInfoTensorARM {}
+unsafe impl Sync for MemoryDedicatedAllocateInfoTensorARM {}
+impl Default for MemoryDedicatedAllocateInfoTensorARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_DEDICATED_ALLOCATE_INFO_TENSOR_ARM,
+            p_next: ptr::null(),
+            tensor: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryDedicatedAllocateInfoTensorARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryDedicatedAllocateInfoTensorARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tensor", &self.tensor)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDescriptorBufferTensorPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub tensor_capture_replay_descriptor_data_size: usize,
+    pub tensor_view_capture_replay_descriptor_data_size: usize,
+    pub tensor_descriptor_size: usize,
+}
+unsafe impl Send for PhysicalDeviceDescriptorBufferTensorPropertiesARM {}
+unsafe impl Sync for PhysicalDeviceDescriptorBufferTensorPropertiesARM {}
+impl Default for PhysicalDeviceDescriptorBufferTensorPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_TENSOR_PROPERTIES_ARM,
+            p_next: ptr::null(),
+            tensor_capture_replay_descriptor_data_size: Default::default(),
+            tensor_view_capture_replay_descriptor_data_size: Default::default(),
+            tensor_descriptor_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDescriptorBufferTensorPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDescriptorBufferTensorPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "tensor_capture_replay_descriptor_data_size",
+                &self.tensor_capture_replay_descriptor_data_size,
+            )
+            .field(
+                "tensor_view_capture_replay_descriptor_data_size",
+                &self.tensor_view_capture_replay_descriptor_data_size,
+            )
+            .field("tensor_descriptor_size", &self.tensor_descriptor_size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDescriptorBufferTensorFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub descriptor_buffer_tensor_descriptors: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDescriptorBufferTensorFeaturesARM {}
+unsafe impl Sync for PhysicalDeviceDescriptorBufferTensorFeaturesARM {}
+impl Default for PhysicalDeviceDescriptorBufferTensorFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_TENSOR_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            descriptor_buffer_tensor_descriptors: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDescriptorBufferTensorFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDescriptorBufferTensorFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "descriptor_buffer_tensor_descriptors",
+                &self.descriptor_buffer_tensor_descriptors,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TensorCaptureDescriptorDataInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub tensor: Option<TensorARM>,
+}
+unsafe impl Send for TensorCaptureDescriptorDataInfoARM {}
+unsafe impl Sync for TensorCaptureDescriptorDataInfoARM {}
+impl Default for TensorCaptureDescriptorDataInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TENSOR_CAPTURE_DESCRIPTOR_DATA_INFO_ARM,
+            p_next: ptr::null(),
+            tensor: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TensorCaptureDescriptorDataInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TensorCaptureDescriptorDataInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tensor", &self.tensor)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TensorViewCaptureDescriptorDataInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub tensor_view: Option<TensorViewARM>,
+}
+unsafe impl Send for TensorViewCaptureDescriptorDataInfoARM {}
+unsafe impl Sync for TensorViewCaptureDescriptorDataInfoARM {}
+impl Default for TensorViewCaptureDescriptorDataInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TENSOR_VIEW_CAPTURE_DESCRIPTOR_DATA_INFO_ARM,
+            p_next: ptr::null(),
+            tensor_view: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TensorViewCaptureDescriptorDataInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TensorViewCaptureDescriptorDataInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tensor_view", &self.tensor_view)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorGetTensorInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub tensor_view: Option<TensorViewARM>,
+}
+unsafe impl Send for DescriptorGetTensorInfoARM {}
+unsafe impl Sync for DescriptorGetTensorInfoARM {}
+impl Default for DescriptorGetTensorInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DESCRIPTOR_GET_TENSOR_INFO_ARM,
+            p_next: ptr::null(),
+            tensor_view: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorGetTensorInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorGetTensorInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tensor_view", &self.tensor_view)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct FrameBoundaryTensorsARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub tensor_count: u32,
+    pub p_tensors: *const TensorARM,
+}
+unsafe impl Send for FrameBoundaryTensorsARM {}
+unsafe impl Sync for FrameBoundaryTensorsARM {}
+impl Default for FrameBoundaryTensorsARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::FRAME_BOUNDARY_TENSORS_ARM,
+            p_next: ptr::null(),
+            tensor_count: Default::default(),
+            p_tensors: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for FrameBoundaryTensorsARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("FrameBoundaryTensorsARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tensor_count", &self.tensor_count)
+            .field("p_tensors", &self.p_tensors)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceExternalTensorInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: TensorCreateFlagsARM,
+    pub p_description: *const TensorDescriptionARM,
+    pub handle_type: ExternalMemoryHandleTypeFlags,
+}
+unsafe impl Send for PhysicalDeviceExternalTensorInfoARM {}
+unsafe impl Sync for PhysicalDeviceExternalTensorInfoARM {}
+impl Default for PhysicalDeviceExternalTensorInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_TENSOR_INFO_ARM,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            p_description: ptr::null(),
+            handle_type: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceExternalTensorInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceExternalTensorInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("p_description", &self.p_description)
+            .field("handle_type", &self.handle_type)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExternalTensorPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub external_memory_properties: ExternalMemoryProperties,
+}
+unsafe impl Send for ExternalTensorPropertiesARM {}
+unsafe impl Sync for ExternalTensorPropertiesARM {}
+impl Default for ExternalTensorPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXTERNAL_TENSOR_PROPERTIES_ARM,
+            p_next: ptr::null(),
+            external_memory_properties: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ExternalTensorPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExternalTensorPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("external_memory_properties", &self.external_memory_properties)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExternalMemoryTensorCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub handle_types: ExternalMemoryHandleTypeFlags,
+}
+unsafe impl Send for ExternalMemoryTensorCreateInfoARM {}
+unsafe impl Sync for ExternalMemoryTensorCreateInfoARM {}
+impl Default for ExternalMemoryTensorCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXTERNAL_MEMORY_TENSOR_CREATE_INFO_ARM,
+            p_next: ptr::null(),
+            handle_types: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ExternalMemoryTensorCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExternalMemoryTensorCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("handle_types", &self.handle_types)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderFloat8FeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_float8: Bool32,
+    pub shader_float8_cooperative_matrix: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderFloat8FeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderFloat8FeaturesEXT {}
+impl Default for PhysicalDeviceShaderFloat8FeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_FLOAT8_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_float8: Default::default(),
+            shader_float8_cooperative_matrix: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderFloat8FeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderFloat8FeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_float8", &self.shader_float8)
+            .field(
+                "shader_float8_cooperative_matrix",
+                &self.shader_float8_cooperative_matrix,
+            )
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -52964,6 +54426,11 @@ pub type FnGetDrmDisplayEXT = unsafe extern "system" fn(
     connector_id: u32,
     display: *mut DisplayKHR,
 ) -> Result;
+pub type FnWaitForPresent2KHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    p_present_wait2_info: *const PresentWait2InfoKHR,
+) -> Result;
 pub type FnWaitForPresentKHR = unsafe extern "system" fn(
     device: Option<Device>,
     swapchain: Option<SwapchainKHR>,
@@ -53377,4 +54844,58 @@ pub type FnGetExternalComputeQueueDataNV = unsafe extern "system" fn(
     external_queue: Option<ExternalComputeQueueNV>,
     params: *mut ExternalComputeQueueDataParamsNV,
     p_data: *mut c_void,
+);
+pub type FnCreateTensorARM = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const TensorCreateInfoARM,
+    p_allocator: *const AllocationCallbacks,
+    p_tensor: *mut TensorARM,
+) -> Result;
+pub type FnDestroyTensorARM = unsafe extern "system" fn(
+    device: Option<Device>,
+    tensor: Option<TensorARM>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnCreateTensorViewARM = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const TensorViewCreateInfoARM,
+    p_allocator: *const AllocationCallbacks,
+    p_view: *mut TensorViewARM,
+) -> Result;
+pub type FnDestroyTensorViewARM = unsafe extern "system" fn(
+    device: Option<Device>,
+    tensor_view: Option<TensorViewARM>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnGetTensorMemoryRequirementsARM = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const TensorMemoryRequirementsInfoARM,
+    p_memory_requirements: *mut MemoryRequirements2,
+);
+pub type FnBindTensorMemoryARM = unsafe extern "system" fn(
+    device: Option<Device>,
+    bind_info_count: u32,
+    p_bind_infos: *const BindTensorMemoryInfoARM,
+) -> Result;
+pub type FnGetDeviceTensorMemoryRequirementsARM = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const DeviceTensorMemoryRequirementsARM,
+    p_memory_requirements: *mut MemoryRequirements2,
+);
+pub type FnCmdCopyTensorARM =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_copy_tensor_info: *const CopyTensorInfoARM);
+pub type FnGetTensorOpaqueCaptureDescriptorDataARM = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const TensorCaptureDescriptorDataInfoARM,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnGetTensorViewOpaqueCaptureDescriptorDataARM = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const TensorViewCaptureDescriptorDataInfoARM,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnGetPhysicalDeviceExternalTensorPropertiesARM = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_external_tensor_info: *const PhysicalDeviceExternalTensorInfoARM,
+    p_external_tensor_properties: *mut ExternalTensorPropertiesARM,
 );
