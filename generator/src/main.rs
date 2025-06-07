@@ -249,6 +249,7 @@ enum EnumType {
     Value,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
 enum EnumEntryValue {
     Number { value: i64, comment: Option<String> },
     Alias(String),
@@ -1283,6 +1284,10 @@ impl<'a> Generator<'a> {
                         self.extension_by_enum_name.get(en.name.as_str()).copied(),
                     )
                 })
+                .filter(|(name, value, _)| match value {
+                    EnumEntryValue::Number { .. } => true,
+                    EnumEntryValue::Alias(ref alias) => alias != name,
+                })
                 .collect();
 
             let (derives, interior_type) = match enum_type {
@@ -1300,7 +1305,12 @@ impl<'a> Generator<'a> {
                 derives=derives, enum_name=enum_name, interior_type=interior_type
             )?;
             let mut all_bits = 0;
-            for (ref name, value, ref ext) in &entries {
+            let mut values_by_name: HashMap<&str, &EnumEntryValue> = HashMap::new();
+            for (ref name, ref value, ref ext) in &entries {
+                if let Some(prev_value) = values_by_name.insert(name.as_str(), value) {
+                    assert_eq!(prev_value, value);
+                    continue;
+                }
                 match value {
                     EnumEntryValue::Number { value, ref comment } => {
                         if let Some(comment) = comment {
@@ -1322,9 +1332,7 @@ impl<'a> Generator<'a> {
                         all_bits |= value;
                     }
                     EnumEntryValue::Alias(ref alias) => {
-                        if name != alias {
-                            writeln!(w, "pub const {}: Self = Self::{};", name, alias)?;
-                        }
+                        writeln!(w, "pub const {}: Self = Self::{};", name, alias)?;
                     }
                 }
             }
