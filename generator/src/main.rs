@@ -2073,14 +2073,39 @@ impl<'a> Generator<'a> {
                                         }
                                     }
                                     writeln!(w, ") -> Self {{")?;
-                                    writeln!(
-                                        w,
-                                        "self.inner.{} = {} as {};",
-                                        rparam.name,
-                                        slice_infos[0].get_len(),
-                                        len_type_name
-                                    )?;
-                                    for slice_info in slice_infos.iter().skip(1) {
+
+                                    let known_len_index =
+                                        slice_infos.iter().enumerate().find_map(|(index, slice_info)| {
+                                            (!has_multiple_slices || !slice_info.is_optional).then_some(index)
+                                        });
+                                    if let Some(index) = known_len_index {
+                                        writeln!(
+                                            w,
+                                            "self.inner.{} = {} as {};",
+                                            rparam.name,
+                                            slice_infos[index].get_len(),
+                                            len_type_name
+                                        )?;
+                                    } else {
+                                        write!(
+                                            w,
+                                            "self.inner.{} = {}.map(|s| s.len() as {})",
+                                            rparam.name, slice_infos[0].name, len_type_name
+                                        )?;
+                                        for slice_info in slice_infos.iter().skip(1) {
+                                            write!(
+                                                w,
+                                                ".or({}.map(|s| s.len() as {}))",
+                                                slice_info.name, len_type_name
+                                            )?;
+                                        }
+                                        writeln!(w, ".unwrap_or(0);")?;
+                                    }
+
+                                    for (index, slice_info) in slice_infos.iter().enumerate() {
+                                        if known_len_index == Some(index) {
+                                            continue;
+                                        }
                                         if slice_info.is_optional && has_multiple_slices {
                                             writeln!(
                                                 w,
