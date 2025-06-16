@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 317
+//! Generated from vk.xml with `VK_HEADER_VERSION` 318
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -268,6 +268,7 @@ pub struct InstanceExtensions {
     pub lunarg_direct_driver_loading: bool,
     pub ext_layer_settings: bool,
     pub nv_display_stereo: bool,
+    pub ohos_surface: bool,
 }
 impl InstanceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -310,6 +311,7 @@ impl InstanceExtensions {
             b"VK_LUNARG_direct_driver_loading" => self.lunarg_direct_driver_loading = true,
             b"VK_EXT_layer_settings" => self.ext_layer_settings = true,
             b"VK_NV_display_stereo" => self.nv_display_stereo = true,
+            b"VK_OHOS_surface" => self.ohos_surface = true,
             _ => {}
         }
     }
@@ -354,6 +356,7 @@ impl InstanceExtensions {
             lunarg_direct_driver_loading: false,
             ext_layer_settings: false,
             nv_display_stereo: false,
+            ohos_surface: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -2717,6 +2720,13 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_ohos_surface(&self) -> bool {
+        self.ohos_surface && self.supports_khr_surface()
+    }
+    pub fn enable_ohos_surface(&mut self) {
+        self.ohos_surface = true;
+        self.enable_khr_surface();
+    }
     pub fn supports_huawei_hdr_vivid(&self) -> bool {
         (self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
             || self.supports_khr_get_physical_device_properties2())
@@ -2765,6 +2775,16 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+    pub fn supports_valve_fragment_density_map_layered(&self) -> bool {
+        (self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5())
+            && self.supports_ext_fragment_density_map()
+    }
+    pub fn enable_valve_fragment_density_map_layered(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.enable_khr_maintenance5();
+        }
+        self.enable_ext_fragment_density_map();
     }
     pub fn supports_khr_robustness2(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -2917,6 +2937,9 @@ impl InstanceExtensions {
         if self.nv_display_stereo {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_display_stereo\0") })
         }
+        if self.ohos_surface {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_OHOS_surface\0") })
+        }
         v
     }
 }
@@ -2939,6 +2962,7 @@ pub struct Instance {
     pub fp_get_physical_device_sparse_image_format_properties:
         Option<vk::FnGetPhysicalDeviceSparseImageFormatProperties>,
     pub fp_create_android_surface_khr: Option<vk::FnCreateAndroidSurfaceKHR>,
+    pub fp_create_surface_ohos: Option<vk::FnCreateSurfaceOHOS>,
     pub fp_get_physical_device_display_properties_khr: Option<vk::FnGetPhysicalDeviceDisplayPropertiesKHR>,
     pub fp_get_physical_device_display_plane_properties_khr: Option<vk::FnGetPhysicalDeviceDisplayPlanePropertiesKHR>,
     pub fp_get_display_plane_supported_displays_khr: Option<vk::FnGetDisplayPlaneSupportedDisplaysKHR>,
@@ -3158,6 +3182,12 @@ impl Instance {
             },
             fp_create_android_surface_khr: if extensions.khr_android_surface {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateAndroidSurfaceKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_surface_ohos: if extensions.ohos_surface {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateSurfaceOHOS\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -3966,6 +3996,24 @@ impl Instance {
         let fp = self
             .fp_create_android_surface_khr
             .expect("vkCreateAndroidSurfaceKHR is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn create_surface_ohos(
+        &self,
+        p_create_info: &vk::SurfaceCreateInfoOHOS,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let fp = self.fp_create_surface_ohos.expect("vkCreateSurfaceOHOS is not loaded");
         let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
@@ -5543,6 +5591,7 @@ pub struct DeviceExtensions {
     pub khr_depth_clamp_zero_one: bool,
     pub ext_vertex_attribute_robustness: bool,
     pub arm_format_pack: bool,
+    pub valve_fragment_density_map_layered: bool,
     pub khr_robustness2: bool,
     pub nv_present_metering: bool,
     pub ext_fragment_density_map_offset: bool,
@@ -5907,6 +5956,7 @@ impl DeviceExtensions {
             b"VK_KHR_depth_clamp_zero_one" => self.khr_depth_clamp_zero_one = true,
             b"VK_EXT_vertex_attribute_robustness" => self.ext_vertex_attribute_robustness = true,
             b"VK_ARM_format_pack" => self.arm_format_pack = true,
+            b"VK_VALVE_fragment_density_map_layered" => self.valve_fragment_density_map_layered = true,
             b"VK_KHR_robustness2" => self.khr_robustness2 = true,
             b"VK_NV_present_metering" => self.nv_present_metering = true,
             b"VK_EXT_fragment_density_map_offset" => self.ext_fragment_density_map_offset = true,
@@ -6271,6 +6321,7 @@ impl DeviceExtensions {
             khr_depth_clamp_zero_one: false,
             ext_vertex_attribute_robustness: false,
             arm_format_pack: false,
+            valve_fragment_density_map_layered: false,
             khr_robustness2: false,
             nv_present_metering: false,
             ext_fragment_density_map_offset: false,
@@ -9087,6 +9138,18 @@ impl DeviceExtensions {
     pub fn enable_arm_format_pack(&mut self) {
         self.arm_format_pack = true;
     }
+    pub fn supports_valve_fragment_density_map_layered(&self) -> bool {
+        self.valve_fragment_density_map_layered
+            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5())
+            && self.supports_ext_fragment_density_map()
+    }
+    pub fn enable_valve_fragment_density_map_layered(&mut self) {
+        self.valve_fragment_density_map_layered = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.enable_khr_maintenance5();
+        }
+        self.enable_ext_fragment_density_map();
+    }
     pub fn supports_khr_robustness2(&self) -> bool {
         self.khr_robustness2
     }
@@ -10186,6 +10249,9 @@ impl DeviceExtensions {
         }
         if self.arm_format_pack {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_format_pack\0") })
+        }
+        if self.valve_fragment_density_map_layered {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_VALVE_fragment_density_map_layered\0") })
         }
         if self.khr_robustness2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_robustness2\0") })

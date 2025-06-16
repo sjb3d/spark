@@ -116,6 +116,9 @@ pub type IOSurfaceRef = *mut __IOSurface;
 #[allow(non_camel_case_types)]
 pub type zx_handle_t = u32;
 
+// Open Harmony OS
+pub type OHNativeWindow = Never;
+
 fn display_bitmask(bits: u64, bit_names: &[(u64, &str)], f: &mut fmt::Formatter) -> fmt::Result {
     let mut has_output = false;
     let mut remain = bits;
@@ -267,11 +270,17 @@ pub struct RenderPassCreateFlags(pub(crate) u32);
 impl RenderPassCreateFlags {
     /// Added by extension VK_QCOM_render_pass_transform.
     pub const TRANSFORM_QCOM: Self = Self(0x2);
+    /// Added by extension VK_VALVE_fragment_density_map_layered.
+    pub const PER_LAYER_FRAGMENT_DENSITY_VALVE: Self = Self(0x4);
 }
-impl_bitmask!(RenderPassCreateFlags, 0x2);
+impl_bitmask!(RenderPassCreateFlags, 0x6);
 impl fmt::Display for RenderPassCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x2, "TRANSFORM_QCOM")], f)
+        display_bitmask(
+            self.0 as _,
+            &[(0x2, "TRANSFORM_QCOM"), (0x4, "PER_LAYER_FRAGMENT_DENSITY_VALVE")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -2907,8 +2916,10 @@ impl RenderingFlags {
     /// Promoted from extension 452
     /// Added by extension VK_KHR_maintenance7.
     pub const CONTENTS_INLINE_KHR: Self = Self(0x10);
+    /// Added by extension VK_VALVE_fragment_density_map_layered.
+    pub const PER_LAYER_FRAGMENT_DENSITY_VALVE: Self = Self(0x20);
 }
-impl_bitmask!(RenderingFlags, 0x1f);
+impl_bitmask!(RenderingFlags, 0x3f);
 impl fmt::Display for RenderingFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2919,6 +2930,7 @@ impl fmt::Display for RenderingFlags {
                 (0x4, "RESUMING"),
                 (0x8, "ENABLE_LEGACY_DITHERING_EXT"),
                 (0x10, "CONTENTS_INLINE_KHR"),
+                (0x20, "PER_LAYER_FRAGMENT_DENSITY_VALVE"),
             ],
             f,
         )
@@ -3094,8 +3106,10 @@ impl PipelineCreateFlags2 {
     pub const CAPTURE_DATA_KHR: Self = Self(0x80000000);
     /// Added by extension VK_EXT_device_generated_commands.
     pub const INDIRECT_BINDABLE_EXT: Self = Self(0x4000000000);
+    /// Added by extension VK_VALVE_fragment_density_map_layered.
+    pub const PER_LAYER_FRAGMENT_DENSITY_VALVE: Self = Self(0x10000000000);
 }
-impl_bitmask!(PipelineCreateFlags2, 0x67ffffffff);
+impl_bitmask!(PipelineCreateFlags2, 0x167ffffffff);
 impl fmt::Display for PipelineCreateFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -3138,6 +3152,7 @@ impl fmt::Display for PipelineCreateFlags2 {
                 (0x2000000000, "DISALLOW_OPACITY_MICROMAP_ARM"),
                 (0x80000000, "CAPTURE_DATA_KHR"),
                 (0x4000000000, "INDIRECT_BINDABLE_EXT"),
+                (0x10000000000, "PER_LAYER_FRAGMENT_DENSITY_VALVE"),
             ],
             f,
         )
@@ -4688,6 +4703,16 @@ impl_bitmask!(PhysicalDeviceSchedulingControlsFlagsARM, 0x1);
 impl fmt::Display for PhysicalDeviceSchedulingControlsFlagsARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "SHADER_CORE_COUNT")], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct SurfaceCreateFlagsOHOS(pub(crate) u32);
+impl SurfaceCreateFlagsOHOS {}
+impl_bitmask!(SurfaceCreateFlagsOHOS, 0x0);
+impl fmt::Display for SurfaceCreateFlagsOHOS {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -9057,6 +9082,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MAINTENANCE_9_PROPERTIES_KHR: Self = Self(1000584001);
     /// Added by extension VK_KHR_maintenance9.
     pub const QUEUE_FAMILY_OWNERSHIP_TRANSFER_PROPERTIES_KHR: Self = Self(1000584002);
+    /// Added by extension VK_OHOS_surface.
+    pub const OH_SURFACE_CREATE_INFO_OHOS: Self = Self(1000587000);
     /// Added by extension VK_HUAWEI_hdr_vivid.
     pub const PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI: Self = Self(1000590000);
     /// Added by extension VK_HUAWEI_hdr_vivid.
@@ -9080,6 +9107,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000608000);
     /// Added by extension VK_ARM_format_pack.
     pub const PHYSICAL_DEVICE_FORMAT_PACK_FEATURES_ARM: Self = Self(1000609000);
+    /// Added by extension VK_VALVE_fragment_density_map_layered.
+    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_LAYERED_FEATURES_VALVE: Self = Self(1000611000);
+    /// Added by extension VK_VALVE_fragment_density_map_layered.
+    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_LAYERED_PROPERTIES_VALVE: Self = Self(1000611001);
+    /// Added by extension VK_VALVE_fragment_density_map_layered.
+    pub const PIPELINE_FRAGMENT_DENSITY_MAP_LAYERED_CREATE_INFO_VALVE: Self = Self(1000611002);
     pub const PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_KHR: Self = Self(1000286000);
     pub const PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_KHR: Self = Self(1000286001);
     /// Added by extension VK_NV_present_metering.
@@ -10024,6 +10057,7 @@ impl fmt::Display for StructureType {
             1000584000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR"),
             1000584001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_9_PROPERTIES_KHR"),
             1000584002 => Some(&"QUEUE_FAMILY_OWNERSHIP_TRANSFER_PROPERTIES_KHR"),
+            1000587000 => Some(&"OH_SURFACE_CREATE_INFO_OHOS"),
             1000590000 => Some(&"PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI"),
             1000590001 => Some(&"HDR_VIVID_DYNAMIC_METADATA_HUAWEI"),
             1000593000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV"),
@@ -10036,6 +10070,9 @@ impl fmt::Display for StructureType {
             1000421000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR"),
             1000608000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT"),
             1000609000 => Some(&"PHYSICAL_DEVICE_FORMAT_PACK_FEATURES_ARM"),
+            1000611000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_LAYERED_FEATURES_VALVE"),
+            1000611001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_LAYERED_PROPERTIES_VALVE"),
+            1000611002 => Some(&"PIPELINE_FRAGMENT_DENSITY_MAP_LAYERED_CREATE_INFO_VALVE"),
             1000286000 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_KHR"),
             1000286001 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_KHR"),
             1000613000 => Some(&"SET_PRESENT_CONFIG_NV"),
@@ -11903,14 +11940,10 @@ impl ComponentTypeKHR {
     pub const SINT8_PACKED_NV: Self = Self(1000491000);
     /// Added by extension VK_NV_cooperative_vector.
     pub const UINT8_PACKED_NV: Self = Self(1000491001);
-    /// Added by extension VK_NV_cooperative_vector.
-    pub const FLOAT_E4M3_NV: Self = Self(1000491002);
-    /// Added by extension VK_NV_cooperative_vector.
-    pub const FLOAT_E5M2_NV: Self = Self(1000491003);
-    /// Added by extension VK_EXT_shader_float8.
-    pub const FLOAT8_E4M3_EXT: Self = Self(1000567000);
-    /// Added by extension VK_EXT_shader_float8.
-    pub const FLOAT8_E5M2_EXT: Self = Self(1000567001);
+    pub const FLOAT_E4M3_NV: Self = Self::FLOAT8_E4M3_EXT;
+    pub const FLOAT_E5M2_NV: Self = Self::FLOAT8_E5M2_EXT;
+    pub const FLOAT8_E4M3_EXT: Self = Self(1000491002);
+    pub const FLOAT8_E5M2_EXT: Self = Self(1000491003);
 }
 impl fmt::Display for ComponentTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -11929,10 +11962,8 @@ impl fmt::Display for ComponentTypeKHR {
             1000141000 => Some(&"BFLOAT16"),
             1000491000 => Some(&"SINT8_PACKED_NV"),
             1000491001 => Some(&"UINT8_PACKED_NV"),
-            1000491002 => Some(&"FLOAT_E4M3_NV"),
-            1000491003 => Some(&"FLOAT_E5M2_NV"),
-            1000567000 => Some(&"FLOAT8_E4M3_EXT"),
-            1000567001 => Some(&"FLOAT8_E5M2_EXT"),
+            1000491002 => Some(&"FLOAT8_E4M3_EXT"),
+            1000491003 => Some(&"FLOAT8_E5M2_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -50805,6 +50836,87 @@ impl fmt::Debug for DispatchTileInfoQCOM {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_fragment_density_map_layers: u32,
+}
+unsafe impl Send for PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE {}
+unsafe impl Sync for PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE {}
+impl Default for PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_LAYERED_PROPERTIES_VALVE,
+            p_next: ptr::null_mut(),
+            max_fragment_density_map_layers: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_fragment_density_map_layers", &self.max_fragment_density_map_layers)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub fragment_density_map_layered: Bool32,
+}
+unsafe impl Send for PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE {}
+unsafe impl Sync for PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE {}
+impl Default for PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_LAYERED_FEATURES_VALVE,
+            p_next: ptr::null_mut(),
+            fragment_density_map_layered: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("fragment_density_map_layered", &self.fragment_density_map_layered)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineFragmentDensityMapLayeredCreateInfoVALVE {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub max_fragment_density_map_layers: u32,
+}
+unsafe impl Send for PipelineFragmentDensityMapLayeredCreateInfoVALVE {}
+unsafe impl Sync for PipelineFragmentDensityMapLayeredCreateInfoVALVE {}
+impl Default for PipelineFragmentDensityMapLayeredCreateInfoVALVE {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_FRAGMENT_DENSITY_MAP_LAYERED_CREATE_INFO_VALVE,
+            p_next: ptr::null(),
+            max_fragment_density_map_layers: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineFragmentDensityMapLayeredCreateInfoVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineFragmentDensityMapLayeredCreateInfoVALVE")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_fragment_density_map_layers", &self.max_fragment_density_map_layers)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct SetPresentConfigNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -51581,7 +51693,7 @@ impl fmt::Debug for MemoryDedicatedAllocateInfoTensorARM {
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceDescriptorBufferTensorPropertiesARM {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub tensor_capture_replay_descriptor_data_size: usize,
     pub tensor_view_capture_replay_descriptor_data_size: usize,
     pub tensor_descriptor_size: usize,
@@ -51592,7 +51704,7 @@ impl Default for PhysicalDeviceDescriptorBufferTensorPropertiesARM {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_TENSOR_PROPERTIES_ARM,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             tensor_capture_replay_descriptor_data_size: Default::default(),
             tensor_view_capture_replay_descriptor_data_size: Default::default(),
             tensor_descriptor_size: Default::default(),
@@ -51877,6 +51989,37 @@ impl fmt::Debug for PhysicalDeviceShaderFloat8FeaturesEXT {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct OHSurfaceCreateInfoOHOS {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: SurfaceCreateFlagsOHOS,
+    pub window: *mut OHNativeWindow,
+}
+unsafe impl Send for OHSurfaceCreateInfoOHOS {}
+unsafe impl Sync for OHSurfaceCreateInfoOHOS {}
+impl Default for OHSurfaceCreateInfoOHOS {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::OH_SURFACE_CREATE_INFO_OHOS,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            window: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for OHSurfaceCreateInfoOHOS {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("OHSurfaceCreateInfoOHOS")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("window", &self.window)
+            .finish()
+    }
+}
+pub type SurfaceCreateInfoOHOS = OHSurfaceCreateInfoOHOS;
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -52687,6 +52830,12 @@ pub type FnCmdExecuteCommands = unsafe extern "system" fn(
 pub type FnCreateAndroidSurfaceKHR = unsafe extern "system" fn(
     instance: Option<Instance>,
     p_create_info: *const AndroidSurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnCreateSurfaceOHOS = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const SurfaceCreateInfoOHOS,
     p_allocator: *const AllocationCallbacks,
     p_surface: *mut SurfaceKHR,
 ) -> Result;

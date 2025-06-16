@@ -29307,6 +29307,37 @@ impl Deref for DispatchTileInfoQCOMBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE {}
+impl Builder<'_> for vk::PipelineFragmentDensityMapLayeredCreateInfoVALVE {
+    type Type = PipelineFragmentDensityMapLayeredCreateInfoVALVEBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineFragmentDensityMapLayeredCreateInfoVALVEBuilder {
+    inner: vk::PipelineFragmentDensityMapLayeredCreateInfoVALVE,
+}
+impl PipelineFragmentDensityMapLayeredCreateInfoVALVEBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn max_fragment_density_map_layers(mut self, max_fragment_density_map_layers: u32) -> Self {
+        self.inner.max_fragment_density_map_layers = max_fragment_density_map_layers;
+        self
+    }
+}
+impl Deref for PipelineFragmentDensityMapLayeredCreateInfoVALVEBuilder {
+    type Target = vk::PipelineFragmentDensityMapLayeredCreateInfoVALVE;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl GraphicsPipelineCreateInfoNext for PipelineFragmentDensityMapLayeredCreateInfoVALVEBuilder {}
+impl GraphicsPipelineCreateInfoNext for vk::PipelineFragmentDensityMapLayeredCreateInfoVALVE {}
 impl Builder<'_> for vk::SetPresentConfigNV {
     type Type = SetPresentConfigNVBuilder;
     fn builder() -> Self::Type {
@@ -30017,7 +30048,7 @@ pub struct PhysicalDeviceDescriptorBufferTensorPropertiesARMBuilder {
     inner: vk::PhysicalDeviceDescriptorBufferTensorPropertiesARM,
 }
 impl PhysicalDeviceDescriptorBufferTensorPropertiesARMBuilder {
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -30325,3 +30356,33 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderFloat8FeaturesEXTBuilde
 impl DeviceCreateInfoNext for PhysicalDeviceShaderFloat8FeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderFloat8FeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderFloat8FeaturesEXT {}
+impl Builder<'_> for vk::OHSurfaceCreateInfoOHOS {
+    type Type = OHSurfaceCreateInfoOHOSBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct OHSurfaceCreateInfoOHOSBuilder {
+    inner: vk::OHSurfaceCreateInfoOHOS,
+}
+impl OHSurfaceCreateInfoOHOSBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::SurfaceCreateFlagsOHOS) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn window(mut self, window: *mut vk::OHNativeWindow) -> Self {
+        self.inner.window = window;
+        self
+    }
+}
+impl Deref for OHSurfaceCreateInfoOHOSBuilder {
+    type Target = vk::OHSurfaceCreateInfoOHOS;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
