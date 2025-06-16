@@ -119,6 +119,9 @@ pub type IOSurfaceRef = *mut __IOSurface;
 #[allow(non_camel_case_types)]
 pub type zx_handle_t = u32;
 
+// Open Harmony OS
+pub type OHNativeWindow = Never;
+
 fn display_bitmask(bits: u64, bit_names: &[(u64, &str)], f: &mut fmt::Formatter) -> fmt::Result {
     let mut has_output = false;
     let mut remain = bits;
