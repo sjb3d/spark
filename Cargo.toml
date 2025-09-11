@@ -1,9 +1,11 @@
 [workspace]
+resolver = "2"
 members = [
-    "generator",
+    "vk-oracle",
+    "generator-rust",
+    "generator-zig",
     "spark",
     "spark-egui",
-    "spark-imgui",
     "examples/compute",
     "examples/graphics"
 ]

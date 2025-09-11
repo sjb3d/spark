@@ -2,8 +2,7 @@
 
 use std::{
     ffi::CStr,
-    mem,
-    os::raw::{c_void, c_char, c_int},
+    os::raw::{c_void, c_char},
     ptr,
     marker::PhantomData,
     ops::Deref,
@@ -20,4 +19,3 @@ unsafe fn insert_next(head: *mut vk::BaseOutStructure, other: *mut vk::BaseOutSt
     (*other).p_next = (*head).p_next;
     (*head).p_next = other as *mut _;
 }
-

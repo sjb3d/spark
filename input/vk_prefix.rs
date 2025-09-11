@@ -4,9 +4,7 @@ use std::{
     default::Default,
     os::raw::{c_void, c_char, c_int, c_ulong},
     ptr,
-    ffi::CStr,
     mem,
-    num,
     fmt,
     ops,
 };
@@ -59,69 +57,6 @@ impl fmt::Display for Version {
 #[doc(hidden)]
 pub enum Never {}
 
-// X11
-pub type Display = Never;
-pub type VisualID = c_ulong;
-pub type Window = c_ulong;
-pub type RROutput = c_ulong;
-
-// MIR
-pub type MirConnection = Never;
-pub type MirSurface = Never;
-
-// wayland
-#[allow(non_camel_case_types)]
-pub type wl_display = Never;
-#[allow(non_camel_case_types)]
-pub type wl_surface = Never;
-
-// windows
-pub type HINSTANCE = *mut c_void;
-pub type HWND = *mut c_void;
-pub type HANDLE = *mut c_void;
-pub type HMONITOR = *mut c_void;
-#[allow(non_camel_case_types)]
-pub type SECURITY_ATTRIBUTES = Never;
-pub type DWORD = c_ulong;
-pub type LPCWSTR = *const u16;
-
-#[allow(non_camel_case_types)]
-pub type xcb_connection_t = Never;
-#[allow(non_camel_case_types)]
-pub type xcb_window_t = u32;
-#[allow(non_camel_case_types)]
-pub type xcb_visualid_t = Never;
-
-pub type IDirectFB = Never;
-pub type IDirectFBSurface = Never;
-
-// Android
-pub type ANativeWindow = Never;
-pub type AHardwareBuffer = Never;
-
-// Metal
-pub type CAMetalLayer = Never;
-#[allow(non_camel_case_types)]
-pub type MTLDevice_id = *mut c_void;
-#[allow(non_camel_case_types)]
-pub type MTLCommandQueue_id = *mut c_void;
-#[allow(non_camel_case_types)]
-pub type MTLBuffer_id = *mut c_void;
-#[allow(non_camel_case_types)]
-pub type MTLTexture_id = *mut c_void;
-#[allow(non_camel_case_types)]
-pub type MTLSharedEvent_id = *mut c_void;
-#[allow(non_camel_case_types)]
-pub type __IOSurface = Never;
-pub type IOSurfaceRef = *mut __IOSurface;
-
-// Zircon
-#[allow(non_camel_case_types)]
-pub type zx_handle_t = u32;
-
-// Open Harmony OS
-pub type OHNativeWindow = Never;
-
 fn display_bitmask(bits: u64, bit_names: &[(u64, &str)], f: &mut fmt::Formatter) -> fmt::Result {
     let mut has_output = false;
     let mut remain = bits;
@@ -130,7 +65,7 @@ fn display_bitmask(bits: u64, bit_names: &[(u64, &str)], f: &mut fmt::Formatter)
             if has_output {
                 f.write_str(" | ")?;
             }
-            write!(f, "{}", name)?;
+            f.write_fmt(format_args!("{name}"))?;
             has_output = true;
             remain &= !bit;
         }
@@ -139,7 +74,7 @@ fn display_bitmask(bits: u64, bit_names: &[(u64, &str)], f: &mut fmt::Formatter)
         if has_output {
             f.write_str(" | ")?;
         }
-        write!(f, "{:#x}", remain)?;
+        f.write_fmt(format_args!("{remain:#x}"))?;
         has_output = true;
     }
     if !has_output {
@@ -149,19 +84,13 @@ fn display_bitmask(bits: u64, bit_names: &[(u64, &str)], f: &mut fmt::Formatter)
 }
 
 macro_rules! impl_bitmask {
-    ($name:ident, $all_bits:literal) => {
+    ($name:ident) => {
         impl $name {
             pub fn empty() -> Self {
                 Self(0)
             }
-            pub fn all() -> Self {
-                Self($all_bits)
-            }
             pub fn is_empty(self) -> bool {
                 self.0 == 0
-            }
-            pub fn is_all(self) -> bool {
-                self.0 == $all_bits
             }
             pub fn intersects(self, other: Self) -> bool {
                 (self.0 & other.0) != 0
@@ -201,6 +130,19 @@ macro_rules! impl_bitmask {
         impl ops::BitXorAssign for $name {
             fn bitxor_assign(&mut self, rhs: Self) {
                 self.0 ^= rhs.0;
+            }
+        }
+    }
+}
+
+macro_rules! impl_handle {
+    ($name:ident) => {
+        impl $name {
+            pub fn null() -> Self {
+                Self(0)
+            }
+            pub fn is_null(self) -> bool {
+                self.0 == 0
             }
         }
     }
