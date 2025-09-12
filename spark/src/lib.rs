@@ -1787,7 +1787,7 @@ impl InstanceExtensions {
         self.supports_qcom_tile_properties() || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_qcom_tile_shading(&mut self) {
-        // ambiguous dependency, caller must enable one or the other
+        // ambiguous dependency, caller must enable one explicitly
         debug_assert!(self.supports_qcom_tile_properties() || self.supports_khr_get_physical_device_properties2());
     }
     pub fn supports_khr_synchronization2(&self) -> bool {
@@ -2595,7 +2595,7 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
             self.enable_khr_timeline_semaphore();
         }
-        // ambiguous dependency, caller must enable one or the other
+        // ambiguous dependency, caller must enable one explicitly
         debug_assert!(self.supports_khr_present_id() || self.supports_khr_present_id2());
     }
     pub fn supports_khr_cooperative_matrix(&self) -> bool {
@@ -9151,7 +9151,7 @@ impl DeviceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
             self.enable_khr_timeline_semaphore();
         }
-        // ambiguous dependency, caller must enable one or the other
+        // ambiguous dependency, caller must enable one explicitly
         debug_assert!(self.supports_khr_present_id() || self.supports_khr_present_id2());
     }
     pub fn supports_khr_cooperative_matrix(&self) -> bool {

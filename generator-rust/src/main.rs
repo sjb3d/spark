@@ -1430,15 +1430,33 @@ fn write_enable_dependency(
                         let ident_b = AsIdent(&oracle.extensions[*index_b].short_name);
                         writeln!(
                             w,
-                            "// ambiguous dependency, caller must enable one or the other\n\
+                            "// ambiguous dependency, caller must enable one explicitly\n\
                              debug_assert!(self.supports_{ident_a}() || self.supports_{ident_b}());"
                         )?;
                     }
                     _ => unimplemented!(),
                 }
             } else {
-                println!("{deps:?}");
-                unimplemented!();
+                match (&deps[0], &deps[1], &deps[2]) {
+                    (
+                        ExtensionDependencyExpr::Extension(index_a),
+                        ExtensionDependencyExpr::Extension(index_b),
+                        ExtensionDependencyExpr::Extension(index_c),
+                    ) => {
+                        let ident_a = AsIdent(&oracle.extensions[*index_a].short_name);
+                        let ident_b = AsIdent(&oracle.extensions[*index_b].short_name);
+                        let ident_c = AsIdent(&oracle.extensions[*index_c].short_name);
+                        writeln!(
+                            w,
+                            "// ambiguous dependency, caller must enable one explicitly\n\
+                             debug_assert!(self.supports_{ident_a}() || self.supports_{ident_b}() || self.supports_{ident_c}());"
+                        )?;
+                    }
+                    _ => {
+                        println!("{deps:?}");
+                        unimplemented!()
+                    }
+                }
             }
         }
     }

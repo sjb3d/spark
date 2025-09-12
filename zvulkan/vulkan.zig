@@ -17343,7 +17343,7 @@ pub const InstanceExtensions = packed struct {
         return self.supports_qcom_tile_properties() or self.supports_khr_get_physical_device_properties2();
     }
     pub fn enable_qcom_tile_shading(self: *InstanceExtensions) void {
-        // ambiguous dependency, caller must enable one or the other
+        // ambiguous dependency, caller must enable one explicitly
         assert(self.supports_qcom_tile_properties() or self.supports_khr_get_physical_device_properties2());
     }
 
@@ -18202,7 +18202,7 @@ pub const InstanceExtensions = packed struct {
         if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
             self.enable_khr_timeline_semaphore();
         }
-        // ambiguous dependency, caller must enable one or the other
+        // ambiguous dependency, caller must enable one explicitly
         assert(self.supports_khr_present_id() or self.supports_khr_present_id2());
     }
 
@@ -22576,7 +22576,7 @@ pub const DeviceExtensions = packed struct {
         if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
             self.enable_khr_timeline_semaphore();
         }
-        // ambiguous dependency, caller must enable one or the other
+        // ambiguous dependency, caller must enable one explicitly
         assert(self.supports_khr_present_id() or self.supports_khr_present_id2());
     }
 

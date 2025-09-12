@@ -636,15 +636,36 @@ fn write_enable_dependency(
                         let supports_b = AsPrefixedIdent("supports_", &ext_b.short_name);
                         writeln!(
                             w,
-                            "// ambiguous dependency, caller must enable one or the other\n\
+                            "// ambiguous dependency, caller must enable one explicitly\n\
                              assert(self.{supports_a}() or self.{supports_b}());"
                         )?;
                     }
                     _ => unimplemented!(),
                 }
             } else {
-                println!("{deps:?}");
-                unimplemented!();
+                match (&deps[0], &deps[1], &deps[2]) {
+                    (
+                        ExtensionDependencyExpr::Extension(index_a),
+                        ExtensionDependencyExpr::Extension(index_b),
+                        ExtensionDependencyExpr::Extension(index_c),
+                    ) => {
+                        let ext_a = &oracle.extensions[*index_a];
+                        let ext_b = &oracle.extensions[*index_b];
+                        let ext_c = &oracle.extensions[*index_c];
+                        let supports_a = AsPrefixedIdent("supports_", &ext_a.short_name);
+                        let supports_b = AsPrefixedIdent("supports_", &ext_b.short_name);
+                        let supports_c = AsPrefixedIdent("supports_", &ext_c.short_name);
+                        writeln!(
+                            w,
+                            "// ambiguous dependency, caller must enable one explicitly\n\
+                             assert(self.{supports_a}() or self.{supports_b}() or self.{supports_c}());"
+                        )?;
+                    }
+                    _ => {
+                        println!("{deps:?}");
+                        unimplemented!()
+                    }
+                }
             }
         }
     }
