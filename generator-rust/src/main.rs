@@ -495,12 +495,19 @@ fn write_types(w: &mut impl IoWrite, oracle: &Oracle) -> Res {
                 let agg_type = if aggregate_type.is_union { "union" } else { "struct" };
                 writeln!(w, "\n#[repr(C)]")?;
                 let can_derive_debug = !aggregate_type.is_union
-                    && aggregate_type.members.iter().all(|member| !matches!(&member.ty, TypeDecl::Pointer(_) | TypeDecl::External(_) | TypeDecl::Array(_)));
+                    && aggregate_type.members.iter().all(|member| {
+                        !matches!(
+                            &member.ty,
+                            TypeDecl::Pointer(_) | TypeDecl::External(_) | TypeDecl::Array(_)
+                        )
+                    });
                 let can_derive_default = !aggregate_type.is_union
                     && aggregate_type.members.iter().all(|member| {
                         member.default.is_none()
-                            && !matches!(&member.ty,
-                                TypeDecl::Pointer(_) | TypeDecl::External(_) | TypeDecl::Array(_))
+                            && !matches!(
+                                &member.ty,
+                                TypeDecl::Pointer(_) | TypeDecl::External(_) | TypeDecl::Array(_)
+                            )
                     });
                 let mut derives = vec!["Copy", "Clone"];
                 if can_derive_debug {
@@ -584,10 +591,7 @@ fn write_types(w: &mut impl IoWrite, oracle: &Oracle) -> Res {
                     HandleType::U64 => "u64",
                 };
                 writeln!(w, "\n#[repr(transparent)]")?;
-                writeln!(
-                    w,
-                    "#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]"
-                )?;
+                writeln!(w, "#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]")?;
                 writeln!(w, "pub struct {type_name}({interior_type});")?;
                 writeln!(w, "impl_handle!({type_name});")?;
             }
@@ -647,7 +651,7 @@ fn write_command_param_declaration(
     match &param.transform {
         ParameterTransform::None => {
             write!(w, "{ident}: ")?;
-            match PointerTransform::from_type_decl(&param.ty,true) {
+            match PointerTransform::from_type_decl(&param.ty, true) {
                 PointerTransform::CStr => {
                     if param.is_optional {
                         write!(w, "Option<&CStr>")?;
@@ -806,7 +810,7 @@ fn write_command_param_forward(w: &mut impl IoWrite, oracle: &Oracle, param: &Pa
                             let TypeDecl::Pointer(pointer_decl) = &param.ty else {
                                 panic!("expected pointer type for slice parameter");
                             };
-                            if pointer_decl.is_const {                            
+                            if pointer_decl.is_const {
                                 write!(w, "{ident}.map_or(ptr::null(), |r| r)")?;
                             } else {
                                 write!(w, "{ident}.map_or(ptr::null_mut(), |r| r)")?;
