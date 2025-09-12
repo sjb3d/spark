@@ -1,3 +1,4 @@
+use bytemuck::{Pod, Zeroable};
 use egui::{
     ahash::HashMap,
     emath,
@@ -57,8 +58,9 @@ impl TakePrefix for Range<usize> {
 }
 
 #[repr(C)]
+#[derive(Copy, Clone, Zeroable, Pod)]
 struct BatchData {
-    size_in_points_rcp: (f32, f32),
+    size_in_points_rcp: [f32; 2],
 }
 
 struct ClippedDraw {
@@ -168,10 +170,10 @@ impl Layouts {
 
     pub fn destroy(&self, device: &Device) {
         unsafe {
-            device.destroy_shader_module(Some(self.fragment_shader), None);
-            device.destroy_shader_module(Some(self.vertex_shader), None);
-            device.destroy_pipeline_layout(Some(self.pipeline_layout), None);
-            device.destroy_descriptor_set_layout(Some(self.descriptor_set_layout), None);
+            device.destroy_shader_module(self.fragment_shader, None);
+            device.destroy_shader_module(self.vertex_shader, None);
+            device.destroy_pipeline_layout(self.pipeline_layout, None);
+            device.destroy_descriptor_set_layout(self.descriptor_set_layout, None);
         }
     }
 
@@ -185,13 +187,13 @@ impl Layouts {
         let shader_stage_create_info = [
             vk::PipelineShaderStageCreateInfo {
                 stage: vk::ShaderStageFlags::VERTEX,
-                module: Some(self.vertex_shader),
+                module: self.vertex_shader,
                 p_name: shader_entry_name.as_ptr(),
                 ..Default::default()
             },
             vk::PipelineShaderStageCreateInfo {
                 stage: vk::ShaderStageFlags::FRAGMENT,
-                module: Some(self.fragment_shader),
+                module: self.fragment_shader,
                 p_name: shader_entry_name.as_ptr(),
                 ..Default::default()
             },
@@ -260,7 +262,10 @@ impl Layouts {
             src_alpha_blend_factor: vk::BlendFactor::ONE_MINUS_DST_ALPHA,
             dst_alpha_blend_factor: vk::BlendFactor::ONE,
             alpha_blend_op: vk::BlendOp::ADD,
-            color_write_mask: vk::ColorComponentFlags::all(),
+            color_write_mask: vk::ColorComponentFlags::R
+                | vk::ColorComponentFlags::G
+                | vk::ColorComponentFlags::B
+                | vk::ColorComponentFlags::A,
         };
         let color_blend_state_create_info = vk::PipelineColorBlendStateCreateInfo::builder()
             .p_attachments(slice::from_ref(&color_blend_attachment_state));
@@ -279,10 +284,15 @@ impl Layouts {
             .p_depth_stencil_state(Some(&depth_stencil_state))
             .p_color_blend_state(Some(&color_blend_state_create_info))
             .p_dynamic_state(Some(&pipeline_dynamic_state_create_info))
-            .layout(Some(self.pipeline_layout))
-            .render_pass(Some(render_pass));
+            .layout(self.pipeline_layout)
+            .render_pass(render_pass);
 
-        unsafe { device.create_graphics_pipelines_single(None, &pipeline_create_info, None) }.unwrap()
+        unsafe { device.create_graphics_pipelines_single(vk::PipelineCache::null(), &pipeline_create_info, None) }
+            .and_then(|(res, pipeline)| match res {
+                vk::Result::SUCCESS => Ok(pipeline),
+                _ => Err(res),
+            })
+            .unwrap()
     }
 }
 
@@ -340,8 +350,8 @@ impl Staging {
     pub fn destroy(&self, device: &Device) {
         unsafe {
             device.unmap_memory(self.mem);
-            device.destroy_buffer(Some(self.buffer), None);
-            device.free_memory(Some(self.mem), None);
+            device.destroy_buffer(self.buffer, None);
+            device.free_memory(self.mem, None);
         }
     }
 
@@ -359,7 +369,7 @@ impl Staging {
     pub fn flush_mapped_range(&self, device: &Device, range: Range<usize>) {
         if !range.is_empty() {
             let mapped_range = vk::MappedMemoryRange {
-                memory: Some(self.mem),
+                memory: self.mem,
                 offset: range.start as vk::DeviceSize,
                 size: align_up(range.len() as u32, self.atom_size) as vk::DeviceSize,
                 ..Default::default()
@@ -426,9 +436,9 @@ impl MeshBuffers {
 
     pub fn destroy(&self, device: &Device) {
         unsafe {
-            device.destroy_buffer(Some(self.index_buffer), None);
-            device.destroy_buffer(Some(self.vertex_buffer), None);
-            device.free_memory(Some(self.mem), None);
+            device.destroy_buffer(self.index_buffer, None);
+            device.destroy_buffer(self.vertex_buffer, None);
+            device.free_memory(self.mem, None);
         }
     }
 
@@ -524,7 +534,7 @@ impl MeshBuffers {
                     dst_access_mask: vk::AccessFlags::VERTEX_ATTRIBUTE_READ,
                     src_queue_family_index: vk::QUEUE_FAMILY_IGNORED,
                     dst_queue_family_index: vk::QUEUE_FAMILY_IGNORED,
-                    buffer: Some(self.vertex_buffer),
+                    buffer: self.vertex_buffer,
                     size: vertex_write_size as vk::DeviceSize,
                     ..Default::default()
                 },
@@ -533,7 +543,7 @@ impl MeshBuffers {
                     dst_access_mask: vk::AccessFlags::INDEX_READ,
                     src_queue_family_index: vk::QUEUE_FAMILY_IGNORED,
                     dst_queue_family_index: vk::QUEUE_FAMILY_IGNORED,
-                    buffer: Some(self.index_buffer),
+                    buffer: self.index_buffer,
                     size: index_write_size as vk::DeviceSize,
                     ..Default::default()
                 },
@@ -620,7 +630,7 @@ impl Texture {
 
         let image_view = {
             let image_view_create_info = vk::ImageViewCreateInfo {
-                image: Some(image),
+                image,
                 view_type: vk::ImageViewType::N2D,
                 format: vk::Format::R8G8B8A8_SRGB,
                 subresource_range: vk::ImageSubresourceRange {
@@ -657,8 +667,8 @@ impl Texture {
 
         {
             let image_info = vk::DescriptorImageInfo {
-                sampler: Some(sampler),
-                image_view: Some(image_view),
+                sampler,
+                image_view,
                 image_layout: vk::ImageLayout::SHADER_READ_ONLY_OPTIMAL,
             };
             let write_descriptor_set = vk::WriteDescriptorSet::builder()
@@ -673,7 +683,7 @@ impl Texture {
             new_layout: vk::ImageLayout::TRANSFER_DST_OPTIMAL,
             src_queue_family_index: vk::QUEUE_FAMILY_IGNORED,
             dst_queue_family_index: vk::QUEUE_FAMILY_IGNORED,
-            image: Some(image),
+            image,
             subresource_range: vk::ImageSubresourceRange {
                 aspect_mask: vk::ImageAspectFlags::COLOR,
                 level_count: 1,
@@ -707,11 +717,11 @@ impl Texture {
 
     pub fn destroy(&self, device: &Device) {
         unsafe {
-            device.destroy_descriptor_pool(Some(self.descriptor_pool), None);
-            device.destroy_sampler(Some(self.sampler), None);
-            device.destroy_image_view(Some(self.image_view), None);
-            device.destroy_image(Some(self.image), None);
-            device.free_memory(Some(self.mem), None);
+            device.destroy_descriptor_pool(self.descriptor_pool, None);
+            device.destroy_sampler(self.sampler, None);
+            device.destroy_image_view(self.image_view, None);
+            device.destroy_image(self.image, None);
+            device.free_memory(self.mem, None);
         }
     }
 
@@ -724,7 +734,7 @@ impl Texture {
                 new_layout: vk::ImageLayout::TRANSFER_DST_OPTIMAL,
                 src_queue_family_index: vk::QUEUE_FAMILY_IGNORED,
                 dst_queue_family_index: vk::QUEUE_FAMILY_IGNORED,
-                image: Some(self.image),
+                image: self.image,
                 subresource_range: vk::ImageSubresourceRange {
                     aspect_mask: vk::ImageAspectFlags::COLOR,
                     level_count: 1,
@@ -757,7 +767,7 @@ impl Texture {
                 new_layout: vk::ImageLayout::SHADER_READ_ONLY_OPTIMAL,
                 src_queue_family_index: vk::QUEUE_FAMILY_IGNORED,
                 dst_queue_family_index: vk::QUEUE_FAMILY_IGNORED,
-                image: Some(self.image),
+                image: self.image,
                 subresource_range: vk::ImageSubresourceRange {
                     aspect_mask: vk::ImageAspectFlags::COLOR,
                     level_count: 1,
@@ -998,10 +1008,10 @@ impl Renderer {
         }
 
         let batch_data = BatchData {
-            size_in_points_rcp: (
+            size_in_points_rcp: [
                 pixels_per_point / (width_in_pixels as f32),
                 pixels_per_point / (height_in_pixels as f32),
-            ),
+            ],
         };
         unsafe {
             device.cmd_push_constants(
@@ -1009,7 +1019,7 @@ impl Renderer {
                 self.layouts.pipeline_layout,
                 vk::ShaderStageFlags::VERTEX,
                 0,
-                slice::from_ref(&batch_data),
+                bytemuck::bytes_of(&batch_data),
             )
         };
 
@@ -1020,12 +1030,7 @@ impl Renderer {
                 slice::from_ref(&self.mesh_buffers.vertex_buffer),
                 &[0],
             );
-            device.cmd_bind_index_buffer(
-                command_buffer,
-                Some(self.mesh_buffers.index_buffer),
-                0,
-                vk::IndexType::UINT32,
-            );
+            device.cmd_bind_index_buffer(command_buffer, self.mesh_buffers.index_buffer, 0, vk::IndexType::UINT32);
         }
 
         for clipped_draw in &self.mesh_buffers.clipped_draws {

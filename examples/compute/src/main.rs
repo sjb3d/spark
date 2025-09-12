@@ -1,4 +1,4 @@
-use spark::{vk, Builder, Loader};
+use spark::{vk, Builder, Globals};
 use std::{ffi::CStr, mem, slice};
 
 fn get_memory_type_index(
@@ -17,17 +17,19 @@ fn get_memory_type_index(
 
 #[allow(clippy::float_cmp)]
 pub fn main() {
+    // load the Vulkan lib
+    let globals = Globals::new().unwrap();
+
     // this example only requires Vulkan 1.0.0
     let version = Default::default();
 
     // load the Vulkan lib
     let instance = {
-        let loader = Loader::new().unwrap();
         let app_info = vk::ApplicationInfo::builder()
-            .p_application_name(Some(CStr::from_bytes_with_nul(b"compute\0").unwrap()))
+            .p_application_name(Some(c"compute"))
             .api_version(version);
         let instance_create_info = vk::InstanceCreateInfo::builder().p_application_info(Some(&app_info));
-        unsafe { loader.create_instance(&instance_create_info, None) }.unwrap()
+        unsafe { globals.create_instance_commands(&instance_create_info, None) }.unwrap()
     };
 
     // find the first physical device
@@ -66,7 +68,7 @@ pub fn main() {
             .p_queue_priorities(slice::from_ref(&queue_priority));
         let device_create_info =
             vk::DeviceCreateInfo::builder().p_queue_create_infos(slice::from_ref(&device_queue_create_info));
-        unsafe { instance.create_device(physical_device, &device_create_info, None, version) }.unwrap()
+        unsafe { instance.create_device_commands(&globals, physical_device, &device_create_info, None) }.unwrap()
     };
 
     // load the compute shader
@@ -134,14 +136,20 @@ pub fn main() {
     let pipeline_create_info = vk::ComputePipelineCreateInfo {
         stage: vk::PipelineShaderStageCreateInfo {
             stage: vk::ShaderStageFlags::COMPUTE,
-            module: Some(shader_module),
-            p_name: unsafe { CStr::from_bytes_with_nul_unchecked(b"main\0") }.as_ptr(),
+            module: shader_module,
+            p_name: c"main".as_ptr(),
             ..Default::default()
         },
-        layout: Some(pipeline_layout),
+        layout: pipeline_layout,
         ..Default::default()
     };
-    let pipeline = unsafe { device.create_compute_pipelines_single(None, &pipeline_create_info, None) }.unwrap();
+    let pipeline =
+        unsafe { device.create_compute_pipelines_single(vk::PipelineCache::null(), &pipeline_create_info, None) }
+            .and_then(|(res, pipeline)| match res {
+                vk::Result::SUCCESS => Ok(pipeline),
+                _ => Err(res),
+            })
+            .unwrap();
 
     // create a pool for the descriptor we need
     let descriptor_pool = {
@@ -162,7 +170,7 @@ pub fn main() {
     let descriptor_set = unsafe { device.allocate_descriptor_sets_single(&descriptor_set_allocate_info) }.unwrap();
 
     let descriptor_buffer_info = [vk::DescriptorBufferInfo {
-        buffer: Some(buffer),
+        buffer,
         offset: 0,
         range: vk::WHOLE_SIZE,
     }];
@@ -180,7 +188,7 @@ pub fn main() {
     };
     let command_pool = unsafe { device.create_command_pool(&command_pool_create_info, None) }.unwrap();
     let command_buffer_allocate_info = vk::CommandBufferAllocateInfo {
-        command_pool: Some(command_pool),
+        command_pool,
         level: vk::CommandBufferLevel::PRIMARY,
         command_buffer_count: 1,
         ..Default::default()
@@ -210,7 +218,7 @@ pub fn main() {
     // run it and wait until it is completed
     let queue = unsafe { device.get_device_queue(queue_family_index, 0) };
     let submit_info = vk::SubmitInfo::builder().p_command_buffers(slice::from_ref(&command_buffer));
-    unsafe { device.queue_submit(queue, slice::from_ref(&submit_info), None) }.unwrap();
+    unsafe { device.queue_submit(queue, slice::from_ref(&submit_info), vk::Fence::null()) }.unwrap();
     unsafe { device.device_wait_idle() }.unwrap();
 
     // check results

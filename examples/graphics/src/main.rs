@@ -4,6 +4,7 @@ mod swapchain;
 mod window_surface;
 
 use crate::{command_buffer::*, context::*, swapchain::*};
+use bytemuck::{Pod, Zeroable};
 use egui::Key;
 use spark::{vk, Builder};
 use std::{collections::HashMap, env, f32::consts::PI, ffi::CStr, mem, slice, sync::Arc};
@@ -27,7 +28,7 @@ impl SwapTarget {
         let extent = swapchain.extent();
 
         let image_view_create_info = vk::ImageViewCreateInfo {
-            image: Some(image),
+            image,
             view_type: vk::ImageViewType::N2D,
             format,
             subresource_range: vk::ImageSubresourceRange {
@@ -62,8 +63,8 @@ impl Drop for SwapTarget {
     fn drop(&mut self) {
         let device = &self.context.device;
         unsafe {
-            device.destroy_framebuffer(Some(self.framebuffer), None);
-            device.destroy_image_view(Some(self.image_view), None);
+            device.destroy_framebuffer(self.framebuffer, None);
+            device.destroy_image_view(self.image_view, None);
         }
     }
 }
@@ -93,6 +94,7 @@ struct App {
 }
 
 #[repr(C)]
+#[derive(Clone, Copy, Zeroable, Pod)]
 struct TestData {
     angle: f32,
     x_scale: f32,
@@ -107,7 +109,7 @@ impl App {
         println!(
             "physical device ({}): {:?}",
             context.physical_device_properties.device_type,
-            unsafe { CStr::from_ptr(context.physical_device_properties.device_name.as_ptr()) }
+            unsafe { CStr::from_ptr(context.physical_device_properties.device_name.as_ptr(),) }
         );
 
         let egui_max_vertex_count = 64 * 1024;
@@ -204,13 +206,13 @@ impl App {
             let shader_stage_create_info = [
                 vk::PipelineShaderStageCreateInfo {
                     stage: vk::ShaderStageFlags::VERTEX,
-                    module: Some(vertex_shader),
+                    module: vertex_shader,
                     p_name: shader_entry_name.as_ptr(),
                     ..Default::default()
                 },
                 vk::PipelineShaderStageCreateInfo {
                     stage: vk::ShaderStageFlags::FRAGMENT,
-                    module: Some(fragment_shader),
+                    module: fragment_shader,
                     p_name: shader_entry_name.as_ptr(),
                     ..Default::default()
                 },
@@ -241,7 +243,10 @@ impl App {
             };
 
             let color_blend_attachment_state = vk::PipelineColorBlendAttachmentState {
-                color_write_mask: vk::ColorComponentFlags::all(),
+                color_write_mask: vk::ColorComponentFlags::R
+                    | vk::ColorComponentFlags::G
+                    | vk::ColorComponentFlags::B
+                    | vk::ColorComponentFlags::A,
                 ..Default::default()
             };
             let color_blend_state_create_info = vk::PipelineColorBlendStateCreateInfo::builder()
@@ -260,14 +265,18 @@ impl App {
                 .p_multisample_state(Some(&multisample_state_create_info))
                 .p_color_blend_state(Some(&color_blend_state_create_info))
                 .p_dynamic_state(Some(&pipeline_dynamic_state_create_info))
-                .layout(Some(pipeline_layout))
-                .render_pass(Some(render_pass));
+                .layout(pipeline_layout)
+                .render_pass(render_pass);
 
             unsafe {
                 context
                     .device
-                    .create_graphics_pipelines_single(None, &pipeline_create_info, None)
+                    .create_graphics_pipelines_single(vk::PipelineCache::null(), &pipeline_create_info, None)
             }
+            .and_then(|(res, pipeline)| match res {
+                vk::Result::SUCCESS => Ok(pipeline),
+                _ => Err(res),
+            })
             .unwrap()
         };
 
@@ -442,7 +451,7 @@ impl App {
                     self.pipeline_layout,
                     vk::ShaderStageFlags::VERTEX,
                     0,
-                    slice::from_ref(&test_data),
+                    bytemuck::bytes_of(&test_data),
                 );
                 device.cmd_draw(cmd, 3, 1, 0, 0);
             }
@@ -480,14 +489,14 @@ impl Drop for App {
         unsafe {
             device.device_wait_idle().unwrap();
 
-            device.destroy_pipeline(Some(self.egui_pipeline), None);
+            device.destroy_pipeline(self.egui_pipeline, None);
             self.egui_renderer.destroy(device);
 
-            device.destroy_pipeline(Some(self.pipeline), None);
-            device.destroy_pipeline_layout(Some(self.pipeline_layout), None);
-            device.destroy_shader_module(Some(self.fragment_shader), None);
-            device.destroy_shader_module(Some(self.vertex_shader), None);
-            device.destroy_render_pass(Some(self.render_pass), None);
+            device.destroy_pipeline(self.pipeline, None);
+            device.destroy_pipeline_layout(self.pipeline_layout, None);
+            device.destroy_shader_module(self.fragment_shader, None);
+            device.destroy_shader_module(self.vertex_shader, None);
+            device.destroy_render_pass(self.render_pass, None);
         }
     }
 }

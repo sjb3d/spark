@@ -1,6 +1,6 @@
 use crate::window_surface;
 use raw_window_handle::{HasRawDisplayHandle, HasRawWindowHandle};
-use spark::{vk, Builder, Device, DeviceExtensions, Instance, InstanceExtensions, Loader};
+use spark::{vk, Builder, Device, DeviceExtensions, Globals, Instance, InstanceExtensions};
 use std::ffi::CStr;
 use std::os::raw::c_void;
 use std::slice;
@@ -53,8 +53,9 @@ impl InstanceExt for Instance {
 }
 
 pub struct Context {
+    pub _globals: Globals,
     pub instance: Instance,
-    pub debug_utils_messenger: Option<vk::DebugUtilsMessengerEXT>,
+    pub debug_utils_messenger: vk::DebugUtilsMessengerEXT,
     pub surface: vk::SurfaceKHR,
     pub physical_device: vk::PhysicalDevice,
     pub physical_device_properties: vk::PhysicalDeviceProperties,
@@ -66,10 +67,10 @@ pub struct Context {
 
 impl Context {
     pub fn new(window: &Window, version: vk::Version, is_debug: bool) -> Self {
+        let globals = Globals::new().unwrap();
+
         let display_handle = window.raw_display_handle();
         let instance = {
-            let loader = Loader::new().unwrap();
-
             let mut extensions = InstanceExtensions::new(version);
             window_surface::enable_extensions(&display_handle, &mut extensions);
             if is_debug {
@@ -85,7 +86,7 @@ impl Context {
             let instance_create_info = vk::InstanceCreateInfo::builder()
                 .p_application_info(Some(&app_info))
                 .pp_enabled_extension_names(&extension_name_ptrs);
-            unsafe { loader.create_instance(&instance_create_info, None) }.unwrap()
+            unsafe { globals.create_instance_commands(&instance_create_info, None) }.unwrap()
         };
 
         let debug_utils_messenger = if is_debug {
@@ -98,9 +99,9 @@ impl Context {
                 pfn_user_callback: Some(debug_messenger),
                 ..Default::default()
             };
-            Some(unsafe { instance.create_debug_utils_messenger_ext(&create_info, None) }.unwrap())
+            unsafe { instance.create_debug_utils_messenger_ext(&create_info, None) }.unwrap()
         } else {
-            None
+            vk::DebugUtilsMessengerEXT::null()
         };
 
         let window_handle = window.raw_window_handle();
@@ -132,12 +133,13 @@ impl Context {
             let device_create_info = vk::DeviceCreateInfo::builder()
                 .p_queue_create_infos(slice::from_ref(&device_queue_create_info))
                 .pp_enabled_extension_names(&extension_name_ptrs);
-            unsafe { instance.create_device(physical_device, &device_create_info, None, version) }.unwrap()
+            unsafe { instance.create_device_commands(&globals, physical_device, &device_create_info, None) }.unwrap()
         };
 
         let queue = unsafe { device.get_device_queue(queue_family_index, 0) };
 
         Self {
+            _globals: globals,
             instance,
             debug_utils_messenger,
             surface,
@@ -155,8 +157,8 @@ impl Drop for Context {
     fn drop(&mut self) {
         unsafe {
             self.device.destroy_device(None);
-            self.instance.destroy_surface_khr(Some(self.surface), None);
-            if self.debug_utils_messenger.is_some() {
+            self.instance.destroy_surface_khr(self.surface, None);
+            if !self.debug_utils_messenger.is_null() {
                 self.instance
                     .destroy_debug_utils_messenger_ext(self.debug_utils_messenger, None);
             }

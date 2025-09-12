@@ -26,7 +26,7 @@ impl CommandBufferSet {
 
         let command_buffer = {
             let command_buffer_allocate_info = vk::CommandBufferAllocateInfo {
-                command_pool: Some(pool),
+                command_pool: pool,
                 level: vk::CommandBufferLevel::PRIMARY,
                 command_buffer_count: 1,
                 ..Default::default()
@@ -88,7 +88,9 @@ impl CommandBufferPool {
             match res {
                 Ok(_) => break,
                 Err(vk::Result::TIMEOUT) => {}
-                Err(err_code) => panic!("failed to wait for fence {}", err_code),
+                Err(err_code) => {
+                    panic!("failed to wait for fence {}", err_code)
+                }
             }
         }
 
@@ -131,7 +133,7 @@ impl CommandBufferPool {
         unsafe {
             self.context
                 .device
-                .queue_submit(self.context.queue, slice::from_ref(&submit_info), Some(set.fence))
+                .queue_submit(self.context.queue, slice::from_ref(&submit_info), set.fence)
         }
         .unwrap();
 
@@ -144,11 +146,11 @@ impl Drop for CommandBufferPool {
         let device = &self.context.device;
         for set in self.sets.iter() {
             unsafe {
-                device.destroy_semaphore(Some(set.rendering_finished_semaphore), None);
-                device.destroy_semaphore(Some(set.image_available_semaphore), None);
-                device.destroy_fence(Some(set.fence), None);
+                device.destroy_semaphore(set.rendering_finished_semaphore, None);
+                device.destroy_semaphore(set.image_available_semaphore, None);
+                device.destroy_fence(set.fence, None);
                 device.free_command_buffers(set.pool, slice::from_ref(&set.command_buffer));
-                device.destroy_command_pool(Some(set.pool), None);
+                device.destroy_command_pool(set.pool, None);
             }
         }
     }

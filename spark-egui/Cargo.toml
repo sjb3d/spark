@@ -1,6 +1,6 @@
 [package]
 name = "spark-egui"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Simon Brown <si@sjbrown.co.uk>"]
 edition = "2018"
 publish = false
