@@ -7,7 +7,7 @@ use egui::{
 };
 use memoffset::offset_of;
 use spark::{vk, Builder, Device};
-use std::{borrow::Cow, collections::VecDeque, ffi::CStr, mem, ops::Range, os::raw::c_void, slice};
+use std::{borrow::Cow, collections::VecDeque, mem, ops::Range, os::raw::c_void, slice};
 
 type Index = u32;
 
@@ -183,7 +183,7 @@ impl Layouts {
         render_pass: vk::RenderPass,
         samples: vk::SampleCountFlags,
     ) -> vk::Pipeline {
-        let shader_entry_name = CStr::from_bytes_with_nul(b"main\0").unwrap();
+        let shader_entry_name = c"main";
         let shader_stage_create_info = [
             vk::PipelineShaderStageCreateInfo {
                 stage: vk::ShaderStageFlags::VERTEX,

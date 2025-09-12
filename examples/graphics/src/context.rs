@@ -79,7 +79,7 @@ impl Context {
             let extension_names = extensions.to_name_vec();
 
             let app_info = vk::ApplicationInfo::builder()
-                .p_application_name(Some(CStr::from_bytes_with_nul(b"graphics\0").unwrap()))
+                .p_application_name(Some(c"graphics"))
                 .api_version(version);
 
             let extension_name_ptrs: Vec<_> = extension_names.iter().map(|s| s.as_ptr()).collect();

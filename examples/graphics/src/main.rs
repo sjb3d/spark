@@ -202,7 +202,7 @@ impl App {
 
         let egui_pipeline = egui_renderer.create_pipeline(&context.device, render_pass, vk::SampleCountFlags::N1);
         let pipeline = {
-            let shader_entry_name = CStr::from_bytes_with_nul(b"main\0").unwrap();
+            let shader_entry_name = c"main";
             let shader_stage_create_info = [
                 vk::PipelineShaderStageCreateInfo {
                     stage: vk::ShaderStageFlags::VERTEX,
