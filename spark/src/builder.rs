@@ -2322,12 +2322,9 @@ impl<'a> SpecializationInfoBuilder<'a> {
         self.inner.p_map_entries = p_map_entries.as_ptr();
         self
     }
-    pub fn data_size(mut self, data_size: usize) -> Self {
-        self.inner.data_size = data_size;
-        self
-    }
-    pub fn p_data(mut self, p_data: *const c_void) -> Self {
-        self.inner.p_data = p_data;
+    pub fn p_data(mut self, p_data: &'a [u8]) -> Self {
+        self.inner.data_size = p_data.len();
+        self.inner.p_data = p_data.as_ptr() as *const _;
         self
     }
 }
@@ -3356,12 +3353,9 @@ impl<'a> PipelineCacheCreateInfoBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn initial_data_size(mut self, initial_data_size: usize) -> Self {
-        self.inner.initial_data_size = initial_data_size;
-        self
-    }
-    pub fn p_initial_data(mut self, p_initial_data: *const c_void) -> Self {
-        self.inner.p_initial_data = p_initial_data;
+    pub fn p_initial_data(mut self, p_initial_data: &'a [u8]) -> Self {
+        self.inner.initial_data_size = p_initial_data.len();
+        self.inner.p_initial_data = p_initial_data.as_ptr() as *const _;
         self
     }
 }
@@ -3539,12 +3533,9 @@ impl<'a> PipelineBinaryDataKHRBuilder<'a> {
     pub fn get_mut(&mut self) -> &mut vk::PipelineBinaryDataKHR {
         &mut self.inner
     }
-    pub fn data_size(mut self, data_size: usize) -> Self {
-        self.inner.data_size = data_size;
-        self
-    }
-    pub fn p_data(mut self, p_data: *mut c_void) -> Self {
-        self.inner.p_data = p_data;
+    pub fn p_data(mut self, p_data: &'a mut [u8]) -> Self {
+        self.inner.data_size = p_data.len();
+        self.inner.p_data = p_data.as_mut_ptr() as *mut _;
         self
     }
 }
@@ -6229,12 +6220,9 @@ impl<'a> DebugMarkerObjectTagInfoEXTBuilder<'a> {
         self.inner.tag_name = tag_name;
         self
     }
-    pub fn tag_size(mut self, tag_size: usize) -> Self {
-        self.inner.tag_size = tag_size;
-        self
-    }
-    pub fn p_tag(mut self, p_tag: *const c_void) -> Self {
-        self.inner.p_tag = p_tag;
+    pub fn p_tag(mut self, p_tag: &'a [u8]) -> Self {
+        self.inner.tag_size = p_tag.len();
+        self.inner.p_tag = p_tag.as_ptr() as *const _;
         self
     }
 }
@@ -10945,12 +10933,9 @@ impl<'a> HdrVividDynamicMetadataHUAWEIBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn dynamic_metadata_size(mut self, dynamic_metadata_size: usize) -> Self {
-        self.inner.dynamic_metadata_size = dynamic_metadata_size;
-        self
-    }
-    pub fn p_dynamic_metadata(mut self, p_dynamic_metadata: *const c_void) -> Self {
-        self.inner.p_dynamic_metadata = p_dynamic_metadata;
+    pub fn p_dynamic_metadata(mut self, p_dynamic_metadata: &'a [u8]) -> Self {
+        self.inner.dynamic_metadata_size = p_dynamic_metadata.len();
+        self.inner.p_dynamic_metadata = p_dynamic_metadata.as_ptr() as *const _;
         self
     }
 }
@@ -12885,12 +12870,9 @@ impl<'a> WriteDescriptorSetInlineUniformBlockBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn data_size(mut self, data_size: u32) -> Self {
-        self.inner.data_size = data_size;
-        self
-    }
-    pub fn p_data(mut self, p_data: *const c_void) -> Self {
-        self.inner.p_data = p_data;
+    pub fn p_data(mut self, p_data: &'a [u8]) -> Self {
+        self.inner.data_size = p_data.len() as u32;
+        self.inner.p_data = p_data.as_ptr() as *const _;
         self
     }
 }
@@ -13054,12 +13036,9 @@ impl<'a> ValidationCacheCreateInfoEXTBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn initial_data_size(mut self, initial_data_size: usize) -> Self {
-        self.inner.initial_data_size = initial_data_size;
-        self
-    }
-    pub fn p_initial_data(mut self, p_initial_data: *const c_void) -> Self {
-        self.inner.p_initial_data = p_initial_data;
+    pub fn p_initial_data(mut self, p_initial_data: &'a [u8]) -> Self {
+        self.inner.initial_data_size = p_initial_data.len();
+        self.inner.p_initial_data = p_initial_data.as_ptr() as *const _;
         self
     }
 }
@@ -13722,12 +13701,9 @@ impl<'a> DebugUtilsObjectTagInfoEXTBuilder<'a> {
         self.inner.tag_name = tag_name;
         self
     }
-    pub fn tag_size(mut self, tag_size: usize) -> Self {
-        self.inner.tag_size = tag_size;
-        self
-    }
-    pub fn p_tag(mut self, p_tag: *const c_void) -> Self {
-        self.inner.p_tag = p_tag;
+    pub fn p_tag(mut self, p_tag: &'a [u8]) -> Self {
+        self.inner.tag_size = p_tag.len();
+        self.inner.p_tag = p_tag.as_ptr() as *const _;
         self
     }
 }
@@ -27666,12 +27642,9 @@ impl<'a> CuModuleCreateInfoNVXBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn data_size(mut self, data_size: usize) -> Self {
-        self.inner.data_size = data_size;
-        self
-    }
-    pub fn p_data(mut self, p_data: *const c_void) -> Self {
-        self.inner.p_data = p_data;
+    pub fn p_data(mut self, p_data: &'a [u8]) -> Self {
+        self.inner.data_size = p_data.len();
+        self.inner.p_data = p_data.as_ptr() as *const _;
         self
     }
 }
@@ -29145,12 +29118,9 @@ impl<'a> CudaModuleCreateInfoNVBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn data_size(mut self, data_size: usize) -> Self {
-        self.inner.data_size = data_size;
-        self
-    }
-    pub fn p_data(mut self, p_data: *const c_void) -> Self {
-        self.inner.p_data = p_data;
+    pub fn p_data(mut self, p_data: &'a [u8]) -> Self {
+        self.inner.data_size = p_data.len();
+        self.inner.p_data = p_data.as_ptr() as *const _;
         self
     }
 }
@@ -33099,12 +33069,9 @@ impl<'a> FrameBoundaryEXTBuilder<'a> {
         self.inner.tag_name = tag_name;
         self
     }
-    pub fn tag_size(mut self, tag_size: usize) -> Self {
-        self.inner.tag_size = tag_size;
-        self
-    }
-    pub fn p_tag(mut self, p_tag: *const c_void) -> Self {
-        self.inner.p_tag = p_tag;
+    pub fn p_tag(mut self, p_tag: &'a [u8]) -> Self {
+        self.inner.tag_size = p_tag.len();
+        self.inner.p_tag = p_tag.as_ptr() as *const _;
         self
     }
 }
@@ -34083,12 +34050,9 @@ impl<'a> ShaderCreateInfoEXTBuilder<'a> {
         self.inner.code_type = code_type;
         self
     }
-    pub fn code_size(mut self, code_size: usize) -> Self {
-        self.inner.code_size = code_size;
-        self
-    }
-    pub fn p_code(mut self, p_code: *const c_void) -> Self {
-        self.inner.p_code = p_code;
+    pub fn p_code(mut self, p_code: &'a [u8]) -> Self {
+        self.inner.code_size = p_code.len();
+        self.inner.p_code = p_code.as_ptr() as *const _;
         self
     }
     pub fn p_name(mut self, p_name: Option<&'a CStr>) -> Self {
@@ -34856,12 +34820,9 @@ impl<'a> PushConstantsInfoBuilder<'a> {
         self.inner.offset = offset;
         self
     }
-    pub fn size(mut self, size: u32) -> Self {
-        self.inner.size = size;
-        self
-    }
-    pub fn p_values(mut self, p_values: *const c_void) -> Self {
-        self.inner.p_values = p_values;
+    pub fn p_values(mut self, p_values: &'a [u8]) -> Self {
+        self.inner.size = p_values.len() as u32;
+        self.inner.p_values = p_values.as_ptr() as *const _;
         self
     }
 }

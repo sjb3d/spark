@@ -1515,7 +1515,7 @@ impl<'a> OracleBuilder<'a> {
                         if let TypeDecl::Pointer(pointer_decl) = &member.ty {
                             let slice_element_is_sized =
                                 !matches!(*pointer_decl.element_type, TypeDecl::BuiltIn(BuiltInDecl::Void));
-                            if slice_element_is_sized {
+                            if slice_element_is_sized || info.def.noautovalidity.is_none() {
                                 if let Some(ArraySize::Named(len_name)) =
                                     pointer_decl.array_hint.as_ref().map(|array| &array.size)
                                 {

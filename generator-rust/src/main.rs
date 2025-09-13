@@ -1670,7 +1670,10 @@ fn write_builders(w: &mut impl IoWrite, oracle: &Oracle) -> Res {
                 )?;
                 writeln!(w, "self }}")?;
             }
-            writeln!(w, "pub fn get_mut(&mut self) -> &mut vk::{type_name} {{ &mut self.inner }}")?;
+            writeln!(
+                w,
+                "pub fn get_mut(&mut self) -> &mut vk::{type_name} {{ &mut self.inner }}"
+            )?;
             if needs_setters {
                 for member in &aggregate_type.members {
                     if member.default.is_some() {
@@ -1794,12 +1797,19 @@ fn write_builders(w: &mut impl IoWrite, oracle: &Oracle) -> Res {
                                         write!(w, "mut ")?;
                                     }
                                     write!(w, "[")?;
-                                    write_type_decl(
-                                        w,
-                                        oracle,
-                                        &pointer_decl.element_type,
-                                        TypeContext::default().in_namespace(),
-                                    )?;
+                                    if matches!(
+                                        pointer_decl.element_type.as_ref(),
+                                        TypeDecl::BuiltIn(BuiltInDecl::Void)
+                                    ) {
+                                        write!(w, "u8")?;
+                                    } else {
+                                        write_type_decl(
+                                            w,
+                                            oracle,
+                                            &pointer_decl.element_type,
+                                            TypeContext::default().in_namespace(),
+                                        )?;
+                                    }
                                     write!(w, "]")?;
                                     if slice_member.is_optional && is_multi_slice {
                                         write!(w, ">")?;
@@ -1858,10 +1868,18 @@ fn write_builders(w: &mut impl IoWrite, oracle: &Oracle) -> Res {
                                     let as_ptr = if pointer_decl.is_const { "as_ptr" } else { "as_mut_ptr" };
                                     if slice_member.is_optional && is_multi_slice {
                                         let null = if pointer_decl.is_const { "null" } else { "null_mut" };
-                                        write!(w, "{slice_ident}.map_or(ptr::{null}(), |s| s.{as_ptr}());")?;
+                                        write!(w, "{slice_ident}.map_or(ptr::{null}(), |s| s.{as_ptr}())")?;
                                     } else {
-                                        write!(w, "{slice_ident}.{as_ptr}();")?;
+                                        write!(w, "{slice_ident}.{as_ptr}()")?;
                                     }
+                                    if matches!(pointer_decl.element_type.as_ref(), TypeDecl::BuiltIn(BuiltInDecl::Void)) {
+                                        if pointer_decl.is_const {
+                                            write!(w, " as *const _")?;
+                                        } else {
+                                            write!(w, " as *mut _")?;
+                                        }
+                                    }
+                                    write!(w, ";")?;
                                 }
 
                                 writeln!(w, "self }}")?;
