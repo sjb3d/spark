@@ -88,40 +88,6 @@ device.cmd_draw_indirect_count_khr(/*...*/)
 device.cmd_draw_indirect_count_amd(/*...*/)
 ```
 
-### Non-Zero Handles
-
-This is opinionated, but the library enforces that Vulkan handles must be non-null, by making use of the `NonZeroUsize` and `NonZeroU64` types.  For optional function parameters or struct members, they can be wrapped in `Option` to represent `VK_NULL_HANDLE` directly as `None`.
-
-The parameter type then encodes whether that object is required:
-
-```rust
-impl Device {
-    /* ... */
-    pub unsafe fn acquire_next_image_khr(
-        &self,
-        swapchain: vk::SwapchainKHR,        // not optional
-        timeout: u64,
-        semaphore: Option<vk::Semaphore>,   // optional
-        fence: Option<vk::Fence>,           // optional
-    ) -> Result<(vk::Result, u32)> {
-        /* ... */
-    }
-    /* ... */
-}
-```
-
-But struct declarations always use `Option` (to be able to have a `Default`), so get a bit more noisy:
-
-```rust
-pub struct DescriptorImageInfo {
-    pub sampler: Option<Sampler>,
-    pub image_view: Option<ImageView>,
-    pub image_layout: ImageLayout,
-}
-```
-
-On balance I think this is worth it and more Rust-y for handles to always be valid.
-
 ### Fully Generated
 
 I had a go at generating not only the struct and function pointer types as much as possible (hopefully there will be a standard `vk-sys` for this one day), but also **all** the wrappers that exist to make Vulkan functions more Rust-y on `Instance` and `Device` (and all the struct builders too).
@@ -169,46 +135,59 @@ impl<'a> SubmitInfoBuilder<'a> {
 }
 ```
 
-### Zero-Allocation Where Possible
+### Helper Commands
 
-This is maybe overkill, but functions that fill an array of known size have `_array` and `_single` variants that do not allocate from the heap, in addition to a `_to_vec` variant that requires a heap allocation.
+Additional overloads are generated for some Vulkan commands to make them easier to use.  Currently these are a `_single` variant for batch processing commands on a single item (that returns that item directly), and a `_to_vec` variant for commands that enumerate a list of items.
 
 ```rust
+impl Instance {
+    // standard Vulkan command
+    pub unsafe fn enumerate_physical_devices(
+        &self,
+        p_physical_device_count: &mut u32,
+        p_physical_devices: *mut vk::PhysicalDevice,
+    ) -> Result<EnumerateResult> {
+        /* ... */
+    }
+
+    // helper overload
+    pub unsafe fn enumerate_physical_devices_to_vec(&self) -> Result<Vec<vk::PhysicalDevice>> {
+        /* ... */
+    }
+}
 impl Device {
-    /* ... */
-    pub unsafe fn create_compute_pipelines_to_vec(
+    // standard Vulkan command
+    pub unsafe fn allocate_descriptor_sets(
         &self,
-        pipeline_cache: Option<vk::PipelineCache>,
-        p_create_infos: &[vk::ComputePipelineCreateInfo],
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<Vec<vk::Pipeline>> {
+        p_allocate_info: &vk::DescriptorSetAllocateInfo,
+        p_descriptor_sets: &mut [vk::DescriptorSet],
+    ) -> Result<()> {
+        /* ... */
+    }    
+
+    // helper overload
+    pub unsafe fn allocate_descriptor_sets_single(
+        &self,
+        p_allocate_info: &vk::DescriptorSetAllocateInfo,
+    ) -> Result<vk::DescriptorSet> {
         /* ... */
     }
-    pub unsafe fn create_compute_pipelines_array<const N: usize>(
-        &self,
-        pipeline_cache: Option<vk::PipelineCache>,
-        p_create_infos: &[vk::ComputePipelineCreateInfo],
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<[vk::Pipeline; N]> {
-        /* ... */
-    }
-    pub unsafe fn create_compute_pipelines_single(
-        &self,
-        pipeline_cache: Option<vk::PipelineCache>,
-        p_create_infos: &vk::ComputePipelineCreateInfo,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::Pipeline> {
-        /* ... */
-    }
-    /* ... */
 }
 ```
 
-The `_array` version now makes use of const generics to be fully generic over array length.
+## Generated Code
+
+Generating code directly from the output of [vk_parse](https://github.com/krolli/vk-parse) is tricky since information is spread out over the contents of the XML and requires parsing C code to fully decipher.
+
+To simplify this, the `vk-oracle` crate exists as a layer between the XML and a code generator.  This `vk-oracle` layer does some common processing on the XML data to build cross-referenced lists of structured types, constants, extensions and commands.
+
+The code generator for Rust can be found in `generator-rust` that uses the `vk-oracle` lists to build all the Rust code of `spark`.
+
+A code generator for [Zig](https://ziglang.org/) can be found in `generator-zig` that generates a mostly equivalent Vulkan API (without builders) for Zig, with output in [`zvulkan/vulkan.zig`](https://github.com/sjb3d/spark/blob/master/zvulkan/vulkan.zig)
 
 ## Examples
 
-Examples can be found in the `examples` folder.
+Rust examples can be found in the `examples` folder.
 
 ### [`compute`](https://github.com/sjb3d/spark/blob/master/examples/compute)
 
