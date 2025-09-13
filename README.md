@@ -1,6 +1,6 @@
 # spark
 
-This library aims to expose [Vulkan](https://www.khronos.org/registry/vulkan/) in [Rust](https://www.rust-lang.org/) with convenient syntax.
+This library aims to expose [Vulkan](https://www.khronos.org/registry/vulkan/) in [Rust](https://www.rust-lang.org/) (and [Zig](https://ziglang.org/)!) with convenient syntax.
 
 Supports Vulkan 1.4.318 and all extensions (apart from `GGP`/`QNX` extensions that use unknown data types).  It should compile on Windows, Linux and Android.
 
