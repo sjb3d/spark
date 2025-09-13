@@ -1617,35 +1617,48 @@ fn write_builders(w: &mut impl IoWrite, oracle: &Oracle) -> Res {
             continue;
         }
 
+        let is_special_case = matches!(ty.spec_name.as_str(), "VkBaseOutStructure" | "VkBaseInStructure");
+        if is_special_case {
+            continue;
+        }
+
         let is_extended = !aggregate_type.extended_by.is_empty();
         let has_pointer_member = aggregate_type
             .members
             .iter()
             .any(|member| matches!(&member.ty, TypeDecl::Pointer(_)) && member.spec_name.as_str() != "pNext");
-        let needs_setters = !aggregate_type.returned_only_hint && has_pointer_member;
+        let needs_lifetime = has_pointer_member || is_extended;
+        let needs_setters = !aggregate_type.returned_only_hint;
+        let needs_builder = is_extended || needs_setters;
+
         let type_name = AsTypeName {
             ty,
             in_option: false,
             in_namespace: false,
         };
 
-        if is_extended || needs_setters {
+        if needs_builder {
+            let generics = if needs_lifetime { "<'a>" } else { "" };
+            let generics_or_anon = if needs_lifetime { "<'a>" } else { "<'_>" };
+
             writeln!(w, "\n#[repr(transparent)]")?;
             writeln!(w, "#[derive(Default)]")?;
-            writeln!(w, "pub struct {type_name}Builder<'a> {{")?;
+            writeln!(w, "pub struct {type_name}Builder{generics} {{")?;
             writeln!(w, "inner: vk::{type_name},")?;
-            writeln!(w, "phantom: PhantomData<&'a ()>,")?;
+            if needs_lifetime {
+                writeln!(w, "phantom: PhantomData<&'a ()>,")?;
+            }
             writeln!(w, "}}")?;
 
-            writeln!(w, "impl<'a> Builder<'a> for vk::{type_name} {{")?;
-            writeln!(w, "type Type = {type_name}Builder<'a>;")?;
+            writeln!(w, "impl{generics} Builder{generics_or_anon} for vk::{type_name} {{")?;
+            writeln!(w, "type Type = {type_name}Builder{generics};")?;
             writeln!(w, "fn builder() -> Self::Type {{ Default::default() }} }}")?;
 
             if is_extended {
                 writeln!(w, "pub trait {type_name}Next {{ }}")?;
             }
 
-            writeln!(w, "impl<'a> {type_name}Builder<'a> {{")?;
+            writeln!(w, "impl{generics} {type_name}Builder{generics} {{")?;
             if is_extended {
                 writeln!(
                     w,
@@ -1657,6 +1670,7 @@ fn write_builders(w: &mut impl IoWrite, oracle: &Oracle) -> Res {
                 )?;
                 writeln!(w, "self }}")?;
             }
+            writeln!(w, "pub fn get_mut(&mut self) -> &mut vk::{type_name} {{ &mut self.inner }}")?;
             if needs_setters {
                 for member in &aggregate_type.members {
                     if member.default.is_some() {
@@ -1894,7 +1908,7 @@ fn write_builders(w: &mut impl IoWrite, oracle: &Oracle) -> Res {
 
             writeln!(
                 w,
-                "impl<'a> Deref for {type_name}Builder<'a> {{ type Target = vk::{type_name};"
+                "impl{generics} Deref for {type_name}Builder{generics} {{ type Target = vk::{type_name};"
             )?;
             writeln!(w, "fn deref(&self) -> &Self::Target {{ &self.inner }} }}")?;
         }
@@ -1910,6 +1924,10 @@ fn write_builders(w: &mut impl IoWrite, oracle: &Oracle) -> Res {
                 in_namespace: false,
             };
             writeln!(w, "impl {base_type_name}Next for vk::{type_name} {{ }}")?;
+            if needs_builder {
+                let lifetime = if needs_lifetime { "<'_>" } else { "" };
+                writeln!(w, "impl {base_type_name}Next for {type_name}Builder{lifetime} {{ }}")?;
+            }
         }
     }
 

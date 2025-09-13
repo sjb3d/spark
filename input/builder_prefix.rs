@@ -2,7 +2,7 @@
 
 use std::{
     ffi::CStr,
-    os::raw::{c_void, c_char},
+    os::raw::{c_void, c_char, c_int},
     ptr,
     marker::PhantomData,
     ops::Deref,
