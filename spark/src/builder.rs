@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.324
+//! Generated from vk.xml version 1.4.325
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -39743,3 +39743,38 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineCacheIncrementalM
 impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineCacheIncrementalModeFeaturesSECBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {}
 impl DeviceCreateInfoNext for PhysicalDevicePipelineCacheIncrementalModeFeaturesSECBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceShaderUntypedPointersFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceShaderUntypedPointersFeaturesKHR,
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderUntypedPointersFeaturesKHR {
+    type Type = PhysicalDeviceShaderUntypedPointersFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceShaderUntypedPointersFeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceShaderUntypedPointersFeaturesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_untyped_pointers(mut self, shader_untyped_pointers: bool) -> Self {
+        self.inner.shader_untyped_pointers = if shader_untyped_pointers { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderUntypedPointersFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceShaderUntypedPointersFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderUntypedPointersFeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderUntypedPointersFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderUntypedPointersFeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderUntypedPointersFeaturesKHRBuilder {}

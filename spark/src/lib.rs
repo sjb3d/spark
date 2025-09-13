@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.324
+//! Generated from vk.xml version 1.4.325
 
 #![allow(
     clippy::too_many_arguments,
@@ -2149,6 +2149,12 @@ impl InstanceExtensions {
     }
     pub fn enable_khr_ray_tracing_maintenance1(&mut self) {
         self.enable_khr_acceleration_structure();
+    }
+    pub fn supports_khr_shader_untyped_pointers(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_shader_untyped_pointers(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_global_priority_query(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -5532,6 +5538,7 @@ pub struct DeviceExtensions {
     pub ext_color_write_enable: bool,
     pub ext_primitives_generated_query: bool,
     pub khr_ray_tracing_maintenance1: bool,
+    pub khr_shader_untyped_pointers: bool,
     pub ext_global_priority_query: bool,
     pub ext_image_view_min_lod: bool,
     pub ext_multi_draw: bool,
@@ -6150,6 +6157,8 @@ impl DeviceExtensions {
             self.ext_primitives_generated_query = true;
         } else if name == c"VK_KHR_ray_tracing_maintenance1" {
             self.khr_ray_tracing_maintenance1 = true;
+        } else if name == c"VK_KHR_shader_untyped_pointers" {
+            self.khr_shader_untyped_pointers = true;
         } else if name == c"VK_EXT_global_priority_query" {
             self.ext_global_priority_query = true;
         } else if name == c"VK_EXT_image_view_min_lod" {
@@ -6632,6 +6641,7 @@ impl DeviceExtensions {
             ext_color_write_enable: false,
             ext_primitives_generated_query: false,
             khr_ray_tracing_maintenance1: false,
+            khr_shader_untyped_pointers: false,
             ext_global_priority_query: false,
             ext_image_view_min_lod: false,
             ext_multi_draw: false,
@@ -8756,6 +8766,12 @@ impl DeviceExtensions {
         self.khr_ray_tracing_maintenance1 = true;
         self.enable_khr_acceleration_structure();
     }
+    pub fn supports_khr_shader_untyped_pointers(&self) -> bool {
+        self.khr_shader_untyped_pointers
+    }
+    pub fn enable_khr_shader_untyped_pointers(&mut self) {
+        self.khr_shader_untyped_pointers = true;
+    }
     pub fn supports_ext_global_priority_query(&self) -> bool {
         self.ext_global_priority_query && self.supports_ext_global_priority()
     }
@@ -10401,6 +10417,9 @@ impl DeviceExtensions {
         }
         if self.khr_ray_tracing_maintenance1 {
             v.push(c"VK_KHR_ray_tracing_maintenance1");
+        }
+        if self.khr_shader_untyped_pointers {
+            v.push(c"VK_KHR_shader_untyped_pointers");
         }
         if self.ext_global_priority_query {
             v.push(c"VK_EXT_global_priority_query");

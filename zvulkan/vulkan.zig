@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.324
+// Generated from vk.xml version 1.4.325
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -3231,6 +3231,7 @@ pub const StructureType = enum(i32) {
     pipeline_color_write_create_info_ext = 1000381001,
     physical_device_primitives_generated_query_features_ext = 1000382000,
     physical_device_ray_tracing_maintenance_1_features_khr = 1000386000,
+    physical_device_shader_untyped_pointers_features_khr = 1000387000,
     physical_device_image_view_min_lod_features_ext = 1000391000,
     image_view_min_lod_create_info_ext = 1000391001,
     physical_device_multi_draw_features_ext = 1000392000,
@@ -4822,6 +4823,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderFloat8FeaturesEXT,
             *PhysicalDeviceDataGraphFeaturesARM,
             *PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC,
+            *PhysicalDeviceShaderUntypedPointersFeaturesKHR,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7169,6 +7171,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderFloat8FeaturesEXT,
             *PhysicalDeviceDataGraphFeaturesARM,
             *PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC,
+            *PhysicalDeviceShaderUntypedPointersFeaturesKHR,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -14992,6 +14995,11 @@ pub const PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC = extern struct 
     p_next: ?*anyopaque = null,
     pipeline_cache_incremental_mode: Bool32 = .false,
 };
+pub const PhysicalDeviceShaderUntypedPointersFeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_shader_untyped_pointers_features_khr,
+    p_next: ?*anyopaque = null,
+    shader_untyped_pointers: Bool32 = .false,
+};
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpEnumeratePhysicalDevices = *const fn (Instance, [*c]u32, [*c]PhysicalDevice) callconv(.c) Result;
@@ -15913,6 +15921,7 @@ const ExtensionNames = struct {
     const ext_color_write_enable = "VK_EXT_color_write_enable";
     const ext_primitives_generated_query = "VK_EXT_primitives_generated_query";
     const khr_ray_tracing_maintenance1 = "VK_KHR_ray_tracing_maintenance1";
+    const khr_shader_untyped_pointers = "VK_KHR_shader_untyped_pointers";
     const ext_global_priority_query = "VK_EXT_global_priority_query";
     const ext_image_view_min_lod = "VK_EXT_image_view_min_lod";
     const ext_multi_draw = "VK_EXT_multi_draw";
@@ -18086,6 +18095,13 @@ pub const InstanceExtensions = packed struct {
         self.enable_khr_acceleration_structure();
     }
 
+    pub fn supports_khr_shader_untyped_pointers(self: InstanceExtensions) bool {
+        return self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_khr_shader_untyped_pointers(self: *InstanceExtensions) void {
+        self.enable_khr_get_physical_device_properties2();
+    }
+
     pub fn supports_ext_global_priority_query(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
@@ -19142,6 +19158,7 @@ pub const DeviceExtensions = packed struct {
     ext_color_write_enable: bool = false,
     ext_primitives_generated_query: bool = false,
     khr_ray_tracing_maintenance1: bool = false,
+    khr_shader_untyped_pointers: bool = false,
     ext_global_priority_query: bool = false,
     ext_image_view_min_lod: bool = false,
     ext_multi_draw: bool = false,
@@ -19760,6 +19777,8 @@ pub const DeviceExtensions = packed struct {
             self.ext_primitives_generated_query = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_ray_tracing_maintenance1) == .eq) {
             self.khr_ray_tracing_maintenance1 = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_shader_untyped_pointers) == .eq) {
+            self.khr_shader_untyped_pointers = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_global_priority_query) == .eq) {
             self.ext_global_priority_query = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_image_view_min_lod) == .eq) {
@@ -20252,6 +20271,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_color_write_enable) try names.append(allocator, ExtensionNames.ext_color_write_enable);
         if (self.ext_primitives_generated_query) try names.append(allocator, ExtensionNames.ext_primitives_generated_query);
         if (self.khr_ray_tracing_maintenance1) try names.append(allocator, ExtensionNames.khr_ray_tracing_maintenance1);
+        if (self.khr_shader_untyped_pointers) try names.append(allocator, ExtensionNames.khr_shader_untyped_pointers);
         if (self.ext_global_priority_query) try names.append(allocator, ExtensionNames.ext_global_priority_query);
         if (self.ext_image_view_min_lod) try names.append(allocator, ExtensionNames.ext_image_view_min_lod);
         if (self.ext_multi_draw) try names.append(allocator, ExtensionNames.ext_multi_draw);
@@ -22493,6 +22513,13 @@ pub const DeviceExtensions = packed struct {
     pub fn enable_khr_ray_tracing_maintenance1(self: *DeviceExtensions) void {
         self.khr_ray_tracing_maintenance1 = true;
         self.enable_khr_acceleration_structure();
+    }
+
+    pub fn supports_khr_shader_untyped_pointers(self: DeviceExtensions) bool {
+        return self.khr_shader_untyped_pointers;
+    }
+    pub fn enable_khr_shader_untyped_pointers(self: *DeviceExtensions) void {
+        self.khr_shader_untyped_pointers = true;
     }
 
     pub fn supports_ext_global_priority_query(self: DeviceExtensions) bool {

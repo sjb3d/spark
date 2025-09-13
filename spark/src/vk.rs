@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.324
+//! Generated from vk.xml version 1.4.325
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -7581,6 +7581,7 @@ impl StructureType {
     pub const PIPELINE_COLOR_WRITE_CREATE_INFO_EXT: Self = Self(1000381001);
     pub const PHYSICAL_DEVICE_PRIMITIVES_GENERATED_QUERY_FEATURES_EXT: Self = Self(1000382000);
     pub const PHYSICAL_DEVICE_RAY_TRACING_MAINTENANCE_1_FEATURES_KHR: Self = Self(1000386000);
+    pub const PHYSICAL_DEVICE_SHADER_UNTYPED_POINTERS_FEATURES_KHR: Self = Self(1000387000);
     pub const PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT: Self =
         Self::PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES;
     pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT: Self = Self::QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES;
@@ -8611,6 +8612,7 @@ impl fmt::Display for StructureType {
             1000381001 => Some(&"PIPELINE_COLOR_WRITE_CREATE_INFO_EXT"),
             1000382000 => Some(&"PHYSICAL_DEVICE_PRIMITIVES_GENERATED_QUERY_FEATURES_EXT"),
             1000386000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_MAINTENANCE_1_FEATURES_KHR"),
+            1000387000 => Some(&"PHYSICAL_DEVICE_SHADER_UNTYPED_POINTERS_FEATURES_KHR"),
             1000391000 => Some(&"PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT"),
             1000391001 => Some(&"IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT"),
             1000392000 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT"),
@@ -50931,6 +50933,34 @@ impl fmt::Debug for PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("pipeline_cache_incremental_mode", &self.pipeline_cache_incremental_mode)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderUntypedPointersFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_untyped_pointers: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderUntypedPointersFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceShaderUntypedPointersFeaturesKHR {}
+impl Default for PhysicalDeviceShaderUntypedPointersFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_UNTYPED_POINTERS_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_untyped_pointers: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderUntypedPointersFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderUntypedPointersFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_untyped_pointers", &self.shader_untyped_pointers)
             .finish()
     }
 }
