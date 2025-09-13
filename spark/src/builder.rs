@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.323
+//! Generated from vk.xml version 1.4.324
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -31165,6 +31165,14 @@ impl<'a> Deref for AccelerationStructureTrianglesOpacityMicromapEXTBuilder<'a> {
 }
 impl AccelerationStructureGeometryTrianglesDataKHRNext for vk::AccelerationStructureTrianglesOpacityMicromapEXT {}
 impl AccelerationStructureGeometryTrianglesDataKHRNext for AccelerationStructureTrianglesOpacityMicromapEXTBuilder<'_> {}
+impl AccelerationStructureDenseGeometryFormatTrianglesDataAMDXNext
+    for vk::AccelerationStructureTrianglesOpacityMicromapEXT
+{
+}
+impl AccelerationStructureDenseGeometryFormatTrianglesDataAMDXNext
+    for AccelerationStructureTrianglesOpacityMicromapEXTBuilder<'_>
+{
+}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -37017,6 +37025,109 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceVertexAttributeRobustness
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceVertexAttributeRobustnessFeaturesEXTBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {}
 impl DeviceCreateInfoNext for PhysicalDeviceVertexAttributeRobustnessFeaturesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceDenseGeometryFormatFeaturesAMDXBuilder {
+    inner: vk::PhysicalDeviceDenseGeometryFormatFeaturesAMDX,
+}
+impl Builder<'_> for vk::PhysicalDeviceDenseGeometryFormatFeaturesAMDX {
+    type Type = PhysicalDeviceDenseGeometryFormatFeaturesAMDXBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceDenseGeometryFormatFeaturesAMDXBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceDenseGeometryFormatFeaturesAMDX {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn dense_geometry_format(mut self, dense_geometry_format: bool) -> Self {
+        self.inner.dense_geometry_format = if dense_geometry_format { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDenseGeometryFormatFeaturesAMDXBuilder {
+    type Target = vk::PhysicalDeviceDenseGeometryFormatFeaturesAMDX;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDenseGeometryFormatFeaturesAMDX {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDenseGeometryFormatFeaturesAMDXBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDenseGeometryFormatFeaturesAMDX {}
+impl DeviceCreateInfoNext for PhysicalDeviceDenseGeometryFormatFeaturesAMDXBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct AccelerationStructureDenseGeometryFormatTrianglesDataAMDXBuilder<'a> {
+    inner: vk::AccelerationStructureDenseGeometryFormatTrianglesDataAMDX,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::AccelerationStructureDenseGeometryFormatTrianglesDataAMDX {
+    type Type = AccelerationStructureDenseGeometryFormatTrianglesDataAMDXBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait AccelerationStructureDenseGeometryFormatTrianglesDataAMDXNext {}
+impl<'a> AccelerationStructureDenseGeometryFormatTrianglesDataAMDXBuilder<'a> {
+    pub fn insert_next<T: AccelerationStructureDenseGeometryFormatTrianglesDataAMDXNext>(
+        mut self,
+        next: &'a mut T,
+    ) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::AccelerationStructureDenseGeometryFormatTrianglesDataAMDX {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn compressed_data(mut self, compressed_data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.compressed_data = compressed_data;
+        self
+    }
+    pub fn data_size(mut self, data_size: vk::DeviceSize) -> Self {
+        self.inner.data_size = data_size;
+        self
+    }
+    pub fn num_triangles(mut self, num_triangles: u32) -> Self {
+        self.inner.num_triangles = num_triangles;
+        self
+    }
+    pub fn num_vertices(mut self, num_vertices: u32) -> Self {
+        self.inner.num_vertices = num_vertices;
+        self
+    }
+    pub fn max_primitive_index(mut self, max_primitive_index: u32) -> Self {
+        self.inner.max_primitive_index = max_primitive_index;
+        self
+    }
+    pub fn max_geometry_index(mut self, max_geometry_index: u32) -> Self {
+        self.inner.max_geometry_index = max_geometry_index;
+        self
+    }
+    pub fn format(mut self, format: vk::CompressedTriangleFormatAMDX) -> Self {
+        self.inner.format = format;
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureDenseGeometryFormatTrianglesDataAMDXBuilder<'a> {
+    type Target = vk::AccelerationStructureDenseGeometryFormatTrianglesDataAMDX;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl AccelerationStructureGeometryKHRNext for vk::AccelerationStructureDenseGeometryFormatTrianglesDataAMDX {}
+impl AccelerationStructureGeometryKHRNext for AccelerationStructureDenseGeometryFormatTrianglesDataAMDXBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]

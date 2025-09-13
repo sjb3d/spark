@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.323
+//! Generated from vk.xml version 1.4.324
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -175,6 +175,8 @@ pub const MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT: usize = 32;
 pub const MAX_PIPELINE_BINARY_KEY_SIZE_KHR: usize = 32;
 pub const SHADER_INDEX_UNUSED_AMDX: u32 = 0xffffffff;
 pub const PARTITIONED_ACCELERATION_STRUCTURE_PARTITION_INDEX_GLOBAL_NV: u32 = 0xffffffff;
+pub const COMPRESSED_TRIANGLE_FORMAT_DGF1_BYTE_ALIGNMENT_AMDX: usize = 128;
+pub const COMPRESSED_TRIANGLE_FORMAT_DGF1_BYTE_STRIDE_AMDX: usize = 128;
 pub const MAX_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_SET_NAME_SIZE_ARM: usize = 128;
 #[allow(non_camel_case_types)]
 pub type wl_display = Never;
@@ -2914,6 +2916,7 @@ impl BufferUsageFlags2 {
     pub const PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT: Self = Self(0x4000000);
     pub const MICROMAP_BUILD_INPUT_READ_ONLY_EXT: Self = Self(0x800000);
     pub const MICROMAP_STORAGE_EXT: Self = Self(0x1000000);
+    pub const COMPRESSED_DATA_DGF1_AMDX: Self = Self(0x200000000);
     pub const DATA_GRAPH_FOREIGN_DESCRIPTOR_ARM: Self = Self(0x20000000);
     pub const TILE_MEMORY_QCOM: Self = Self(0x8000000);
     pub const PREPROCESS_BUFFER_EXT: Self = Self(0x80000000);
@@ -2946,6 +2949,7 @@ impl fmt::Display for BufferUsageFlags2 {
                 (0x4000000, "PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT"),
                 (0x800000, "MICROMAP_BUILD_INPUT_READ_ONLY_EXT"),
                 (0x1000000, "MICROMAP_STORAGE_EXT"),
+                (0x200000000, "COMPRESSED_DATA_DGF1_AMDX"),
                 (0x20000000, "DATA_GRAPH_FOREIGN_DESCRIPTOR_ARM"),
                 (0x8000000, "TILE_MEMORY_QCOM"),
                 (0x80000000, "PREPROCESS_BUFFER_EXT"),
@@ -7715,6 +7719,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD: Self = Self(1000476000);
     pub const ANTI_LAG_DATA_AMD: Self = Self(1000476001);
     pub const ANTI_LAG_PRESENTATION_INFO_AMD: Self = Self(1000476002);
+    pub const PHYSICAL_DEVICE_DENSE_GEOMETRY_FORMAT_FEATURES_AMDX: Self = Self(1000478000);
+    pub const ACCELERATION_STRUCTURE_DENSE_GEOMETRY_FORMAT_TRIANGLES_DATA_AMDX: Self = Self(1000478001);
     pub const SURFACE_CAPABILITIES_PRESENT_ID_2_KHR: Self = Self(1000479000);
     pub const PRESENT_ID_2_KHR: Self = Self(1000479001);
     pub const PHYSICAL_DEVICE_PRESENT_ID_2_FEATURES_KHR: Self = Self(1000479002);
@@ -8716,6 +8722,8 @@ impl fmt::Display for StructureType {
             1000476000 => Some(&"PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD"),
             1000476001 => Some(&"ANTI_LAG_DATA_AMD"),
             1000476002 => Some(&"ANTI_LAG_PRESENTATION_INFO_AMD"),
+            1000478000 => Some(&"PHYSICAL_DEVICE_DENSE_GEOMETRY_FORMAT_FEATURES_AMDX"),
+            1000478001 => Some(&"ACCELERATION_STRUCTURE_DENSE_GEOMETRY_FORMAT_TRIANGLES_DATA_AMDX"),
             1000479000 => Some(&"SURFACE_CAPABILITIES_PRESENT_ID_2_KHR"),
             1000479001 => Some(&"PRESENT_ID_2_KHR"),
             1000479002 => Some(&"PHYSICAL_DEVICE_PRESENT_ID_2_FEATURES_KHR"),
@@ -9741,6 +9749,7 @@ impl GeometryTypeKHR {
     pub const AABBS_NV: Self = Self::AABBS;
     pub const SPHERES_NV: Self = Self(1000429004);
     pub const LINEAR_SWEPT_SPHERES_NV: Self = Self(1000429005);
+    pub const DENSE_GEOMETRY_FORMAT_TRIANGLES_AMDX: Self = Self(1000478000);
 }
 impl fmt::Display for GeometryTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9750,6 +9759,7 @@ impl fmt::Display for GeometryTypeKHR {
             2 => Some(&"INSTANCES"),
             1000429004 => Some(&"SPHERES_NV"),
             1000429005 => Some(&"LINEAR_SWEPT_SPHERES_NV"),
+            1000478000 => Some(&"DENSE_GEOMETRY_FORMAT_TRIANGLES_AMDX"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10919,6 +10929,26 @@ impl fmt::Display for PhysicalDeviceLayeredApiKHR {
             2 => Some(&"METAL"),
             3 => Some(&"OPENGL"),
             4 => Some(&"OPENGLES"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct CompressedTriangleFormatAMDX(pub(crate) i32);
+impl CompressedTriangleFormatAMDX {
+    pub const DGF1: Self = Self(0);
+}
+impl fmt::Display for CompressedTriangleFormatAMDX {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DGF1"),
             _ => None,
         };
         if let Some(name) = name {
@@ -48458,6 +48488,80 @@ impl fmt::Debug for PhysicalDeviceVertexAttributeRobustnessFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("vertex_attribute_robustness", &self.vertex_attribute_robustness)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDenseGeometryFormatFeaturesAMDX {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub dense_geometry_format: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDenseGeometryFormatFeaturesAMDX {}
+unsafe impl Sync for PhysicalDeviceDenseGeometryFormatFeaturesAMDX {}
+impl Default for PhysicalDeviceDenseGeometryFormatFeaturesAMDX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DENSE_GEOMETRY_FORMAT_FEATURES_AMDX,
+            p_next: ptr::null_mut(),
+            dense_geometry_format: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDenseGeometryFormatFeaturesAMDX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDenseGeometryFormatFeaturesAMDX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("dense_geometry_format", &self.dense_geometry_format)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureDenseGeometryFormatTrianglesDataAMDX {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub compressed_data: DeviceOrHostAddressConstKHR,
+    pub data_size: DeviceSize,
+    pub num_triangles: u32,
+    pub num_vertices: u32,
+    pub max_primitive_index: u32,
+    pub max_geometry_index: u32,
+    pub format: CompressedTriangleFormatAMDX,
+}
+unsafe impl Send for AccelerationStructureDenseGeometryFormatTrianglesDataAMDX {}
+unsafe impl Sync for AccelerationStructureDenseGeometryFormatTrianglesDataAMDX {}
+impl Default for AccelerationStructureDenseGeometryFormatTrianglesDataAMDX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_DENSE_GEOMETRY_FORMAT_TRIANGLES_DATA_AMDX,
+            p_next: ptr::null(),
+            compressed_data: Default::default(),
+            data_size: Default::default(),
+            num_triangles: Default::default(),
+            num_vertices: Default::default(),
+            max_primitive_index: Default::default(),
+            max_geometry_index: Default::default(),
+            format: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureDenseGeometryFormatTrianglesDataAMDX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureDenseGeometryFormatTrianglesDataAMDX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("compressed_data", &self.compressed_data)
+            .field("data_size", &self.data_size)
+            .field("num_triangles", &self.num_triangles)
+            .field("num_vertices", &self.num_vertices)
+            .field("max_primitive_index", &self.max_primitive_index)
+            .field("max_geometry_index", &self.max_geometry_index)
+            .field("format", &self.format)
             .finish()
     }
 }

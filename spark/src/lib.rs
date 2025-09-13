@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.323
+//! Generated from vk.xml version 1.4.324
 
 #![allow(
     clippy::too_many_arguments,
@@ -2463,6 +2463,16 @@ impl InstanceExtensions {
             // depends on minimum core version, caller must specify
             debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
             self.enable_khr_dynamic_rendering();
+        }
+    }
+    pub fn supports_amdx_dense_geometry_format(&self) -> bool {
+        self.supports_khr_acceleration_structure()
+            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5())
+    }
+    pub fn enable_amdx_dense_geometry_format(&mut self) {
+        self.enable_khr_acceleration_structure();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.enable_khr_maintenance5();
         }
     }
     pub fn supports_khr_present_id2(&self) -> bool {
@@ -5564,6 +5574,7 @@ pub struct DeviceExtensions {
     pub android_external_format_resolve: bool,
     pub khr_maintenance5: bool,
     pub amd_anti_lag: bool,
+    pub amdx_dense_geometry_format: bool,
     pub khr_present_id2: bool,
     pub khr_present_wait2: bool,
     pub khr_ray_tracing_position_fetch: bool,
@@ -6223,6 +6234,8 @@ impl DeviceExtensions {
             self.khr_maintenance5 = true;
         } else if name == c"VK_AMD_anti_lag" {
             self.amd_anti_lag = true;
+        } else if name == c"VK_AMDX_dense_geometry_format" {
+            self.amdx_dense_geometry_format = true;
         } else if name == c"VK_KHR_present_id2" {
             self.khr_present_id2 = true;
         } else if name == c"VK_KHR_present_wait2" {
@@ -6661,6 +6674,7 @@ impl DeviceExtensions {
             android_external_format_resolve: false,
             khr_maintenance5: false,
             amd_anti_lag: false,
+            amdx_dense_geometry_format: false,
             khr_present_id2: false,
             khr_present_wait2: false,
             khr_ray_tracing_position_fetch: false,
@@ -9077,6 +9091,18 @@ impl DeviceExtensions {
     pub fn enable_amd_anti_lag(&mut self) {
         self.amd_anti_lag = true;
     }
+    pub fn supports_amdx_dense_geometry_format(&self) -> bool {
+        self.amdx_dense_geometry_format
+            && self.supports_khr_acceleration_structure()
+            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5())
+    }
+    pub fn enable_amdx_dense_geometry_format(&mut self) {
+        self.amdx_dense_geometry_format = true;
+        self.enable_khr_acceleration_structure();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            self.enable_khr_maintenance5();
+        }
+    }
     pub fn supports_khr_present_id2(&self) -> bool {
         self.khr_present_id2 && self.supports_khr_swapchain()
     }
@@ -10501,6 +10527,9 @@ impl DeviceExtensions {
         }
         if self.amd_anti_lag {
             v.push(c"VK_AMD_anti_lag");
+        }
+        if self.amdx_dense_geometry_format {
+            v.push(c"VK_AMDX_dense_geometry_format");
         }
         if self.khr_present_id2 {
             v.push(c"VK_KHR_present_id2");

@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.323
+// Generated from vk.xml version 1.4.324
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -195,6 +195,8 @@ pub const max_shader_module_identifier_size_ext = 32;
 pub const max_pipeline_binary_key_size_khr = 32;
 pub const shader_index_unused_amdx: u32 = 0xffffffff;
 pub const partitioned_acceleration_structure_partition_index_global_nv: u32 = 0xffffffff;
+pub const compressed_triangle_format_dgf1_byte_alignment_amdx = 128;
+pub const compressed_triangle_format_dgf1_byte_stride_amdx = 128;
 pub const max_physical_device_data_graph_operation_set_name_size_arm = 128;
 pub const wl_display = opaque {};
 pub const Display = opaque {};
@@ -1219,6 +1221,7 @@ pub const BufferUsageFlagBits2 = enum(u6) {
     push_descriptors_descriptor_buffer_ext = 26,
     micromap_build_input_read_only_ext = 23,
     micromap_storage_ext = 24,
+    compressed_data_dgf1_amdx = 33,
     data_graph_foreign_descriptor_arm = 29,
     tile_memory_qcom = 27,
     preprocess_buffer_ext = 31,
@@ -3339,6 +3342,8 @@ pub const StructureType = enum(i32) {
     physical_device_anti_lag_features_amd = 1000476000,
     anti_lag_data_amd = 1000476001,
     anti_lag_presentation_info_amd = 1000476002,
+    physical_device_dense_geometry_format_features_amdx = 1000478000,
+    acceleration_structure_dense_geometry_format_triangles_data_amdx = 1000478001,
     surface_capabilities_present_id_2_khr = 1000479000,
     present_id_2_khr = 1000479001,
     physical_device_present_id_2_features_khr = 1000479002,
@@ -3774,6 +3779,7 @@ pub const GeometryTypeKHR = enum(i32) {
     instances = 2,
     spheres_nv = 1000429004,
     linear_swept_spheres_nv = 1000429005,
+    dense_geometry_format_triangles_amdx = 1000478000,
     _,
 };
 pub const GeometryTypeNV = GeometryTypeKHR;
@@ -4079,6 +4085,10 @@ pub const PhysicalDeviceLayeredApiKHR = enum(i32) {
     metal = 2,
     opengl = 3,
     opengles = 4,
+    _,
+};
+pub const CompressedTriangleFormatAMDX = enum(i32) {
+    dgf1 = 0,
     _,
 };
 pub const DepthClampModeEXT = enum(i32) {
@@ -4799,6 +4809,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceCooperativeMatrix2FeaturesNV,
             *PhysicalDeviceHdrVividFeaturesHUAWEI,
             *PhysicalDeviceVertexAttributeRobustnessFeaturesEXT,
+            *PhysicalDeviceDenseGeometryFormatFeaturesAMDX,
             *PhysicalDeviceDepthClampZeroOneFeaturesKHR,
             *PhysicalDeviceCooperativeVectorFeaturesNV,
             *PhysicalDeviceTileShadingFeaturesQCOM,
@@ -7146,6 +7157,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceCooperativeMatrix2FeaturesNV,
             *PhysicalDeviceHdrVividFeaturesHUAWEI,
             *PhysicalDeviceVertexAttributeRobustnessFeaturesEXT,
+            *PhysicalDeviceDenseGeometryFormatFeaturesAMDX,
             *PhysicalDeviceDepthClampZeroOneFeaturesKHR,
             *PhysicalDeviceCooperativeVectorFeaturesNV,
             *PhysicalDeviceTileShadingFeaturesQCOM,
@@ -11009,6 +11021,7 @@ pub const AccelerationStructureGeometryKHR = extern struct {
         switch (@TypeOf(next)) {
             inline *AccelerationStructureGeometryLinearSweptSpheresDataNV,
             *AccelerationStructureGeometrySpheresDataNV,
+            *AccelerationStructureDenseGeometryFormatTrianglesDataAMDX,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -14408,6 +14421,33 @@ pub const PhysicalDeviceVertexAttributeRobustnessFeaturesEXT = extern struct {
     p_next: ?*anyopaque = null,
     vertex_attribute_robustness: Bool32 = .false,
 };
+pub const PhysicalDeviceDenseGeometryFormatFeaturesAMDX = extern struct {
+    s_type: StructureType = .physical_device_dense_geometry_format_features_amdx,
+    p_next: ?*anyopaque = null,
+    dense_geometry_format: Bool32 = .false,
+};
+pub const AccelerationStructureDenseGeometryFormatTrianglesDataAMDX = extern struct {
+    s_type: StructureType = .acceleration_structure_dense_geometry_format_triangles_data_amdx,
+    p_next: ?*const anyopaque = null,
+    compressed_data: DeviceOrHostAddressConstKHR = .{ .device_address = 0 },
+    data_size: DeviceSize = 0,
+    num_triangles: u32 = 0,
+    num_vertices: u32 = 0,
+    max_primitive_index: u32 = 0,
+    max_geometry_index: u32 = 0,
+    format: CompressedTriangleFormatAMDX = @enumFromInt(0),
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *AccelerationStructureTrianglesOpacityMicromapEXT,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
+};
 pub const PhysicalDeviceDepthClampZeroOneFeaturesKHR = extern struct {
     s_type: StructureType = .physical_device_depth_clamp_zero_one_features_khr,
     p_next: ?*anyopaque = null,
@@ -15918,6 +15958,7 @@ const ExtensionNames = struct {
     const android_external_format_resolve = "VK_ANDROID_external_format_resolve";
     const khr_maintenance5 = "VK_KHR_maintenance5";
     const amd_anti_lag = "VK_AMD_anti_lag";
+    const amdx_dense_geometry_format = "VK_AMDX_dense_geometry_format";
     const khr_present_id2 = "VK_KHR_present_id2";
     const khr_present_wait2 = "VK_KHR_present_wait2";
     const khr_ray_tracing_position_fetch = "VK_KHR_ray_tracing_position_fetch";
@@ -18377,6 +18418,16 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_amdx_dense_geometry_format(self: InstanceExtensions) bool {
+        return self.supports_khr_acceleration_structure() and (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_maintenance5());
+    }
+    pub fn enable_amdx_dense_geometry_format(self: *InstanceExtensions) void {
+        self.enable_khr_acceleration_structure();
+        if (self.core_version.to_int() < make_version(1, 4, 0).to_int()) {
+            self.enable_khr_maintenance5();
+        }
+    }
+
     pub fn supports_khr_present_id2(self: InstanceExtensions) bool {
         return self.supports_khr_get_surface_capabilities2() and self.supports_khr_surface() and self.supports_khr_swapchain();
     }
@@ -19133,6 +19184,7 @@ pub const DeviceExtensions = packed struct {
     android_external_format_resolve: bool = false,
     khr_maintenance5: bool = false,
     amd_anti_lag: bool = false,
+    amdx_dense_geometry_format: bool = false,
     khr_present_id2: bool = false,
     khr_present_wait2: bool = false,
     khr_ray_tracing_position_fetch: bool = false,
@@ -19792,6 +19844,8 @@ pub const DeviceExtensions = packed struct {
             self.khr_maintenance5 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.amd_anti_lag) == .eq) {
             self.amd_anti_lag = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.amdx_dense_geometry_format) == .eq) {
+            self.amdx_dense_geometry_format = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_present_id2) == .eq) {
             self.khr_present_id2 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_present_wait2) == .eq) {
@@ -20240,6 +20294,7 @@ pub const DeviceExtensions = packed struct {
         if (self.android_external_format_resolve) try names.append(allocator, ExtensionNames.android_external_format_resolve);
         if (self.khr_maintenance5) try names.append(allocator, ExtensionNames.khr_maintenance5);
         if (self.amd_anti_lag) try names.append(allocator, ExtensionNames.amd_anti_lag);
+        if (self.amdx_dense_geometry_format) try names.append(allocator, ExtensionNames.amdx_dense_geometry_format);
         if (self.khr_present_id2) try names.append(allocator, ExtensionNames.khr_present_id2);
         if (self.khr_present_wait2) try names.append(allocator, ExtensionNames.khr_present_wait2);
         if (self.khr_ray_tracing_position_fetch) try names.append(allocator, ExtensionNames.khr_ray_tracing_position_fetch);
@@ -22797,6 +22852,17 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_amd_anti_lag(self: *DeviceExtensions) void {
         self.amd_anti_lag = true;
+    }
+
+    pub fn supports_amdx_dense_geometry_format(self: DeviceExtensions) bool {
+        return self.amdx_dense_geometry_format and self.supports_khr_acceleration_structure() and (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_maintenance5());
+    }
+    pub fn enable_amdx_dense_geometry_format(self: *DeviceExtensions) void {
+        self.amdx_dense_geometry_format = true;
+        self.enable_khr_acceleration_structure();
+        if (self.core_version.to_int() < make_version(1, 4, 0).to_int()) {
+            self.enable_khr_maintenance5();
+        }
     }
 
     pub fn supports_khr_present_id2(self: DeviceExtensions) bool {
