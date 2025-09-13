@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.318
+//! Generated from vk.xml version 1.4.319
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -2053,6 +2053,8 @@ impl<'a> Deref for ShaderModuleCreateInfoBuilder<'a> {
 }
 impl PipelineShaderStageCreateInfoNext for vk::ShaderModuleCreateInfo {}
 impl PipelineShaderStageCreateInfoNext for ShaderModuleCreateInfoBuilder<'_> {}
+impl DataGraphPipelineShaderModuleCreateInfoARMNext for vk::ShaderModuleCreateInfo {}
+impl DataGraphPipelineShaderModuleCreateInfoARMNext for ShaderModuleCreateInfoBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -3901,16 +3903,24 @@ impl<'a> Deref for SamplerCreateInfoBuilder<'a> {
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct CommandPoolCreateInfoBuilder {
+pub struct CommandPoolCreateInfoBuilder<'a> {
     inner: vk::CommandPoolCreateInfo,
+    phantom: PhantomData<&'a ()>,
 }
-impl Builder<'_> for vk::CommandPoolCreateInfo {
-    type Type = CommandPoolCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::CommandPoolCreateInfo {
+    type Type = CommandPoolCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl CommandPoolCreateInfoBuilder {
+pub trait CommandPoolCreateInfoNext {}
+impl<'a> CommandPoolCreateInfoBuilder<'a> {
+    pub fn insert_next<T: CommandPoolCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn get_mut(&mut self) -> &mut vk::CommandPoolCreateInfo {
         &mut self.inner
     }
@@ -3927,7 +3937,7 @@ impl CommandPoolCreateInfoBuilder {
         self
     }
 }
-impl Deref for CommandPoolCreateInfoBuilder {
+impl<'a> Deref for CommandPoolCreateInfoBuilder<'a> {
     type Target = vk::CommandPoolCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -6947,6 +6957,33 @@ impl ClusterAccelerationStructureBuildClustersBottomLevelInfoNVBuilder {
 }
 impl Deref for ClusterAccelerationStructureBuildClustersBottomLevelInfoNVBuilder {
     type Target = vk::ClusterAccelerationStructureBuildClustersBottomLevelInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ClusterAccelerationStructureGetTemplateIndicesInfoNVBuilder {
+    inner: vk::ClusterAccelerationStructureGetTemplateIndicesInfoNV,
+}
+impl Builder<'_> for vk::ClusterAccelerationStructureGetTemplateIndicesInfoNV {
+    type Type = ClusterAccelerationStructureGetTemplateIndicesInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ClusterAccelerationStructureGetTemplateIndicesInfoNVBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ClusterAccelerationStructureGetTemplateIndicesInfoNV {
+        &mut self.inner
+    }
+    pub fn cluster_template_address(mut self, cluster_template_address: vk::DeviceAddress) -> Self {
+        self.inner.cluster_template_address = cluster_template_address;
+        self
+    }
+}
+impl Deref for ClusterAccelerationStructureGetTemplateIndicesInfoNVBuilder {
+    type Target = vk::ClusterAccelerationStructureGetTemplateIndicesInfoNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -19022,6 +19059,8 @@ impl RayTracingPipelineCreateInfoKHRNext for vk::PipelineCreationFeedbackCreateI
 impl RayTracingPipelineCreateInfoKHRNext for PipelineCreationFeedbackCreateInfoBuilder<'_> {}
 impl ExecutionGraphPipelineCreateInfoAMDXNext for vk::PipelineCreationFeedbackCreateInfo {}
 impl ExecutionGraphPipelineCreateInfoAMDXNext for PipelineCreationFeedbackCreateInfoBuilder<'_> {}
+impl DataGraphPipelineCreateInfoARMNext for vk::PipelineCreationFeedbackCreateInfo {}
+impl DataGraphPipelineCreateInfoARMNext for PipelineCreationFeedbackCreateInfoBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -37677,6 +37716,10 @@ impl<'a> Deref for TensorDescriptionARMBuilder<'a> {
         &self.inner
     }
 }
+impl DataGraphPipelineResourceInfoARMNext for vk::TensorDescriptionARM {}
+impl DataGraphPipelineResourceInfoARMNext for TensorDescriptionARMBuilder<'_> {}
+impl DataGraphPipelineConstantARMNext for vk::TensorDescriptionARM {}
+impl DataGraphPipelineConstantARMNext for TensorDescriptionARMBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -38624,3 +38667,881 @@ impl<'a> Deref for OHSurfaceCreateInfoOHOSBuilder<'a> {
         &self.inner
     }
 }
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceDataGraphFeaturesARMBuilder {
+    inner: vk::PhysicalDeviceDataGraphFeaturesARM,
+}
+impl Builder<'_> for vk::PhysicalDeviceDataGraphFeaturesARM {
+    type Type = PhysicalDeviceDataGraphFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceDataGraphFeaturesARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceDataGraphFeaturesARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn data_graph(mut self, data_graph: bool) -> Self {
+        self.inner.data_graph = if data_graph { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn data_graph_update_after_bind(mut self, data_graph_update_after_bind: bool) -> Self {
+        self.inner.data_graph_update_after_bind = if data_graph_update_after_bind {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn data_graph_specialization_constants(mut self, data_graph_specialization_constants: bool) -> Self {
+        self.inner.data_graph_specialization_constants = if data_graph_specialization_constants {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn data_graph_descriptor_buffer(mut self, data_graph_descriptor_buffer: bool) -> Self {
+        self.inner.data_graph_descriptor_buffer = if data_graph_descriptor_buffer {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn data_graph_shader_module(mut self, data_graph_shader_module: bool) -> Self {
+        self.inner.data_graph_shader_module = if data_graph_shader_module { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDataGraphFeaturesARMBuilder {
+    type Target = vk::PhysicalDeviceDataGraphFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDataGraphFeaturesARM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDataGraphFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDataGraphFeaturesARM {}
+impl DeviceCreateInfoNext for PhysicalDeviceDataGraphFeaturesARMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARMBuilder {
+    inner: vk::DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM {
+    type Type = DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn dimension(mut self, dimension: u32) -> Self {
+        self.inner.dimension = dimension;
+        self
+    }
+    pub fn zero_count(mut self, zero_count: u32) -> Self {
+        self.inner.zero_count = zero_count;
+        self
+    }
+    pub fn group_size(mut self, group_size: u32) -> Self {
+        self.inner.group_size = group_size;
+        self
+    }
+}
+impl Deref for DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARMBuilder {
+    type Target = vk::DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DataGraphPipelineConstantARMNext for vk::DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM {}
+impl DataGraphPipelineConstantARMNext for DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineConstantARMBuilder<'a> {
+    inner: vk::DataGraphPipelineConstantARM,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DataGraphPipelineConstantARM {
+    type Type = DataGraphPipelineConstantARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait DataGraphPipelineConstantARMNext {}
+impl<'a> DataGraphPipelineConstantARMBuilder<'a> {
+    pub fn insert_next<T: DataGraphPipelineConstantARMNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineConstantARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn id(mut self, id: u32) -> Self {
+        self.inner.id = id;
+        self
+    }
+    pub fn p_constant_data(mut self, p_constant_data: *const c_void) -> Self {
+        self.inner.p_constant_data = p_constant_data;
+        self
+    }
+}
+impl<'a> Deref for DataGraphPipelineConstantARMBuilder<'a> {
+    type Target = vk::DataGraphPipelineConstantARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineResourceInfoARMBuilder<'a> {
+    inner: vk::DataGraphPipelineResourceInfoARM,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DataGraphPipelineResourceInfoARM {
+    type Type = DataGraphPipelineResourceInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait DataGraphPipelineResourceInfoARMNext {}
+impl<'a> DataGraphPipelineResourceInfoARMBuilder<'a> {
+    pub fn insert_next<T: DataGraphPipelineResourceInfoARMNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineResourceInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn descriptor_set(mut self, descriptor_set: u32) -> Self {
+        self.inner.descriptor_set = descriptor_set;
+        self
+    }
+    pub fn binding(mut self, binding: u32) -> Self {
+        self.inner.binding = binding;
+        self
+    }
+    pub fn array_element(mut self, array_element: u32) -> Self {
+        self.inner.array_element = array_element;
+        self
+    }
+}
+impl<'a> Deref for DataGraphPipelineResourceInfoARMBuilder<'a> {
+    type Target = vk::DataGraphPipelineResourceInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineCompilerControlCreateInfoARMBuilder<'a> {
+    inner: vk::DataGraphPipelineCompilerControlCreateInfoARM,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DataGraphPipelineCompilerControlCreateInfoARM {
+    type Type = DataGraphPipelineCompilerControlCreateInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> DataGraphPipelineCompilerControlCreateInfoARMBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineCompilerControlCreateInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_vendor_options(mut self, p_vendor_options: &'a CStr) -> Self {
+        self.inner.p_vendor_options = p_vendor_options.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for DataGraphPipelineCompilerControlCreateInfoARMBuilder<'a> {
+    type Target = vk::DataGraphPipelineCompilerControlCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DataGraphPipelineCreateInfoARMNext for vk::DataGraphPipelineCompilerControlCreateInfoARM {}
+impl DataGraphPipelineCreateInfoARMNext for DataGraphPipelineCompilerControlCreateInfoARMBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineCreateInfoARMBuilder<'a> {
+    inner: vk::DataGraphPipelineCreateInfoARM,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DataGraphPipelineCreateInfoARM {
+    type Type = DataGraphPipelineCreateInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait DataGraphPipelineCreateInfoARMNext {}
+impl<'a> DataGraphPipelineCreateInfoARMBuilder<'a> {
+    pub fn insert_next<T: DataGraphPipelineCreateInfoARMNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineCreateInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::PipelineCreateFlags2KHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn layout(mut self, layout: vk::PipelineLayout) -> Self {
+        self.inner.layout = layout;
+        self
+    }
+    pub fn p_resource_infos(mut self, p_resource_infos: &'a [vk::DataGraphPipelineResourceInfoARM]) -> Self {
+        self.inner.resource_info_count = p_resource_infos.len() as u32;
+        self.inner.p_resource_infos = p_resource_infos.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for DataGraphPipelineCreateInfoARMBuilder<'a> {
+    type Target = vk::DataGraphPipelineCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineShaderModuleCreateInfoARMBuilder<'a> {
+    inner: vk::DataGraphPipelineShaderModuleCreateInfoARM,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DataGraphPipelineShaderModuleCreateInfoARM {
+    type Type = DataGraphPipelineShaderModuleCreateInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait DataGraphPipelineShaderModuleCreateInfoARMNext {}
+impl<'a> DataGraphPipelineShaderModuleCreateInfoARMBuilder<'a> {
+    pub fn insert_next<T: DataGraphPipelineShaderModuleCreateInfoARMNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineShaderModuleCreateInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn module(mut self, module: vk::ShaderModule) -> Self {
+        self.inner.module = module;
+        self
+    }
+    pub fn p_name(mut self, p_name: &'a CStr) -> Self {
+        self.inner.p_name = p_name.as_ptr();
+        self
+    }
+    pub fn p_specialization_info(mut self, p_specialization_info: Option<&'a vk::SpecializationInfo>) -> Self {
+        self.inner.p_specialization_info = p_specialization_info.map_or(ptr::null(), |r| r);
+        self
+    }
+    pub fn p_constants(mut self, p_constants: &'a [vk::DataGraphPipelineConstantARM]) -> Self {
+        self.inner.constant_count = p_constants.len() as u32;
+        self.inner.p_constants = p_constants.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for DataGraphPipelineShaderModuleCreateInfoARMBuilder<'a> {
+    type Target = vk::DataGraphPipelineShaderModuleCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DataGraphPipelineCreateInfoARMNext for vk::DataGraphPipelineShaderModuleCreateInfoARM {}
+impl DataGraphPipelineCreateInfoARMNext for DataGraphPipelineShaderModuleCreateInfoARMBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineSessionCreateInfoARMBuilder {
+    inner: vk::DataGraphPipelineSessionCreateInfoARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineSessionCreateInfoARM {
+    type Type = DataGraphPipelineSessionCreateInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineSessionCreateInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineSessionCreateInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::DataGraphPipelineSessionCreateFlagsARM) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn data_graph_pipeline(mut self, data_graph_pipeline: vk::Pipeline) -> Self {
+        self.inner.data_graph_pipeline = data_graph_pipeline;
+        self
+    }
+}
+impl Deref for DataGraphPipelineSessionCreateInfoARMBuilder {
+    type Target = vk::DataGraphPipelineSessionCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineSessionBindPointRequirementsInfoARMBuilder {
+    inner: vk::DataGraphPipelineSessionBindPointRequirementsInfoARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineSessionBindPointRequirementsInfoARM {
+    type Type = DataGraphPipelineSessionBindPointRequirementsInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineSessionBindPointRequirementsInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineSessionBindPointRequirementsInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn session(mut self, session: vk::DataGraphPipelineSessionARM) -> Self {
+        self.inner.session = session;
+        self
+    }
+}
+impl Deref for DataGraphPipelineSessionBindPointRequirementsInfoARMBuilder {
+    type Target = vk::DataGraphPipelineSessionBindPointRequirementsInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineSessionBindPointRequirementARMBuilder {
+    inner: vk::DataGraphPipelineSessionBindPointRequirementARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineSessionBindPointRequirementARM {
+    type Type = DataGraphPipelineSessionBindPointRequirementARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineSessionBindPointRequirementARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineSessionBindPointRequirementARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn bind_point(mut self, bind_point: vk::DataGraphPipelineSessionBindPointARM) -> Self {
+        self.inner.bind_point = bind_point;
+        self
+    }
+    pub fn bind_point_type(mut self, bind_point_type: vk::DataGraphPipelineSessionBindPointTypeARM) -> Self {
+        self.inner.bind_point_type = bind_point_type;
+        self
+    }
+    pub fn num_objects(mut self, num_objects: u32) -> Self {
+        self.inner.num_objects = num_objects;
+        self
+    }
+}
+impl Deref for DataGraphPipelineSessionBindPointRequirementARMBuilder {
+    type Target = vk::DataGraphPipelineSessionBindPointRequirementARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineSessionMemoryRequirementsInfoARMBuilder {
+    inner: vk::DataGraphPipelineSessionMemoryRequirementsInfoARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineSessionMemoryRequirementsInfoARM {
+    type Type = DataGraphPipelineSessionMemoryRequirementsInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineSessionMemoryRequirementsInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineSessionMemoryRequirementsInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn session(mut self, session: vk::DataGraphPipelineSessionARM) -> Self {
+        self.inner.session = session;
+        self
+    }
+    pub fn bind_point(mut self, bind_point: vk::DataGraphPipelineSessionBindPointARM) -> Self {
+        self.inner.bind_point = bind_point;
+        self
+    }
+    pub fn object_index(mut self, object_index: u32) -> Self {
+        self.inner.object_index = object_index;
+        self
+    }
+}
+impl Deref for DataGraphPipelineSessionMemoryRequirementsInfoARMBuilder {
+    type Target = vk::DataGraphPipelineSessionMemoryRequirementsInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct BindDataGraphPipelineSessionMemoryInfoARMBuilder {
+    inner: vk::BindDataGraphPipelineSessionMemoryInfoARM,
+}
+impl Builder<'_> for vk::BindDataGraphPipelineSessionMemoryInfoARM {
+    type Type = BindDataGraphPipelineSessionMemoryInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl BindDataGraphPipelineSessionMemoryInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::BindDataGraphPipelineSessionMemoryInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn session(mut self, session: vk::DataGraphPipelineSessionARM) -> Self {
+        self.inner.session = session;
+        self
+    }
+    pub fn bind_point(mut self, bind_point: vk::DataGraphPipelineSessionBindPointARM) -> Self {
+        self.inner.bind_point = bind_point;
+        self
+    }
+    pub fn object_index(mut self, object_index: u32) -> Self {
+        self.inner.object_index = object_index;
+        self
+    }
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
+        self.inner.memory = memory;
+        self
+    }
+    pub fn memory_offset(mut self, memory_offset: vk::DeviceSize) -> Self {
+        self.inner.memory_offset = memory_offset;
+        self
+    }
+}
+impl Deref for BindDataGraphPipelineSessionMemoryInfoARMBuilder {
+    type Target = vk::BindDataGraphPipelineSessionMemoryInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineInfoARMBuilder {
+    inner: vk::DataGraphPipelineInfoARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineInfoARM {
+    type Type = DataGraphPipelineInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn data_graph_pipeline(mut self, data_graph_pipeline: vk::Pipeline) -> Self {
+        self.inner.data_graph_pipeline = data_graph_pipeline;
+        self
+    }
+}
+impl Deref for DataGraphPipelineInfoARMBuilder {
+    type Target = vk::DataGraphPipelineInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelinePropertyQueryResultARMBuilder<'a> {
+    inner: vk::DataGraphPipelinePropertyQueryResultARM,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DataGraphPipelinePropertyQueryResultARM {
+    type Type = DataGraphPipelinePropertyQueryResultARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> DataGraphPipelinePropertyQueryResultARMBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelinePropertyQueryResultARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn property(mut self, property: vk::DataGraphPipelinePropertyARM) -> Self {
+        self.inner.property = property;
+        self
+    }
+    pub fn is_text(mut self, is_text: bool) -> Self {
+        self.inner.is_text = if is_text { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn p_data(mut self, p_data: &'a mut [u8]) -> Self {
+        self.inner.data_size = p_data.len();
+        self.inner.p_data = p_data.as_mut_ptr() as *mut _;
+        self
+    }
+}
+impl<'a> Deref for DataGraphPipelinePropertyQueryResultARMBuilder<'a> {
+    type Target = vk::DataGraphPipelinePropertyQueryResultARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineIdentifierCreateInfoARMBuilder<'a> {
+    inner: vk::DataGraphPipelineIdentifierCreateInfoARM,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DataGraphPipelineIdentifierCreateInfoARM {
+    type Type = DataGraphPipelineIdentifierCreateInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> DataGraphPipelineIdentifierCreateInfoARMBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineIdentifierCreateInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_identifier(mut self, p_identifier: &'a [u8]) -> Self {
+        self.inner.identifier_size = p_identifier.len() as u32;
+        self.inner.p_identifier = p_identifier.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for DataGraphPipelineIdentifierCreateInfoARMBuilder<'a> {
+    type Target = vk::DataGraphPipelineIdentifierCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DataGraphPipelineCreateInfoARMNext for vk::DataGraphPipelineIdentifierCreateInfoARM {}
+impl DataGraphPipelineCreateInfoARMNext for DataGraphPipelineIdentifierCreateInfoARMBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineDispatchInfoARMBuilder {
+    inner: vk::DataGraphPipelineDispatchInfoARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineDispatchInfoARM {
+    type Type = DataGraphPipelineDispatchInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineDispatchInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineDispatchInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::DataGraphPipelineDispatchFlagsARM) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl Deref for DataGraphPipelineDispatchInfoARMBuilder {
+    type Target = vk::DataGraphPipelineDispatchInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceDataGraphProcessingEngineARMBuilder {
+    inner: vk::PhysicalDeviceDataGraphProcessingEngineARM,
+}
+impl Builder<'_> for vk::PhysicalDeviceDataGraphProcessingEngineARM {
+    type Type = PhysicalDeviceDataGraphProcessingEngineARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceDataGraphProcessingEngineARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceDataGraphProcessingEngineARM {
+        &mut self.inner
+    }
+    pub fn ty(mut self, ty: vk::PhysicalDeviceDataGraphProcessingEngineTypeARM) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn is_foreign(mut self, is_foreign: bool) -> Self {
+        self.inner.is_foreign = if is_foreign { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDataGraphProcessingEngineARMBuilder {
+    type Target = vk::PhysicalDeviceDataGraphProcessingEngineARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceDataGraphOperationSupportARMBuilder {
+    inner: vk::PhysicalDeviceDataGraphOperationSupportARM,
+}
+impl Builder<'_> for vk::PhysicalDeviceDataGraphOperationSupportARM {
+    type Type = PhysicalDeviceDataGraphOperationSupportARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceDataGraphOperationSupportARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceDataGraphOperationSupportARM {
+        &mut self.inner
+    }
+    pub fn operation_type(mut self, operation_type: vk::PhysicalDeviceDataGraphOperationTypeARM) -> Self {
+        self.inner.operation_type = operation_type;
+        self
+    }
+    pub fn name(mut self, name: [c_char; vk::MAX_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_SET_NAME_SIZE_ARM]) -> Self {
+        self.inner.name = name;
+        self
+    }
+    pub fn version(mut self, version: u32) -> Self {
+        self.inner.version = version;
+        self
+    }
+}
+impl Deref for PhysicalDeviceDataGraphOperationSupportARMBuilder {
+    type Target = vk::PhysicalDeviceDataGraphOperationSupportARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct QueueFamilyDataGraphPropertiesARMBuilder {
+    inner: vk::QueueFamilyDataGraphPropertiesARM,
+}
+impl Builder<'_> for vk::QueueFamilyDataGraphPropertiesARM {
+    type Type = QueueFamilyDataGraphPropertiesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl QueueFamilyDataGraphPropertiesARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::QueueFamilyDataGraphPropertiesARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn engine(mut self, engine: vk::PhysicalDeviceDataGraphProcessingEngineARM) -> Self {
+        self.inner.engine = engine;
+        self
+    }
+    pub fn operation(mut self, operation: vk::PhysicalDeviceDataGraphOperationSupportARM) -> Self {
+        self.inner.operation = operation;
+        self
+    }
+}
+impl Deref for QueueFamilyDataGraphPropertiesARMBuilder {
+    type Target = vk::QueueFamilyDataGraphPropertiesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARMBuilder {
+    inner: vk::PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM,
+}
+impl Builder<'_> for vk::PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM {
+    type Type = PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn queue_family_index(mut self, queue_family_index: u32) -> Self {
+        self.inner.queue_family_index = queue_family_index;
+        self
+    }
+    pub fn engine_type(mut self, engine_type: vk::PhysicalDeviceDataGraphProcessingEngineTypeARM) -> Self {
+        self.inner.engine_type = engine_type;
+        self
+    }
+}
+impl Deref for PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARMBuilder {
+    type Target = vk::PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct QueueFamilyDataGraphProcessingEnginePropertiesARMBuilder {
+    inner: vk::QueueFamilyDataGraphProcessingEnginePropertiesARM,
+}
+impl Builder<'_> for vk::QueueFamilyDataGraphProcessingEnginePropertiesARM {
+    type Type = QueueFamilyDataGraphProcessingEnginePropertiesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl QueueFamilyDataGraphProcessingEnginePropertiesARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::QueueFamilyDataGraphProcessingEnginePropertiesARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn foreign_semaphore_handle_types(
+        mut self,
+        foreign_semaphore_handle_types: vk::ExternalSemaphoreHandleTypeFlags,
+    ) -> Self {
+        self.inner.foreign_semaphore_handle_types = foreign_semaphore_handle_types;
+        self
+    }
+    pub fn foreign_memory_handle_types(
+        mut self,
+        foreign_memory_handle_types: vk::ExternalMemoryHandleTypeFlags,
+    ) -> Self {
+        self.inner.foreign_memory_handle_types = foreign_memory_handle_types;
+        self
+    }
+}
+impl Deref for QueueFamilyDataGraphProcessingEnginePropertiesARMBuilder {
+    type Target = vk::QueueFamilyDataGraphProcessingEnginePropertiesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphProcessingEngineCreateInfoARMBuilder<'a> {
+    inner: vk::DataGraphProcessingEngineCreateInfoARM,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DataGraphProcessingEngineCreateInfoARM {
+    type Type = DataGraphProcessingEngineCreateInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> DataGraphProcessingEngineCreateInfoARMBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphProcessingEngineCreateInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_processing_engines(
+        mut self,
+        p_processing_engines: &'a mut [vk::PhysicalDeviceDataGraphProcessingEngineARM],
+    ) -> Self {
+        self.inner.processing_engine_count = p_processing_engines.len() as u32;
+        self.inner.p_processing_engines = p_processing_engines.as_mut_ptr();
+        self
+    }
+}
+impl<'a> Deref for DataGraphProcessingEngineCreateInfoARMBuilder<'a> {
+    type Target = vk::DataGraphProcessingEngineCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DataGraphPipelineCreateInfoARMNext for vk::DataGraphProcessingEngineCreateInfoARM {}
+impl DataGraphPipelineCreateInfoARMNext for DataGraphProcessingEngineCreateInfoARMBuilder<'_> {}
+impl DescriptorPoolCreateInfoNext for vk::DataGraphProcessingEngineCreateInfoARM {}
+impl DescriptorPoolCreateInfoNext for DataGraphProcessingEngineCreateInfoARMBuilder<'_> {}
+impl CommandPoolCreateInfoNext for vk::DataGraphProcessingEngineCreateInfoARM {}
+impl CommandPoolCreateInfoNext for DataGraphProcessingEngineCreateInfoARMBuilder<'_> {}

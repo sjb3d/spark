@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.318
+// Generated from vk.xml version 1.4.319
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -195,6 +195,7 @@ pub const max_shader_module_identifier_size_ext = 32;
 pub const max_pipeline_binary_key_size_khr = 32;
 pub const shader_index_unused_amdx: u32 = 0xffffffff;
 pub const partitioned_acceleration_structure_partition_index_global_nv: u32 = 0xffffffff;
+pub const max_physical_device_data_graph_operation_set_name_size_arm = 128;
 pub const wl_display = opaque {};
 pub const Display = opaque {};
 pub const VisualID = c_ulong;
@@ -346,6 +347,7 @@ pub const QueueFlagBits = enum(u5) {
     sparse_binding = 3,
     protected = 4,
     optical_flow_nv = 8,
+    data_graph_arm = 10,
     _,
 };
 pub const QueueFlags = BitField(QueueFlagBits);
@@ -875,6 +877,9 @@ pub const ClusterAccelerationStructureAddressResolutionFlagBitsNV = enum(u5) {
     _,
 };
 pub const ClusterAccelerationStructureAddressResolutionFlagsNV = BitField(ClusterAccelerationStructureAddressResolutionFlagBitsNV);
+pub const ClusterAccelerationStructureAddressResolutionFlagMasksNV = struct {
+    pub const none = ClusterAccelerationStructureAddressResolutionFlagsNV{ .bits = 0x0 };
+};
 pub const BuildAccelerationStructureFlagBitsKHR = enum(u5) {
     allow_update = 0,
     allow_compaction = 1,
@@ -989,6 +994,8 @@ pub const AccessFlagBits2 = enum(u6) {
     micromap_write_ext = 45,
     optical_flow_read_nv = 42,
     optical_flow_write_nv = 43,
+    data_graph_read_arm = 47,
+    data_graph_write_arm = 48,
     _,
 };
 pub const AccessFlags2 = BitField(AccessFlagBits2);
@@ -1037,6 +1044,7 @@ pub const PipelineStageFlagBits2 = enum(u6) {
     cluster_culling_shader_huawei = 41,
     optical_flow_nv = 29,
     convert_cooperative_vector_matrix_nv = 44,
+    data_graph_arm = 42,
     _,
 };
 pub const PipelineStageFlags2 = BitField(PipelineStageFlagBits2);
@@ -1095,6 +1103,7 @@ pub const FormatFeatureFlagBits2 = enum(u6) {
     optical_flow_image_nv = 40,
     optical_flow_vector_nv = 41,
     optical_flow_cost_nv = 42,
+    tensor_data_graph_arm = 48,
     _,
 };
 pub const FormatFeatureFlags2 = BitField(FormatFeatureFlagBits2);
@@ -1209,6 +1218,7 @@ pub const BufferUsageFlagBits2 = enum(u6) {
     push_descriptors_descriptor_buffer_ext = 26,
     micromap_build_input_read_only_ext = 23,
     micromap_storage_ext = 24,
+    data_graph_foreign_descriptor_arm = 29,
     tile_memory_qcom = 27,
     preprocess_buffer_ext = 31,
     _,
@@ -1227,6 +1237,7 @@ pub const TensorUsageFlagBitsARM = enum(u6) {
     transfer_src = 2,
     transfer_dst = 3,
     image_aliasing = 4,
+    data_graph = 5,
     _,
 };
 pub const TensorUsageFlagsARM = BitField(TensorUsageFlagBitsARM);
@@ -1235,6 +1246,15 @@ pub const TensorViewCreateFlagBitsARM = enum(u6) {
     _,
 };
 pub const TensorViewCreateFlagsARM = BitField(TensorViewCreateFlagBitsARM);
+pub const DataGraphPipelineSessionCreateFlagBitsARM = enum(u6) {
+    protected = 0,
+    _,
+};
+pub const DataGraphPipelineSessionCreateFlagsARM = BitField(DataGraphPipelineSessionCreateFlagBitsARM);
+pub const DataGraphPipelineDispatchFlagBitsARM = enum(u6) {
+    _,
+};
+pub const DataGraphPipelineDispatchFlagsARM = BitField(DataGraphPipelineDispatchFlagBitsARM);
 pub const CompositeAlphaFlagBitsKHR = enum(u5) {
     @"opaque" = 0,
     pre_multiplied = 1,
@@ -1811,6 +1831,7 @@ pub const MicromapEXT = enum(u64) { null_handle = 0, _ };
 pub const ShaderEXT = enum(u64) { null_handle = 0, _ };
 pub const TensorARM = enum(u64) { null_handle = 0, _ };
 pub const TensorViewARM = enum(u64) { null_handle = 0, _ };
+pub const DataGraphPipelineSessionARM = enum(u64) { null_handle = 0, _ };
 pub const DisplayKHR = enum(u64) { null_handle = 0, _ };
 pub const DisplayModeKHR = enum(u64) { null_handle = 0, _ };
 pub const SurfaceKHR = enum(u64) { null_handle = 0, _ };
@@ -2438,6 +2459,7 @@ pub const PipelineBindPoint = enum(i32) {
     execution_graph_amdx = 1000134000,
     ray_tracing_khr = 1000165000,
     subpass_shading_huawei = 1000369003,
+    data_graph_arm = 1000507000,
     _,
 };
 pub const PrimitiveTopology = enum(i32) {
@@ -3378,6 +3400,26 @@ pub const StructureType = enum(i32) {
     physical_device_cooperative_matrix_features_khr = 1000506000,
     cooperative_matrix_properties_khr = 1000506001,
     physical_device_cooperative_matrix_properties_khr = 1000506002,
+    data_graph_pipeline_create_info_arm = 1000507000,
+    data_graph_pipeline_session_create_info_arm = 1000507001,
+    data_graph_pipeline_resource_info_arm = 1000507002,
+    data_graph_pipeline_constant_arm = 1000507003,
+    data_graph_pipeline_session_memory_requirements_info_arm = 1000507004,
+    bind_data_graph_pipeline_session_memory_info_arm = 1000507005,
+    physical_device_data_graph_features_arm = 1000507006,
+    data_graph_pipeline_shader_module_create_info_arm = 1000507007,
+    data_graph_pipeline_property_query_result_arm = 1000507008,
+    data_graph_pipeline_info_arm = 1000507009,
+    data_graph_pipeline_compiler_control_create_info_arm = 1000507010,
+    data_graph_pipeline_session_bind_point_requirements_info_arm = 1000507011,
+    data_graph_pipeline_session_bind_point_requirement_arm = 1000507012,
+    data_graph_pipeline_identifier_create_info_arm = 1000507013,
+    data_graph_pipeline_dispatch_info_arm = 1000507014,
+    data_graph_processing_engine_create_info_arm = 1000507016,
+    queue_family_data_graph_processing_engine_properties_arm = 1000507017,
+    queue_family_data_graph_properties_arm = 1000507018,
+    physical_device_queue_family_data_graph_processing_engine_info_arm = 1000507019,
+    data_graph_pipeline_constant_tensor_semi_structured_sparsity_info_arm = 1000507015,
     physical_device_multiview_per_view_render_areas_features_qcom = 1000510000,
     multiview_per_view_render_areas_render_pass_begin_info_qcom = 1000510001,
     physical_device_compute_shader_derivatives_features_khr = 1000201000,
@@ -3536,6 +3578,7 @@ pub const ClusterAccelerationStructureOpTypeNV = enum(i32) {
     build_triangle_cluster = 2,
     build_triangle_cluster_template = 3,
     instantiate_triangle_cluster = 4,
+    get_cluster_template_indices = 5,
     _,
 };
 pub const ClusterAccelerationStructureOpModeNV = enum(i32) {
@@ -3597,6 +3640,7 @@ pub const ObjectType = enum(i32) {
     optical_flow_session_nv = 1000464000,
     shader_ext = 1000482000,
     pipeline_binary_khr = 1000483000,
+    data_graph_pipeline_session_arm = 1000507000,
     external_compute_queue_nv = 1000556000,
     indirect_commands_layout_ext = 1000572000,
     indirect_execution_set_ext = 1000572001,
@@ -4048,6 +4092,27 @@ pub const CooperativeVectorMatrixLayoutNV = enum(i32) {
 pub const TensorTilingARM = enum(i32) {
     optimal = 0,
     linear = 1,
+    _,
+};
+pub const DataGraphPipelinePropertyARM = enum(i32) {
+    creation_log = 0,
+    identifier = 1,
+    _,
+};
+pub const DataGraphPipelineSessionBindPointARM = enum(i32) {
+    transient = 0,
+    _,
+};
+pub const DataGraphPipelineSessionBindPointTypeARM = enum(i32) {
+    memory = 0,
+    _,
+};
+pub const PhysicalDeviceDataGraphProcessingEngineTypeARM = enum(i32) {
+    default = 0,
+    _,
+};
+pub const PhysicalDeviceDataGraphOperationTypeARM = enum(i32) {
+    spirv_extended_instruction_set = 0,
     _,
 };
 pub const ColorSpaceKHR = enum(i32) {
@@ -4740,6 +4805,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceTensorFeaturesARM,
             *PhysicalDeviceDescriptorBufferTensorFeaturesARM,
             *PhysicalDeviceShaderFloat8FeaturesEXT,
+            *PhysicalDeviceDataGraphFeaturesARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -5283,6 +5349,7 @@ pub const DescriptorPoolCreateInfo = extern struct {
         switch (@TypeOf(next)) {
             inline *DescriptorPoolInlineUniformBlockCreateInfo,
             *MutableDescriptorTypeCreateInfoEXT,
+            *DataGraphProcessingEngineCreateInfoARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -5753,6 +5820,17 @@ pub const CommandPoolCreateInfo = extern struct {
     p_next: ?*const anyopaque = null,
     flags: CommandPoolCreateFlags = .none,
     queue_family_index: u32 = 0,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *DataGraphProcessingEngineCreateInfoARM,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const CommandBufferAllocateInfo = extern struct {
     s_type: StructureType = .command_buffer_allocate_info,
@@ -6652,6 +6730,9 @@ pub const ClusterAccelerationStructureBuildClustersBottomLevelInfoNV = extern st
     cluster_references_stride: u32 = 0,
     cluster_references: DeviceAddress = 0,
 };
+pub const ClusterAccelerationStructureGetTemplateIndicesInfoNV = extern struct {
+    cluster_template_address: DeviceAddress = 0,
+};
 pub const ClusterAccelerationStructureBuildTriangleClusterInfoNV = extern struct {
     cluster_id: u32 = 0,
     cluster_flags: ClusterAccelerationStructureClusterFlagsNV = .none,
@@ -7069,6 +7150,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceTensorFeaturesARM,
             *PhysicalDeviceDescriptorBufferTensorFeaturesARM,
             *PhysicalDeviceShaderFloat8FeaturesEXT,
+            *PhysicalDeviceDataGraphFeaturesARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -14658,6 +14740,197 @@ pub const OHSurfaceCreateInfoOHOS = extern struct {
     window: ?*OHNativeWindow = null,
 };
 pub const SurfaceCreateInfoOHOS = OHSurfaceCreateInfoOHOS;
+pub const PhysicalDeviceDataGraphFeaturesARM = extern struct {
+    s_type: StructureType = .physical_device_data_graph_features_arm,
+    p_next: ?*anyopaque = null,
+    data_graph: Bool32 = .false,
+    data_graph_update_after_bind: Bool32 = .false,
+    data_graph_specialization_constants: Bool32 = .false,
+    data_graph_descriptor_buffer: Bool32 = .false,
+    data_graph_shader_module: Bool32 = .false,
+};
+pub const DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_constant_tensor_semi_structured_sparsity_info_arm,
+    p_next: ?*const anyopaque = null,
+    dimension: u32 = 0,
+    zero_count: u32 = 0,
+    group_size: u32 = 0,
+};
+pub const DataGraphPipelineConstantARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_constant_arm,
+    p_next: ?*const anyopaque = null,
+    id: u32 = 0,
+    p_constant_data: ?*const anyopaque = null,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *TensorDescriptionARM,
+            *DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
+};
+pub const DataGraphPipelineResourceInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_resource_info_arm,
+    p_next: ?*const anyopaque = null,
+    descriptor_set: u32 = 0,
+    binding: u32 = 0,
+    array_element: u32 = 0,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *TensorDescriptionARM,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
+};
+pub const DataGraphPipelineCompilerControlCreateInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_compiler_control_create_info_arm,
+    p_next: ?*const anyopaque = null,
+    p_vendor_options: ?[*:0]const u8 = null,
+};
+pub const DataGraphPipelineCreateInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_create_info_arm,
+    p_next: ?*const anyopaque = null,
+    flags: PipelineCreateFlags2KHR = .none,
+    layout: PipelineLayout = .null_handle,
+    resource_info_count: u32 = 0,
+    p_resource_infos: ?[*]const DataGraphPipelineResourceInfoARM = null,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *PipelineCreationFeedbackCreateInfo,
+            *DataGraphPipelineCompilerControlCreateInfoARM,
+            *DataGraphPipelineShaderModuleCreateInfoARM,
+            *DataGraphPipelineIdentifierCreateInfoARM,
+            *DataGraphProcessingEngineCreateInfoARM,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
+};
+pub const DataGraphPipelineShaderModuleCreateInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_shader_module_create_info_arm,
+    p_next: ?*const anyopaque = null,
+    module: ShaderModule = .null_handle,
+    p_name: ?[*:0]const u8 = null,
+    p_specialization_info: ?*const SpecializationInfo = null,
+    constant_count: u32 = 0,
+    p_constants: ?[*]const DataGraphPipelineConstantARM = null,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *ShaderModuleCreateInfo,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
+};
+pub const DataGraphPipelineSessionCreateInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_session_create_info_arm,
+    p_next: ?*const anyopaque = null,
+    flags: DataGraphPipelineSessionCreateFlagsARM = .none,
+    data_graph_pipeline: Pipeline = .null_handle,
+};
+pub const DataGraphPipelineSessionBindPointRequirementsInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_session_bind_point_requirements_info_arm,
+    p_next: ?*const anyopaque = null,
+    session: DataGraphPipelineSessionARM = .null_handle,
+};
+pub const DataGraphPipelineSessionBindPointRequirementARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_session_bind_point_requirement_arm,
+    p_next: ?*const anyopaque = null,
+    bind_point: DataGraphPipelineSessionBindPointARM = @enumFromInt(0),
+    bind_point_type: DataGraphPipelineSessionBindPointTypeARM = @enumFromInt(0),
+    num_objects: u32 = 0,
+};
+pub const DataGraphPipelineSessionMemoryRequirementsInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_session_memory_requirements_info_arm,
+    p_next: ?*const anyopaque = null,
+    session: DataGraphPipelineSessionARM = .null_handle,
+    bind_point: DataGraphPipelineSessionBindPointARM = @enumFromInt(0),
+    object_index: u32 = 0,
+};
+pub const BindDataGraphPipelineSessionMemoryInfoARM = extern struct {
+    s_type: StructureType = .bind_data_graph_pipeline_session_memory_info_arm,
+    p_next: ?*const anyopaque = null,
+    session: DataGraphPipelineSessionARM = .null_handle,
+    bind_point: DataGraphPipelineSessionBindPointARM = @enumFromInt(0),
+    object_index: u32 = 0,
+    memory: DeviceMemory = .null_handle,
+    memory_offset: DeviceSize = 0,
+};
+pub const DataGraphPipelineInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_info_arm,
+    p_next: ?*const anyopaque = null,
+    data_graph_pipeline: Pipeline = .null_handle,
+};
+pub const DataGraphPipelinePropertyQueryResultARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_property_query_result_arm,
+    p_next: ?*const anyopaque = null,
+    property: DataGraphPipelinePropertyARM = @enumFromInt(0),
+    is_text: Bool32 = .false,
+    data_size: usize = 0,
+    p_data: ?*anyopaque = null,
+};
+pub const DataGraphPipelineIdentifierCreateInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_identifier_create_info_arm,
+    p_next: ?*const anyopaque = null,
+    identifier_size: u32 = 0,
+    p_identifier: ?[*]const u8 = null,
+};
+pub const DataGraphPipelineDispatchInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_dispatch_info_arm,
+    p_next: ?*anyopaque = null,
+    flags: DataGraphPipelineDispatchFlagsARM = .none,
+};
+pub const PhysicalDeviceDataGraphProcessingEngineARM = extern struct {
+    type: PhysicalDeviceDataGraphProcessingEngineTypeARM = @enumFromInt(0),
+    is_foreign: Bool32 = .false,
+};
+pub const PhysicalDeviceDataGraphOperationSupportARM = extern struct {
+    operation_type: PhysicalDeviceDataGraphOperationTypeARM = @enumFromInt(0),
+    name: [max_physical_device_data_graph_operation_set_name_size_arm]u8 = [_]u8{0} ** max_physical_device_data_graph_operation_set_name_size_arm,
+    version: u32 = 0,
+};
+pub const QueueFamilyDataGraphPropertiesARM = extern struct {
+    s_type: StructureType = .queue_family_data_graph_properties_arm,
+    p_next: ?*const anyopaque = null,
+    engine: PhysicalDeviceDataGraphProcessingEngineARM = .{},
+    operation: PhysicalDeviceDataGraphOperationSupportARM = .{},
+};
+pub const PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM = extern struct {
+    s_type: StructureType = .physical_device_queue_family_data_graph_processing_engine_info_arm,
+    p_next: ?*const anyopaque = null,
+    queue_family_index: u32 = 0,
+    engine_type: PhysicalDeviceDataGraphProcessingEngineTypeARM = @enumFromInt(0),
+};
+pub const QueueFamilyDataGraphProcessingEnginePropertiesARM = extern struct {
+    s_type: StructureType = .queue_family_data_graph_processing_engine_properties_arm,
+    p_next: ?*const anyopaque = null,
+    foreign_semaphore_handle_types: ExternalSemaphoreHandleTypeFlags = .none,
+    foreign_memory_handle_types: ExternalMemoryHandleTypeFlags = .none,
+};
+pub const DataGraphProcessingEngineCreateInfoARM = extern struct {
+    s_type: StructureType = .data_graph_processing_engine_create_info_arm,
+    p_next: ?*const anyopaque = null,
+    processing_engine_count: u32 = 0,
+    p_processing_engines: ?[*]PhysicalDeviceDataGraphProcessingEngineARM = null,
+};
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpEnumeratePhysicalDevices = *const fn (Instance, [*c]u32, [*c]PhysicalDevice) callconv(.c) Result;
@@ -15282,6 +15555,17 @@ pub const FpCmdCopyTensorARM = *const fn (CommandBuffer, [*c]const CopyTensorInf
 pub const FpGetTensorOpaqueCaptureDescriptorDataARM = *const fn (Device, [*c]const TensorCaptureDescriptorDataInfoARM, ?*anyopaque) callconv(.c) Result;
 pub const FpGetTensorViewOpaqueCaptureDescriptorDataARM = *const fn (Device, [*c]const TensorViewCaptureDescriptorDataInfoARM, ?*anyopaque) callconv(.c) Result;
 pub const FpGetPhysicalDeviceExternalTensorPropertiesARM = *const fn (PhysicalDevice, [*c]const PhysicalDeviceExternalTensorInfoARM, [*c]ExternalTensorPropertiesARM) callconv(.c) void;
+pub const FpCreateDataGraphPipelinesARM = *const fn (Device, DeferredOperationKHR, PipelineCache, u32, [*c]const DataGraphPipelineCreateInfoARM, [*c]const AllocationCallbacks, [*c]Pipeline) callconv(.c) Result;
+pub const FpCreateDataGraphPipelineSessionARM = *const fn (Device, [*c]const DataGraphPipelineSessionCreateInfoARM, [*c]const AllocationCallbacks, [*c]DataGraphPipelineSessionARM) callconv(.c) Result;
+pub const FpGetDataGraphPipelineSessionBindPointRequirementsARM = *const fn (Device, [*c]const DataGraphPipelineSessionBindPointRequirementsInfoARM, [*c]u32, [*c]DataGraphPipelineSessionBindPointRequirementARM) callconv(.c) Result;
+pub const FpGetDataGraphPipelineSessionMemoryRequirementsARM = *const fn (Device, [*c]const DataGraphPipelineSessionMemoryRequirementsInfoARM, [*c]MemoryRequirements2) callconv(.c) void;
+pub const FpBindDataGraphPipelineSessionMemoryARM = *const fn (Device, u32, [*c]const BindDataGraphPipelineSessionMemoryInfoARM) callconv(.c) Result;
+pub const FpDestroyDataGraphPipelineSessionARM = *const fn (Device, DataGraphPipelineSessionARM, [*c]const AllocationCallbacks) callconv(.c) void;
+pub const FpCmdDispatchDataGraphARM = *const fn (CommandBuffer, DataGraphPipelineSessionARM, [*c]const DataGraphPipelineDispatchInfoARM) callconv(.c) void;
+pub const FpGetDataGraphPipelineAvailablePropertiesARM = *const fn (Device, [*c]const DataGraphPipelineInfoARM, [*c]u32, [*c]DataGraphPipelinePropertyARM) callconv(.c) Result;
+pub const FpGetDataGraphPipelinePropertiesARM = *const fn (Device, [*c]const DataGraphPipelineInfoARM, u32, [*c]DataGraphPipelinePropertyQueryResultARM) callconv(.c) Result;
+pub const FpGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = *const fn (PhysicalDevice, u32, [*c]u32, [*c]QueueFamilyDataGraphPropertiesARM) callconv(.c) Result;
+pub const FpGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = *const fn (PhysicalDevice, [*c]const PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM, [*c]QueueFamilyDataGraphProcessingEnginePropertiesARM) callconv(.c) void;
 
 const ExtensionNames = struct {
     const khr_surface = "VK_KHR_surface";
@@ -15632,6 +15916,7 @@ const ExtensionNames = struct {
     const ext_dynamic_rendering_unused_attachments = "VK_EXT_dynamic_rendering_unused_attachments";
     const nv_low_latency2 = "VK_NV_low_latency2";
     const khr_cooperative_matrix = "VK_KHR_cooperative_matrix";
+    const arm_data_graph = "VK_ARM_data_graph";
     const qcom_multiview_per_view_render_areas = "VK_QCOM_multiview_per_view_render_areas";
     const khr_compute_shader_derivatives = "VK_KHR_compute_shader_derivatives";
     const nv_per_stage_descriptor_set = "VK_NV_per_stage_descriptor_set";
@@ -18215,6 +18500,15 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_arm_data_graph(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 3, 0).to_int() and self.supports_khr_maintenance5();
+    }
+    pub fn enable_arm_data_graph(self: *InstanceExtensions) void {
+        // depends on minimum core version, caller must specify
+        assert(self.core_version.to_int() >= make_version(1, 3, 0).to_int());
+        self.enable_khr_maintenance5();
+    }
+
     pub fn supports_khr_compute_shader_derivatives(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
@@ -18804,6 +19098,7 @@ pub const DeviceExtensions = packed struct {
     ext_dynamic_rendering_unused_attachments: bool = false,
     nv_low_latency2: bool = false,
     khr_cooperative_matrix: bool = false,
+    arm_data_graph: bool = false,
     qcom_multiview_per_view_render_areas: bool = false,
     khr_compute_shader_derivatives: bool = false,
     nv_per_stage_descriptor_set: bool = false,
@@ -19477,6 +19772,8 @@ pub const DeviceExtensions = packed struct {
             self.nv_low_latency2 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_cooperative_matrix) == .eq) {
             self.khr_cooperative_matrix = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.arm_data_graph) == .eq) {
+            self.arm_data_graph = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_multiview_per_view_render_areas) == .eq) {
             self.qcom_multiview_per_view_render_areas = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_compute_shader_derivatives) == .eq) {
@@ -19899,6 +20196,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_dynamic_rendering_unused_attachments) try names.append(allocator, ExtensionNames.ext_dynamic_rendering_unused_attachments);
         if (self.nv_low_latency2) try names.append(allocator, ExtensionNames.nv_low_latency2);
         if (self.khr_cooperative_matrix) try names.append(allocator, ExtensionNames.khr_cooperative_matrix);
+        if (self.arm_data_graph) try names.append(allocator, ExtensionNames.arm_data_graph);
         if (self.qcom_multiview_per_view_render_areas) try names.append(allocator, ExtensionNames.qcom_multiview_per_view_render_areas);
         if (self.khr_compute_shader_derivatives) try names.append(allocator, ExtensionNames.khr_compute_shader_derivatives);
         if (self.nv_per_stage_descriptor_set) try names.append(allocator, ExtensionNames.nv_per_stage_descriptor_set);
@@ -22585,6 +22883,17 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_khr_cooperative_matrix(self: *DeviceExtensions) void {
         self.khr_cooperative_matrix = true;
+    }
+
+    pub fn supports_arm_data_graph(self: DeviceExtensions) bool {
+        return self.arm_data_graph and self.core_version.to_int() >= make_version(1, 3, 0).to_int() and self.supports_khr_maintenance5() and self.supports_khr_deferred_host_operations();
+    }
+    pub fn enable_arm_data_graph(self: *DeviceExtensions) void {
+        self.arm_data_graph = true;
+        // depends on minimum core version, caller must specify
+        assert(self.core_version.to_int() >= make_version(1, 3, 0).to_int());
+        self.enable_khr_maintenance5();
+        self.enable_khr_deferred_host_operations();
     }
 
     pub fn supports_qcom_multiview_per_view_render_areas(self: DeviceExtensions) bool {
@@ -25519,6 +25828,17 @@ pub const DeviceCommands = struct {
     fp_get_tensor_opaque_capture_descriptor_data_arm: ?FpGetTensorOpaqueCaptureDescriptorDataARM,
     fp_get_tensor_view_opaque_capture_descriptor_data_arm: ?FpGetTensorViewOpaqueCaptureDescriptorDataARM,
     fp_get_physical_device_external_tensor_properties_arm: ?FpGetPhysicalDeviceExternalTensorPropertiesARM,
+    fp_create_data_graph_pipelines_arm: ?FpCreateDataGraphPipelinesARM,
+    fp_create_data_graph_pipeline_session_arm: ?FpCreateDataGraphPipelineSessionARM,
+    fp_get_data_graph_pipeline_session_bind_point_requirements_arm: ?FpGetDataGraphPipelineSessionBindPointRequirementsARM,
+    fp_get_data_graph_pipeline_session_memory_requirements_arm: ?FpGetDataGraphPipelineSessionMemoryRequirementsARM,
+    fp_bind_data_graph_pipeline_session_memory_arm: ?FpBindDataGraphPipelineSessionMemoryARM,
+    fp_destroy_data_graph_pipeline_session_arm: ?FpDestroyDataGraphPipelineSessionARM,
+    fp_cmd_dispatch_data_graph_arm: ?FpCmdDispatchDataGraphARM,
+    fp_get_data_graph_pipeline_available_properties_arm: ?FpGetDataGraphPipelineAvailablePropertiesARM,
+    fp_get_data_graph_pipeline_properties_arm: ?FpGetDataGraphPipelinePropertiesARM,
+    fp_get_physical_device_queue_family_data_graph_properties_arm: ?FpGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM,
+    fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm: ?FpGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM,
 
     pub fn init(globals: GlobalCommands, instance: InstanceCommands, device: Device, create_info: *const DeviceCreateInfo) MissingFunctionError!DeviceCommands {
         var extensions: DeviceExtensions = .{
@@ -26070,6 +26390,17 @@ pub const DeviceCommands = struct {
             .fp_get_tensor_opaque_capture_descriptor_data_arm = if (extensions.arm_tensors and extensions.ext_descriptor_buffer) @ptrCast(try instance.get_device_proc_addr(device, "vkGetTensorOpaqueCaptureDescriptorDataARM")) else null,
             .fp_get_tensor_view_opaque_capture_descriptor_data_arm = if (extensions.arm_tensors and extensions.ext_descriptor_buffer) @ptrCast(try instance.get_device_proc_addr(device, "vkGetTensorViewOpaqueCaptureDescriptorDataARM")) else null,
             .fp_get_physical_device_external_tensor_properties_arm = if (extensions.arm_tensors) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceExternalTensorPropertiesARM")) else null,
+            .fp_create_data_graph_pipelines_arm = if (extensions.arm_data_graph) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateDataGraphPipelinesARM")) else null,
+            .fp_create_data_graph_pipeline_session_arm = if (extensions.arm_data_graph) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateDataGraphPipelineSessionARM")) else null,
+            .fp_get_data_graph_pipeline_session_bind_point_requirements_arm = if (extensions.arm_data_graph) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDataGraphPipelineSessionBindPointRequirementsARM")) else null,
+            .fp_get_data_graph_pipeline_session_memory_requirements_arm = if (extensions.arm_data_graph) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDataGraphPipelineSessionMemoryRequirementsARM")) else null,
+            .fp_bind_data_graph_pipeline_session_memory_arm = if (extensions.arm_data_graph) @ptrCast(try instance.get_device_proc_addr(device, "vkBindDataGraphPipelineSessionMemoryARM")) else null,
+            .fp_destroy_data_graph_pipeline_session_arm = if (extensions.arm_data_graph) @ptrCast(try instance.get_device_proc_addr(device, "vkDestroyDataGraphPipelineSessionARM")) else null,
+            .fp_cmd_dispatch_data_graph_arm = if (extensions.arm_data_graph) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDispatchDataGraphARM")) else null,
+            .fp_get_data_graph_pipeline_available_properties_arm = if (extensions.arm_data_graph) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDataGraphPipelineAvailablePropertiesARM")) else null,
+            .fp_get_data_graph_pipeline_properties_arm = if (extensions.arm_data_graph) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDataGraphPipelinePropertiesARM")) else null,
+            .fp_get_physical_device_queue_family_data_graph_properties_arm = if (extensions.arm_data_graph) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM")) else null,
+            .fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm = if (extensions.arm_data_graph) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM")) else null,
         };
     }
     pub fn destroy_device(
@@ -33113,6 +33444,193 @@ pub const DeviceCommands = struct {
         p_external_tensor_properties: *ExternalTensorPropertiesARM,
     ) void {
         self.fp_get_physical_device_external_tensor_properties_arm.?(physical_device, p_external_tensor_info, p_external_tensor_properties);
+    }
+    pub const CreateDataGraphPipelinesARMError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unexpected,
+    };
+    pub fn create_data_graph_pipelines_arm(
+        self: DeviceCommands,
+        deferred_operation: DeferredOperationKHR,
+        pipeline_cache: PipelineCache,
+        p_create_infos: []const DataGraphPipelineCreateInfoARM,
+        p_allocator: ?*const AllocationCallbacks,
+        p_pipelines: []Pipeline,
+    ) CreateDataGraphPipelinesARMError!CreateGraphicsPipelinesResult {
+        const create_info_count: u32 = @intCast(p_create_infos.len);
+        assert(create_info_count == p_pipelines.len);
+        switch (self.fp_create_data_graph_pipelines_arm.?(self.handle, deferred_operation, pipeline_cache, create_info_count, p_create_infos.ptr, p_allocator, p_pipelines.ptr)) {
+            .success => return .success,
+            .pipeline_compile_required => return .pipeline_compile_required,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            else => return error.Unexpected,
+        }
+    }
+    pub const CreateDataGraphPipelineSessionARMError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unexpected,
+    };
+    pub fn create_data_graph_pipeline_session_arm(
+        self: DeviceCommands,
+        p_create_info: *const DataGraphPipelineSessionCreateInfoARM,
+        p_allocator: ?*const AllocationCallbacks,
+    ) CreateDataGraphPipelineSessionARMError!DataGraphPipelineSessionARM {
+        var p_session: DataGraphPipelineSessionARM = undefined;
+        switch (self.fp_create_data_graph_pipeline_session_arm.?(self.handle, p_create_info, p_allocator, &p_session)) {
+            .success => return p_session,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            else => return error.Unexpected,
+        }
+    }
+    pub const GetDataGraphPipelineSessionBindPointRequirementsARMError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unexpected,
+    };
+    pub fn get_data_graph_pipeline_session_bind_point_requirements_arm(
+        self: DeviceCommands,
+        p_info: *const DataGraphPipelineSessionBindPointRequirementsInfoARM,
+        p_bind_point_requirement_count: *u32,
+        p_bind_point_requirements: ?[*]DataGraphPipelineSessionBindPointRequirementARM,
+    ) GetDataGraphPipelineSessionBindPointRequirementsARMError!EnumerateResult {
+        switch (self.fp_get_data_graph_pipeline_session_bind_point_requirements_arm.?(self.handle, p_info, p_bind_point_requirement_count, p_bind_point_requirements)) {
+            .success => return .success,
+            .incomplete => return .incomplete,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn get_data_graph_pipeline_session_memory_requirements_arm(
+        self: DeviceCommands,
+        p_info: *const DataGraphPipelineSessionMemoryRequirementsInfoARM,
+        p_memory_requirements: *MemoryRequirements2,
+    ) void {
+        self.fp_get_data_graph_pipeline_session_memory_requirements_arm.?(self.handle, p_info, p_memory_requirements);
+    }
+    pub const BindDataGraphPipelineSessionMemoryARMError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unexpected,
+    };
+    pub fn bind_data_graph_pipeline_session_memory_arm(
+        self: DeviceCommands,
+        p_bind_infos: []const BindDataGraphPipelineSessionMemoryInfoARM,
+    ) BindDataGraphPipelineSessionMemoryARMError!void {
+        const bind_info_count: u32 = @intCast(p_bind_infos.len);
+        switch (self.fp_bind_data_graph_pipeline_session_memory_arm.?(self.handle, bind_info_count, p_bind_infos.ptr)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn destroy_data_graph_pipeline_session_arm(
+        self: DeviceCommands,
+        session: DataGraphPipelineSessionARM,
+        p_allocator: ?*const AllocationCallbacks,
+    ) void {
+        self.fp_destroy_data_graph_pipeline_session_arm.?(self.handle, session, p_allocator);
+    }
+    pub fn cmd_dispatch_data_graph_arm(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        session: DataGraphPipelineSessionARM,
+        p_info: ?*const DataGraphPipelineDispatchInfoARM,
+    ) void {
+        self.fp_cmd_dispatch_data_graph_arm.?(command_buffer, session, p_info);
+    }
+    pub const GetDataGraphPipelineAvailablePropertiesARMError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unexpected,
+    };
+    pub fn get_data_graph_pipeline_available_properties_arm(
+        self: DeviceCommands,
+        p_pipeline_info: *const DataGraphPipelineInfoARM,
+        p_properties_count: *u32,
+        p_properties: ?[*]DataGraphPipelinePropertyARM,
+    ) GetDataGraphPipelineAvailablePropertiesARMError!EnumerateResult {
+        switch (self.fp_get_data_graph_pipeline_available_properties_arm.?(self.handle, p_pipeline_info, p_properties_count, p_properties)) {
+            .success => return .success,
+            .incomplete => return .incomplete,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            else => return error.Unexpected,
+        }
+    }
+    pub const GetDataGraphPipelineAvailablePropertiesARMOrAllocatorError = GetDataGraphPipelineAvailablePropertiesARMError || Allocator.Error;
+    pub fn get_data_graph_pipeline_available_properties_arm_to_array(
+        self: DeviceCommands,
+        allocator: Allocator,
+        p_pipeline_info: *const DataGraphPipelineInfoARM,
+    ) GetDataGraphPipelineAvailablePropertiesARMOrAllocatorError![]DataGraphPipelinePropertyARM {
+        const enumerator = struct {
+            self: *const DeviceCommands,
+            p_pipeline_info: *const DataGraphPipelineInfoARM,
+            pub fn enumerate(enumerator: @This(), len: *u32, elements: ?[*]DataGraphPipelinePropertyARM) !EnumerateResult {
+                return enumerator.self.get_data_graph_pipeline_available_properties_arm(
+                    enumerator.p_pipeline_info,
+                    len,
+                    elements,
+                );
+            }
+        }{
+            .self = &self,
+            .p_pipeline_info = p_pipeline_info,
+        };
+        return enumerate_generic_to_array(GetDataGraphPipelineAvailablePropertiesARMOrAllocatorError, DataGraphPipelinePropertyARM, enumerator, allocator);
+    }
+    pub const GetDataGraphPipelinePropertiesARMError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unexpected,
+    };
+    pub fn get_data_graph_pipeline_properties_arm(
+        self: DeviceCommands,
+        p_pipeline_info: *const DataGraphPipelineInfoARM,
+        p_properties: []DataGraphPipelinePropertyQueryResultARM,
+    ) GetDataGraphPipelinePropertiesARMError!EnumerateResult {
+        const properties_count: u32 = @intCast(p_properties.len);
+        switch (self.fp_get_data_graph_pipeline_properties_arm.?(self.handle, p_pipeline_info, properties_count, p_properties.ptr)) {
+            .success => return .success,
+            .incomplete => return .incomplete,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            else => return error.Unexpected,
+        }
+    }
+    pub const GetPhysicalDeviceQueueFamilyDataGraphPropertiesARMError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unexpected,
+    };
+    pub fn get_physical_device_queue_family_data_graph_properties_arm(
+        self: DeviceCommands,
+        physical_device: PhysicalDevice,
+        queue_family_index: u32,
+        p_queue_family_data_graph_property_count: *u32,
+        p_queue_family_data_graph_properties: ?[*]QueueFamilyDataGraphPropertiesARM,
+    ) GetPhysicalDeviceQueueFamilyDataGraphPropertiesARMError!EnumerateResult {
+        switch (self.fp_get_physical_device_queue_family_data_graph_properties_arm.?(physical_device, queue_family_index, p_queue_family_data_graph_property_count, p_queue_family_data_graph_properties)) {
+            .success => return .success,
+            .incomplete => return .incomplete,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn get_physical_device_queue_family_data_graph_processing_engine_properties_arm(
+        self: DeviceCommands,
+        physical_device: PhysicalDevice,
+        p_queue_family_data_graph_processing_engine_info: *const PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM,
+        p_queue_family_data_graph_processing_engine_properties: *QueueFamilyDataGraphProcessingEnginePropertiesARM,
+    ) void {
+        self.fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm.?(physical_device, p_queue_family_data_graph_processing_engine_info, p_queue_family_data_graph_processing_engine_properties);
     }
 };
 

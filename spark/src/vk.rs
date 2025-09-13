@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.318
+//! Generated from vk.xml version 1.4.319
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -175,6 +175,7 @@ pub const MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT: usize = 32;
 pub const MAX_PIPELINE_BINARY_KEY_SIZE_KHR: usize = 32;
 pub const SHADER_INDEX_UNUSED_AMDX: u32 = 0xffffffff;
 pub const PARTITIONED_ACCELERATION_STRUCTURE_PARTITION_INDEX_GLOBAL_NV: u32 = 0xffffffff;
+pub const MAX_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_SET_NAME_SIZE_ARM: usize = 128;
 #[allow(non_camel_case_types)]
 pub type wl_display = Never;
 pub type Display = Never;
@@ -571,6 +572,7 @@ impl QueueFlags {
     pub const SPARSE_BINDING: Self = Self(0x8);
     pub const PROTECTED: Self = Self(0x10);
     pub const OPTICAL_FLOW_NV: Self = Self(0x100);
+    pub const DATA_GRAPH_ARM: Self = Self(0x400);
 }
 impl_bitmask!(QueueFlags);
 impl fmt::Display for QueueFlags {
@@ -584,6 +586,7 @@ impl fmt::Display for QueueFlags {
                 (0x8, "SPARSE_BINDING"),
                 (0x10, "PROTECTED"),
                 (0x100, "OPTICAL_FLOW_NV"),
+                (0x400, "DATA_GRAPH_ARM"),
             ],
             f,
         )
@@ -1974,6 +1977,7 @@ impl fmt::Display for ClusterAccelerationStructureClusterFlagsNV {
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ClusterAccelerationStructureAddressResolutionFlagsNV(pub(crate) u32);
 impl ClusterAccelerationStructureAddressResolutionFlagsNV {
+    pub const NONE: Self = Self(0x0);
     pub const INDIRECTED_DST_IMPLICIT_DATA: Self = Self(0x1);
     pub const INDIRECTED_SCRATCH_DATA: Self = Self(0x2);
     pub const INDIRECTED_DST_ADDRESS_ARRAY: Self = Self(0x4);
@@ -2280,6 +2284,8 @@ impl AccessFlags2 {
     pub const MICROMAP_WRITE_EXT: Self = Self(0x200000000000);
     pub const OPTICAL_FLOW_READ_NV: Self = Self(0x40000000000);
     pub const OPTICAL_FLOW_WRITE_NV: Self = Self(0x80000000000);
+    pub const DATA_GRAPH_READ_ARM: Self = Self(0x800000000000);
+    pub const DATA_GRAPH_WRITE_ARM: Self = Self(0x1000000000000);
 }
 impl_bitmask!(AccessFlags2);
 impl fmt::Display for AccessFlags2 {
@@ -2327,6 +2333,8 @@ impl fmt::Display for AccessFlags2 {
                 (0x200000000000, "MICROMAP_WRITE_EXT"),
                 (0x40000000000, "OPTICAL_FLOW_READ_NV"),
                 (0x80000000000, "OPTICAL_FLOW_WRITE_NV"),
+                (0x800000000000, "DATA_GRAPH_READ_ARM"),
+                (0x1000000000000, "DATA_GRAPH_WRITE_ARM"),
             ],
             f,
         )
@@ -2413,6 +2421,7 @@ impl PipelineStageFlags2 {
     pub const CLUSTER_CULLING_SHADER_HUAWEI: Self = Self(0x20000000000);
     pub const OPTICAL_FLOW_NV: Self = Self(0x20000000);
     pub const CONVERT_COOPERATIVE_VECTOR_MATRIX_NV: Self = Self(0x100000000000);
+    pub const DATA_GRAPH_ARM: Self = Self(0x40000000000);
 }
 impl_bitmask!(PipelineStageFlags2);
 impl fmt::Display for PipelineStageFlags2 {
@@ -2460,6 +2469,7 @@ impl fmt::Display for PipelineStageFlags2 {
                 (0x20000000000, "CLUSTER_CULLING_SHADER_HUAWEI"),
                 (0x20000000, "OPTICAL_FLOW_NV"),
                 (0x100000000000, "CONVERT_COOPERATIVE_VECTOR_MATRIX_NV"),
+                (0x40000000000, "DATA_GRAPH_ARM"),
             ],
             f,
         )
@@ -2567,6 +2577,7 @@ impl FormatFeatureFlags2 {
     pub const OPTICAL_FLOW_IMAGE_NV: Self = Self(0x10000000000);
     pub const OPTICAL_FLOW_VECTOR_NV: Self = Self(0x20000000000);
     pub const OPTICAL_FLOW_COST_NV: Self = Self(0x40000000000);
+    pub const TENSOR_DATA_GRAPH_ARM: Self = Self(0x1000000000000);
 }
 impl_bitmask!(FormatFeatureFlags2);
 impl fmt::Display for FormatFeatureFlags2 {
@@ -2622,6 +2633,7 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x10000000000, "OPTICAL_FLOW_IMAGE_NV"),
                 (0x20000000000, "OPTICAL_FLOW_VECTOR_NV"),
                 (0x40000000000, "OPTICAL_FLOW_COST_NV"),
+                (0x1000000000000, "TENSOR_DATA_GRAPH_ARM"),
             ],
             f,
         )
@@ -2900,6 +2912,7 @@ impl BufferUsageFlags2 {
     pub const PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT: Self = Self(0x4000000);
     pub const MICROMAP_BUILD_INPUT_READ_ONLY_EXT: Self = Self(0x800000);
     pub const MICROMAP_STORAGE_EXT: Self = Self(0x1000000);
+    pub const DATA_GRAPH_FOREIGN_DESCRIPTOR_ARM: Self = Self(0x20000000);
     pub const TILE_MEMORY_QCOM: Self = Self(0x8000000);
     pub const PREPROCESS_BUFFER_EXT: Self = Self(0x80000000);
 }
@@ -2931,6 +2944,7 @@ impl fmt::Display for BufferUsageFlags2 {
                 (0x4000000, "PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT"),
                 (0x800000, "MICROMAP_BUILD_INPUT_READ_ONLY_EXT"),
                 (0x1000000, "MICROMAP_STORAGE_EXT"),
+                (0x20000000, "DATA_GRAPH_FOREIGN_DESCRIPTOR_ARM"),
                 (0x8000000, "TILE_MEMORY_QCOM"),
                 (0x80000000, "PREPROCESS_BUFFER_EXT"),
             ],
@@ -2971,6 +2985,7 @@ impl TensorUsageFlagsARM {
     pub const TRANSFER_SRC: Self = Self(0x4);
     pub const TRANSFER_DST: Self = Self(0x8);
     pub const IMAGE_ALIASING: Self = Self(0x10);
+    pub const DATA_GRAPH: Self = Self(0x20);
 }
 impl_bitmask!(TensorUsageFlagsARM);
 impl fmt::Display for TensorUsageFlagsARM {
@@ -2982,6 +2997,7 @@ impl fmt::Display for TensorUsageFlagsARM {
                 (0x4, "TRANSFER_SRC"),
                 (0x8, "TRANSFER_DST"),
                 (0x10, "IMAGE_ALIASING"),
+                (0x20, "DATA_GRAPH"),
             ],
             f,
         )
@@ -2998,6 +3014,30 @@ impl_bitmask!(TensorViewCreateFlagsARM);
 impl fmt::Display for TensorViewCreateFlagsARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "DESCRIPTOR_BUFFER_CAPTURE_REPLAY")], f)
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DataGraphPipelineSessionCreateFlagsARM(pub(crate) u64);
+impl DataGraphPipelineSessionCreateFlagsARM {
+    pub const PROTECTED: Self = Self(0x1);
+}
+impl_bitmask!(DataGraphPipelineSessionCreateFlagsARM);
+impl fmt::Display for DataGraphPipelineSessionCreateFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "PROTECTED")], f)
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DataGraphPipelineDispatchFlagsARM(pub(crate) u64);
+impl DataGraphPipelineDispatchFlagsARM {}
+impl_bitmask!(DataGraphPipelineDispatchFlagsARM);
+impl fmt::Display for DataGraphPipelineDispatchFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 
@@ -4667,6 +4707,11 @@ impl_handle!(TensorViewARM);
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]
+pub struct DataGraphPipelineSessionARM(u64);
+impl_handle!(DataGraphPipelineSessionARM);
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]
 pub struct DisplayKHR(u64);
 impl_handle!(DisplayKHR);
 
@@ -6305,6 +6350,7 @@ impl PipelineBindPoint {
     pub const RAY_TRACING_KHR: Self = Self(1000165000);
     pub const RAY_TRACING_NV: Self = Self::RAY_TRACING_KHR;
     pub const SUBPASS_SHADING_HUAWEI: Self = Self(1000369003);
+    pub const DATA_GRAPH_ARM: Self = Self(1000507000);
 }
 impl fmt::Display for PipelineBindPoint {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6314,6 +6360,7 @@ impl fmt::Display for PipelineBindPoint {
             1000134000 => Some(&"EXECUTION_GRAPH_AMDX"),
             1000165000 => Some(&"RAY_TRACING_KHR"),
             1000369003 => Some(&"SUBPASS_SHADING_HUAWEI"),
+            1000507000 => Some(&"DATA_GRAPH_ARM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -7710,6 +7757,26 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_KHR: Self = Self(1000506000);
     pub const COOPERATIVE_MATRIX_PROPERTIES_KHR: Self = Self(1000506001);
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_KHR: Self = Self(1000506002);
+    pub const DATA_GRAPH_PIPELINE_CREATE_INFO_ARM: Self = Self(1000507000);
+    pub const DATA_GRAPH_PIPELINE_SESSION_CREATE_INFO_ARM: Self = Self(1000507001);
+    pub const DATA_GRAPH_PIPELINE_RESOURCE_INFO_ARM: Self = Self(1000507002);
+    pub const DATA_GRAPH_PIPELINE_CONSTANT_ARM: Self = Self(1000507003);
+    pub const DATA_GRAPH_PIPELINE_SESSION_MEMORY_REQUIREMENTS_INFO_ARM: Self = Self(1000507004);
+    pub const BIND_DATA_GRAPH_PIPELINE_SESSION_MEMORY_INFO_ARM: Self = Self(1000507005);
+    pub const PHYSICAL_DEVICE_DATA_GRAPH_FEATURES_ARM: Self = Self(1000507006);
+    pub const DATA_GRAPH_PIPELINE_SHADER_MODULE_CREATE_INFO_ARM: Self = Self(1000507007);
+    pub const DATA_GRAPH_PIPELINE_PROPERTY_QUERY_RESULT_ARM: Self = Self(1000507008);
+    pub const DATA_GRAPH_PIPELINE_INFO_ARM: Self = Self(1000507009);
+    pub const DATA_GRAPH_PIPELINE_COMPILER_CONTROL_CREATE_INFO_ARM: Self = Self(1000507010);
+    pub const DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_REQUIREMENTS_INFO_ARM: Self = Self(1000507011);
+    pub const DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_REQUIREMENT_ARM: Self = Self(1000507012);
+    pub const DATA_GRAPH_PIPELINE_IDENTIFIER_CREATE_INFO_ARM: Self = Self(1000507013);
+    pub const DATA_GRAPH_PIPELINE_DISPATCH_INFO_ARM: Self = Self(1000507014);
+    pub const DATA_GRAPH_PROCESSING_ENGINE_CREATE_INFO_ARM: Self = Self(1000507016);
+    pub const QUEUE_FAMILY_DATA_GRAPH_PROCESSING_ENGINE_PROPERTIES_ARM: Self = Self(1000507017);
+    pub const QUEUE_FAMILY_DATA_GRAPH_PROPERTIES_ARM: Self = Self(1000507018);
+    pub const PHYSICAL_DEVICE_QUEUE_FAMILY_DATA_GRAPH_PROCESSING_ENGINE_INFO_ARM: Self = Self(1000507019);
+    pub const DATA_GRAPH_PIPELINE_CONSTANT_TENSOR_SEMI_STRUCTURED_SPARSITY_INFO_ARM: Self = Self(1000507015);
     pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM: Self = Self(1000510000);
     pub const MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM: Self = Self(1000510001);
     pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_KHR: Self = Self(1000201000);
@@ -8688,6 +8755,26 @@ impl fmt::Display for StructureType {
             1000506000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_KHR"),
             1000506001 => Some(&"COOPERATIVE_MATRIX_PROPERTIES_KHR"),
             1000506002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_KHR"),
+            1000507000 => Some(&"DATA_GRAPH_PIPELINE_CREATE_INFO_ARM"),
+            1000507001 => Some(&"DATA_GRAPH_PIPELINE_SESSION_CREATE_INFO_ARM"),
+            1000507002 => Some(&"DATA_GRAPH_PIPELINE_RESOURCE_INFO_ARM"),
+            1000507003 => Some(&"DATA_GRAPH_PIPELINE_CONSTANT_ARM"),
+            1000507004 => Some(&"DATA_GRAPH_PIPELINE_SESSION_MEMORY_REQUIREMENTS_INFO_ARM"),
+            1000507005 => Some(&"BIND_DATA_GRAPH_PIPELINE_SESSION_MEMORY_INFO_ARM"),
+            1000507006 => Some(&"PHYSICAL_DEVICE_DATA_GRAPH_FEATURES_ARM"),
+            1000507007 => Some(&"DATA_GRAPH_PIPELINE_SHADER_MODULE_CREATE_INFO_ARM"),
+            1000507008 => Some(&"DATA_GRAPH_PIPELINE_PROPERTY_QUERY_RESULT_ARM"),
+            1000507009 => Some(&"DATA_GRAPH_PIPELINE_INFO_ARM"),
+            1000507010 => Some(&"DATA_GRAPH_PIPELINE_COMPILER_CONTROL_CREATE_INFO_ARM"),
+            1000507011 => Some(&"DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_REQUIREMENTS_INFO_ARM"),
+            1000507012 => Some(&"DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_REQUIREMENT_ARM"),
+            1000507013 => Some(&"DATA_GRAPH_PIPELINE_IDENTIFIER_CREATE_INFO_ARM"),
+            1000507014 => Some(&"DATA_GRAPH_PIPELINE_DISPATCH_INFO_ARM"),
+            1000507016 => Some(&"DATA_GRAPH_PROCESSING_ENGINE_CREATE_INFO_ARM"),
+            1000507017 => Some(&"QUEUE_FAMILY_DATA_GRAPH_PROCESSING_ENGINE_PROPERTIES_ARM"),
+            1000507018 => Some(&"QUEUE_FAMILY_DATA_GRAPH_PROPERTIES_ARM"),
+            1000507019 => Some(&"PHYSICAL_DEVICE_QUEUE_FAMILY_DATA_GRAPH_PROCESSING_ENGINE_INFO_ARM"),
+            1000507015 => Some(&"DATA_GRAPH_PIPELINE_CONSTANT_TENSOR_SEMI_STRUCTURED_SPARSITY_INFO_ARM"),
             1000510000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM"),
             1000510001 => Some(&"MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM"),
             1000201000 => Some(&"PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_KHR"),
@@ -8985,6 +9072,7 @@ impl ClusterAccelerationStructureOpTypeNV {
     pub const BUILD_TRIANGLE_CLUSTER: Self = Self(2);
     pub const BUILD_TRIANGLE_CLUSTER_TEMPLATE: Self = Self(3);
     pub const INSTANTIATE_TRIANGLE_CLUSTER: Self = Self(4);
+    pub const GET_CLUSTER_TEMPLATE_INDICES: Self = Self(5);
 }
 impl fmt::Display for ClusterAccelerationStructureOpTypeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8994,6 +9082,7 @@ impl fmt::Display for ClusterAccelerationStructureOpTypeNV {
             2 => Some(&"BUILD_TRIANGLE_CLUSTER"),
             3 => Some(&"BUILD_TRIANGLE_CLUSTER_TEMPLATE"),
             4 => Some(&"INSTANTIATE_TRIANGLE_CLUSTER"),
+            5 => Some(&"GET_CLUSTER_TEMPLATE_INDICES"),
             _ => None,
         };
         if let Some(name) = name {
@@ -9087,6 +9176,7 @@ impl ObjectType {
     pub const OPTICAL_FLOW_SESSION_NV: Self = Self(1000464000);
     pub const SHADER_EXT: Self = Self(1000482000);
     pub const PIPELINE_BINARY_KHR: Self = Self(1000483000);
+    pub const DATA_GRAPH_PIPELINE_SESSION_ARM: Self = Self(1000507000);
     pub const EXTERNAL_COMPUTE_QUEUE_NV: Self = Self(1000556000);
     pub const INDIRECT_COMMANDS_LAYOUT_EXT: Self = Self(1000572000);
     pub const INDIRECT_EXECUTION_SET_EXT: Self = Self(1000572001);
@@ -9146,6 +9236,7 @@ impl fmt::Display for ObjectType {
             1000464000 => Some(&"OPTICAL_FLOW_SESSION_NV"),
             1000482000 => Some(&"SHADER_EXT"),
             1000483000 => Some(&"PIPELINE_BINARY_KHR"),
+            1000507000 => Some(&"DATA_GRAPH_PIPELINE_SESSION_ARM"),
             1000556000 => Some(&"EXTERNAL_COMPUTE_QUEUE_NV"),
             1000572000 => Some(&"INDIRECT_COMMANDS_LAYOUT_EXT"),
             1000572001 => Some(&"INDIRECT_EXECUTION_SET_EXT"),
@@ -10872,6 +10963,108 @@ impl fmt::Display for TensorTilingARM {
         let name = match self.0 {
             0 => Some(&"OPTIMAL"),
             1 => Some(&"LINEAR"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DataGraphPipelinePropertyARM(pub(crate) i32);
+impl DataGraphPipelinePropertyARM {
+    pub const CREATION_LOG: Self = Self(0);
+    pub const IDENTIFIER: Self = Self(1);
+}
+impl fmt::Display for DataGraphPipelinePropertyARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"CREATION_LOG"),
+            1 => Some(&"IDENTIFIER"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DataGraphPipelineSessionBindPointARM(pub(crate) i32);
+impl DataGraphPipelineSessionBindPointARM {
+    pub const TRANSIENT: Self = Self(0);
+}
+impl fmt::Display for DataGraphPipelineSessionBindPointARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"TRANSIENT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DataGraphPipelineSessionBindPointTypeARM(pub(crate) i32);
+impl DataGraphPipelineSessionBindPointTypeARM {
+    pub const MEMORY: Self = Self(0);
+}
+impl fmt::Display for DataGraphPipelineSessionBindPointTypeARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"MEMORY"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PhysicalDeviceDataGraphProcessingEngineTypeARM(pub(crate) i32);
+impl PhysicalDeviceDataGraphProcessingEngineTypeARM {
+    pub const DEFAULT: Self = Self(0);
+}
+impl fmt::Display for PhysicalDeviceDataGraphProcessingEngineTypeARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DEFAULT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PhysicalDeviceDataGraphOperationTypeARM(pub(crate) i32);
+impl PhysicalDeviceDataGraphOperationTypeARM {
+    pub const SPIRV_EXTENDED_INSTRUCTION_SET: Self = Self(0);
+}
+impl fmt::Display for PhysicalDeviceDataGraphOperationTypeARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"SPIRV_EXTENDED_INSTRUCTION_SET"),
             _ => None,
         };
         if let Some(name) = name {
@@ -17338,6 +17531,12 @@ pub struct ClusterAccelerationStructureBuildClustersBottomLevelInfoNV {
     pub cluster_references_count: u32,
     pub cluster_references_stride: u32,
     pub cluster_references: DeviceAddress,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct ClusterAccelerationStructureGetTemplateIndicesInfoNV {
+    pub cluster_template_address: DeviceAddress,
 }
 
 #[repr(C)]
@@ -49871,6 +50070,701 @@ impl fmt::Debug for OHSurfaceCreateInfoOHOS {
     }
 }
 pub type SurfaceCreateInfoOHOS = OHSurfaceCreateInfoOHOS;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDataGraphFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub data_graph: Bool32,
+    pub data_graph_update_after_bind: Bool32,
+    pub data_graph_specialization_constants: Bool32,
+    pub data_graph_descriptor_buffer: Bool32,
+    pub data_graph_shader_module: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDataGraphFeaturesARM {}
+unsafe impl Sync for PhysicalDeviceDataGraphFeaturesARM {}
+impl Default for PhysicalDeviceDataGraphFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DATA_GRAPH_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            data_graph: Default::default(),
+            data_graph_update_after_bind: Default::default(),
+            data_graph_specialization_constants: Default::default(),
+            data_graph_descriptor_buffer: Default::default(),
+            data_graph_shader_module: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDataGraphFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDataGraphFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("data_graph", &self.data_graph)
+            .field("data_graph_update_after_bind", &self.data_graph_update_after_bind)
+            .field(
+                "data_graph_specialization_constants",
+                &self.data_graph_specialization_constants,
+            )
+            .field("data_graph_descriptor_buffer", &self.data_graph_descriptor_buffer)
+            .field("data_graph_shader_module", &self.data_graph_shader_module)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub dimension: u32,
+    pub zero_count: u32,
+    pub group_size: u32,
+}
+unsafe impl Send for DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM {}
+unsafe impl Sync for DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM {}
+impl Default for DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_CONSTANT_TENSOR_SEMI_STRUCTURED_SPARSITY_INFO_ARM,
+            p_next: ptr::null(),
+            dimension: Default::default(),
+            zero_count: Default::default(),
+            group_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("dimension", &self.dimension)
+            .field("zero_count", &self.zero_count)
+            .field("group_size", &self.group_size)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineConstantARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub id: u32,
+    pub p_constant_data: *const c_void,
+}
+unsafe impl Send for DataGraphPipelineConstantARM {}
+unsafe impl Sync for DataGraphPipelineConstantARM {}
+impl Default for DataGraphPipelineConstantARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_CONSTANT_ARM,
+            p_next: ptr::null(),
+            id: Default::default(),
+            p_constant_data: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineConstantARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineConstantARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("id", &self.id)
+            .field("p_constant_data", &self.p_constant_data)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineResourceInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub descriptor_set: u32,
+    pub binding: u32,
+    pub array_element: u32,
+}
+unsafe impl Send for DataGraphPipelineResourceInfoARM {}
+unsafe impl Sync for DataGraphPipelineResourceInfoARM {}
+impl Default for DataGraphPipelineResourceInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_RESOURCE_INFO_ARM,
+            p_next: ptr::null(),
+            descriptor_set: Default::default(),
+            binding: Default::default(),
+            array_element: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineResourceInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineResourceInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("descriptor_set", &self.descriptor_set)
+            .field("binding", &self.binding)
+            .field("array_element", &self.array_element)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineCompilerControlCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_vendor_options: *const c_char,
+}
+unsafe impl Send for DataGraphPipelineCompilerControlCreateInfoARM {}
+unsafe impl Sync for DataGraphPipelineCompilerControlCreateInfoARM {}
+impl Default for DataGraphPipelineCompilerControlCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_COMPILER_CONTROL_CREATE_INFO_ARM,
+            p_next: ptr::null(),
+            p_vendor_options: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineCompilerControlCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineCompilerControlCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_vendor_options", &self.p_vendor_options)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: PipelineCreateFlags2KHR,
+    pub layout: PipelineLayout,
+    pub resource_info_count: u32,
+    pub p_resource_infos: *const DataGraphPipelineResourceInfoARM,
+}
+unsafe impl Send for DataGraphPipelineCreateInfoARM {}
+unsafe impl Sync for DataGraphPipelineCreateInfoARM {}
+impl Default for DataGraphPipelineCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_CREATE_INFO_ARM,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            layout: Default::default(),
+            resource_info_count: Default::default(),
+            p_resource_infos: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("layout", &self.layout)
+            .field("resource_info_count", &self.resource_info_count)
+            .field("p_resource_infos", &self.p_resource_infos)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineShaderModuleCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub module: ShaderModule,
+    pub p_name: *const c_char,
+    pub p_specialization_info: *const SpecializationInfo,
+    pub constant_count: u32,
+    pub p_constants: *const DataGraphPipelineConstantARM,
+}
+unsafe impl Send for DataGraphPipelineShaderModuleCreateInfoARM {}
+unsafe impl Sync for DataGraphPipelineShaderModuleCreateInfoARM {}
+impl Default for DataGraphPipelineShaderModuleCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_SHADER_MODULE_CREATE_INFO_ARM,
+            p_next: ptr::null(),
+            module: Default::default(),
+            p_name: ptr::null(),
+            p_specialization_info: ptr::null(),
+            constant_count: Default::default(),
+            p_constants: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineShaderModuleCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineShaderModuleCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("module", &self.module)
+            .field("p_name", &self.p_name)
+            .field("p_specialization_info", &self.p_specialization_info)
+            .field("constant_count", &self.constant_count)
+            .field("p_constants", &self.p_constants)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineSessionCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: DataGraphPipelineSessionCreateFlagsARM,
+    pub data_graph_pipeline: Pipeline,
+}
+unsafe impl Send for DataGraphPipelineSessionCreateInfoARM {}
+unsafe impl Sync for DataGraphPipelineSessionCreateInfoARM {}
+impl Default for DataGraphPipelineSessionCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_SESSION_CREATE_INFO_ARM,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            data_graph_pipeline: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineSessionCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineSessionCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("data_graph_pipeline", &self.data_graph_pipeline)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineSessionBindPointRequirementsInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub session: DataGraphPipelineSessionARM,
+}
+unsafe impl Send for DataGraphPipelineSessionBindPointRequirementsInfoARM {}
+unsafe impl Sync for DataGraphPipelineSessionBindPointRequirementsInfoARM {}
+impl Default for DataGraphPipelineSessionBindPointRequirementsInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_REQUIREMENTS_INFO_ARM,
+            p_next: ptr::null(),
+            session: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineSessionBindPointRequirementsInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineSessionBindPointRequirementsInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("session", &self.session)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineSessionBindPointRequirementARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub bind_point: DataGraphPipelineSessionBindPointARM,
+    pub bind_point_type: DataGraphPipelineSessionBindPointTypeARM,
+    pub num_objects: u32,
+}
+unsafe impl Send for DataGraphPipelineSessionBindPointRequirementARM {}
+unsafe impl Sync for DataGraphPipelineSessionBindPointRequirementARM {}
+impl Default for DataGraphPipelineSessionBindPointRequirementARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_REQUIREMENT_ARM,
+            p_next: ptr::null(),
+            bind_point: Default::default(),
+            bind_point_type: Default::default(),
+            num_objects: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineSessionBindPointRequirementARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineSessionBindPointRequirementARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("bind_point", &self.bind_point)
+            .field("bind_point_type", &self.bind_point_type)
+            .field("num_objects", &self.num_objects)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineSessionMemoryRequirementsInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub session: DataGraphPipelineSessionARM,
+    pub bind_point: DataGraphPipelineSessionBindPointARM,
+    pub object_index: u32,
+}
+unsafe impl Send for DataGraphPipelineSessionMemoryRequirementsInfoARM {}
+unsafe impl Sync for DataGraphPipelineSessionMemoryRequirementsInfoARM {}
+impl Default for DataGraphPipelineSessionMemoryRequirementsInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_SESSION_MEMORY_REQUIREMENTS_INFO_ARM,
+            p_next: ptr::null(),
+            session: Default::default(),
+            bind_point: Default::default(),
+            object_index: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineSessionMemoryRequirementsInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineSessionMemoryRequirementsInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("session", &self.session)
+            .field("bind_point", &self.bind_point)
+            .field("object_index", &self.object_index)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BindDataGraphPipelineSessionMemoryInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub session: DataGraphPipelineSessionARM,
+    pub bind_point: DataGraphPipelineSessionBindPointARM,
+    pub object_index: u32,
+    pub memory: DeviceMemory,
+    pub memory_offset: DeviceSize,
+}
+unsafe impl Send for BindDataGraphPipelineSessionMemoryInfoARM {}
+unsafe impl Sync for BindDataGraphPipelineSessionMemoryInfoARM {}
+impl Default for BindDataGraphPipelineSessionMemoryInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BIND_DATA_GRAPH_PIPELINE_SESSION_MEMORY_INFO_ARM,
+            p_next: ptr::null(),
+            session: Default::default(),
+            bind_point: Default::default(),
+            object_index: Default::default(),
+            memory: Default::default(),
+            memory_offset: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for BindDataGraphPipelineSessionMemoryInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindDataGraphPipelineSessionMemoryInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("session", &self.session)
+            .field("bind_point", &self.bind_point)
+            .field("object_index", &self.object_index)
+            .field("memory", &self.memory)
+            .field("memory_offset", &self.memory_offset)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub data_graph_pipeline: Pipeline,
+}
+unsafe impl Send for DataGraphPipelineInfoARM {}
+unsafe impl Sync for DataGraphPipelineInfoARM {}
+impl Default for DataGraphPipelineInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_INFO_ARM,
+            p_next: ptr::null(),
+            data_graph_pipeline: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("data_graph_pipeline", &self.data_graph_pipeline)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelinePropertyQueryResultARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub property: DataGraphPipelinePropertyARM,
+    pub is_text: Bool32,
+    pub data_size: usize,
+    pub p_data: *mut c_void,
+}
+unsafe impl Send for DataGraphPipelinePropertyQueryResultARM {}
+unsafe impl Sync for DataGraphPipelinePropertyQueryResultARM {}
+impl Default for DataGraphPipelinePropertyQueryResultARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_PROPERTY_QUERY_RESULT_ARM,
+            p_next: ptr::null(),
+            property: Default::default(),
+            is_text: Default::default(),
+            data_size: Default::default(),
+            p_data: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelinePropertyQueryResultARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelinePropertyQueryResultARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("property", &self.property)
+            .field("is_text", &self.is_text)
+            .field("data_size", &self.data_size)
+            .field("p_data", &self.p_data)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineIdentifierCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub identifier_size: u32,
+    pub p_identifier: *const u8,
+}
+unsafe impl Send for DataGraphPipelineIdentifierCreateInfoARM {}
+unsafe impl Sync for DataGraphPipelineIdentifierCreateInfoARM {}
+impl Default for DataGraphPipelineIdentifierCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_IDENTIFIER_CREATE_INFO_ARM,
+            p_next: ptr::null(),
+            identifier_size: Default::default(),
+            p_identifier: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineIdentifierCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineIdentifierCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("identifier_size", &self.identifier_size)
+            .field("p_identifier", &self.p_identifier)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineDispatchInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub flags: DataGraphPipelineDispatchFlagsARM,
+}
+unsafe impl Send for DataGraphPipelineDispatchInfoARM {}
+unsafe impl Sync for DataGraphPipelineDispatchInfoARM {}
+impl Default for DataGraphPipelineDispatchInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_DISPATCH_INFO_ARM,
+            p_next: ptr::null_mut(),
+            flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineDispatchInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineDispatchInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct PhysicalDeviceDataGraphProcessingEngineARM {
+    pub ty: PhysicalDeviceDataGraphProcessingEngineTypeARM,
+    pub is_foreign: Bool32,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PhysicalDeviceDataGraphOperationSupportARM {
+    pub operation_type: PhysicalDeviceDataGraphOperationTypeARM,
+    pub name: [c_char; MAX_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_SET_NAME_SIZE_ARM],
+    pub version: u32,
+}
+impl Default for PhysicalDeviceDataGraphOperationSupportARM {
+    fn default() -> Self {
+        Self {
+            operation_type: Default::default(),
+            name: [Default::default(); MAX_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_SET_NAME_SIZE_ARM],
+            version: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDataGraphOperationSupportARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDataGraphOperationSupportARM")
+            .field("operation_type", &self.operation_type)
+            .field("name", &self.name)
+            .field("version", &self.version)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct QueueFamilyDataGraphPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub engine: PhysicalDeviceDataGraphProcessingEngineARM,
+    pub operation: PhysicalDeviceDataGraphOperationSupportARM,
+}
+unsafe impl Send for QueueFamilyDataGraphPropertiesARM {}
+unsafe impl Sync for QueueFamilyDataGraphPropertiesARM {}
+impl Default for QueueFamilyDataGraphPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::QUEUE_FAMILY_DATA_GRAPH_PROPERTIES_ARM,
+            p_next: ptr::null(),
+            engine: Default::default(),
+            operation: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for QueueFamilyDataGraphPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("QueueFamilyDataGraphPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("engine", &self.engine)
+            .field("operation", &self.operation)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub queue_family_index: u32,
+    pub engine_type: PhysicalDeviceDataGraphProcessingEngineTypeARM,
+}
+unsafe impl Send for PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM {}
+unsafe impl Sync for PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM {}
+impl Default for PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_QUEUE_FAMILY_DATA_GRAPH_PROCESSING_ENGINE_INFO_ARM,
+            p_next: ptr::null(),
+            queue_family_index: Default::default(),
+            engine_type: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("queue_family_index", &self.queue_family_index)
+            .field("engine_type", &self.engine_type)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct QueueFamilyDataGraphProcessingEnginePropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub foreign_semaphore_handle_types: ExternalSemaphoreHandleTypeFlags,
+    pub foreign_memory_handle_types: ExternalMemoryHandleTypeFlags,
+}
+unsafe impl Send for QueueFamilyDataGraphProcessingEnginePropertiesARM {}
+unsafe impl Sync for QueueFamilyDataGraphProcessingEnginePropertiesARM {}
+impl Default for QueueFamilyDataGraphProcessingEnginePropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::QUEUE_FAMILY_DATA_GRAPH_PROCESSING_ENGINE_PROPERTIES_ARM,
+            p_next: ptr::null(),
+            foreign_semaphore_handle_types: Default::default(),
+            foreign_memory_handle_types: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for QueueFamilyDataGraphProcessingEnginePropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("QueueFamilyDataGraphProcessingEnginePropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("foreign_semaphore_handle_types", &self.foreign_semaphore_handle_types)
+            .field("foreign_memory_handle_types", &self.foreign_memory_handle_types)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphProcessingEngineCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub processing_engine_count: u32,
+    pub p_processing_engines: *mut PhysicalDeviceDataGraphProcessingEngineARM,
+}
+unsafe impl Send for DataGraphProcessingEngineCreateInfoARM {}
+unsafe impl Sync for DataGraphProcessingEngineCreateInfoARM {}
+impl Default for DataGraphProcessingEngineCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PROCESSING_ENGINE_CREATE_INFO_ARM,
+            p_next: ptr::null(),
+            processing_engine_count: Default::default(),
+            p_processing_engines: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphProcessingEngineCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphProcessingEngineCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("processing_engine_count", &self.processing_engine_count)
+            .field("p_processing_engines", &self.p_processing_engines)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -52676,4 +53570,68 @@ pub type FnGetPhysicalDeviceExternalTensorPropertiesARM = unsafe extern "system"
     physical_device: PhysicalDevice,
     p_external_tensor_info: *const PhysicalDeviceExternalTensorInfoARM,
     p_external_tensor_properties: *mut ExternalTensorPropertiesARM,
+);
+pub type FnCreateDataGraphPipelinesARM = unsafe extern "system" fn(
+    device: Device,
+    deferred_operation: DeferredOperationKHR,
+    pipeline_cache: PipelineCache,
+    create_info_count: u32,
+    p_create_infos: *const DataGraphPipelineCreateInfoARM,
+    p_allocator: *const AllocationCallbacks,
+    p_pipelines: *mut Pipeline,
+) -> Result;
+pub type FnCreateDataGraphPipelineSessionARM = unsafe extern "system" fn(
+    device: Device,
+    p_create_info: *const DataGraphPipelineSessionCreateInfoARM,
+    p_allocator: *const AllocationCallbacks,
+    p_session: *mut DataGraphPipelineSessionARM,
+) -> Result;
+pub type FnGetDataGraphPipelineSessionBindPointRequirementsARM = unsafe extern "system" fn(
+    device: Device,
+    p_info: *const DataGraphPipelineSessionBindPointRequirementsInfoARM,
+    p_bind_point_requirement_count: *mut u32,
+    p_bind_point_requirements: *mut DataGraphPipelineSessionBindPointRequirementARM,
+) -> Result;
+pub type FnGetDataGraphPipelineSessionMemoryRequirementsARM = unsafe extern "system" fn(
+    device: Device,
+    p_info: *const DataGraphPipelineSessionMemoryRequirementsInfoARM,
+    p_memory_requirements: *mut MemoryRequirements2,
+);
+pub type FnBindDataGraphPipelineSessionMemoryARM = unsafe extern "system" fn(
+    device: Device,
+    bind_info_count: u32,
+    p_bind_infos: *const BindDataGraphPipelineSessionMemoryInfoARM,
+) -> Result;
+pub type FnDestroyDataGraphPipelineSessionARM = unsafe extern "system" fn(
+    device: Device,
+    session: DataGraphPipelineSessionARM,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnCmdDispatchDataGraphARM = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    session: DataGraphPipelineSessionARM,
+    p_info: *const DataGraphPipelineDispatchInfoARM,
+);
+pub type FnGetDataGraphPipelineAvailablePropertiesARM = unsafe extern "system" fn(
+    device: Device,
+    p_pipeline_info: *const DataGraphPipelineInfoARM,
+    p_properties_count: *mut u32,
+    p_properties: *mut DataGraphPipelinePropertyARM,
+) -> Result;
+pub type FnGetDataGraphPipelinePropertiesARM = unsafe extern "system" fn(
+    device: Device,
+    p_pipeline_info: *const DataGraphPipelineInfoARM,
+    properties_count: u32,
+    p_properties: *mut DataGraphPipelinePropertyQueryResultARM,
+) -> Result;
+pub type FnGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = unsafe extern "system" fn(
+    physical_device: PhysicalDevice,
+    queue_family_index: u32,
+    p_queue_family_data_graph_property_count: *mut u32,
+    p_queue_family_data_graph_properties: *mut QueueFamilyDataGraphPropertiesARM,
+) -> Result;
+pub type FnGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = unsafe extern "system" fn(
+    physical_device: PhysicalDevice,
+    p_queue_family_data_graph_processing_engine_info: *const PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM,
+    p_queue_family_data_graph_processing_engine_properties: *mut QueueFamilyDataGraphProcessingEnginePropertiesARM,
 );

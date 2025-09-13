@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.318
+//! Generated from vk.xml version 1.4.319
 
 #![allow(
     clippy::too_many_arguments,
@@ -2605,6 +2605,14 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+    pub fn supports_arm_data_graph(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 3, 0) && self.supports_khr_maintenance5()
+    }
+    pub fn enable_arm_data_graph(&mut self) {
+        // depends on minimum core version, caller must specify
+        debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 3, 0));
+        self.enable_khr_maintenance5();
     }
     pub fn supports_khr_compute_shader_derivatives(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -5540,6 +5548,7 @@ pub struct DeviceExtensions {
     pub ext_dynamic_rendering_unused_attachments: bool,
     pub nv_low_latency2: bool,
     pub khr_cooperative_matrix: bool,
+    pub arm_data_graph: bool,
     pub qcom_multiview_per_view_render_areas: bool,
     pub khr_compute_shader_derivatives: bool,
     pub nv_per_stage_descriptor_set: bool,
@@ -6213,6 +6222,8 @@ impl DeviceExtensions {
             self.nv_low_latency2 = true;
         } else if name == c"VK_KHR_cooperative_matrix" {
             self.khr_cooperative_matrix = true;
+        } else if name == c"VK_ARM_data_graph" {
+            self.arm_data_graph = true;
         } else if name == c"VK_QCOM_multiview_per_view_render_areas" {
             self.qcom_multiview_per_view_render_areas = true;
         } else if name == c"VK_KHR_compute_shader_derivatives" {
@@ -6625,6 +6636,7 @@ impl DeviceExtensions {
             ext_dynamic_rendering_unused_attachments: false,
             nv_low_latency2: false,
             khr_cooperative_matrix: false,
+            arm_data_graph: false,
             qcom_multiview_per_view_render_areas: false,
             khr_compute_shader_derivatives: false,
             nv_per_stage_descriptor_set: false,
@@ -9160,6 +9172,19 @@ impl DeviceExtensions {
     pub fn enable_khr_cooperative_matrix(&mut self) {
         self.khr_cooperative_matrix = true;
     }
+    pub fn supports_arm_data_graph(&self) -> bool {
+        self.arm_data_graph
+            && self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+            && self.supports_khr_maintenance5()
+            && self.supports_khr_deferred_host_operations()
+    }
+    pub fn enable_arm_data_graph(&mut self) {
+        self.arm_data_graph = true;
+        // depends on minimum core version, caller must specify
+        debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 3, 0));
+        self.enable_khr_maintenance5();
+        self.enable_khr_deferred_host_operations();
+    }
     pub fn supports_qcom_multiview_per_view_render_areas(&self) -> bool {
         self.qcom_multiview_per_view_render_areas
     }
@@ -10466,6 +10491,9 @@ impl DeviceExtensions {
         if self.khr_cooperative_matrix {
             v.push(c"VK_KHR_cooperative_matrix");
         }
+        if self.arm_data_graph {
+            v.push(c"VK_ARM_data_graph");
+        }
         if self.qcom_multiview_per_view_render_areas {
             v.push(c"VK_QCOM_multiview_per_view_render_areas");
         }
@@ -11174,6 +11202,21 @@ pub struct Device {
         Option<vk::FnGetTensorViewOpaqueCaptureDescriptorDataARM>,
     pub fp_get_physical_device_external_tensor_properties_arm:
         Option<vk::FnGetPhysicalDeviceExternalTensorPropertiesARM>,
+    pub fp_create_data_graph_pipelines_arm: Option<vk::FnCreateDataGraphPipelinesARM>,
+    pub fp_create_data_graph_pipeline_session_arm: Option<vk::FnCreateDataGraphPipelineSessionARM>,
+    pub fp_get_data_graph_pipeline_session_bind_point_requirements_arm:
+        Option<vk::FnGetDataGraphPipelineSessionBindPointRequirementsARM>,
+    pub fp_get_data_graph_pipeline_session_memory_requirements_arm:
+        Option<vk::FnGetDataGraphPipelineSessionMemoryRequirementsARM>,
+    pub fp_bind_data_graph_pipeline_session_memory_arm: Option<vk::FnBindDataGraphPipelineSessionMemoryARM>,
+    pub fp_destroy_data_graph_pipeline_session_arm: Option<vk::FnDestroyDataGraphPipelineSessionARM>,
+    pub fp_cmd_dispatch_data_graph_arm: Option<vk::FnCmdDispatchDataGraphARM>,
+    pub fp_get_data_graph_pipeline_available_properties_arm: Option<vk::FnGetDataGraphPipelineAvailablePropertiesARM>,
+    pub fp_get_data_graph_pipeline_properties_arm: Option<vk::FnGetDataGraphPipelinePropertiesARM>,
+    pub fp_get_physical_device_queue_family_data_graph_properties_arm:
+        Option<vk::FnGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM>,
+    pub fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm:
+        Option<vk::FnGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -15238,6 +15281,88 @@ impl Device {
             fp_get_physical_device_external_tensor_properties_arm: if extensions.arm_tensors {
                 globals
                     .get_instance_proc_addr(instance.handle, c"vkGetPhysicalDeviceExternalTensorPropertiesARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_data_graph_pipelines_arm: if extensions.arm_data_graph {
+                instance
+                    .get_device_proc_addr(device, c"vkCreateDataGraphPipelinesARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_data_graph_pipeline_session_arm: if extensions.arm_data_graph {
+                instance
+                    .get_device_proc_addr(device, c"vkCreateDataGraphPipelineSessionARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_data_graph_pipeline_session_bind_point_requirements_arm: if extensions.arm_data_graph {
+                instance
+                    .get_device_proc_addr(device, c"vkGetDataGraphPipelineSessionBindPointRequirementsARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_data_graph_pipeline_session_memory_requirements_arm: if extensions.arm_data_graph {
+                instance
+                    .get_device_proc_addr(device, c"vkGetDataGraphPipelineSessionMemoryRequirementsARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_bind_data_graph_pipeline_session_memory_arm: if extensions.arm_data_graph {
+                instance
+                    .get_device_proc_addr(device, c"vkBindDataGraphPipelineSessionMemoryARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_data_graph_pipeline_session_arm: if extensions.arm_data_graph {
+                instance
+                    .get_device_proc_addr(device, c"vkDestroyDataGraphPipelineSessionARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_dispatch_data_graph_arm: if extensions.arm_data_graph {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdDispatchDataGraphARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_data_graph_pipeline_available_properties_arm: if extensions.arm_data_graph {
+                instance
+                    .get_device_proc_addr(device, c"vkGetDataGraphPipelineAvailablePropertiesARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_data_graph_pipeline_properties_arm: if extensions.arm_data_graph {
+                instance
+                    .get_device_proc_addr(device, c"vkGetDataGraphPipelinePropertiesARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_queue_family_data_graph_properties_arm: if extensions.arm_data_graph {
+                globals
+                    .get_instance_proc_addr(instance.handle, c"vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm: if extensions
+                .arm_data_graph
+            {
+                globals
+                    .get_instance_proc_addr(
+                        instance.handle,
+                        c"vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM",
+                    )
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -23584,5 +23709,222 @@ impl Device {
             .fp_get_physical_device_external_tensor_properties_arm
             .expect("vkGetPhysicalDeviceExternalTensorPropertiesARM is not loaded");
         (fp)(physical_device, p_external_tensor_info, p_external_tensor_properties)
+    }
+    pub unsafe fn create_data_graph_pipelines_arm(
+        &self,
+        deferred_operation: vk::DeferredOperationKHR,
+        pipeline_cache: vk::PipelineCache,
+        p_create_infos: &[vk::DataGraphPipelineCreateInfoARM],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+        p_pipelines: &mut [vk::Pipeline],
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_create_data_graph_pipelines_arm
+            .expect("vkCreateDataGraphPipelinesARM is not loaded");
+        let create_info_count = p_create_infos.len() as u32;
+        assert_eq!(create_info_count, p_pipelines.len() as u32);
+        let err = (fp)(
+            self.handle,
+            deferred_operation,
+            pipeline_cache,
+            create_info_count,
+            p_create_infos.as_ptr(),
+            p_allocator.map_or(ptr::null(), |r| r),
+            p_pipelines.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS | vk::Result::PIPELINE_COMPILE_REQUIRED => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn create_data_graph_pipelines_arm_single(
+        &self,
+        deferred_operation: vk::DeferredOperationKHR,
+        pipeline_cache: vk::PipelineCache,
+        p_create_infos: &vk::DataGraphPipelineCreateInfoARM,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<(vk::Result, vk::Pipeline)> {
+        let mut p_pipelines = Default::default();
+        self.create_data_graph_pipelines_arm(
+            deferred_operation,
+            pipeline_cache,
+            slice::from_ref(p_create_infos),
+            p_allocator,
+            slice::from_mut(&mut p_pipelines),
+        )
+        .map(|res| (res, p_pipelines))
+    }
+    pub unsafe fn create_data_graph_pipeline_session_arm(
+        &self,
+        p_create_info: &vk::DataGraphPipelineSessionCreateInfoARM,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::DataGraphPipelineSessionARM> {
+        let fp = self
+            .fp_create_data_graph_pipeline_session_arm
+            .expect("vkCreateDataGraphPipelineSessionARM is not loaded");
+        let mut p_session = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            self.handle,
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            p_session.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(p_session.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_data_graph_pipeline_session_bind_point_requirements_arm(
+        &self,
+        p_info: &vk::DataGraphPipelineSessionBindPointRequirementsInfoARM,
+        p_bind_point_requirement_count: &mut u32,
+        p_bind_point_requirements: *mut vk::DataGraphPipelineSessionBindPointRequirementARM,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_data_graph_pipeline_session_bind_point_requirements_arm
+            .expect("vkGetDataGraphPipelineSessionBindPointRequirementsARM is not loaded");
+        let err = (fp)(
+            self.handle,
+            p_info,
+            p_bind_point_requirement_count,
+            p_bind_point_requirements,
+        );
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_data_graph_pipeline_session_memory_requirements_arm(
+        &self,
+        p_info: &vk::DataGraphPipelineSessionMemoryRequirementsInfoARM,
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
+        let fp = self
+            .fp_get_data_graph_pipeline_session_memory_requirements_arm
+            .expect("vkGetDataGraphPipelineSessionMemoryRequirementsARM is not loaded");
+        (fp)(self.handle, p_info, p_memory_requirements)
+    }
+    pub unsafe fn bind_data_graph_pipeline_session_memory_arm(
+        &self,
+        p_bind_infos: &[vk::BindDataGraphPipelineSessionMemoryInfoARM],
+    ) -> Result<()> {
+        let fp = self
+            .fp_bind_data_graph_pipeline_session_memory_arm
+            .expect("vkBindDataGraphPipelineSessionMemoryARM is not loaded");
+        let bind_info_count = p_bind_infos.len() as u32;
+        let err = (fp)(self.handle, bind_info_count, p_bind_infos.as_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_data_graph_pipeline_session_arm(
+        &self,
+        session: vk::DataGraphPipelineSessionARM,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_data_graph_pipeline_session_arm
+            .expect("vkDestroyDataGraphPipelineSessionARM is not loaded");
+        (fp)(self.handle, session, p_allocator.map_or(ptr::null(), |r| r))
+    }
+    pub unsafe fn cmd_dispatch_data_graph_arm(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        session: vk::DataGraphPipelineSessionARM,
+        p_info: Option<&vk::DataGraphPipelineDispatchInfoARM>,
+    ) {
+        let fp = self
+            .fp_cmd_dispatch_data_graph_arm
+            .expect("vkCmdDispatchDataGraphARM is not loaded");
+        (fp)(command_buffer, session, p_info.map_or(ptr::null(), |r| r))
+    }
+    pub unsafe fn get_data_graph_pipeline_available_properties_arm(
+        &self,
+        p_pipeline_info: &vk::DataGraphPipelineInfoARM,
+        p_properties_count: &mut u32,
+        p_properties: *mut vk::DataGraphPipelinePropertyARM,
+    ) -> Result<EnumerateResult> {
+        let fp = self
+            .fp_get_data_graph_pipeline_available_properties_arm
+            .expect("vkGetDataGraphPipelineAvailablePropertiesARM is not loaded");
+        let err = (fp)(self.handle, p_pipeline_info, p_properties_count, p_properties);
+        match err {
+            vk::Result::SUCCESS => Ok(EnumerateResult::Success),
+            vk::Result::INCOMPLETE => Ok(EnumerateResult::Incomplete),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_data_graph_pipeline_available_properties_arm_to_vec(
+        &self,
+        p_pipeline_info: &vk::DataGraphPipelineInfoARM,
+    ) -> Result<Vec<vk::DataGraphPipelinePropertyARM>> {
+        enumerate_generic_to_vec(|len, ptr| {
+            self.get_data_graph_pipeline_available_properties_arm(p_pipeline_info, len, ptr)
+        })
+    }
+    pub unsafe fn get_data_graph_pipeline_properties_arm(
+        &self,
+        p_pipeline_info: &vk::DataGraphPipelineInfoARM,
+        p_properties: &mut [vk::DataGraphPipelinePropertyQueryResultARM],
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_data_graph_pipeline_properties_arm
+            .expect("vkGetDataGraphPipelinePropertiesARM is not loaded");
+        let properties_count = p_properties.len() as u32;
+        let err = (fp)(
+            self.handle,
+            p_pipeline_info,
+            properties_count,
+            p_properties.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_data_graph_pipeline_properties_arm_single(
+        &self,
+        p_pipeline_info: &vk::DataGraphPipelineInfoARM,
+    ) -> Result<(vk::Result, vk::DataGraphPipelinePropertyQueryResultARM)> {
+        let mut p_properties = Default::default();
+        self.get_data_graph_pipeline_properties_arm(p_pipeline_info, slice::from_mut(&mut p_properties))
+            .map(|res| (res, p_properties))
+    }
+    pub unsafe fn get_physical_device_queue_family_data_graph_properties_arm(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+        p_queue_family_data_graph_property_count: &mut u32,
+        p_queue_family_data_graph_properties: *mut vk::QueueFamilyDataGraphPropertiesARM,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_physical_device_queue_family_data_graph_properties_arm
+            .expect("vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM is not loaded");
+        let err = (fp)(
+            physical_device,
+            queue_family_index,
+            p_queue_family_data_graph_property_count,
+            p_queue_family_data_graph_properties,
+        );
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_physical_device_queue_family_data_graph_processing_engine_properties_arm(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_queue_family_data_graph_processing_engine_info: &vk::PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM,
+        p_queue_family_data_graph_processing_engine_properties: &mut vk::QueueFamilyDataGraphProcessingEnginePropertiesARM,
+    ) {
+        let fp = self
+            .fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm
+            .expect("vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM is not loaded");
+        (fp)(
+            physical_device,
+            p_queue_family_data_graph_processing_engine_info,
+            p_queue_family_data_graph_processing_engine_properties,
+        )
     }
 }
