@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.321
+//! Generated from vk.xml version 1.4.323
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 

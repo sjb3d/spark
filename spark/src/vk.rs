@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.321
+//! Generated from vk.xml version 1.4.323
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -2023,6 +2023,7 @@ impl BuildAccelerationStructureFlagsKHR {
     pub const ALLOW_OPACITY_MICROMAP_DATA_UPDATE_EXT: Self = Self(0x100);
     pub const ALLOW_DISPLACEMENT_MICROMAP_UPDATE_NV: Self = Self(0x200);
     pub const ALLOW_DATA_ACCESS: Self = Self(0x800);
+    pub const ALLOW_CLUSTER_OPACITY_MICROMAPS_NV: Self = Self(0x1000);
 }
 impl_bitmask!(BuildAccelerationStructureFlagsKHR);
 impl fmt::Display for BuildAccelerationStructureFlagsKHR {
@@ -2041,6 +2042,7 @@ impl fmt::Display for BuildAccelerationStructureFlagsKHR {
                 (0x100, "ALLOW_OPACITY_MICROMAP_DATA_UPDATE_EXT"),
                 (0x200, "ALLOW_DISPLACEMENT_MICROMAP_UPDATE_NV"),
                 (0x800, "ALLOW_DATA_ACCESS"),
+                (0x1000, "ALLOW_CLUSTER_OPACITY_MICROMAPS_NV"),
             ],
             f,
         )
@@ -6516,6 +6518,7 @@ impl Result {
     pub const ERROR_FORMAT_NOT_SUPPORTED: Self = Self(-11);
     pub const ERROR_FRAGMENTED_POOL: Self = Self(-12);
     pub const ERROR_UNKNOWN: Self = Self(-13);
+    pub const ERROR_VALIDATION_FAILED: Self = Self(-1000011001);
     pub const ERROR_OUT_OF_POOL_MEMORY: Self = Self(-1000069000);
     pub const ERROR_INVALID_EXTERNAL_HANDLE: Self = Self(-1000072003);
     pub const ERROR_FRAGMENTATION: Self = Self(-1000161000);
@@ -6527,7 +6530,7 @@ impl Result {
     pub const SUBOPTIMAL_KHR: Self = Self(1000001003);
     pub const ERROR_OUT_OF_DATE_KHR: Self = Self(-1000001004);
     pub const ERROR_INCOMPATIBLE_DISPLAY_KHR: Self = Self(-1000003001);
-    pub const ERROR_VALIDATION_FAILED_EXT: Self = Self(-1000011001);
+    pub const ERROR_VALIDATION_FAILED_EXT: Self = Self::ERROR_VALIDATION_FAILED;
     pub const ERROR_INVALID_SHADER_NV: Self = Self(-1000012000);
     pub const ERROR_OUT_OF_POOL_MEMORY_KHR: Self = Self::ERROR_OUT_OF_POOL_MEMORY;
     pub const ERROR_INVALID_EXTERNAL_HANDLE_KHR: Self = Self::ERROR_INVALID_EXTERNAL_HANDLE;
@@ -6572,6 +6575,7 @@ impl fmt::Display for Result {
             -11 => Some(&"ERROR_FORMAT_NOT_SUPPORTED"),
             -12 => Some(&"ERROR_FRAGMENTED_POOL"),
             -13 => Some(&"ERROR_UNKNOWN"),
+            -1000011001 => Some(&"ERROR_VALIDATION_FAILED"),
             -1000069000 => Some(&"ERROR_OUT_OF_POOL_MEMORY"),
             -1000072003 => Some(&"ERROR_INVALID_EXTERNAL_HANDLE"),
             -1000161000 => Some(&"ERROR_FRAGMENTATION"),
@@ -6583,7 +6587,6 @@ impl fmt::Display for Result {
             1000001003 => Some(&"SUBOPTIMAL_KHR"),
             -1000001004 => Some(&"ERROR_OUT_OF_DATE_KHR"),
             -1000003001 => Some(&"ERROR_INCOMPATIBLE_DISPLAY_KHR"),
-            -1000011001 => Some(&"ERROR_VALIDATION_FAILED_EXT"),
             -1000012000 => Some(&"ERROR_INVALID_SHADER_NV"),
             -1000158000 => Some(&"ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT"),
             -1000255000 => Some(&"ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT"),

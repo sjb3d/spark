@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.321
+// Generated from vk.xml version 1.4.323
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -892,6 +892,7 @@ pub const BuildAccelerationStructureFlagBitsKHR = enum(u5) {
     allow_opacity_micromap_data_update_ext = 8,
     allow_displacement_micromap_update_nv = 9,
     allow_data_access = 11,
+    allow_cluster_opacity_micromaps_nv = 12,
     _,
 };
 pub const BuildAccelerationStructureFlagsKHR = BitField(BuildAccelerationStructureFlagBitsKHR);
@@ -2522,6 +2523,7 @@ pub const Result = enum(i32) {
     error_format_not_supported = -11,
     error_fragmented_pool = -12,
     error_unknown = -13,
+    error_validation_failed = -1000011001,
     error_out_of_pool_memory = -1000069000,
     error_invalid_external_handle = -1000072003,
     error_fragmentation = -1000161000,
@@ -2533,7 +2535,6 @@ pub const Result = enum(i32) {
     suboptimal_khr = 1000001003,
     error_out_of_date_khr = -1000001004,
     error_incompatible_display_khr = -1000003001,
-    error_validation_failed_ext = -1000011001,
     error_invalid_shader_nv = -1000012000,
     error_invalid_drm_format_modifier_plane_layout_ext = -1000158000,
     error_full_screen_exclusive_mode_lost_ext = -1000255000,
@@ -23449,6 +23450,8 @@ pub const GlobalCommands = struct {
         LayerNotPresent,
         ExtensionNotPresent,
         IncompatibleDriver,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_instance(
@@ -23465,12 +23468,16 @@ pub const GlobalCommands = struct {
             .error_layer_not_present => return error.LayerNotPresent,
             .error_extension_not_present => return error.ExtensionNotPresent,
             .error_incompatible_driver => return error.IncompatibleDriver,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const EnumerateInstanceLayerPropertiesError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn enumerate_instance_layer_properties(
@@ -23483,6 +23490,8 @@ pub const GlobalCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -23508,6 +23517,8 @@ pub const GlobalCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         LayerNotPresent,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn enumerate_instance_extension_properties(
@@ -23522,6 +23533,8 @@ pub const GlobalCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_layer_not_present => return error.LayerNotPresent,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -23761,6 +23774,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn enumerate_physical_devices(
@@ -23774,6 +23789,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -23861,6 +23878,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         FormatNotSupported,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_image_format_properties(
@@ -23878,6 +23897,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_format_not_supported => return error.FormatNotSupported,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -23889,6 +23910,8 @@ pub const InstanceCommands = struct {
         FeatureNotPresent,
         TooManyObjects,
         DeviceLost,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_device(
@@ -23907,12 +23930,16 @@ pub const InstanceCommands = struct {
             .error_feature_not_present => return error.FeatureNotPresent,
             .error_too_many_objects => return error.TooManyObjects,
             .error_device_lost => return error.DeviceLost,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const EnumerateDeviceLayerPropertiesError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn enumerate_device_layer_properties(
@@ -23926,6 +23953,8 @@ pub const InstanceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -23955,6 +23984,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         LayerNotPresent,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn enumerate_device_extension_properties(
@@ -23970,6 +24001,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_layer_not_present => return error.LayerNotPresent,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24057,6 +24090,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         NativeWindowInUseKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_android_surface_khr(
@@ -24070,12 +24105,16 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_native_window_in_use_khr => return error.NativeWindowInUseKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateSurfaceOHOSError = error{
         OutOfHostMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_surface_ohos(
@@ -24088,12 +24127,16 @@ pub const InstanceCommands = struct {
             .success => return p_surface,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetPhysicalDeviceDisplayPropertiesKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_display_properties_khr(
@@ -24107,6 +24150,8 @@ pub const InstanceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24135,6 +24180,8 @@ pub const InstanceCommands = struct {
     pub const GetPhysicalDeviceDisplayPlanePropertiesKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_display_plane_properties_khr(
@@ -24148,6 +24195,8 @@ pub const InstanceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24176,6 +24225,8 @@ pub const InstanceCommands = struct {
     pub const GetDisplayPlaneSupportedDisplaysKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_display_plane_supported_displays_khr(
@@ -24190,6 +24241,8 @@ pub const InstanceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24222,6 +24275,8 @@ pub const InstanceCommands = struct {
     pub const GetDisplayModePropertiesKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_display_mode_properties_khr(
@@ -24236,6 +24291,8 @@ pub const InstanceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24269,6 +24326,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_display_mode_khr(
@@ -24284,12 +24343,16 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetDisplayPlaneCapabilitiesKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_display_plane_capabilities_khr(
@@ -24303,12 +24366,16 @@ pub const InstanceCommands = struct {
             .success => return p_capabilities,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateDisplayPlaneSurfaceKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_display_plane_surface_khr(
@@ -24321,6 +24388,8 @@ pub const InstanceCommands = struct {
             .success => return p_surface,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24335,6 +24404,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_surface_support_khr(
@@ -24349,6 +24420,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24356,6 +24429,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_surface_capabilities_khr(
@@ -24369,6 +24444,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24376,6 +24453,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_surface_formats_khr(
@@ -24391,6 +24470,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24424,6 +24505,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_surface_present_modes_khr(
@@ -24439,6 +24522,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24472,6 +24557,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         NativeWindowInUseKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_vi_surface_nn(
@@ -24485,12 +24572,16 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_native_window_in_use_khr => return error.NativeWindowInUseKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateWaylandSurfaceKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_wayland_surface_khr(
@@ -24503,6 +24594,8 @@ pub const InstanceCommands = struct {
             .success => return p_surface,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24517,6 +24610,8 @@ pub const InstanceCommands = struct {
     pub const CreateWin32SurfaceKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_win32_surface_khr(
@@ -24529,6 +24624,8 @@ pub const InstanceCommands = struct {
             .success => return p_surface,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24542,6 +24639,8 @@ pub const InstanceCommands = struct {
     pub const CreateXlibSurfaceKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_xlib_surface_khr(
@@ -24554,6 +24653,8 @@ pub const InstanceCommands = struct {
             .success => return p_surface,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24569,6 +24670,8 @@ pub const InstanceCommands = struct {
     pub const CreateXcbSurfaceKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_xcb_surface_khr(
@@ -24581,6 +24684,8 @@ pub const InstanceCommands = struct {
             .success => return p_surface,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24596,6 +24701,8 @@ pub const InstanceCommands = struct {
     pub const CreateDirectFBSurfaceEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_direct_fb_surface_ext(
@@ -24608,6 +24715,8 @@ pub const InstanceCommands = struct {
             .success => return p_surface,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24622,6 +24731,8 @@ pub const InstanceCommands = struct {
     pub const CreateImagePipeSurfaceFUCHSIAError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_image_pipe_surface_fuchsia(
@@ -24634,11 +24745,15 @@ pub const InstanceCommands = struct {
             .success => return p_surface,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateDebugReportCallbackEXTError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_debug_report_callback_ext(
@@ -24650,6 +24765,8 @@ pub const InstanceCommands = struct {
         switch (self.fp_create_debug_report_callback_ext.?(self.handle, p_create_info, p_allocator, &p_callback)) {
             .success => return p_callback,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24676,6 +24793,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         FormatNotSupported,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_external_image_format_properties_nv(
@@ -24694,6 +24813,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_format_not_supported => return error.FormatNotSupported,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24723,6 +24844,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         FormatNotSupported,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_image_format_properties2(
@@ -24736,6 +24859,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_format_not_supported => return error.FormatNotSupported,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24834,6 +24959,8 @@ pub const InstanceCommands = struct {
         self.fp_get_physical_device_external_fence_properties.?(physical_device, p_external_fence_info, p_external_fence_properties);
     }
     pub const ReleaseDisplayEXTError = error{
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn release_display_ext(
@@ -24843,12 +24970,16 @@ pub const InstanceCommands = struct {
     ) ReleaseDisplayEXTError!void {
         switch (self.fp_release_display_ext.?(physical_device, display)) {
             .success => return,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const AcquireXlibDisplayEXTError = error{
         OutOfHostMemory,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn acquire_xlib_display_ext(
@@ -24861,11 +24992,15 @@ pub const InstanceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetRandROutputDisplayEXTError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_rand_r_output_display_ext(
@@ -24878,6 +25013,8 @@ pub const InstanceCommands = struct {
         switch (self.fp_get_rand_r_output_display_ext.?(physical_device, dpy, rr_output, &p_display)) {
             .success => return p_display,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24885,6 +25022,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_surface_capabilities2_ext(
@@ -24898,6 +25037,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24905,6 +25046,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn enumerate_physical_device_groups(
@@ -24918,6 +25061,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24943,6 +25088,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         NativeWindowInUseKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_ios_surface_mvk(
@@ -24956,6 +25103,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_native_window_in_use_khr => return error.NativeWindowInUseKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24963,6 +25112,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         NativeWindowInUseKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_mac_os_surface_mvk(
@@ -24976,6 +25127,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_native_window_in_use_khr => return error.NativeWindowInUseKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -24983,6 +25136,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         NativeWindowInUseKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_metal_surface_ext(
@@ -24996,6 +25151,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_native_window_in_use_khr => return error.NativeWindowInUseKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -25003,6 +25160,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_surface_capabilities2_khr(
@@ -25016,6 +25175,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -25023,6 +25184,8 @@ pub const InstanceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_surface_formats2_khr(
@@ -25038,6 +25201,8 @@ pub const InstanceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -25070,6 +25235,8 @@ pub const InstanceCommands = struct {
     pub const GetPhysicalDeviceDisplayProperties2KHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_display_properties2_khr(
@@ -25083,6 +25250,8 @@ pub const InstanceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -25111,6 +25280,8 @@ pub const InstanceCommands = struct {
     pub const GetPhysicalDeviceDisplayPlaneProperties2KHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_display_plane_properties2_khr(
@@ -25124,6 +25295,8 @@ pub const InstanceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -25152,6 +25325,8 @@ pub const InstanceCommands = struct {
     pub const GetDisplayModeProperties2KHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_display_mode_properties2_khr(
@@ -25166,6 +25341,8 @@ pub const InstanceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -25198,6 +25375,8 @@ pub const InstanceCommands = struct {
     pub const GetDisplayPlaneCapabilities2KHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_display_plane_capabilities2_khr(
@@ -25210,12 +25389,16 @@ pub const InstanceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const SetDebugUtilsObjectNameEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn set_debug_utils_object_name_ext(
@@ -25227,12 +25410,16 @@ pub const InstanceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const SetDebugUtilsObjectTagEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn set_debug_utils_object_tag_ext(
@@ -25244,6 +25431,8 @@ pub const InstanceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -25289,6 +25478,8 @@ pub const InstanceCommands = struct {
     }
     pub const CreateDebugUtilsMessengerEXTError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_debug_utils_messenger_ext(
@@ -25300,6 +25491,8 @@ pub const InstanceCommands = struct {
         switch (self.fp_create_debug_utils_messenger_ext.?(self.handle, p_create_info, p_allocator, &p_messenger)) {
             .success => return p_messenger,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -25321,6 +25514,8 @@ pub const InstanceCommands = struct {
     pub const CreateHeadlessSurfaceEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_headless_surface_ext(
@@ -25333,11 +25528,15 @@ pub const InstanceCommands = struct {
             .success => return p_surface,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const AcquireDrmDisplayEXTError = error{
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn acquire_drm_display_ext(
@@ -25349,12 +25548,16 @@ pub const InstanceCommands = struct {
         switch (self.fp_acquire_drm_display_ext.?(physical_device, drm_fd, display)) {
             .success => return,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetDrmDisplayEXTError = error{
         InitializationFailed,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_drm_display_ext(
@@ -25368,6 +25571,8 @@ pub const InstanceCommands = struct {
             .success => return display,
             .error_initialization_failed => return error.InitializationFailed,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26508,6 +26713,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         DeviceLost,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn queue_submit(
@@ -26522,6 +26729,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_device_lost => return error.DeviceLost,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26529,6 +26738,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         DeviceLost,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn queue_wait_idle(
@@ -26540,6 +26751,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_device_lost => return error.DeviceLost,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26547,6 +26760,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         DeviceLost,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn device_wait_idle(
@@ -26557,6 +26772,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_device_lost => return error.DeviceLost,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26565,6 +26782,8 @@ pub const DeviceCommands = struct {
         OutOfDeviceMemory,
         InvalidExternalHandle,
         InvalidOpaqueCaptureAddress,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn allocate_memory(
@@ -26579,6 +26798,8 @@ pub const DeviceCommands = struct {
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
             .error_invalid_opaque_capture_address => return error.InvalidOpaqueCaptureAddress,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26593,6 +26814,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         MemoryMapFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn map_memory(
@@ -26608,6 +26831,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_memory_map_failed => return error.MemoryMapFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26620,6 +26845,8 @@ pub const DeviceCommands = struct {
     pub const FlushMappedMemoryRangesError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn flush_mapped_memory_ranges(
@@ -26631,12 +26858,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const InvalidateMappedMemoryRangesError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn invalidate_mapped_memory_ranges(
@@ -26648,6 +26879,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26671,6 +26904,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InvalidOpaqueCaptureAddress,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn bind_buffer_memory(
@@ -26684,6 +26919,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_invalid_opaque_capture_address => return error.InvalidOpaqueCaptureAddress,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26698,6 +26935,8 @@ pub const DeviceCommands = struct {
     pub const BindImageMemoryError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn bind_image_memory(
@@ -26710,6 +26949,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26746,6 +26987,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         DeviceLost,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn queue_bind_sparse(
@@ -26760,12 +27003,16 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_device_lost => return error.DeviceLost,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateFenceError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_fence(
@@ -26778,6 +27025,8 @@ pub const DeviceCommands = struct {
             .success => return p_fence,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26790,6 +27039,8 @@ pub const DeviceCommands = struct {
     }
     pub const ResetFencesError = error{
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn reset_fences(
@@ -26800,6 +27051,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_reset_fences(self.handle, fence_count, p_fences.ptr)) {
             .success => return,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26811,6 +27064,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         DeviceLost,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_fence_status(
@@ -26823,6 +27078,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_device_lost => return error.DeviceLost,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26834,6 +27091,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         DeviceLost,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn wait_for_fences(
@@ -26849,12 +27108,16 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_device_lost => return error.DeviceLost,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateSemaphoreError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_semaphore(
@@ -26867,6 +27130,8 @@ pub const DeviceCommands = struct {
             .success => return p_semaphore,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26880,6 +27145,8 @@ pub const DeviceCommands = struct {
     pub const CreateEventError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_event(
@@ -26892,6 +27159,8 @@ pub const DeviceCommands = struct {
             .success => return p_event,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26910,6 +27179,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         DeviceLost,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_event_status(
@@ -26922,12 +27193,16 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_device_lost => return error.DeviceLost,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const SetEventError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn set_event(
@@ -26938,11 +27213,15 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const ResetEventError = error{
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn reset_event(
@@ -26952,12 +27231,16 @@ pub const DeviceCommands = struct {
         switch (self.fp_reset_event(self.handle, event)) {
             .success => return,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateQueryPoolError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_query_pool(
@@ -26970,6 +27253,8 @@ pub const DeviceCommands = struct {
             .success => return p_query_pool,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -26984,6 +27269,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         DeviceLost,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_query_pool_results(
@@ -27002,6 +27289,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_device_lost => return error.DeviceLost,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27017,6 +27306,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InvalidOpaqueCaptureAddress,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_buffer(
@@ -27030,6 +27321,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_invalid_opaque_capture_address => return error.InvalidOpaqueCaptureAddress,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27043,6 +27336,8 @@ pub const DeviceCommands = struct {
     pub const CreateBufferViewError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_buffer_view(
@@ -27055,6 +27350,8 @@ pub const DeviceCommands = struct {
             .success => return p_view,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27070,6 +27367,8 @@ pub const DeviceCommands = struct {
         OutOfDeviceMemory,
         CompressionExhaustedExt,
         InvalidOpaqueCaptureAddress,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_image(
@@ -27084,6 +27383,8 @@ pub const DeviceCommands = struct {
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_compression_exhausted_ext => return error.CompressionExhaustedExt,
             .error_invalid_opaque_capture_address => return error.InvalidOpaqueCaptureAddress,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27107,6 +27408,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InvalidOpaqueCaptureAddress,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_image_view(
@@ -27120,6 +27423,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_invalid_opaque_capture_address => return error.InvalidOpaqueCaptureAddress,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27134,6 +27439,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InvalidShaderNv,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_shader_module(
@@ -27147,6 +27454,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_invalid_shader_nv => return error.InvalidShaderNv,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27160,6 +27469,8 @@ pub const DeviceCommands = struct {
     pub const CreatePipelineCacheError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_pipeline_cache(
@@ -27172,6 +27483,8 @@ pub const DeviceCommands = struct {
             .success => return p_pipeline_cache,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27185,6 +27498,8 @@ pub const DeviceCommands = struct {
     pub const GetPipelineCacheDataError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_pipeline_cache_data(
@@ -27198,12 +27513,16 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const MergePipelineCachesError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn merge_pipeline_caches(
@@ -27216,6 +27535,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27228,6 +27549,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_pipeline_binaries_khr(
@@ -27243,6 +27566,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27256,6 +27581,8 @@ pub const DeviceCommands = struct {
     pub const GetPipelineKeyKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_pipeline_key_khr(
@@ -27267,6 +27594,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27274,6 +27603,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         NotEnoughSpaceKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_pipeline_binary_data_khr(
@@ -27288,10 +27619,14 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_not_enough_space_khr => return error.NotEnoughSpaceKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const ReleaseCapturedPipelineDataKHRError = error{
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn release_captured_pipeline_data_khr(
@@ -27301,6 +27636,8 @@ pub const DeviceCommands = struct {
     ) ReleaseCapturedPipelineDataKHRError!void {
         switch (self.fp_release_captured_pipeline_data_khr.?(self.handle, p_info, p_allocator)) {
             .success => return,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27312,6 +27649,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InvalidShaderNv,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_graphics_pipelines(
@@ -27329,6 +27668,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_invalid_shader_nv => return error.InvalidShaderNv,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27336,6 +27677,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InvalidShaderNv,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_compute_pipelines(
@@ -27353,6 +27696,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_invalid_shader_nv => return error.InvalidShaderNv,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27360,6 +27705,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_device_subpass_shading_max_workgroup_size_huawei(
@@ -27372,6 +27719,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27385,6 +27734,8 @@ pub const DeviceCommands = struct {
     pub const CreatePipelineLayoutError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_pipeline_layout(
@@ -27397,6 +27748,8 @@ pub const DeviceCommands = struct {
             .success => return p_pipeline_layout,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27411,6 +27764,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InvalidOpaqueCaptureAddress,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_sampler(
@@ -27424,6 +27779,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_invalid_opaque_capture_address => return error.InvalidOpaqueCaptureAddress,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27437,6 +27794,8 @@ pub const DeviceCommands = struct {
     pub const CreateDescriptorSetLayoutError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_descriptor_set_layout(
@@ -27449,6 +27808,8 @@ pub const DeviceCommands = struct {
             .success => return p_set_layout,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27463,6 +27824,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         Fragmentation,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_descriptor_pool(
@@ -27476,6 +27839,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_fragmentation => return error.Fragmentation,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27487,6 +27852,8 @@ pub const DeviceCommands = struct {
         self.fp_destroy_descriptor_pool(self.handle, descriptor_pool, p_allocator);
     }
     pub const ResetDescriptorPoolError = error{
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn reset_descriptor_pool(
@@ -27496,6 +27863,8 @@ pub const DeviceCommands = struct {
     ) ResetDescriptorPoolError!void {
         switch (self.fp_reset_descriptor_pool(self.handle, descriptor_pool, flags)) {
             .success => return,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27504,6 +27873,8 @@ pub const DeviceCommands = struct {
         OutOfDeviceMemory,
         FragmentedPool,
         OutOfPoolMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn allocate_descriptor_sets(
@@ -27518,10 +27889,14 @@ pub const DeviceCommands = struct {
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_fragmented_pool => return error.FragmentedPool,
             .error_out_of_pool_memory => return error.OutOfPoolMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const FreeDescriptorSetsError = error{
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn free_descriptor_sets(
@@ -27532,6 +27907,8 @@ pub const DeviceCommands = struct {
         const descriptor_set_count: u32 = @intCast(p_descriptor_sets.len);
         switch (self.fp_free_descriptor_sets(self.handle, descriptor_pool, descriptor_set_count, p_descriptor_sets.ptr)) {
             .success => return,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27547,6 +27924,8 @@ pub const DeviceCommands = struct {
     pub const CreateFramebufferError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_framebuffer(
@@ -27559,6 +27938,8 @@ pub const DeviceCommands = struct {
             .success => return p_framebuffer,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27572,6 +27953,8 @@ pub const DeviceCommands = struct {
     pub const CreateRenderPassError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_render_pass(
@@ -27584,6 +27967,8 @@ pub const DeviceCommands = struct {
             .success => return p_render_pass,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27613,6 +27998,8 @@ pub const DeviceCommands = struct {
     pub const CreateCommandPoolError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_command_pool(
@@ -27625,6 +28012,8 @@ pub const DeviceCommands = struct {
             .success => return p_command_pool,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27637,6 +28026,8 @@ pub const DeviceCommands = struct {
     }
     pub const ResetCommandPoolError = error{
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn reset_command_pool(
@@ -27647,12 +28038,16 @@ pub const DeviceCommands = struct {
         switch (self.fp_reset_command_pool(self.handle, command_pool, flags)) {
             .success => return,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const AllocateCommandBuffersError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn allocate_command_buffers(
@@ -27665,6 +28060,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -27679,6 +28076,8 @@ pub const DeviceCommands = struct {
     pub const BeginCommandBufferError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn begin_command_buffer(
@@ -27690,12 +28089,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const EndCommandBufferError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn end_command_buffer(
@@ -27706,11 +28109,15 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const ResetCommandBufferError = error{
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn reset_command_buffer(
@@ -27721,6 +28128,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_reset_command_buffer(command_buffer, flags)) {
             .success => return,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -28253,6 +28662,8 @@ pub const DeviceCommands = struct {
         IncompatibleDisplayKhr,
         DeviceLost,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_shared_swapchains_khr(
@@ -28270,6 +28681,8 @@ pub const DeviceCommands = struct {
             .error_incompatible_display_khr => return error.IncompatibleDisplayKhr,
             .error_device_lost => return error.DeviceLost,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -28281,6 +28694,8 @@ pub const DeviceCommands = struct {
         NativeWindowInUseKhr,
         InitializationFailed,
         CompressionExhaustedExt,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_swapchain_khr(
@@ -28298,6 +28713,8 @@ pub const DeviceCommands = struct {
             .error_native_window_in_use_khr => return error.NativeWindowInUseKhr,
             .error_initialization_failed => return error.InitializationFailed,
             .error_compression_exhausted_ext => return error.CompressionExhaustedExt,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -28311,6 +28728,8 @@ pub const DeviceCommands = struct {
     pub const GetSwapchainImagesKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_swapchain_images_khr(
@@ -28324,6 +28743,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -28362,6 +28783,8 @@ pub const DeviceCommands = struct {
         OutOfDateKhr,
         SurfaceLostKhr,
         FullScreenExclusiveModeLostExt,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn acquire_next_image_khr(
@@ -28383,6 +28806,8 @@ pub const DeviceCommands = struct {
             .error_out_of_date_khr => return error.OutOfDateKhr,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
             .error_full_screen_exclusive_mode_lost_ext => return error.FullScreenExclusiveModeLostExt,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -28397,6 +28822,8 @@ pub const DeviceCommands = struct {
         OutOfDateKhr,
         SurfaceLostKhr,
         FullScreenExclusiveModeLostExt,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn queue_present_khr(
@@ -28413,12 +28840,16 @@ pub const DeviceCommands = struct {
             .error_out_of_date_khr => return error.OutOfDateKhr,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
             .error_full_screen_exclusive_mode_lost_ext => return error.FullScreenExclusiveModeLostExt,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const DebugMarkerSetObjectNameEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn debug_marker_set_object_name_ext(
@@ -28429,12 +28860,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const DebugMarkerSetObjectTagEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn debug_marker_set_object_tag_ext(
@@ -28445,6 +28880,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -28471,6 +28908,8 @@ pub const DeviceCommands = struct {
     pub const GetMemoryWin32HandleNVError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_memory_win32_handle_nv(
@@ -28483,6 +28922,8 @@ pub const DeviceCommands = struct {
             .success => return p_handle,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -28520,6 +28961,8 @@ pub const DeviceCommands = struct {
     pub const CreateIndirectCommandsLayoutNVError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_indirect_commands_layout_nv(
@@ -28532,6 +28975,8 @@ pub const DeviceCommands = struct {
             .success => return p_indirect_commands_layout,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -28568,6 +29013,8 @@ pub const DeviceCommands = struct {
     pub const CreateIndirectCommandsLayoutEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_indirect_commands_layout_ext(
@@ -28580,6 +29027,8 @@ pub const DeviceCommands = struct {
             .success => return p_indirect_commands_layout,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -28593,6 +29042,8 @@ pub const DeviceCommands = struct {
     pub const CreateIndirectExecutionSetEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_indirect_execution_set_ext(
@@ -28605,6 +29056,8 @@ pub const DeviceCommands = struct {
             .success => return p_indirect_execution_set,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -28652,6 +29105,8 @@ pub const DeviceCommands = struct {
     pub const GetMemoryWin32HandleKHRError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_memory_win32_handle_khr(
@@ -28663,12 +29118,16 @@ pub const DeviceCommands = struct {
             .success => return p_handle,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetMemoryWin32HandlePropertiesKHRError = error{
         OutOfHostMemory,
         InvalidExternalHandle,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_memory_win32_handle_properties_khr(
@@ -28681,12 +29140,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetMemoryFdKHRError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_memory_fd_khr(
@@ -28698,12 +29161,16 @@ pub const DeviceCommands = struct {
             .success => return p_fd,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetMemoryFdPropertiesKHRError = error{
         OutOfHostMemory,
         InvalidExternalHandle,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_memory_fd_properties_khr(
@@ -28716,12 +29183,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetMemoryZirconHandleFUCHSIAError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_memory_zircon_handle_fuchsia(
@@ -28733,11 +29204,15 @@ pub const DeviceCommands = struct {
             .success => return p_zircon_handle,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetMemoryZirconHandlePropertiesFUCHSIAError = error{
         InvalidExternalHandle,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_memory_zircon_handle_properties_fuchsia(
@@ -28749,11 +29224,15 @@ pub const DeviceCommands = struct {
         switch (self.fp_get_memory_zircon_handle_properties_fuchsia.?(self.handle, handle_type, zircon_handle, p_memory_zircon_handle_properties)) {
             .success => return,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetMemoryRemoteAddressNVError = error{
         InvalidExternalHandle,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_memory_remote_address_nv(
@@ -28764,12 +29243,16 @@ pub const DeviceCommands = struct {
         switch (self.fp_get_memory_remote_address_nv.?(self.handle, p_memory_get_remote_address_info, &p_address)) {
             .success => return p_address,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetSemaphoreWin32HandleKHRError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_semaphore_win32_handle_khr(
@@ -28781,12 +29264,16 @@ pub const DeviceCommands = struct {
             .success => return p_handle,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const ImportSemaphoreWin32HandleKHRError = error{
         OutOfHostMemory,
         InvalidExternalHandle,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn import_semaphore_win32_handle_khr(
@@ -28797,12 +29284,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetSemaphoreFdKHRError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_semaphore_fd_khr(
@@ -28814,12 +29305,16 @@ pub const DeviceCommands = struct {
             .success => return p_fd,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const ImportSemaphoreFdKHRError = error{
         OutOfHostMemory,
         InvalidExternalHandle,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn import_semaphore_fd_khr(
@@ -28830,12 +29325,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetSemaphoreZirconHandleFUCHSIAError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_semaphore_zircon_handle_fuchsia(
@@ -28847,12 +29346,16 @@ pub const DeviceCommands = struct {
             .success => return p_zircon_handle,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const ImportSemaphoreZirconHandleFUCHSIAError = error{
         OutOfHostMemory,
         InvalidExternalHandle,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn import_semaphore_zircon_handle_fuchsia(
@@ -28863,12 +29366,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetFenceWin32HandleKHRError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_fence_win32_handle_khr(
@@ -28880,12 +29387,16 @@ pub const DeviceCommands = struct {
             .success => return p_handle,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const ImportFenceWin32HandleKHRError = error{
         OutOfHostMemory,
         InvalidExternalHandle,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn import_fence_win32_handle_khr(
@@ -28896,12 +29407,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetFenceFdKHRError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_fence_fd_khr(
@@ -28913,12 +29428,16 @@ pub const DeviceCommands = struct {
             .success => return p_fd,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const ImportFenceFdKHRError = error{
         OutOfHostMemory,
         InvalidExternalHandle,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn import_fence_fd_khr(
@@ -28929,6 +29448,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -28936,6 +29457,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         DeviceLost,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn acquire_winrt_display_nv(
@@ -28948,6 +29471,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_device_lost => return error.DeviceLost,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -28955,6 +29480,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         DeviceLost,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_winrt_display_nv(
@@ -28968,11 +29495,15 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_device_lost => return error.DeviceLost,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const DisplayPowerControlEXTError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn display_power_control_ext(
@@ -28983,11 +29514,15 @@ pub const DeviceCommands = struct {
         switch (self.fp_display_power_control_ext.?(self.handle, display, p_display_power_info)) {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const RegisterDeviceEventEXTError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn register_device_event_ext(
@@ -28999,11 +29534,15 @@ pub const DeviceCommands = struct {
         switch (self.fp_register_device_event_ext.?(self.handle, p_device_event_info, p_allocator, &p_fence)) {
             .success => return p_fence,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const RegisterDisplayEventEXTError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn register_display_event_ext(
@@ -29016,6 +29555,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_register_display_event_ext.?(self.handle, display, p_display_event_info, p_allocator, &p_fence)) {
             .success => return p_fence,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29023,6 +29564,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         DeviceLost,
         OutOfDateKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_swapchain_counter_ext(
@@ -29036,6 +29579,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_device_lost => return error.DeviceLost,
             .error_out_of_date_khr => return error.OutOfDateKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29053,6 +29598,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InvalidOpaqueCaptureAddress,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn bind_buffer_memory2(
@@ -29065,12 +29612,16 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_invalid_opaque_capture_address => return error.InvalidOpaqueCaptureAddress,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const BindImageMemory2Error = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn bind_image_memory2(
@@ -29082,6 +29633,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29095,6 +29648,8 @@ pub const DeviceCommands = struct {
     pub const GetDeviceGroupPresentCapabilitiesKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_device_group_present_capabilities_khr(
@@ -29105,6 +29660,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29112,6 +29669,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_device_group_surface_present_modes_khr(
@@ -29124,6 +29683,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29134,6 +29695,8 @@ pub const DeviceCommands = struct {
         OutOfDateKhr,
         SurfaceLostKhr,
         FullScreenExclusiveModeLostExt,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn acquire_next_image2_khr(
@@ -29152,6 +29715,8 @@ pub const DeviceCommands = struct {
             .error_out_of_date_khr => return error.OutOfDateKhr,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
             .error_full_screen_exclusive_mode_lost_ext => return error.FullScreenExclusiveModeLostExt,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29170,6 +29735,8 @@ pub const DeviceCommands = struct {
     pub const GetPhysicalDevicePresentRectanglesKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_present_rectangles_khr(
@@ -29184,6 +29751,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29216,6 +29785,8 @@ pub const DeviceCommands = struct {
     pub const CreateDescriptorUpdateTemplateError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_descriptor_update_template(
@@ -29228,6 +29799,8 @@ pub const DeviceCommands = struct {
             .success => return p_descriptor_update_template,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29272,6 +29845,8 @@ pub const DeviceCommands = struct {
         OutOfDateKhr,
         SurfaceLostKhr,
         FullScreenExclusiveModeLostExt,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_swapchain_status_khr(
@@ -29287,6 +29862,8 @@ pub const DeviceCommands = struct {
             .error_out_of_date_khr => return error.OutOfDateKhr,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
             .error_full_screen_exclusive_mode_lost_ext => return error.FullScreenExclusiveModeLostExt,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29294,6 +29871,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         DeviceLost,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_refresh_cycle_duration_google(
@@ -29306,6 +29885,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_device_lost => return error.DeviceLost,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29314,6 +29895,8 @@ pub const DeviceCommands = struct {
         DeviceLost,
         OutOfDateKhr,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_past_presentation_timing_google(
@@ -29329,6 +29912,8 @@ pub const DeviceCommands = struct {
             .error_device_lost => return error.DeviceLost,
             .error_out_of_date_khr => return error.OutOfDateKhr,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29490,6 +30075,8 @@ pub const DeviceCommands = struct {
     pub const CreateSamplerYcbcrConversionError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_sampler_ycbcr_conversion(
@@ -29502,6 +30089,8 @@ pub const DeviceCommands = struct {
             .success => return p_ycbcr_conversion,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29522,6 +30111,8 @@ pub const DeviceCommands = struct {
     }
     pub const CreateValidationCacheEXTError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_validation_cache_ext(
@@ -29533,6 +30124,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_create_validation_cache_ext.?(self.handle, p_create_info, p_allocator, &p_validation_cache)) {
             .success => return p_validation_cache,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29546,6 +30139,8 @@ pub const DeviceCommands = struct {
     pub const GetValidationCacheDataEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_validation_cache_data_ext(
@@ -29559,12 +30154,16 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const MergeValidationCachesEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn merge_validation_caches_ext(
@@ -29577,6 +30176,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29590,6 +30191,8 @@ pub const DeviceCommands = struct {
     pub const GetShaderInfoAMDError = error{
         FeatureNotPresent,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_shader_info_amd(
@@ -29605,6 +30208,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_feature_not_present => return error.FeatureNotPresent,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29618,6 +30223,8 @@ pub const DeviceCommands = struct {
     pub const GetPhysicalDeviceCalibrateableTimeDomainsKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_calibrateable_time_domains_khr(
@@ -29631,6 +30238,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29659,6 +30268,8 @@ pub const DeviceCommands = struct {
     pub const GetCalibratedTimestampsKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_calibrated_timestamps_khr(
@@ -29673,12 +30284,16 @@ pub const DeviceCommands = struct {
             .success => return p_max_deviation,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetMemoryHostPointerPropertiesEXTError = error{
         OutOfHostMemory,
         InvalidExternalHandle,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_memory_host_pointer_properties_ext(
@@ -29691,6 +30306,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29707,6 +30324,8 @@ pub const DeviceCommands = struct {
     pub const CreateRenderPass2Error = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_render_pass2(
@@ -29719,6 +30338,8 @@ pub const DeviceCommands = struct {
             .success => return p_render_pass,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29749,6 +30370,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         DeviceLost,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_semaphore_counter_value(
@@ -29761,6 +30384,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_device_lost => return error.DeviceLost,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -29768,6 +30393,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         DeviceLost,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn wait_semaphores(
@@ -29781,12 +30408,16 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_device_lost => return error.DeviceLost,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const SignalSemaphoreError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn signal_semaphore(
@@ -29797,12 +30428,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetAndroidHardwareBufferPropertiesANDROIDError = error{
         OutOfHostMemory,
         InvalidExternalHandle,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_android_hardware_buffer_properties_android(
@@ -29814,12 +30449,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetMemoryAndroidHardwareBufferANDROIDError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_memory_android_hardware_buffer_android(
@@ -29831,6 +30470,8 @@ pub const DeviceCommands = struct {
             .success => return p_buffer,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30074,6 +30715,8 @@ pub const DeviceCommands = struct {
     pub const CompileDeferredNVError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn compile_deferred_nv(
@@ -30085,11 +30728,15 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateAccelerationStructureNVError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_acceleration_structure_nv(
@@ -30101,6 +30748,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_create_acceleration_structure_nv.?(self.handle, p_create_info, p_allocator, &p_acceleration_structure)) {
             .success => return p_acceleration_structure,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30137,6 +30786,8 @@ pub const DeviceCommands = struct {
     pub const BindAccelerationStructureMemoryNVError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn bind_acceleration_structure_memory_nv(
@@ -30148,6 +30799,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30175,6 +30828,8 @@ pub const DeviceCommands = struct {
     pub const CopyAccelerationStructureKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn copy_acceleration_structure_khr(
@@ -30188,6 +30843,8 @@ pub const DeviceCommands = struct {
             .operation_not_deferred_khr => return .operation_not_deferred_khr,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30201,6 +30858,8 @@ pub const DeviceCommands = struct {
     pub const CopyAccelerationStructureToMemoryKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn copy_acceleration_structure_to_memory_khr(
@@ -30214,6 +30873,8 @@ pub const DeviceCommands = struct {
             .operation_not_deferred_khr => return .operation_not_deferred_khr,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30227,6 +30888,8 @@ pub const DeviceCommands = struct {
     pub const CopyMemoryToAccelerationStructureKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn copy_memory_to_acceleration_structure_khr(
@@ -30240,6 +30903,8 @@ pub const DeviceCommands = struct {
             .operation_not_deferred_khr => return .operation_not_deferred_khr,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30282,6 +30947,8 @@ pub const DeviceCommands = struct {
     pub const WriteAccelerationStructuresPropertiesKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn write_acceleration_structures_properties_khr(
@@ -30297,6 +30964,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30336,6 +31005,8 @@ pub const DeviceCommands = struct {
     pub const GetRayTracingShaderGroupHandlesKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_ray_tracing_shader_group_handles_khr(
@@ -30350,12 +31021,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetRayTracingCaptureReplayShaderGroupHandlesKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_ray_tracing_capture_replay_shader_group_handles_khr(
@@ -30370,12 +31045,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetAccelerationStructureHandleNVError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_acceleration_structure_handle_nv(
@@ -30388,6 +31067,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30395,6 +31076,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InvalidShaderNv,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_ray_tracing_pipelines_nv(
@@ -30412,6 +31095,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_invalid_shader_nv => return error.InvalidShaderNv,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30425,6 +31110,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InvalidOpaqueCaptureAddress,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_ray_tracing_pipelines_khr(
@@ -30445,12 +31132,16 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_invalid_opaque_capture_address => return error.InvalidOpaqueCaptureAddress,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetPhysicalDeviceCooperativeMatrixPropertiesNVError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_cooperative_matrix_properties_nv(
@@ -30464,6 +31155,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30558,6 +31251,8 @@ pub const DeviceCommands = struct {
     }
     pub const GetImageViewAddressNVXError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_image_view_address_nvx(
@@ -30568,6 +31263,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_get_image_view_address_nvx.?(self.handle, image_view, p_properties)) {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30575,6 +31272,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_surface_present_modes2_ext(
@@ -30590,6 +31289,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30623,6 +31324,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_device_group_surface_present_modes2_ext(
@@ -30635,6 +31338,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30643,6 +31348,8 @@ pub const DeviceCommands = struct {
         OutOfDeviceMemory,
         InitializationFailed,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn acquire_full_screen_exclusive_mode_ext(
@@ -30655,6 +31362,8 @@ pub const DeviceCommands = struct {
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_initialization_failed => return error.InitializationFailed,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30662,6 +31371,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn release_full_screen_exclusive_mode_ext(
@@ -30673,6 +31384,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30680,6 +31393,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn enumerate_physical_device_queue_family_performance_query_counters_khr(
@@ -30696,6 +31411,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30711,6 +31428,8 @@ pub const DeviceCommands = struct {
     pub const AcquireProfilingLockKHRError = error{
         OutOfHostMemory,
         Timeout,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn acquire_profiling_lock_khr(
@@ -30721,6 +31440,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .timeout => return error.Timeout,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30731,6 +31452,8 @@ pub const DeviceCommands = struct {
     }
     pub const GetImageDrmFormatModifierPropertiesEXTError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_image_drm_format_modifier_properties_ext(
@@ -30741,6 +31464,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_get_image_drm_format_modifier_properties_ext.?(self.handle, image, p_properties)) {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30759,6 +31484,8 @@ pub const DeviceCommands = struct {
     pub const GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNVError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_supported_framebuffer_mixed_samples_combinations_nv(
@@ -30772,6 +31499,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30800,6 +31529,8 @@ pub const DeviceCommands = struct {
     pub const InitializePerformanceApiINTELError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn initialize_performance_api_intel(
@@ -30810,6 +31541,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30821,6 +31554,8 @@ pub const DeviceCommands = struct {
     pub const CmdSetPerformanceMarkerINTELError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn cmd_set_performance_marker_intel(
@@ -30832,12 +31567,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CmdSetPerformanceStreamMarkerINTELError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn cmd_set_performance_stream_marker_intel(
@@ -30849,12 +31588,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CmdSetPerformanceOverrideINTELError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn cmd_set_performance_override_intel(
@@ -30866,12 +31609,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const AcquirePerformanceConfigurationINTELError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn acquire_performance_configuration_intel(
@@ -30883,12 +31630,16 @@ pub const DeviceCommands = struct {
             .success => return p_configuration,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const ReleasePerformanceConfigurationINTELError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn release_performance_configuration_intel(
@@ -30899,12 +31650,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const QueueSetPerformanceConfigurationINTELError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn queue_set_performance_configuration_intel(
@@ -30916,12 +31671,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetPerformanceParameterINTELError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_performance_parameter_intel(
@@ -30933,6 +31692,8 @@ pub const DeviceCommands = struct {
             .success => return p_value,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30945,6 +31706,8 @@ pub const DeviceCommands = struct {
     pub const GetPipelineExecutablePropertiesKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_pipeline_executable_properties_khr(
@@ -30958,6 +31721,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -30986,6 +31751,8 @@ pub const DeviceCommands = struct {
     pub const GetPipelineExecutableStatisticsKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_pipeline_executable_statistics_khr(
@@ -30999,6 +31766,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31027,6 +31796,8 @@ pub const DeviceCommands = struct {
     pub const GetPipelineExecutableInternalRepresentationsKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_pipeline_executable_internal_representations_khr(
@@ -31040,6 +31811,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31075,6 +31848,8 @@ pub const DeviceCommands = struct {
     }
     pub const GetPhysicalDeviceToolPropertiesError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_tool_properties(
@@ -31087,6 +31862,8 @@ pub const DeviceCommands = struct {
             .success => return .success,
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31115,6 +31892,8 @@ pub const DeviceCommands = struct {
     pub const CreateAccelerationStructureKHRError = error{
         OutOfHostMemory,
         InvalidOpaqueCaptureAddress,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_acceleration_structure_khr(
@@ -31127,6 +31906,8 @@ pub const DeviceCommands = struct {
             .success => return p_acceleration_structure,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_opaque_capture_address => return error.InvalidOpaqueCaptureAddress,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31157,6 +31938,8 @@ pub const DeviceCommands = struct {
     pub const BuildAccelerationStructuresKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn build_acceleration_structures_khr(
@@ -31173,6 +31956,8 @@ pub const DeviceCommands = struct {
             .operation_not_deferred_khr => return .operation_not_deferred_khr,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31184,6 +31969,8 @@ pub const DeviceCommands = struct {
     }
     pub const CreateDeferredOperationKHRError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_deferred_operation_khr(
@@ -31194,6 +31981,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_create_deferred_operation_khr.?(self.handle, p_allocator, &p_deferred_operation)) {
             .success => return p_deferred_operation,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31211,6 +32000,8 @@ pub const DeviceCommands = struct {
         self.fp_get_deferred_operation_max_concurrency_khr.?(self.handle, operation);
     }
     pub const GetDeferredOperationResultKHRError = error{
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_deferred_operation_result_khr(
@@ -31220,6 +32011,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_get_deferred_operation_result_khr.?(self.handle, operation)) {
             .success => return .success,
             .not_ready => return .not_ready,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31231,6 +32024,8 @@ pub const DeviceCommands = struct {
     pub const DeferredOperationJoinKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn deferred_operation_join_khr(
@@ -31243,6 +32038,8 @@ pub const DeviceCommands = struct {
             .thread_idle_khr => return .thread_idle_khr,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31643,6 +32440,8 @@ pub const DeviceCommands = struct {
     }
     pub const CreatePrivateDataSlotError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_private_data_slot(
@@ -31654,6 +32453,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_create_private_data_slot.?(self.handle, p_create_info, p_allocator, &p_private_data_slot)) {
             .success => return p_private_data_slot,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31666,6 +32467,8 @@ pub const DeviceCommands = struct {
     }
     pub const SetPrivateDataError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn set_private_data(
@@ -31678,6 +32481,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_set_private_data.?(self.handle, object_type, object_handle, private_data_slot, data)) {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31743,6 +32548,8 @@ pub const DeviceCommands = struct {
     }
     pub const GetPhysicalDeviceFragmentShadingRatesKHRError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_fragment_shading_rates_khr(
@@ -31755,6 +32562,8 @@ pub const DeviceCommands = struct {
             .success => return .success,
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31855,6 +32664,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         DeviceLost,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn queue_submit2(
@@ -31869,6 +32680,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_device_lost => return error.DeviceLost,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31925,6 +32738,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         MemoryMapFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn copy_memory_to_image(
@@ -31937,6 +32752,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_memory_map_failed => return error.MemoryMapFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31945,6 +32762,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         MemoryMapFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn copy_image_to_memory(
@@ -31957,6 +32776,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_memory_map_failed => return error.MemoryMapFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31965,6 +32786,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         MemoryMapFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn copy_image_to_image(
@@ -31977,6 +32800,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_memory_map_failed => return error.MemoryMapFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -31985,6 +32810,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         MemoryMapFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn transition_image_layout(
@@ -31998,6 +32825,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_memory_map_failed => return error.MemoryMapFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32035,6 +32864,8 @@ pub const DeviceCommands = struct {
     pub const CreateCuModuleNVXError = error{
         OutOfHostMemory,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_cu_module_nvx(
@@ -32047,12 +32878,16 @@ pub const DeviceCommands = struct {
             .success => return p_module,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateCuFunctionNVXError = error{
         OutOfHostMemory,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_cu_function_nvx(
@@ -32065,6 +32900,8 @@ pub const DeviceCommands = struct {
             .success => return p_function,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32147,6 +32984,8 @@ pub const DeviceCommands = struct {
     pub const GetBufferOpaqueCaptureDescriptorDataEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_buffer_opaque_capture_descriptor_data_ext(
@@ -32158,12 +32997,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetImageOpaqueCaptureDescriptorDataEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_image_opaque_capture_descriptor_data_ext(
@@ -32175,12 +33018,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetImageViewOpaqueCaptureDescriptorDataEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_image_view_opaque_capture_descriptor_data_ext(
@@ -32192,12 +33039,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetSamplerOpaqueCaptureDescriptorDataEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_sampler_opaque_capture_descriptor_data_ext(
@@ -32209,12 +33060,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetAccelerationStructureOpaqueCaptureDescriptorDataEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_acceleration_structure_opaque_capture_descriptor_data_ext(
@@ -32226,6 +33081,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32248,6 +33105,8 @@ pub const DeviceCommands = struct {
         OutOfDateKhr,
         SurfaceLostKhr,
         FullScreenExclusiveModeLostExt,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn wait_for_present2_khr(
@@ -32265,6 +33124,8 @@ pub const DeviceCommands = struct {
             .error_out_of_date_khr => return error.OutOfDateKhr,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
             .error_full_screen_exclusive_mode_lost_ext => return error.FullScreenExclusiveModeLostExt,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32275,6 +33136,8 @@ pub const DeviceCommands = struct {
         OutOfDateKhr,
         SurfaceLostKhr,
         FullScreenExclusiveModeLostExt,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn wait_for_present_khr(
@@ -32293,6 +33156,8 @@ pub const DeviceCommands = struct {
             .error_out_of_date_khr => return error.OutOfDateKhr,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
             .error_full_screen_exclusive_mode_lost_ext => return error.FullScreenExclusiveModeLostExt,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32300,6 +33165,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         InvalidExternalHandle,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_buffer_collection_fuchsia(
@@ -32313,6 +33180,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32320,6 +33189,8 @@ pub const DeviceCommands = struct {
         InitializationFailed,
         OutOfHostMemory,
         FormatNotSupported,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn set_buffer_collection_buffer_constraints_fuchsia(
@@ -32332,6 +33203,8 @@ pub const DeviceCommands = struct {
             .error_initialization_failed => return error.InitializationFailed,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_format_not_supported => return error.FormatNotSupported,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32339,6 +33212,8 @@ pub const DeviceCommands = struct {
         InitializationFailed,
         OutOfHostMemory,
         FormatNotSupported,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn set_buffer_collection_image_constraints_fuchsia(
@@ -32351,6 +33226,8 @@ pub const DeviceCommands = struct {
             .error_initialization_failed => return error.InitializationFailed,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_format_not_supported => return error.FormatNotSupported,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32364,6 +33241,8 @@ pub const DeviceCommands = struct {
     pub const GetBufferCollectionPropertiesFUCHSIAError = error{
         OutOfHostMemory,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_buffer_collection_properties_fuchsia(
@@ -32375,12 +33254,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateCudaModuleNVError = error{
         InitializationFailed,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_cuda_module_nv(
@@ -32393,11 +33276,15 @@ pub const DeviceCommands = struct {
             .success => return p_module,
             .error_initialization_failed => return error.InitializationFailed,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetCudaModuleCacheNVError = error{
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_cuda_module_cache_nv(
@@ -32410,12 +33297,16 @@ pub const DeviceCommands = struct {
             .success => return .success,
             .incomplete => return .incomplete,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateCudaFunctionNVError = error{
         InitializationFailed,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_cuda_function_nv(
@@ -32428,6 +33319,8 @@ pub const DeviceCommands = struct {
             .success => return p_function,
             .error_initialization_failed => return error.InitializationFailed,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32490,6 +33383,8 @@ pub const DeviceCommands = struct {
     pub const CreateMicromapEXTError = error{
         OutOfHostMemory,
         InvalidOpaqueCaptureAddress,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_micromap_ext(
@@ -32502,6 +33397,8 @@ pub const DeviceCommands = struct {
             .success => return p_micromap,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_opaque_capture_address => return error.InvalidOpaqueCaptureAddress,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32516,6 +33413,8 @@ pub const DeviceCommands = struct {
     pub const BuildMicromapsEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn build_micromaps_ext(
@@ -32530,6 +33429,8 @@ pub const DeviceCommands = struct {
             .operation_not_deferred_khr => return .operation_not_deferred_khr,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32550,6 +33451,8 @@ pub const DeviceCommands = struct {
     pub const CopyMicromapEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn copy_micromap_ext(
@@ -32563,6 +33466,8 @@ pub const DeviceCommands = struct {
             .operation_not_deferred_khr => return .operation_not_deferred_khr,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32576,6 +33481,8 @@ pub const DeviceCommands = struct {
     pub const CopyMicromapToMemoryEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn copy_micromap_to_memory_ext(
@@ -32589,6 +33496,8 @@ pub const DeviceCommands = struct {
             .operation_not_deferred_khr => return .operation_not_deferred_khr,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32602,6 +33511,8 @@ pub const DeviceCommands = struct {
     pub const CopyMemoryToMicromapEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn copy_memory_to_micromap_ext(
@@ -32615,6 +33526,8 @@ pub const DeviceCommands = struct {
             .operation_not_deferred_khr => return .operation_not_deferred_khr,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32632,6 +33545,8 @@ pub const DeviceCommands = struct {
     pub const WriteMicromapsPropertiesEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn write_micromaps_properties_ext(
@@ -32647,6 +33562,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32690,6 +33607,8 @@ pub const DeviceCommands = struct {
     }
     pub const GetPipelinePropertiesEXTError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_pipeline_properties_ext(
@@ -32700,6 +33619,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_get_pipeline_properties_ext.?(self.handle, p_pipeline_info, &p_pipeline_properties)) {
             .success => return p_pipeline_properties,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32717,6 +33638,8 @@ pub const DeviceCommands = struct {
         self.fp_cmd_bind_tile_memory_qcom.?(command_buffer, p_tile_memory_bind_info);
     }
     pub const GetFramebufferTilePropertiesQCOMError = error{
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_framebuffer_tile_properties_qcom(
@@ -32728,10 +33651,14 @@ pub const DeviceCommands = struct {
         switch (self.fp_get_framebuffer_tile_properties_qcom.?(self.handle, framebuffer, p_properties_count, p_properties)) {
             .success => return .success,
             .incomplete => return .incomplete,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetDynamicRenderingTilePropertiesQCOMError = error{
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_dynamic_rendering_tile_properties_qcom(
@@ -32741,6 +33668,8 @@ pub const DeviceCommands = struct {
     ) GetDynamicRenderingTilePropertiesQCOMError!void {
         switch (self.fp_get_dynamic_rendering_tile_properties_qcom.?(self.handle, p_rendering_info, p_properties)) {
             .success => return,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32748,6 +33677,8 @@ pub const DeviceCommands = struct {
         ExtensionNotPresent,
         InitializationFailed,
         FormatNotSupported,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_optical_flow_image_formats_nv(
@@ -32763,6 +33694,8 @@ pub const DeviceCommands = struct {
             .error_extension_not_present => return error.ExtensionNotPresent,
             .error_initialization_failed => return error.InitializationFailed,
             .error_format_not_supported => return error.FormatNotSupported,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32795,6 +33728,8 @@ pub const DeviceCommands = struct {
     pub const CreateOpticalFlowSessionNVError = error{
         OutOfHostMemory,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_optical_flow_session_nv(
@@ -32807,6 +33742,8 @@ pub const DeviceCommands = struct {
             .success => return p_session,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32820,6 +33757,8 @@ pub const DeviceCommands = struct {
     pub const BindOpticalFlowSessionImageNVError = error{
         OutOfHostMemory,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn bind_optical_flow_session_image_nv(
@@ -32833,6 +33772,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32846,6 +33787,8 @@ pub const DeviceCommands = struct {
     }
     pub const GetDeviceFaultInfoEXTError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_device_fault_info_ext(
@@ -32857,6 +33800,8 @@ pub const DeviceCommands = struct {
             .success => return .success,
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32869,6 +33814,8 @@ pub const DeviceCommands = struct {
     }
     pub const ReleaseSwapchainImagesKHRError = error{
         SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn release_swapchain_images_khr(
@@ -32878,6 +33825,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_release_swapchain_images_khr.?(self.handle, p_release_info)) {
             .success => return,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32892,6 +33841,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         MemoryMapFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn map_memory2(
@@ -32904,11 +33855,15 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_memory_map_failed => return error.MemoryMapFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const UnmapMemory2Error = error{
         MemoryMapFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn unmap_memory2(
@@ -32918,6 +33873,8 @@ pub const DeviceCommands = struct {
         switch (self.fp_unmap_memory2.?(self.handle, p_memory_unmap_info)) {
             .success => return,
             .error_memory_map_failed => return error.MemoryMapFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32929,6 +33886,8 @@ pub const DeviceCommands = struct {
         OutOfHostMemory,
         OutOfDeviceMemory,
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_shaders_ext(
@@ -32945,6 +33904,8 @@ pub const DeviceCommands = struct {
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32958,6 +33919,8 @@ pub const DeviceCommands = struct {
     pub const GetShaderBinaryDataEXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_shader_binary_data_ext(
@@ -32971,6 +33934,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -32989,6 +33954,8 @@ pub const DeviceCommands = struct {
     pub const GetPhysicalDeviceCooperativeMatrixPropertiesKHRError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_cooperative_matrix_properties_khr(
@@ -33002,6 +33969,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33029,6 +33998,8 @@ pub const DeviceCommands = struct {
     }
     pub const GetExecutionGraphPipelineScratchSizeAMDXError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_execution_graph_pipeline_scratch_size_amdx(
@@ -33039,11 +34010,15 @@ pub const DeviceCommands = struct {
         switch (self.fp_get_execution_graph_pipeline_scratch_size_amdx.?(self.handle, execution_graph, p_size_info)) {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetExecutionGraphPipelineNodeIndexAMDXError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_execution_graph_pipeline_node_index_amdx(
@@ -33055,12 +34030,16 @@ pub const DeviceCommands = struct {
         switch (self.fp_get_execution_graph_pipeline_node_index_amdx.?(self.handle, execution_graph, p_node_info, &p_node_index)) {
             .success => return p_node_index,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateExecutionGraphPipelinesAMDXError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_execution_graph_pipelines_amdx(
@@ -33077,6 +34056,8 @@ pub const DeviceCommands = struct {
             .pipeline_compile_required => return .pipeline_compile_required,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33160,6 +34141,8 @@ pub const DeviceCommands = struct {
     }
     pub const SetLatencySleepModeNVError = error{
         InitializationFailed,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn set_latency_sleep_mode_nv(
@@ -33170,10 +34153,14 @@ pub const DeviceCommands = struct {
         switch (self.fp_set_latency_sleep_mode_nv.?(self.handle, swapchain, p_sleep_mode_info)) {
             .success => return,
             .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const LatencySleepNVError = error{
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn latency_sleep_nv(
@@ -33183,6 +34170,8 @@ pub const DeviceCommands = struct {
     ) LatencySleepNVError!void {
         switch (self.fp_latency_sleep_nv.?(self.handle, swapchain, p_sleep_info)) {
             .success => return,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33232,6 +34221,8 @@ pub const DeviceCommands = struct {
     pub const GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNVError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_cooperative_matrix_flexible_dimensions_properties_nv(
@@ -33245,6 +34236,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33273,6 +34266,8 @@ pub const DeviceCommands = struct {
     pub const GetMemoryMetalHandleEXTError = error{
         TooManyObjects,
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_memory_metal_handle_ext(
@@ -33284,12 +34279,16 @@ pub const DeviceCommands = struct {
             .success => return p_handle,
             .error_too_many_objects => return error.TooManyObjects,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetMemoryMetalHandlePropertiesEXTError = error{
         OutOfHostMemory,
         InvalidExternalHandle,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_memory_metal_handle_properties_ext(
@@ -33302,12 +34301,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_invalid_external_handle => return error.InvalidExternalHandle,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetPhysicalDeviceCooperativeVectorPropertiesNVError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_cooperative_vector_properties_nv(
@@ -33321,11 +34324,15 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const ConvertCooperativeVectorMatrixNVError = error{
         OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn convert_cooperative_vector_matrix_nv(
@@ -33336,6 +34343,8 @@ pub const DeviceCommands = struct {
             .success => return .success,
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33371,6 +34380,8 @@ pub const DeviceCommands = struct {
     pub const CreateExternalComputeQueueNVError = error{
         OutOfHostMemory,
         TooManyObjects,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_external_compute_queue_nv(
@@ -33383,6 +34394,8 @@ pub const DeviceCommands = struct {
             .success => return p_external_queue,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_too_many_objects => return error.TooManyObjects,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33404,6 +34417,8 @@ pub const DeviceCommands = struct {
     pub const CreateTensorARMError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_tensor_arm(
@@ -33416,6 +34431,8 @@ pub const DeviceCommands = struct {
             .success => return p_tensor,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33429,6 +34446,8 @@ pub const DeviceCommands = struct {
     pub const CreateTensorViewARMError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_tensor_view_arm(
@@ -33441,6 +34460,8 @@ pub const DeviceCommands = struct {
             .success => return p_view,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33461,6 +34482,8 @@ pub const DeviceCommands = struct {
     pub const BindTensorMemoryARMError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn bind_tensor_memory_arm(
@@ -33472,6 +34495,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33492,6 +34517,8 @@ pub const DeviceCommands = struct {
     pub const GetTensorOpaqueCaptureDescriptorDataARMError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_tensor_opaque_capture_descriptor_data_arm(
@@ -33503,12 +34530,16 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetTensorViewOpaqueCaptureDescriptorDataARMError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_tensor_view_opaque_capture_descriptor_data_arm(
@@ -33520,6 +34551,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33534,6 +34567,8 @@ pub const DeviceCommands = struct {
     pub const CreateDataGraphPipelinesARMError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_data_graph_pipelines_arm(
@@ -33551,12 +34586,16 @@ pub const DeviceCommands = struct {
             .pipeline_compile_required => return .pipeline_compile_required,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const CreateDataGraphPipelineSessionARMError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn create_data_graph_pipeline_session_arm(
@@ -33569,12 +34608,16 @@ pub const DeviceCommands = struct {
             .success => return p_session,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetDataGraphPipelineSessionBindPointRequirementsARMError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_data_graph_pipeline_session_bind_point_requirements_arm(
@@ -33588,6 +34631,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33601,6 +34646,8 @@ pub const DeviceCommands = struct {
     pub const BindDataGraphPipelineSessionMemoryARMError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn bind_data_graph_pipeline_session_memory_arm(
@@ -33612,6 +34659,8 @@ pub const DeviceCommands = struct {
             .success => return,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33633,6 +34682,8 @@ pub const DeviceCommands = struct {
     pub const GetDataGraphPipelineAvailablePropertiesARMError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_data_graph_pipeline_available_properties_arm(
@@ -33646,6 +34697,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
@@ -33674,6 +34727,8 @@ pub const DeviceCommands = struct {
     pub const GetDataGraphPipelinePropertiesARMError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_data_graph_pipeline_properties_arm(
@@ -33687,12 +34742,16 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
     pub const GetPhysicalDeviceQueueFamilyDataGraphPropertiesARMError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
         Unexpected,
     };
     pub fn get_physical_device_queue_family_data_graph_properties_arm(
@@ -33707,6 +34766,8 @@ pub const DeviceCommands = struct {
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
     }
