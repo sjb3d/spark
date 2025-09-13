@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.325
+// Generated from vk.xml version 1.4.326
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -3511,7 +3511,7 @@ pub const StructureType = enum(i32) {
     physical_device_maintenance_9_features_khr = 1000584000,
     physical_device_maintenance_9_properties_khr = 1000584001,
     queue_family_ownership_transfer_properties_khr = 1000584002,
-    oh_surface_create_info_ohos = 1000587000,
+    surface_create_info_ohos = 1000685000,
     physical_device_hdr_vivid_features_huawei = 1000590000,
     hdr_vivid_dynamic_metadata_huawei = 1000590001,
     physical_device_cooperative_matrix_2_features_nv = 1000593000,
@@ -14792,13 +14792,12 @@ pub const PhysicalDeviceShaderFloat8FeaturesEXT = extern struct {
     shader_float8: Bool32 = .false,
     shader_float8_cooperative_matrix: Bool32 = .false,
 };
-pub const OHSurfaceCreateInfoOHOS = extern struct {
-    s_type: StructureType = .oh_surface_create_info_ohos,
+pub const SurfaceCreateInfoOHOS = extern struct {
+    s_type: StructureType = .surface_create_info_ohos,
     p_next: ?*const anyopaque = null,
     flags: SurfaceCreateFlagsOHOS = .none,
     window: ?*OHNativeWindow = null,
 };
-pub const SurfaceCreateInfoOHOS = OHSurfaceCreateInfoOHOS;
 pub const PhysicalDeviceDataGraphFeaturesARM = extern struct {
     s_type: StructureType = .physical_device_data_graph_features_arm,
     p_next: ?*anyopaque = null,
@@ -14866,7 +14865,8 @@ pub const DataGraphPipelineCreateInfoARM = extern struct {
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
-            inline *PipelineCreationFeedbackCreateInfo,
+            inline *ShaderModuleCreateInfo,
+            *PipelineCreationFeedbackCreateInfo,
             *DataGraphPipelineCompilerControlCreateInfoARM,
             *DataGraphPipelineShaderModuleCreateInfoARM,
             *DataGraphPipelineIdentifierCreateInfoARM,
@@ -14887,17 +14887,6 @@ pub const DataGraphPipelineShaderModuleCreateInfoARM = extern struct {
     p_specialization_info: ?*const SpecializationInfo = null,
     constant_count: u32 = 0,
     p_constants: ?[*]const DataGraphPipelineConstantARM = null,
-    const Self = @This();
-    pub fn insert_next(self: *Self, next: anytype) void {
-        switch (@TypeOf(next)) {
-            inline *ShaderModuleCreateInfo,
-            => {
-                next.p_next = @constCast(self.p_next);
-                self.p_next = next;
-            },
-            else => @compileError("invalid extension struct type"),
-        }
-    }
 };
 pub const DataGraphPipelineSessionCreateInfoARM = extern struct {
     s_type: StructureType = .data_graph_pipeline_session_create_info_arm,

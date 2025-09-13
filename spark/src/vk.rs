@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.325
+//! Generated from vk.xml version 1.4.326
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -7913,7 +7913,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR: Self = Self(1000584000);
     pub const PHYSICAL_DEVICE_MAINTENANCE_9_PROPERTIES_KHR: Self = Self(1000584001);
     pub const QUEUE_FAMILY_OWNERSHIP_TRANSFER_PROPERTIES_KHR: Self = Self(1000584002);
-    pub const OH_SURFACE_CREATE_INFO_OHOS: Self = Self(1000587000);
+    pub const SURFACE_CREATE_INFO_OHOS: Self = Self(1000685000);
     pub const PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI: Self = Self(1000590000);
     pub const HDR_VIVID_DYNAMIC_METADATA_HUAWEI: Self = Self(1000590001);
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV: Self = Self(1000593000);
@@ -8892,7 +8892,7 @@ impl fmt::Display for StructureType {
             1000584000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR"),
             1000584001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_9_PROPERTIES_KHR"),
             1000584002 => Some(&"QUEUE_FAMILY_OWNERSHIP_TRANSFER_PROPERTIES_KHR"),
-            1000587000 => Some(&"OH_SURFACE_CREATE_INFO_OHOS"),
+            1000685000 => Some(&"SURFACE_CREATE_INFO_OHOS"),
             1000590000 => Some(&"PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI"),
             1000590001 => Some(&"HDR_VIVID_DYNAMIC_METADATA_HUAWEI"),
             1000593000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV"),
@@ -50184,27 +50184,27 @@ impl fmt::Debug for PhysicalDeviceShaderFloat8FeaturesEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct OHSurfaceCreateInfoOHOS {
+pub struct SurfaceCreateInfoOHOS {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub flags: SurfaceCreateFlagsOHOS,
     pub window: *mut OHNativeWindow,
 }
-unsafe impl Send for OHSurfaceCreateInfoOHOS {}
-unsafe impl Sync for OHSurfaceCreateInfoOHOS {}
-impl Default for OHSurfaceCreateInfoOHOS {
+unsafe impl Send for SurfaceCreateInfoOHOS {}
+unsafe impl Sync for SurfaceCreateInfoOHOS {}
+impl Default for SurfaceCreateInfoOHOS {
     fn default() -> Self {
         Self {
-            s_type: StructureType::OH_SURFACE_CREATE_INFO_OHOS,
+            s_type: StructureType::SURFACE_CREATE_INFO_OHOS,
             p_next: ptr::null(),
             flags: Default::default(),
             window: ptr::null_mut(),
         }
     }
 }
-impl fmt::Debug for OHSurfaceCreateInfoOHOS {
+impl fmt::Debug for SurfaceCreateInfoOHOS {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("OHSurfaceCreateInfoOHOS")
+        fmt.debug_struct("SurfaceCreateInfoOHOS")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
@@ -50212,7 +50212,6 @@ impl fmt::Debug for OHSurfaceCreateInfoOHOS {
             .finish()
     }
 }
-pub type SurfaceCreateInfoOHOS = OHSurfaceCreateInfoOHOS;
 
 #[repr(C)]
 #[derive(Copy, Clone)]

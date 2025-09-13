@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.325
+//! Generated from vk.xml version 1.4.326
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -2053,8 +2053,8 @@ impl<'a> Deref for ShaderModuleCreateInfoBuilder<'a> {
 }
 impl PipelineShaderStageCreateInfoNext for vk::ShaderModuleCreateInfo {}
 impl PipelineShaderStageCreateInfoNext for ShaderModuleCreateInfoBuilder<'_> {}
-impl DataGraphPipelineShaderModuleCreateInfoARMNext for vk::ShaderModuleCreateInfo {}
-impl DataGraphPipelineShaderModuleCreateInfoARMNext for ShaderModuleCreateInfoBuilder<'_> {}
+impl DataGraphPipelineCreateInfoARMNext for vk::ShaderModuleCreateInfo {}
+impl DataGraphPipelineCreateInfoARMNext for ShaderModuleCreateInfoBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -38793,18 +38793,18 @@ impl DeviceCreateInfoNext for PhysicalDeviceShaderFloat8FeaturesEXTBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct OHSurfaceCreateInfoOHOSBuilder<'a> {
-    inner: vk::OHSurfaceCreateInfoOHOS,
+pub struct SurfaceCreateInfoOHOSBuilder<'a> {
+    inner: vk::SurfaceCreateInfoOHOS,
     phantom: PhantomData<&'a ()>,
 }
-impl<'a> Builder<'a> for vk::OHSurfaceCreateInfoOHOS {
-    type Type = OHSurfaceCreateInfoOHOSBuilder<'a>;
+impl<'a> Builder<'a> for vk::SurfaceCreateInfoOHOS {
+    type Type = SurfaceCreateInfoOHOSBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl<'a> OHSurfaceCreateInfoOHOSBuilder<'a> {
-    pub fn get_mut(&mut self) -> &mut vk::OHSurfaceCreateInfoOHOS {
+impl<'a> SurfaceCreateInfoOHOSBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::SurfaceCreateInfoOHOS {
         &mut self.inner
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -38820,8 +38820,8 @@ impl<'a> OHSurfaceCreateInfoOHOSBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for OHSurfaceCreateInfoOHOSBuilder<'a> {
-    type Target = vk::OHSurfaceCreateInfoOHOS;
+impl<'a> Deref for SurfaceCreateInfoOHOSBuilder<'a> {
+    type Target = vk::SurfaceCreateInfoOHOS;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -39115,14 +39115,7 @@ impl<'a> Builder<'a> for vk::DataGraphPipelineShaderModuleCreateInfoARM {
         Default::default()
     }
 }
-pub trait DataGraphPipelineShaderModuleCreateInfoARMNext {}
 impl<'a> DataGraphPipelineShaderModuleCreateInfoARMBuilder<'a> {
-    pub fn insert_next<T: DataGraphPipelineShaderModuleCreateInfoARMNext>(mut self, next: &'a mut T) -> Self {
-        unsafe {
-            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
-        }
-        self
-    }
     pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineShaderModuleCreateInfoARM {
         &mut self.inner
     }
