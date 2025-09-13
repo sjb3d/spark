@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.319
+// Generated from vk.xml version 1.4.321
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -1288,9 +1288,9 @@ pub const SwapchainCreateFlagBitsKHR = enum(u5) {
     split_instance_bind_regions = 0,
     protected = 1,
     mutable_format = 2,
-    deferred_memory_allocation_ext = 3,
     present_id_2 = 6,
     present_wait_2 = 7,
+    deferred_memory_allocation = 3,
     _,
 };
 pub const SwapchainCreateFlagsKHR = BitField(SwapchainCreateFlagBitsKHR);
@@ -1735,20 +1735,22 @@ pub const FrameBoundaryFlagBitsEXT = enum(u5) {
     _,
 };
 pub const FrameBoundaryFlagsEXT = BitField(FrameBoundaryFlagBitsEXT);
-pub const PresentScalingFlagBitsEXT = enum(u5) {
+pub const PresentScalingFlagBitsKHR = enum(u5) {
     one_to_one = 0,
     aspect_ratio_stretch = 1,
     stretch = 2,
     _,
 };
-pub const PresentScalingFlagsEXT = BitField(PresentScalingFlagBitsEXT);
-pub const PresentGravityFlagBitsEXT = enum(u5) {
+pub const PresentScalingFlagsKHR = BitField(PresentScalingFlagBitsKHR);
+pub const PresentScalingFlagsEXT = PresentScalingFlagsKHR;
+pub const PresentGravityFlagBitsKHR = enum(u5) {
     min = 0,
     max = 1,
     centered = 2,
     _,
 };
-pub const PresentGravityFlagsEXT = BitField(PresentGravityFlagBitsEXT);
+pub const PresentGravityFlagsKHR = BitField(PresentGravityFlagBitsKHR);
+pub const PresentGravityFlagsEXT = PresentGravityFlagsKHR;
 pub const ShaderCreateFlagBitsEXT = enum(u5) {
     link_stage = 0,
     allow_varying_subgroup_size = 1,
@@ -3086,15 +3088,6 @@ pub const StructureType = enum(i32) {
     physical_device_map_memory_placed_properties_ext = 1000272001,
     memory_map_placed_info_ext = 1000272002,
     physical_device_shader_atomic_float_2_features_ext = 1000273000,
-    surface_present_mode_ext = 1000274000,
-    surface_present_scaling_capabilities_ext = 1000274001,
-    surface_present_mode_compatibility_ext = 1000274002,
-    physical_device_swapchain_maintenance_1_features_ext = 1000275000,
-    swapchain_present_fence_info_ext = 1000275001,
-    swapchain_present_modes_create_info_ext = 1000275002,
-    swapchain_present_mode_info_ext = 1000275003,
-    swapchain_present_scaling_create_info_ext = 1000275004,
-    release_swapchain_images_info_ext = 1000275005,
     physical_device_device_generated_commands_properties_nv = 1000277000,
     graphics_shader_group_create_info_nv = 1000277001,
     graphics_pipeline_shader_groups_create_info_nv = 1000277002,
@@ -3201,7 +3194,6 @@ pub const StructureType = enum(i32) {
     physical_device_depth_clip_control_features_ext = 1000355000,
     pipeline_viewport_depth_clip_control_create_info_ext = 1000355001,
     physical_device_primitive_topology_list_restart_features_ext = 1000356000,
-    physical_device_present_mode_fifo_latest_ready_features_ext = 1000361000,
     import_memory_zircon_handle_info_fuchsia = 1000364000,
     memory_zircon_handle_properties_fuchsia = 1000364001,
     memory_get_zircon_handle_info_fuchsia = 1000364002,
@@ -3370,6 +3362,15 @@ pub const StructureType = enum(i32) {
     tile_properties_qcom = 1000484001,
     physical_device_amigo_profiling_features_sec = 1000485000,
     amigo_profiling_submit_info_sec = 1000485001,
+    surface_present_mode_khr = 1000274000,
+    surface_present_scaling_capabilities_khr = 1000274001,
+    surface_present_mode_compatibility_khr = 1000274002,
+    physical_device_swapchain_maintenance_1_features_khr = 1000275000,
+    swapchain_present_fence_info_khr = 1000275001,
+    swapchain_present_modes_create_info_khr = 1000275002,
+    swapchain_present_mode_info_khr = 1000275003,
+    swapchain_present_scaling_create_info_khr = 1000275004,
+    release_swapchain_images_info_khr = 1000275005,
     physical_device_multiview_per_view_viewports_features_qcom = 1000488000,
     physical_device_ray_tracing_invocation_reorder_features_nv = 1000490000,
     physical_device_ray_tracing_invocation_reorder_properties_nv = 1000490001,
@@ -3528,6 +3529,8 @@ pub const StructureType = enum(i32) {
     render_pass_fragment_density_map_offset_end_info_ext = 1000425002,
     rendering_end_info_ext = 1000619003,
     physical_device_zero_initialize_device_memory_features_ext = 1000620000,
+    physical_device_present_mode_fifo_latest_ready_features_khr = 1000361000,
+    physical_device_pipeline_cache_incremental_mode_features_sec = 1000637000,
     _,
 };
 pub const SystemAllocationScope = enum(i32) {
@@ -4141,7 +4144,7 @@ pub const PresentModeKHR = enum(i32) {
     fifo_relaxed = 3,
     shared_demand_refresh = 1000111000,
     shared_continuous_refresh = 1000111001,
-    fifo_latest_ready_ext = 1000361000,
+    fifo_latest_ready = 1000361000,
     _,
 };
 pub const DisplaySurfaceStereoTypeNV = enum(i32) {
@@ -4752,7 +4755,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderCoreBuiltinsFeaturesARM,
             *PhysicalDeviceFrameBoundaryFeaturesEXT,
             *PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT,
-            *PhysicalDeviceSwapchainMaintenance1FeaturesEXT,
+            *PhysicalDeviceSwapchainMaintenance1FeaturesKHR,
             *PhysicalDeviceDepthBiasControlFeaturesEXT,
             *PhysicalDeviceRayTracingInvocationReorderFeaturesNV,
             *PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV,
@@ -4791,7 +4794,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceCommandBufferInheritanceFeaturesNV,
             *PhysicalDeviceImageAlignmentControlFeaturesMESA,
             *PhysicalDeviceShaderReplicatedCompositesFeaturesEXT,
-            *PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT,
+            *PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR,
             *PhysicalDeviceCooperativeMatrix2FeaturesNV,
             *PhysicalDeviceHdrVividFeaturesHUAWEI,
             *PhysicalDeviceVertexAttributeRobustnessFeaturesEXT,
@@ -4806,6 +4809,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceDescriptorBufferTensorFeaturesARM,
             *PhysicalDeviceShaderFloat8FeaturesEXT,
             *PhysicalDeviceDataGraphFeaturesARM,
+            *PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -6492,8 +6496,8 @@ pub const SwapchainCreateInfoKHR = extern struct {
             *SurfaceFullScreenExclusiveWin32InfoEXT,
             *SwapchainPresentBarrierCreateInfoNV,
             *ImageCompressionControlEXT,
-            *SwapchainPresentModesCreateInfoEXT,
-            *SwapchainPresentScalingCreateInfoEXT,
+            *SwapchainPresentModesCreateInfoKHR,
+            *SwapchainPresentScalingCreateInfoKHR,
             *SwapchainLatencyCreateInfoNV,
             => {
                 next.p_next = @constCast(self.p_next);
@@ -6522,8 +6526,8 @@ pub const PresentInfoKHR = extern struct {
             *PresentId2KHR,
             *PresentTimesInfoGOOGLE,
             *FrameBoundaryEXT,
-            *SwapchainPresentFenceInfoEXT,
-            *SwapchainPresentModeInfoEXT,
+            *SwapchainPresentFenceInfoKHR,
+            *SwapchainPresentModeInfoKHR,
             *SetPresentConfigNV,
             *FrameBoundaryTensorsARM,
             => {
@@ -7099,7 +7103,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderCoreBuiltinsFeaturesARM,
             *PhysicalDeviceFrameBoundaryFeaturesEXT,
             *PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT,
-            *PhysicalDeviceSwapchainMaintenance1FeaturesEXT,
+            *PhysicalDeviceSwapchainMaintenance1FeaturesKHR,
             *PhysicalDeviceDepthBiasControlFeaturesEXT,
             *PhysicalDeviceRayTracingInvocationReorderFeaturesNV,
             *PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV,
@@ -7137,7 +7141,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceCommandBufferInheritanceFeaturesNV,
             *PhysicalDeviceImageAlignmentControlFeaturesMESA,
             *PhysicalDeviceShaderReplicatedCompositesFeaturesEXT,
-            *PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT,
+            *PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR,
             *PhysicalDeviceCooperativeMatrix2FeaturesNV,
             *PhysicalDeviceHdrVividFeaturesHUAWEI,
             *PhysicalDeviceVertexAttributeRobustnessFeaturesEXT,
@@ -7151,6 +7155,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceDescriptorBufferTensorFeaturesARM,
             *PhysicalDeviceShaderFloat8FeaturesEXT,
             *PhysicalDeviceDataGraphFeaturesARM,
+            *PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -8173,7 +8178,7 @@ pub const PhysicalDeviceSurfaceInfo2KHR = extern struct {
         switch (@TypeOf(next)) {
             inline *SurfaceFullScreenExclusiveInfoEXT,
             *SurfaceFullScreenExclusiveWin32InfoEXT,
-            *SurfacePresentModeEXT,
+            *SurfacePresentModeKHR,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -8196,8 +8201,8 @@ pub const SurfaceCapabilities2KHR = extern struct {
             *SurfaceCapabilitiesPresentBarrierNV,
             *SurfaceCapabilitiesPresentId2KHR,
             *SurfaceCapabilitiesPresentWait2KHR,
-            *SurfacePresentScalingCapabilitiesEXT,
-            *SurfacePresentModeCompatibilityEXT,
+            *SurfacePresentScalingCapabilitiesKHR,
+            *SurfacePresentModeCompatibilityKHR,
             *LatencySurfaceCapabilitiesNV,
             => {
                 next.p_next = @constCast(self.p_next);
@@ -11184,7 +11189,7 @@ pub const ColorBlendAdvancedEXT = extern struct {
 };
 pub const RenderPassTransformBeginInfoQCOM = extern struct {
     s_type: StructureType = .render_pass_transform_begin_info_qcom,
-    p_next: ?*anyopaque = null,
+    p_next: ?*const anyopaque = null,
     transform: SurfaceTransformFlagsKHR = .none,
 };
 pub const CopyCommandTransformInfoQCOM = extern struct {
@@ -11194,7 +11199,7 @@ pub const CopyCommandTransformInfoQCOM = extern struct {
 };
 pub const CommandBufferInheritanceRenderPassTransformInfoQCOM = extern struct {
     s_type: StructureType = .command_buffer_inheritance_render_pass_transform_info_qcom,
-    p_next: ?*anyopaque = null,
+    p_next: ?*const anyopaque = null,
     transform: SurfaceTransformFlagsKHR = .none,
     render_area: Rect2D = .{},
 };
@@ -13545,63 +13550,72 @@ pub const PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT = extern st
     p_next: ?*anyopaque = null,
     dynamic_rendering_unused_attachments: Bool32 = .false,
 };
-pub const SurfacePresentModeEXT = extern struct {
-    s_type: StructureType = .surface_present_mode_ext,
+pub const SurfacePresentModeKHR = extern struct {
+    s_type: StructureType = .surface_present_mode_khr,
     p_next: ?*anyopaque = null,
     present_mode: PresentModeKHR = @enumFromInt(0),
 };
-pub const SurfacePresentScalingCapabilitiesEXT = extern struct {
-    s_type: StructureType = .surface_present_scaling_capabilities_ext,
+pub const SurfacePresentModeEXT = SurfacePresentModeKHR;
+pub const SurfacePresentScalingCapabilitiesKHR = extern struct {
+    s_type: StructureType = .surface_present_scaling_capabilities_khr,
     p_next: ?*anyopaque = null,
-    supported_present_scaling: PresentScalingFlagsEXT = .none,
-    supported_present_gravity_x: PresentGravityFlagsEXT = .none,
-    supported_present_gravity_y: PresentGravityFlagsEXT = .none,
+    supported_present_scaling: PresentScalingFlagsKHR = .none,
+    supported_present_gravity_x: PresentGravityFlagsKHR = .none,
+    supported_present_gravity_y: PresentGravityFlagsKHR = .none,
     min_scaled_image_extent: Extent2D = .{},
     max_scaled_image_extent: Extent2D = .{},
 };
-pub const SurfacePresentModeCompatibilityEXT = extern struct {
-    s_type: StructureType = .surface_present_mode_compatibility_ext,
+pub const SurfacePresentScalingCapabilitiesEXT = SurfacePresentScalingCapabilitiesKHR;
+pub const SurfacePresentModeCompatibilityKHR = extern struct {
+    s_type: StructureType = .surface_present_mode_compatibility_khr,
     p_next: ?*anyopaque = null,
     present_mode_count: u32 = 0,
     p_present_modes: ?[*]PresentModeKHR = null,
 };
-pub const PhysicalDeviceSwapchainMaintenance1FeaturesEXT = extern struct {
-    s_type: StructureType = .physical_device_swapchain_maintenance_1_features_ext,
+pub const SurfacePresentModeCompatibilityEXT = SurfacePresentModeCompatibilityKHR;
+pub const PhysicalDeviceSwapchainMaintenance1FeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_swapchain_maintenance_1_features_khr,
     p_next: ?*anyopaque = null,
     swapchain_maintenance1: Bool32 = .false,
 };
-pub const SwapchainPresentFenceInfoEXT = extern struct {
-    s_type: StructureType = .swapchain_present_fence_info_ext,
+pub const PhysicalDeviceSwapchainMaintenance1FeaturesEXT = PhysicalDeviceSwapchainMaintenance1FeaturesKHR;
+pub const SwapchainPresentFenceInfoKHR = extern struct {
+    s_type: StructureType = .swapchain_present_fence_info_khr,
     p_next: ?*const anyopaque = null,
     swapchain_count: u32 = 0,
     p_fences: ?[*]const Fence = null,
 };
-pub const SwapchainPresentModesCreateInfoEXT = extern struct {
-    s_type: StructureType = .swapchain_present_modes_create_info_ext,
+pub const SwapchainPresentFenceInfoEXT = SwapchainPresentFenceInfoKHR;
+pub const SwapchainPresentModesCreateInfoKHR = extern struct {
+    s_type: StructureType = .swapchain_present_modes_create_info_khr,
     p_next: ?*const anyopaque = null,
     present_mode_count: u32 = 0,
     p_present_modes: ?[*]const PresentModeKHR = null,
 };
-pub const SwapchainPresentModeInfoEXT = extern struct {
-    s_type: StructureType = .swapchain_present_mode_info_ext,
+pub const SwapchainPresentModesCreateInfoEXT = SwapchainPresentModesCreateInfoKHR;
+pub const SwapchainPresentModeInfoKHR = extern struct {
+    s_type: StructureType = .swapchain_present_mode_info_khr,
     p_next: ?*const anyopaque = null,
     swapchain_count: u32 = 0,
     p_present_modes: ?[*]const PresentModeKHR = null,
 };
-pub const SwapchainPresentScalingCreateInfoEXT = extern struct {
-    s_type: StructureType = .swapchain_present_scaling_create_info_ext,
+pub const SwapchainPresentModeInfoEXT = SwapchainPresentModeInfoKHR;
+pub const SwapchainPresentScalingCreateInfoKHR = extern struct {
+    s_type: StructureType = .swapchain_present_scaling_create_info_khr,
     p_next: ?*const anyopaque = null,
-    scaling_behavior: PresentScalingFlagsEXT = .none,
-    present_gravity_x: PresentGravityFlagsEXT = .none,
-    present_gravity_y: PresentGravityFlagsEXT = .none,
+    scaling_behavior: PresentScalingFlagsKHR = .none,
+    present_gravity_x: PresentGravityFlagsKHR = .none,
+    present_gravity_y: PresentGravityFlagsKHR = .none,
 };
-pub const ReleaseSwapchainImagesInfoEXT = extern struct {
-    s_type: StructureType = .release_swapchain_images_info_ext,
+pub const SwapchainPresentScalingCreateInfoEXT = SwapchainPresentScalingCreateInfoKHR;
+pub const ReleaseSwapchainImagesInfoKHR = extern struct {
+    s_type: StructureType = .release_swapchain_images_info_khr,
     p_next: ?*const anyopaque = null,
     swapchain: SwapchainKHR = .null_handle,
     image_index_count: u32 = 0,
     p_image_indices: ?[*]const u32 = null,
 };
+pub const ReleaseSwapchainImagesInfoEXT = ReleaseSwapchainImagesInfoKHR;
 pub const PhysicalDeviceDepthBiasControlFeaturesEXT = extern struct {
     s_type: StructureType = .physical_device_depth_bias_control_features_ext,
     p_next: ?*anyopaque = null,
@@ -14341,8 +14355,9 @@ pub const PhysicalDeviceShaderReplicatedCompositesFeaturesEXT = extern struct {
     p_next: ?*anyopaque = null,
     shader_replicated_composites: Bool32 = .false,
 };
-pub const PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT = extern struct {
-    s_type: StructureType = .physical_device_present_mode_fifo_latest_ready_features_ext,
+pub const PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT = PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR;
+pub const PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_present_mode_fifo_latest_ready_features_khr,
     p_next: ?*anyopaque = null,
     present_mode_fifo_latest_ready: Bool32 = .false,
 };
@@ -14904,7 +14919,7 @@ pub const PhysicalDeviceDataGraphProcessingEngineARM = extern struct {
 };
 pub const PhysicalDeviceDataGraphOperationSupportARM = extern struct {
     operation_type: PhysicalDeviceDataGraphOperationTypeARM = @enumFromInt(0),
-    name: [max_physical_device_data_graph_operation_set_name_size_arm]u8 = [_]u8{0} ** max_physical_device_data_graph_operation_set_name_size_arm,
+    name: [max_physical_device_data_graph_operation_set_name_size_arm - 1:0]u8 = [_:0]u8{0} ** (max_physical_device_data_graph_operation_set_name_size_arm - 1),
     version: u32 = 0,
 };
 pub const QueueFamilyDataGraphPropertiesARM = extern struct {
@@ -14930,6 +14945,11 @@ pub const DataGraphProcessingEngineCreateInfoARM = extern struct {
     p_next: ?*const anyopaque = null,
     processing_engine_count: u32 = 0,
     p_processing_engines: ?[*]PhysicalDeviceDataGraphProcessingEngineARM = null,
+};
+pub const PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC = extern struct {
+    s_type: StructureType = .physical_device_pipeline_cache_incremental_mode_features_sec,
+    p_next: ?*anyopaque = null,
+    pipeline_cache_incremental_mode: Bool32 = .false,
 };
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
@@ -15502,7 +15522,7 @@ pub const FpBindOpticalFlowSessionImageNV = *const fn (Device, OpticalFlowSessio
 pub const FpCmdOpticalFlowExecuteNV = *const fn (CommandBuffer, OpticalFlowSessionNV, [*c]const OpticalFlowExecuteInfoNV) callconv(.c) void;
 pub const FpGetDeviceFaultInfoEXT = *const fn (Device, [*c]DeviceFaultCountsEXT, [*c]DeviceFaultInfoEXT) callconv(.c) Result;
 pub const FpCmdSetDepthBias2EXT = *const fn (CommandBuffer, [*c]const DepthBiasInfoEXT) callconv(.c) void;
-pub const FpReleaseSwapchainImagesEXT = *const fn (Device, [*c]const ReleaseSwapchainImagesInfoEXT) callconv(.c) Result;
+pub const FpReleaseSwapchainImagesKHR = *const fn (Device, [*c]const ReleaseSwapchainImagesInfoKHR) callconv(.c) Result;
 pub const FpGetDeviceImageSubresourceLayout = *const fn (Device, [*c]const DeviceImageSubresourceInfo, [*c]SubresourceLayout2) callconv(.c) void;
 pub const FpMapMemory2 = *const fn (Device, [*c]const MemoryMapInfo, [*c]?*anyopaque) callconv(.c) Result;
 pub const FpUnmapMemory2 = *const fn (Device, [*c]const MemoryUnmapInfo) callconv(.c) Result;
@@ -15904,6 +15924,8 @@ const ExtensionNames = struct {
     const khr_pipeline_binary = "VK_KHR_pipeline_binary";
     const qcom_tile_properties = "VK_QCOM_tile_properties";
     const sec_amigo_profiling = "VK_SEC_amigo_profiling";
+    const khr_surface_maintenance1 = "VK_KHR_surface_maintenance1";
+    const khr_swapchain_maintenance1 = "VK_KHR_swapchain_maintenance1";
     const qcom_multiview_per_view_viewports = "VK_QCOM_multiview_per_view_viewports";
     const nv_ray_tracing_invocation_reorder = "VK_NV_ray_tracing_invocation_reorder";
     const nv_cooperative_vector = "VK_NV_cooperative_vector";
@@ -15967,6 +15989,8 @@ const ExtensionNames = struct {
     const nv_present_metering = "VK_NV_present_metering";
     const ext_fragment_density_map_offset = "VK_EXT_fragment_density_map_offset";
     const ext_zero_initialize_device_memory = "VK_EXT_zero_initialize_device_memory";
+    const khr_present_mode_fifo_latest_ready = "VK_KHR_present_mode_fifo_latest_ready";
+    const sec_pipeline_cache_incremental_mode = "VK_SEC_pipeline_cache_incremental_mode";
 };
 
 pub const InstanceExtensions = packed struct {
@@ -16007,6 +16031,7 @@ pub const InstanceExtensions = packed struct {
     khr_portability_enumeration: bool = false,
     google_surfaceless_query: bool = false,
     lunarg_direct_driver_loading: bool = false,
+    khr_surface_maintenance1: bool = false,
     ext_layer_settings: bool = false,
     nv_display_stereo: bool = false,
     ohos_surface: bool = false,
@@ -16085,6 +16110,8 @@ pub const InstanceExtensions = packed struct {
             self.google_surfaceless_query = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.lunarg_direct_driver_loading) == .eq) {
             self.lunarg_direct_driver_loading = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_surface_maintenance1) == .eq) {
+            self.khr_surface_maintenance1 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_layer_settings) == .eq) {
             self.ext_layer_settings = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_display_stereo) == .eq) {
@@ -16142,6 +16169,7 @@ pub const InstanceExtensions = packed struct {
         if (self.khr_portability_enumeration) try names.append(allocator, ExtensionNames.khr_portability_enumeration);
         if (self.google_surfaceless_query) try names.append(allocator, ExtensionNames.google_surfaceless_query);
         if (self.lunarg_direct_driver_loading) try names.append(allocator, ExtensionNames.lunarg_direct_driver_loading);
+        if (self.khr_surface_maintenance1) try names.append(allocator, ExtensionNames.khr_surface_maintenance1);
         if (self.ext_layer_settings) try names.append(allocator, ExtensionNames.ext_layer_settings);
         if (self.nv_display_stereo) try names.append(allocator, ExtensionNames.nv_display_stereo);
         if (self.ohos_surface) try names.append(allocator, ExtensionNames.ohos_surface);
@@ -18413,6 +18441,23 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_khr_surface_maintenance1(self: InstanceExtensions) bool {
+        return self.khr_surface_maintenance1 and (self.supports_khr_surface() or self.supports_khr_get_surface_capabilities2());
+    }
+    pub fn enable_khr_surface_maintenance1(self: *InstanceExtensions) void {
+        self.khr_surface_maintenance1 = true;
+        // ambiguous dependency, caller must enable one explicitly
+        assert(self.supports_khr_surface() or self.supports_khr_get_surface_capabilities2());
+    }
+
+    pub fn supports_khr_swapchain_maintenance1(self: InstanceExtensions) bool {
+        return self.supports_khr_swapchain() or self.supports_khr_surface_maintenance1() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_khr_swapchain_maintenance1(self: *InstanceExtensions) void {
+        // ambiguous dependency, caller must enable one explicitly
+        assert(self.supports_khr_swapchain() or self.supports_khr_surface_maintenance1() or self.supports_khr_get_physical_device_properties2());
+    }
+
     pub fn supports_qcom_multiview_per_view_viewports(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
@@ -18783,6 +18828,13 @@ pub const InstanceExtensions = packed struct {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+
+    pub fn supports_khr_present_mode_fifo_latest_ready(self: InstanceExtensions) bool {
+        return self.supports_khr_swapchain();
+    }
+    pub fn enable_khr_present_mode_fifo_latest_ready(self: *InstanceExtensions) void {
+        self.enable_khr_swapchain();
+    }
 };
 
 pub const DeviceExtensions = packed struct {
@@ -19087,6 +19139,7 @@ pub const DeviceExtensions = packed struct {
     khr_pipeline_binary: bool = false,
     qcom_tile_properties: bool = false,
     sec_amigo_profiling: bool = false,
+    khr_swapchain_maintenance1: bool = false,
     qcom_multiview_per_view_viewports: bool = false,
     nv_ray_tracing_invocation_reorder: bool = false,
     nv_cooperative_vector: bool = false,
@@ -19147,6 +19200,8 @@ pub const DeviceExtensions = packed struct {
     nv_present_metering: bool = false,
     ext_fragment_density_map_offset: bool = false,
     ext_zero_initialize_device_memory: bool = false,
+    khr_present_mode_fifo_latest_ready: bool = false,
+    sec_pipeline_cache_incremental_mode: bool = false,
 
     pub fn enable_by_name(self: *DeviceExtensions, maybe_name: ?[*:0]const u8) void {
         const name = maybe_name orelse return;
@@ -19750,6 +19805,8 @@ pub const DeviceExtensions = packed struct {
             self.qcom_tile_properties = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.sec_amigo_profiling) == .eq) {
             self.sec_amigo_profiling = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_swapchain_maintenance1) == .eq) {
+            self.khr_swapchain_maintenance1 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_multiview_per_view_viewports) == .eq) {
             self.qcom_multiview_per_view_viewports = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_ray_tracing_invocation_reorder) == .eq) {
@@ -19870,6 +19927,10 @@ pub const DeviceExtensions = packed struct {
             self.ext_fragment_density_map_offset = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_zero_initialize_device_memory) == .eq) {
             self.ext_zero_initialize_device_memory = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_present_mode_fifo_latest_ready) == .eq) {
+            self.khr_present_mode_fifo_latest_ready = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.sec_pipeline_cache_incremental_mode) == .eq) {
+            self.sec_pipeline_cache_incremental_mode = true;
         }
     }
 
@@ -20185,6 +20246,7 @@ pub const DeviceExtensions = packed struct {
         if (self.khr_pipeline_binary) try names.append(allocator, ExtensionNames.khr_pipeline_binary);
         if (self.qcom_tile_properties) try names.append(allocator, ExtensionNames.qcom_tile_properties);
         if (self.sec_amigo_profiling) try names.append(allocator, ExtensionNames.sec_amigo_profiling);
+        if (self.khr_swapchain_maintenance1) try names.append(allocator, ExtensionNames.khr_swapchain_maintenance1);
         if (self.qcom_multiview_per_view_viewports) try names.append(allocator, ExtensionNames.qcom_multiview_per_view_viewports);
         if (self.nv_ray_tracing_invocation_reorder) try names.append(allocator, ExtensionNames.nv_ray_tracing_invocation_reorder);
         if (self.nv_cooperative_vector) try names.append(allocator, ExtensionNames.nv_cooperative_vector);
@@ -20245,6 +20307,8 @@ pub const DeviceExtensions = packed struct {
         if (self.nv_present_metering) try names.append(allocator, ExtensionNames.nv_present_metering);
         if (self.ext_fragment_density_map_offset) try names.append(allocator, ExtensionNames.ext_fragment_density_map_offset);
         if (self.ext_zero_initialize_device_memory) try names.append(allocator, ExtensionNames.ext_zero_initialize_device_memory);
+        if (self.khr_present_mode_fifo_latest_ready) try names.append(allocator, ExtensionNames.khr_present_mode_fifo_latest_ready);
+        if (self.sec_pipeline_cache_incremental_mode) try names.append(allocator, ExtensionNames.sec_pipeline_cache_incremental_mode);
         return names.toOwnedSlice(allocator);
     }
 
@@ -22793,6 +22857,13 @@ pub const DeviceExtensions = packed struct {
         self.sec_amigo_profiling = true;
     }
 
+    pub fn supports_khr_swapchain_maintenance1(self: DeviceExtensions) bool {
+        return self.khr_swapchain_maintenance1;
+    }
+    pub fn enable_khr_swapchain_maintenance1(self: *DeviceExtensions) void {
+        self.khr_swapchain_maintenance1 = true;
+    }
+
     pub fn supports_qcom_multiview_per_view_viewports(self: DeviceExtensions) bool {
         return self.qcom_multiview_per_view_viewports;
     }
@@ -23294,6 +23365,21 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_ext_zero_initialize_device_memory(self: *DeviceExtensions) void {
         self.ext_zero_initialize_device_memory = true;
+    }
+
+    pub fn supports_khr_present_mode_fifo_latest_ready(self: DeviceExtensions) bool {
+        return self.khr_present_mode_fifo_latest_ready and self.supports_khr_swapchain();
+    }
+    pub fn enable_khr_present_mode_fifo_latest_ready(self: *DeviceExtensions) void {
+        self.khr_present_mode_fifo_latest_ready = true;
+        self.enable_khr_swapchain();
+    }
+
+    pub fn supports_sec_pipeline_cache_incremental_mode(self: DeviceExtensions) bool {
+        return self.sec_pipeline_cache_incremental_mode;
+    }
+    pub fn enable_sec_pipeline_cache_incremental_mode(self: *DeviceExtensions) void {
+        self.sec_pipeline_cache_incremental_mode = true;
     }
 };
 
@@ -25775,7 +25861,7 @@ pub const DeviceCommands = struct {
     fp_cmd_optical_flow_execute_nv: ?FpCmdOpticalFlowExecuteNV,
     fp_get_device_fault_info_ext: ?FpGetDeviceFaultInfoEXT,
     fp_cmd_set_depth_bias2_ext: ?FpCmdSetDepthBias2EXT,
-    fp_release_swapchain_images_ext: ?FpReleaseSwapchainImagesEXT,
+    fp_release_swapchain_images_khr: ?FpReleaseSwapchainImagesKHR,
     fp_get_device_image_subresource_layout: ?FpGetDeviceImageSubresourceLayout,
     fp_map_memory2: ?FpMapMemory2,
     fp_unmap_memory2: ?FpUnmapMemory2,
@@ -26337,7 +26423,7 @@ pub const DeviceCommands = struct {
             .fp_cmd_optical_flow_execute_nv = if (extensions.nv_optical_flow) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdOpticalFlowExecuteNV")) else null,
             .fp_get_device_fault_info_ext = if (extensions.ext_device_fault) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDeviceFaultInfoEXT")) else null,
             .fp_cmd_set_depth_bias2_ext = if (extensions.ext_depth_bias_control) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetDepthBias2EXT")) else null,
-            .fp_release_swapchain_images_ext = if (extensions.ext_swapchain_maintenance1) @ptrCast(try instance.get_device_proc_addr(device, "vkReleaseSwapchainImagesEXT")) else null,
+            .fp_release_swapchain_images_khr = if (extensions.khr_swapchain_maintenance1) @ptrCast(try instance.get_device_proc_addr(device, "vkReleaseSwapchainImagesKHR")) else if (extensions.ext_swapchain_maintenance1) @ptrCast(try instance.get_device_proc_addr(device, "vkReleaseSwapchainImagesEXT")) else null,
             .fp_get_device_image_subresource_layout = if (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int()) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDeviceImageSubresourceLayout")) else if (extensions.khr_maintenance5) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDeviceImageSubresourceLayoutKHR")) else null,
             .fp_map_memory2 = if (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int()) @ptrCast(try instance.get_device_proc_addr(device, "vkMapMemory2")) else if (extensions.khr_map_memory2) @ptrCast(try instance.get_device_proc_addr(device, "vkMapMemory2KHR")) else null,
             .fp_unmap_memory2 = if (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int()) @ptrCast(try instance.get_device_proc_addr(device, "vkUnmapMemory2")) else if (extensions.khr_map_memory2) @ptrCast(try instance.get_device_proc_addr(device, "vkUnmapMemory2KHR")) else null,
@@ -32781,15 +32867,15 @@ pub const DeviceCommands = struct {
     ) void {
         self.fp_cmd_set_depth_bias2_ext.?(command_buffer, p_depth_bias_info);
     }
-    pub const ReleaseSwapchainImagesEXTError = error{
+    pub const ReleaseSwapchainImagesKHRError = error{
         SurfaceLostKhr,
         Unexpected,
     };
-    pub fn release_swapchain_images_ext(
+    pub fn release_swapchain_images_khr(
         self: DeviceCommands,
-        p_release_info: *const ReleaseSwapchainImagesInfoEXT,
-    ) ReleaseSwapchainImagesEXTError!void {
-        switch (self.fp_release_swapchain_images_ext.?(self.handle, p_release_info)) {
+        p_release_info: *const ReleaseSwapchainImagesInfoKHR,
+    ) ReleaseSwapchainImagesKHRError!void {
+        switch (self.fp_release_swapchain_images_khr.?(self.handle, p_release_info)) {
             .success => return,
             .error_surface_lost_khr => return error.SurfaceLostKhr,
             else => return error.Unexpected,

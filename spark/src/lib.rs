@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.319
+//! Generated from vk.xml version 1.4.321
 
 #![allow(
     clippy::too_many_arguments,
@@ -273,6 +273,7 @@ pub struct InstanceExtensions {
     pub khr_portability_enumeration: bool,
     pub google_surfaceless_query: bool,
     pub lunarg_direct_driver_loading: bool,
+    pub khr_surface_maintenance1: bool,
     pub ext_layer_settings: bool,
     pub nv_display_stereo: bool,
     pub ohos_surface: bool,
@@ -351,6 +352,8 @@ impl InstanceExtensions {
             self.google_surfaceless_query = true;
         } else if name == c"VK_LUNARG_direct_driver_loading" {
             self.lunarg_direct_driver_loading = true;
+        } else if name == c"VK_KHR_surface_maintenance1" {
+            self.khr_surface_maintenance1 = true;
         } else if name == c"VK_EXT_layer_settings" {
             self.ext_layer_settings = true;
         } else if name == c"VK_NV_display_stereo" {
@@ -398,6 +401,7 @@ impl InstanceExtensions {
             khr_portability_enumeration: false,
             google_surfaceless_query: false,
             lunarg_direct_driver_loading: false,
+            khr_surface_maintenance1: false,
             ext_layer_settings: false,
             nv_display_stereo: false,
             ohos_surface: false,
@@ -2525,6 +2529,27 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_khr_surface_maintenance1(&self) -> bool {
+        self.khr_surface_maintenance1 && (self.supports_khr_surface() || self.supports_khr_get_surface_capabilities2())
+    }
+    pub fn enable_khr_surface_maintenance1(&mut self) {
+        self.khr_surface_maintenance1 = true;
+        // ambiguous dependency, caller must enable one explicitly
+        debug_assert!(self.supports_khr_surface() || self.supports_khr_get_surface_capabilities2());
+    }
+    pub fn supports_khr_swapchain_maintenance1(&self) -> bool {
+        self.supports_khr_swapchain()
+            || self.supports_khr_surface_maintenance1()
+            || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_swapchain_maintenance1(&mut self) {
+        // ambiguous dependency, caller must enable one explicitly
+        debug_assert!(
+            self.supports_khr_swapchain()
+                || self.supports_khr_surface_maintenance1()
+                || self.supports_khr_get_physical_device_properties2()
+        );
+    }
     pub fn supports_qcom_multiview_per_view_viewports(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
@@ -2873,6 +2898,12 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_khr_present_mode_fifo_latest_ready(&self) -> bool {
+        self.supports_khr_swapchain()
+    }
+    pub fn enable_khr_present_mode_fifo_latest_ready(&mut self) {
+        self.enable_khr_swapchain();
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_surface {
@@ -2982,6 +3013,9 @@ impl InstanceExtensions {
         }
         if self.lunarg_direct_driver_loading {
             v.push(c"VK_LUNARG_direct_driver_loading");
+        }
+        if self.khr_surface_maintenance1 {
+            v.push(c"VK_KHR_surface_maintenance1");
         }
         if self.ext_layer_settings {
             v.push(c"VK_EXT_layer_settings");
@@ -5537,6 +5571,7 @@ pub struct DeviceExtensions {
     pub khr_pipeline_binary: bool,
     pub qcom_tile_properties: bool,
     pub sec_amigo_profiling: bool,
+    pub khr_swapchain_maintenance1: bool,
     pub qcom_multiview_per_view_viewports: bool,
     pub nv_ray_tracing_invocation_reorder: bool,
     pub nv_cooperative_vector: bool,
@@ -5597,6 +5632,8 @@ pub struct DeviceExtensions {
     pub nv_present_metering: bool,
     pub ext_fragment_density_map_offset: bool,
     pub ext_zero_initialize_device_memory: bool,
+    pub khr_present_mode_fifo_latest_ready: bool,
+    pub sec_pipeline_cache_incremental_mode: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -6200,6 +6237,8 @@ impl DeviceExtensions {
             self.qcom_tile_properties = true;
         } else if name == c"VK_SEC_amigo_profiling" {
             self.sec_amigo_profiling = true;
+        } else if name == c"VK_KHR_swapchain_maintenance1" {
+            self.khr_swapchain_maintenance1 = true;
         } else if name == c"VK_QCOM_multiview_per_view_viewports" {
             self.qcom_multiview_per_view_viewports = true;
         } else if name == c"VK_NV_ray_tracing_invocation_reorder" {
@@ -6320,6 +6359,10 @@ impl DeviceExtensions {
             self.ext_fragment_density_map_offset = true;
         } else if name == c"VK_EXT_zero_initialize_device_memory" {
             self.ext_zero_initialize_device_memory = true;
+        } else if name == c"VK_KHR_present_mode_fifo_latest_ready" {
+            self.khr_present_mode_fifo_latest_ready = true;
+        } else if name == c"VK_SEC_pipeline_cache_incremental_mode" {
+            self.sec_pipeline_cache_incremental_mode = true;
         }
     }
     pub fn new(core_version: vk::Version) -> Self {
@@ -6625,6 +6668,7 @@ impl DeviceExtensions {
             khr_pipeline_binary: false,
             qcom_tile_properties: false,
             sec_amigo_profiling: false,
+            khr_swapchain_maintenance1: false,
             qcom_multiview_per_view_viewports: false,
             nv_ray_tracing_invocation_reorder: false,
             nv_cooperative_vector: false,
@@ -6685,6 +6729,8 @@ impl DeviceExtensions {
             nv_present_metering: false,
             ext_fragment_density_map_offset: false,
             ext_zero_initialize_device_memory: false,
+            khr_present_mode_fifo_latest_ready: false,
+            sec_pipeline_cache_incremental_mode: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -9085,6 +9131,12 @@ impl DeviceExtensions {
     pub fn enable_sec_amigo_profiling(&mut self) {
         self.sec_amigo_profiling = true;
     }
+    pub fn supports_khr_swapchain_maintenance1(&self) -> bool {
+        self.khr_swapchain_maintenance1
+    }
+    pub fn enable_khr_swapchain_maintenance1(&mut self) {
+        self.khr_swapchain_maintenance1 = true;
+    }
     pub fn supports_qcom_multiview_per_view_viewports(&self) -> bool {
         self.qcom_multiview_per_view_viewports
     }
@@ -9555,6 +9607,19 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_zero_initialize_device_memory(&mut self) {
         self.ext_zero_initialize_device_memory = true;
+    }
+    pub fn supports_khr_present_mode_fifo_latest_ready(&self) -> bool {
+        self.khr_present_mode_fifo_latest_ready && self.supports_khr_swapchain()
+    }
+    pub fn enable_khr_present_mode_fifo_latest_ready(&mut self) {
+        self.khr_present_mode_fifo_latest_ready = true;
+        self.enable_khr_swapchain();
+    }
+    pub fn supports_sec_pipeline_cache_incremental_mode(&self) -> bool {
+        self.sec_pipeline_cache_incremental_mode
+    }
+    pub fn enable_sec_pipeline_cache_incremental_mode(&mut self) {
+        self.sec_pipeline_cache_incremental_mode = true;
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -10458,6 +10523,9 @@ impl DeviceExtensions {
         if self.sec_amigo_profiling {
             v.push(c"VK_SEC_amigo_profiling");
         }
+        if self.khr_swapchain_maintenance1 {
+            v.push(c"VK_KHR_swapchain_maintenance1");
+        }
         if self.qcom_multiview_per_view_viewports {
             v.push(c"VK_QCOM_multiview_per_view_viewports");
         }
@@ -10637,6 +10705,12 @@ impl DeviceExtensions {
         }
         if self.ext_zero_initialize_device_memory {
             v.push(c"VK_EXT_zero_initialize_device_memory");
+        }
+        if self.khr_present_mode_fifo_latest_ready {
+            v.push(c"VK_KHR_present_mode_fifo_latest_ready");
+        }
+        if self.sec_pipeline_cache_incremental_mode {
+            v.push(c"VK_SEC_pipeline_cache_incremental_mode");
         }
         v
     }
@@ -11144,7 +11218,7 @@ pub struct Device {
     pub fp_cmd_optical_flow_execute_nv: Option<vk::FnCmdOpticalFlowExecuteNV>,
     pub fp_get_device_fault_info_ext: Option<vk::FnGetDeviceFaultInfoEXT>,
     pub fp_cmd_set_depth_bias2_ext: Option<vk::FnCmdSetDepthBias2EXT>,
-    pub fp_release_swapchain_images_ext: Option<vk::FnReleaseSwapchainImagesEXT>,
+    pub fp_release_swapchain_images_khr: Option<vk::FnReleaseSwapchainImagesKHR>,
     pub fp_get_device_image_subresource_layout: Option<vk::FnGetDeviceImageSubresourceLayout>,
     pub fp_map_memory2: Option<vk::FnMapMemory2>,
     pub fp_unmap_memory2: Option<vk::FnUnmapMemory2>,
@@ -14859,7 +14933,11 @@ impl Device {
             } else {
                 None
             },
-            fp_release_swapchain_images_ext: if extensions.ext_swapchain_maintenance1 {
+            fp_release_swapchain_images_khr: if extensions.khr_swapchain_maintenance1 {
+                instance
+                    .get_device_proc_addr(device, c"vkReleaseSwapchainImagesKHR")
+                    .map(|f| mem::transmute(f))
+            } else if extensions.ext_swapchain_maintenance1 {
                 instance
                     .get_device_proc_addr(device, c"vkReleaseSwapchainImagesEXT")
                     .map(|f| mem::transmute(f))
@@ -22929,12 +23007,25 @@ impl Device {
             .expect("vkCmdSetDepthBias2EXT is not loaded");
         (fp)(command_buffer, p_depth_bias_info)
     }
-    pub unsafe fn release_swapchain_images_ext(
+    pub unsafe fn release_swapchain_images_khr(
         &self,
-        p_release_info: &vk::ReleaseSwapchainImagesInfoEXT,
+        p_release_info: &vk::ReleaseSwapchainImagesInfoKHR,
     ) -> Result<()> {
         let fp = self
-            .fp_release_swapchain_images_ext
+            .fp_release_swapchain_images_khr
+            .expect("vkReleaseSwapchainImagesKHR is not loaded");
+        let err = (fp)(self.handle, p_release_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn release_swapchain_images_ext(
+        &self,
+        p_release_info: &vk::ReleaseSwapchainImagesInfoKHR,
+    ) -> Result<()> {
+        let fp = self
+            .fp_release_swapchain_images_khr
             .expect("vkReleaseSwapchainImagesEXT is not loaded");
         let err = (fp)(self.handle, p_release_info);
         match err {

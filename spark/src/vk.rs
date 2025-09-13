@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.319
+//! Generated from vk.xml version 1.4.321
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -3133,9 +3133,10 @@ impl SwapchainCreateFlagsKHR {
     pub const SPLIT_INSTANCE_BIND_REGIONS: Self = Self(0x1);
     pub const PROTECTED: Self = Self(0x2);
     pub const MUTABLE_FORMAT: Self = Self(0x4);
-    pub const DEFERRED_MEMORY_ALLOCATION_EXT: Self = Self(0x8);
+    pub const DEFERRED_MEMORY_ALLOCATION_EXT: Self = Self::DEFERRED_MEMORY_ALLOCATION;
     pub const PRESENT_ID_2: Self = Self(0x40);
     pub const PRESENT_WAIT_2: Self = Self(0x80);
+    pub const DEFERRED_MEMORY_ALLOCATION: Self = Self(0x8);
 }
 impl_bitmask!(SwapchainCreateFlagsKHR);
 impl fmt::Display for SwapchainCreateFlagsKHR {
@@ -3146,9 +3147,9 @@ impl fmt::Display for SwapchainCreateFlagsKHR {
                 (0x1, "SPLIT_INSTANCE_BIND_REGIONS"),
                 (0x2, "PROTECTED"),
                 (0x4, "MUTABLE_FORMAT"),
-                (0x8, "DEFERRED_MEMORY_ALLOCATION_EXT"),
                 (0x40, "PRESENT_ID_2"),
                 (0x80, "PRESENT_WAIT_2"),
+                (0x8, "DEFERRED_MEMORY_ALLOCATION"),
             ],
             f,
         )
@@ -4361,14 +4362,17 @@ impl fmt::Display for FrameBoundaryFlagsEXT {
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PresentScalingFlagsEXT(pub(crate) u32);
-impl PresentScalingFlagsEXT {
+pub struct PresentScalingFlagsKHR(pub(crate) u32);
+impl PresentScalingFlagsKHR {
     pub const ONE_TO_ONE: Self = Self(0x1);
+    pub const ONE_TO_ONE_EXT: Self = Self::ONE_TO_ONE;
     pub const ASPECT_RATIO_STRETCH: Self = Self(0x2);
+    pub const ASPECT_RATIO_STRETCH_EXT: Self = Self::ASPECT_RATIO_STRETCH;
     pub const STRETCH: Self = Self(0x4);
+    pub const STRETCH_EXT: Self = Self::STRETCH;
 }
-impl_bitmask!(PresentScalingFlagsEXT);
-impl fmt::Display for PresentScalingFlagsEXT {
+impl_bitmask!(PresentScalingFlagsKHR);
+impl fmt::Display for PresentScalingFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0 as _,
@@ -4377,21 +4381,26 @@ impl fmt::Display for PresentScalingFlagsEXT {
         )
     }
 }
+pub type PresentScalingFlagsEXT = PresentScalingFlagsKHR;
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PresentGravityFlagsEXT(pub(crate) u32);
-impl PresentGravityFlagsEXT {
+pub struct PresentGravityFlagsKHR(pub(crate) u32);
+impl PresentGravityFlagsKHR {
     pub const MIN: Self = Self(0x1);
+    pub const MIN_EXT: Self = Self::MIN;
     pub const MAX: Self = Self(0x2);
+    pub const MAX_EXT: Self = Self::MAX;
     pub const CENTERED: Self = Self(0x4);
+    pub const CENTERED_EXT: Self = Self::CENTERED;
 }
-impl_bitmask!(PresentGravityFlagsEXT);
-impl fmt::Display for PresentGravityFlagsEXT {
+impl_bitmask!(PresentGravityFlagsKHR);
+impl fmt::Display for PresentGravityFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "MIN"), (0x2, "MAX"), (0x4, "CENTERED")], f)
     }
 }
+pub type PresentGravityFlagsEXT = PresentGravityFlagsKHR;
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
@@ -7368,15 +7377,16 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MAP_MEMORY_PLACED_PROPERTIES_EXT: Self = Self(1000272001);
     pub const MEMORY_MAP_PLACED_INFO_EXT: Self = Self(1000272002);
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT: Self = Self(1000273000);
-    pub const SURFACE_PRESENT_MODE_EXT: Self = Self(1000274000);
-    pub const SURFACE_PRESENT_SCALING_CAPABILITIES_EXT: Self = Self(1000274001);
-    pub const SURFACE_PRESENT_MODE_COMPATIBILITY_EXT: Self = Self(1000274002);
-    pub const PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT: Self = Self(1000275000);
-    pub const SWAPCHAIN_PRESENT_FENCE_INFO_EXT: Self = Self(1000275001);
-    pub const SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT: Self = Self(1000275002);
-    pub const SWAPCHAIN_PRESENT_MODE_INFO_EXT: Self = Self(1000275003);
-    pub const SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_EXT: Self = Self(1000275004);
-    pub const RELEASE_SWAPCHAIN_IMAGES_INFO_EXT: Self = Self(1000275005);
+    pub const SURFACE_PRESENT_MODE_EXT: Self = Self::SURFACE_PRESENT_MODE_KHR;
+    pub const SURFACE_PRESENT_SCALING_CAPABILITIES_EXT: Self = Self::SURFACE_PRESENT_SCALING_CAPABILITIES_KHR;
+    pub const SURFACE_PRESENT_MODE_COMPATIBILITY_EXT: Self = Self::SURFACE_PRESENT_MODE_COMPATIBILITY_KHR;
+    pub const PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT: Self =
+        Self::PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_KHR;
+    pub const SWAPCHAIN_PRESENT_FENCE_INFO_EXT: Self = Self::SWAPCHAIN_PRESENT_FENCE_INFO_KHR;
+    pub const SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT: Self = Self::SWAPCHAIN_PRESENT_MODES_CREATE_INFO_KHR;
+    pub const SWAPCHAIN_PRESENT_MODE_INFO_EXT: Self = Self::SWAPCHAIN_PRESENT_MODE_INFO_KHR;
+    pub const SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_EXT: Self = Self::SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_KHR;
+    pub const RELEASE_SWAPCHAIN_IMAGES_INFO_EXT: Self = Self::RELEASE_SWAPCHAIN_IMAGES_INFO_KHR;
     pub const PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT: Self =
         Self::PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES;
     pub const PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_NV: Self = Self(1000277000);
@@ -7528,7 +7538,8 @@ impl StructureType {
     pub const PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT: Self = Self(1000355001);
     pub const PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT: Self = Self(1000356000);
     pub const FORMAT_PROPERTIES_3_KHR: Self = Self::FORMAT_PROPERTIES_3;
-    pub const PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_EXT: Self = Self(1000361000);
+    pub const PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_EXT: Self =
+        Self::PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR;
     pub const IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000364000);
     pub const MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA: Self = Self(1000364001);
     pub const MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000364002);
@@ -7727,6 +7738,15 @@ impl StructureType {
     pub const TILE_PROPERTIES_QCOM: Self = Self(1000484001);
     pub const PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC: Self = Self(1000485000);
     pub const AMIGO_PROFILING_SUBMIT_INFO_SEC: Self = Self(1000485001);
+    pub const SURFACE_PRESENT_MODE_KHR: Self = Self(1000274000);
+    pub const SURFACE_PRESENT_SCALING_CAPABILITIES_KHR: Self = Self(1000274001);
+    pub const SURFACE_PRESENT_MODE_COMPATIBILITY_KHR: Self = Self(1000274002);
+    pub const PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_KHR: Self = Self(1000275000);
+    pub const SWAPCHAIN_PRESENT_FENCE_INFO_KHR: Self = Self(1000275001);
+    pub const SWAPCHAIN_PRESENT_MODES_CREATE_INFO_KHR: Self = Self(1000275002);
+    pub const SWAPCHAIN_PRESENT_MODE_INFO_KHR: Self = Self(1000275003);
+    pub const SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_KHR: Self = Self(1000275004);
+    pub const RELEASE_SWAPCHAIN_IMAGES_INFO_KHR: Self = Self(1000275005);
     pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM: Self = Self(1000488000);
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV: Self = Self(1000490000);
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV: Self = Self(1000490001);
@@ -7908,6 +7928,8 @@ impl StructureType {
     pub const RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT: Self = Self(1000425002);
     pub const RENDERING_END_INFO_EXT: Self = Self(1000619003);
     pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT: Self = Self(1000620000);
+    pub const PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR: Self = Self(1000361000);
+    pub const PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC: Self = Self(1000637000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8441,15 +8463,6 @@ impl fmt::Display for StructureType {
             1000272001 => Some(&"PHYSICAL_DEVICE_MAP_MEMORY_PLACED_PROPERTIES_EXT"),
             1000272002 => Some(&"MEMORY_MAP_PLACED_INFO_EXT"),
             1000273000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT"),
-            1000274000 => Some(&"SURFACE_PRESENT_MODE_EXT"),
-            1000274001 => Some(&"SURFACE_PRESENT_SCALING_CAPABILITIES_EXT"),
-            1000274002 => Some(&"SURFACE_PRESENT_MODE_COMPATIBILITY_EXT"),
-            1000275000 => Some(&"PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT"),
-            1000275001 => Some(&"SWAPCHAIN_PRESENT_FENCE_INFO_EXT"),
-            1000275002 => Some(&"SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT"),
-            1000275003 => Some(&"SWAPCHAIN_PRESENT_MODE_INFO_EXT"),
-            1000275004 => Some(&"SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_EXT"),
-            1000275005 => Some(&"RELEASE_SWAPCHAIN_IMAGES_INFO_EXT"),
             1000277000 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_NV"),
             1000277001 => Some(&"GRAPHICS_SHADER_GROUP_CREATE_INFO_NV"),
             1000277002 => Some(&"GRAPHICS_PIPELINE_SHADER_GROUPS_CREATE_INFO_NV"),
@@ -8556,7 +8569,6 @@ impl fmt::Display for StructureType {
             1000355000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT"),
             1000355001 => Some(&"PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT"),
             1000356000 => Some(&"PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT"),
-            1000361000 => Some(&"PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_EXT"),
             1000364000 => Some(&"IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000364001 => Some(&"MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA"),
             1000364002 => Some(&"MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
@@ -8725,6 +8737,15 @@ impl fmt::Display for StructureType {
             1000484001 => Some(&"TILE_PROPERTIES_QCOM"),
             1000485000 => Some(&"PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC"),
             1000485001 => Some(&"AMIGO_PROFILING_SUBMIT_INFO_SEC"),
+            1000274000 => Some(&"SURFACE_PRESENT_MODE_KHR"),
+            1000274001 => Some(&"SURFACE_PRESENT_SCALING_CAPABILITIES_KHR"),
+            1000274002 => Some(&"SURFACE_PRESENT_MODE_COMPATIBILITY_KHR"),
+            1000275000 => Some(&"PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_KHR"),
+            1000275001 => Some(&"SWAPCHAIN_PRESENT_FENCE_INFO_KHR"),
+            1000275002 => Some(&"SWAPCHAIN_PRESENT_MODES_CREATE_INFO_KHR"),
+            1000275003 => Some(&"SWAPCHAIN_PRESENT_MODE_INFO_KHR"),
+            1000275004 => Some(&"SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_KHR"),
+            1000275005 => Some(&"RELEASE_SWAPCHAIN_IMAGES_INFO_KHR"),
             1000488000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM"),
             1000490000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV"),
             1000490001 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV"),
@@ -8883,6 +8904,8 @@ impl fmt::Display for StructureType {
             1000425002 => Some(&"RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT"),
             1000619003 => Some(&"RENDERING_END_INFO_EXT"),
             1000620000 => Some(&"PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT"),
+            1000361000 => Some(&"PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR"),
+            1000637000 => Some(&"PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11137,7 +11160,8 @@ impl PresentModeKHR {
     pub const FIFO_RELAXED: Self = Self(3);
     pub const SHARED_DEMAND_REFRESH: Self = Self(1000111000);
     pub const SHARED_CONTINUOUS_REFRESH: Self = Self(1000111001);
-    pub const FIFO_LATEST_READY_EXT: Self = Self(1000361000);
+    pub const FIFO_LATEST_READY_EXT: Self = Self::FIFO_LATEST_READY;
+    pub const FIFO_LATEST_READY: Self = Self(1000361000);
 }
 impl fmt::Display for PresentModeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -11148,7 +11172,7 @@ impl fmt::Display for PresentModeKHR {
             3 => Some(&"FIFO_RELAXED"),
             1000111000 => Some(&"SHARED_DEMAND_REFRESH"),
             1000111001 => Some(&"SHARED_CONTINUOUS_REFRESH"),
-            1000361000 => Some(&"FIFO_LATEST_READY_EXT"),
+            1000361000 => Some(&"FIFO_LATEST_READY"),
             _ => None,
         };
         if let Some(name) = name {
@@ -34720,7 +34744,7 @@ pub struct ColorBlendAdvancedEXT {
 #[derive(Copy, Clone)]
 pub struct RenderPassTransformBeginInfoQCOM {
     pub s_type: StructureType,
-    pub p_next: *mut c_void,
+    pub p_next: *const c_void,
     pub transform: SurfaceTransformFlagsKHR,
 }
 unsafe impl Send for RenderPassTransformBeginInfoQCOM {}
@@ -34729,7 +34753,7 @@ impl Default for RenderPassTransformBeginInfoQCOM {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM,
-            p_next: ptr::null_mut(),
+            p_next: ptr::null(),
             transform: Default::default(),
         }
     }
@@ -34776,7 +34800,7 @@ impl fmt::Debug for CopyCommandTransformInfoQCOM {
 #[derive(Copy, Clone)]
 pub struct CommandBufferInheritanceRenderPassTransformInfoQCOM {
     pub s_type: StructureType,
-    pub p_next: *mut c_void,
+    pub p_next: *const c_void,
     pub transform: SurfaceTransformFlagsKHR,
     pub render_area: Rect2D,
 }
@@ -34786,7 +34810,7 @@ impl Default for CommandBufferInheritanceRenderPassTransformInfoQCOM {
     fn default() -> Self {
         Self {
             s_type: StructureType::COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM,
-            p_next: ptr::null_mut(),
+            p_next: ptr::null(),
             transform: Default::default(),
             render_area: Default::default(),
         }
@@ -44673,49 +44697,50 @@ impl fmt::Debug for PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct SurfacePresentModeEXT {
+pub struct SurfacePresentModeKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub present_mode: PresentModeKHR,
 }
-unsafe impl Send for SurfacePresentModeEXT {}
-unsafe impl Sync for SurfacePresentModeEXT {}
-impl Default for SurfacePresentModeEXT {
+unsafe impl Send for SurfacePresentModeKHR {}
+unsafe impl Sync for SurfacePresentModeKHR {}
+impl Default for SurfacePresentModeKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::SURFACE_PRESENT_MODE_EXT,
+            s_type: StructureType::SURFACE_PRESENT_MODE_KHR,
             p_next: ptr::null_mut(),
             present_mode: Default::default(),
         }
     }
 }
-impl fmt::Debug for SurfacePresentModeEXT {
+impl fmt::Debug for SurfacePresentModeKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SurfacePresentModeEXT")
+        fmt.debug_struct("SurfacePresentModeKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("present_mode", &self.present_mode)
             .finish()
     }
 }
+pub type SurfacePresentModeEXT = SurfacePresentModeKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct SurfacePresentScalingCapabilitiesEXT {
+pub struct SurfacePresentScalingCapabilitiesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
-    pub supported_present_scaling: PresentScalingFlagsEXT,
-    pub supported_present_gravity_x: PresentGravityFlagsEXT,
-    pub supported_present_gravity_y: PresentGravityFlagsEXT,
+    pub supported_present_scaling: PresentScalingFlagsKHR,
+    pub supported_present_gravity_x: PresentGravityFlagsKHR,
+    pub supported_present_gravity_y: PresentGravityFlagsKHR,
     pub min_scaled_image_extent: Extent2D,
     pub max_scaled_image_extent: Extent2D,
 }
-unsafe impl Send for SurfacePresentScalingCapabilitiesEXT {}
-unsafe impl Sync for SurfacePresentScalingCapabilitiesEXT {}
-impl Default for SurfacePresentScalingCapabilitiesEXT {
+unsafe impl Send for SurfacePresentScalingCapabilitiesKHR {}
+unsafe impl Sync for SurfacePresentScalingCapabilitiesKHR {}
+impl Default for SurfacePresentScalingCapabilitiesKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::SURFACE_PRESENT_SCALING_CAPABILITIES_EXT,
+            s_type: StructureType::SURFACE_PRESENT_SCALING_CAPABILITIES_KHR,
             p_next: ptr::null_mut(),
             supported_present_scaling: Default::default(),
             supported_present_gravity_x: Default::default(),
@@ -44725,9 +44750,9 @@ impl Default for SurfacePresentScalingCapabilitiesEXT {
         }
     }
 }
-impl fmt::Debug for SurfacePresentScalingCapabilitiesEXT {
+impl fmt::Debug for SurfacePresentScalingCapabilitiesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SurfacePresentScalingCapabilitiesEXT")
+        fmt.debug_struct("SurfacePresentScalingCapabilitiesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("supported_present_scaling", &self.supported_present_scaling)
@@ -44738,30 +44763,31 @@ impl fmt::Debug for SurfacePresentScalingCapabilitiesEXT {
             .finish()
     }
 }
+pub type SurfacePresentScalingCapabilitiesEXT = SurfacePresentScalingCapabilitiesKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct SurfacePresentModeCompatibilityEXT {
+pub struct SurfacePresentModeCompatibilityKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub present_mode_count: u32,
     pub p_present_modes: *mut PresentModeKHR,
 }
-unsafe impl Send for SurfacePresentModeCompatibilityEXT {}
-unsafe impl Sync for SurfacePresentModeCompatibilityEXT {}
-impl Default for SurfacePresentModeCompatibilityEXT {
+unsafe impl Send for SurfacePresentModeCompatibilityKHR {}
+unsafe impl Sync for SurfacePresentModeCompatibilityKHR {}
+impl Default for SurfacePresentModeCompatibilityKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::SURFACE_PRESENT_MODE_COMPATIBILITY_EXT,
+            s_type: StructureType::SURFACE_PRESENT_MODE_COMPATIBILITY_KHR,
             p_next: ptr::null_mut(),
             present_mode_count: Default::default(),
             p_present_modes: ptr::null_mut(),
         }
     }
 }
-impl fmt::Debug for SurfacePresentModeCompatibilityEXT {
+impl fmt::Debug for SurfacePresentModeCompatibilityKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SurfacePresentModeCompatibilityEXT")
+        fmt.debug_struct("SurfacePresentModeCompatibilityKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("present_mode_count", &self.present_mode_count)
@@ -44769,58 +44795,60 @@ impl fmt::Debug for SurfacePresentModeCompatibilityEXT {
             .finish()
     }
 }
+pub type SurfacePresentModeCompatibilityEXT = SurfacePresentModeCompatibilityKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceSwapchainMaintenance1FeaturesEXT {
+pub struct PhysicalDeviceSwapchainMaintenance1FeaturesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub swapchain_maintenance1: Bool32,
 }
-unsafe impl Send for PhysicalDeviceSwapchainMaintenance1FeaturesEXT {}
-unsafe impl Sync for PhysicalDeviceSwapchainMaintenance1FeaturesEXT {}
-impl Default for PhysicalDeviceSwapchainMaintenance1FeaturesEXT {
+unsafe impl Send for PhysicalDeviceSwapchainMaintenance1FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceSwapchainMaintenance1FeaturesKHR {}
+impl Default for PhysicalDeviceSwapchainMaintenance1FeaturesKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT,
+            s_type: StructureType::PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_KHR,
             p_next: ptr::null_mut(),
             swapchain_maintenance1: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceSwapchainMaintenance1FeaturesEXT {
+impl fmt::Debug for PhysicalDeviceSwapchainMaintenance1FeaturesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceSwapchainMaintenance1FeaturesEXT")
+        fmt.debug_struct("PhysicalDeviceSwapchainMaintenance1FeaturesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("swapchain_maintenance1", &self.swapchain_maintenance1)
             .finish()
     }
 }
+pub type PhysicalDeviceSwapchainMaintenance1FeaturesEXT = PhysicalDeviceSwapchainMaintenance1FeaturesKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct SwapchainPresentFenceInfoEXT {
+pub struct SwapchainPresentFenceInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub swapchain_count: u32,
     pub p_fences: *const Fence,
 }
-unsafe impl Send for SwapchainPresentFenceInfoEXT {}
-unsafe impl Sync for SwapchainPresentFenceInfoEXT {}
-impl Default for SwapchainPresentFenceInfoEXT {
+unsafe impl Send for SwapchainPresentFenceInfoKHR {}
+unsafe impl Sync for SwapchainPresentFenceInfoKHR {}
+impl Default for SwapchainPresentFenceInfoKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::SWAPCHAIN_PRESENT_FENCE_INFO_EXT,
+            s_type: StructureType::SWAPCHAIN_PRESENT_FENCE_INFO_KHR,
             p_next: ptr::null(),
             swapchain_count: Default::default(),
             p_fences: ptr::null(),
         }
     }
 }
-impl fmt::Debug for SwapchainPresentFenceInfoEXT {
+impl fmt::Debug for SwapchainPresentFenceInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SwapchainPresentFenceInfoEXT")
+        fmt.debug_struct("SwapchainPresentFenceInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("swapchain_count", &self.swapchain_count)
@@ -44828,30 +44856,31 @@ impl fmt::Debug for SwapchainPresentFenceInfoEXT {
             .finish()
     }
 }
+pub type SwapchainPresentFenceInfoEXT = SwapchainPresentFenceInfoKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct SwapchainPresentModesCreateInfoEXT {
+pub struct SwapchainPresentModesCreateInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub present_mode_count: u32,
     pub p_present_modes: *const PresentModeKHR,
 }
-unsafe impl Send for SwapchainPresentModesCreateInfoEXT {}
-unsafe impl Sync for SwapchainPresentModesCreateInfoEXT {}
-impl Default for SwapchainPresentModesCreateInfoEXT {
+unsafe impl Send for SwapchainPresentModesCreateInfoKHR {}
+unsafe impl Sync for SwapchainPresentModesCreateInfoKHR {}
+impl Default for SwapchainPresentModesCreateInfoKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT,
+            s_type: StructureType::SWAPCHAIN_PRESENT_MODES_CREATE_INFO_KHR,
             p_next: ptr::null(),
             present_mode_count: Default::default(),
             p_present_modes: ptr::null(),
         }
     }
 }
-impl fmt::Debug for SwapchainPresentModesCreateInfoEXT {
+impl fmt::Debug for SwapchainPresentModesCreateInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SwapchainPresentModesCreateInfoEXT")
+        fmt.debug_struct("SwapchainPresentModesCreateInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("present_mode_count", &self.present_mode_count)
@@ -44859,30 +44888,31 @@ impl fmt::Debug for SwapchainPresentModesCreateInfoEXT {
             .finish()
     }
 }
+pub type SwapchainPresentModesCreateInfoEXT = SwapchainPresentModesCreateInfoKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct SwapchainPresentModeInfoEXT {
+pub struct SwapchainPresentModeInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub swapchain_count: u32,
     pub p_present_modes: *const PresentModeKHR,
 }
-unsafe impl Send for SwapchainPresentModeInfoEXT {}
-unsafe impl Sync for SwapchainPresentModeInfoEXT {}
-impl Default for SwapchainPresentModeInfoEXT {
+unsafe impl Send for SwapchainPresentModeInfoKHR {}
+unsafe impl Sync for SwapchainPresentModeInfoKHR {}
+impl Default for SwapchainPresentModeInfoKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::SWAPCHAIN_PRESENT_MODE_INFO_EXT,
+            s_type: StructureType::SWAPCHAIN_PRESENT_MODE_INFO_KHR,
             p_next: ptr::null(),
             swapchain_count: Default::default(),
             p_present_modes: ptr::null(),
         }
     }
 }
-impl fmt::Debug for SwapchainPresentModeInfoEXT {
+impl fmt::Debug for SwapchainPresentModeInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SwapchainPresentModeInfoEXT")
+        fmt.debug_struct("SwapchainPresentModeInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("swapchain_count", &self.swapchain_count)
@@ -44890,22 +44920,23 @@ impl fmt::Debug for SwapchainPresentModeInfoEXT {
             .finish()
     }
 }
+pub type SwapchainPresentModeInfoEXT = SwapchainPresentModeInfoKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct SwapchainPresentScalingCreateInfoEXT {
+pub struct SwapchainPresentScalingCreateInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub scaling_behavior: PresentScalingFlagsEXT,
-    pub present_gravity_x: PresentGravityFlagsEXT,
-    pub present_gravity_y: PresentGravityFlagsEXT,
+    pub scaling_behavior: PresentScalingFlagsKHR,
+    pub present_gravity_x: PresentGravityFlagsKHR,
+    pub present_gravity_y: PresentGravityFlagsKHR,
 }
-unsafe impl Send for SwapchainPresentScalingCreateInfoEXT {}
-unsafe impl Sync for SwapchainPresentScalingCreateInfoEXT {}
-impl Default for SwapchainPresentScalingCreateInfoEXT {
+unsafe impl Send for SwapchainPresentScalingCreateInfoKHR {}
+unsafe impl Sync for SwapchainPresentScalingCreateInfoKHR {}
+impl Default for SwapchainPresentScalingCreateInfoKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_EXT,
+            s_type: StructureType::SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_KHR,
             p_next: ptr::null(),
             scaling_behavior: Default::default(),
             present_gravity_x: Default::default(),
@@ -44913,9 +44944,9 @@ impl Default for SwapchainPresentScalingCreateInfoEXT {
         }
     }
 }
-impl fmt::Debug for SwapchainPresentScalingCreateInfoEXT {
+impl fmt::Debug for SwapchainPresentScalingCreateInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SwapchainPresentScalingCreateInfoEXT")
+        fmt.debug_struct("SwapchainPresentScalingCreateInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("scaling_behavior", &self.scaling_behavior)
@@ -44924,22 +44955,23 @@ impl fmt::Debug for SwapchainPresentScalingCreateInfoEXT {
             .finish()
     }
 }
+pub type SwapchainPresentScalingCreateInfoEXT = SwapchainPresentScalingCreateInfoKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ReleaseSwapchainImagesInfoEXT {
+pub struct ReleaseSwapchainImagesInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub swapchain: SwapchainKHR,
     pub image_index_count: u32,
     pub p_image_indices: *const u32,
 }
-unsafe impl Send for ReleaseSwapchainImagesInfoEXT {}
-unsafe impl Sync for ReleaseSwapchainImagesInfoEXT {}
-impl Default for ReleaseSwapchainImagesInfoEXT {
+unsafe impl Send for ReleaseSwapchainImagesInfoKHR {}
+unsafe impl Sync for ReleaseSwapchainImagesInfoKHR {}
+impl Default for ReleaseSwapchainImagesInfoKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::RELEASE_SWAPCHAIN_IMAGES_INFO_EXT,
+            s_type: StructureType::RELEASE_SWAPCHAIN_IMAGES_INFO_KHR,
             p_next: ptr::null(),
             swapchain: Default::default(),
             image_index_count: Default::default(),
@@ -44947,9 +44979,9 @@ impl Default for ReleaseSwapchainImagesInfoEXT {
         }
     }
 }
-impl fmt::Debug for ReleaseSwapchainImagesInfoEXT {
+impl fmt::Debug for ReleaseSwapchainImagesInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("ReleaseSwapchainImagesInfoEXT")
+        fmt.debug_struct("ReleaseSwapchainImagesInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("swapchain", &self.swapchain)
@@ -44958,6 +44990,7 @@ impl fmt::Debug for ReleaseSwapchainImagesInfoEXT {
             .finish()
     }
 }
+pub type ReleaseSwapchainImagesInfoEXT = ReleaseSwapchainImagesInfoKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -48177,28 +48210,29 @@ impl fmt::Debug for PhysicalDeviceShaderReplicatedCompositesFeaturesEXT {
             .finish()
     }
 }
+pub type PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT = PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {
+pub struct PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub present_mode_fifo_latest_ready: Bool32,
 }
-unsafe impl Send for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {}
-unsafe impl Sync for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {}
-impl Default for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {
+unsafe impl Send for PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR {}
+unsafe impl Sync for PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR {}
+impl Default for PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_EXT,
+            s_type: StructureType::PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR,
             p_next: ptr::null_mut(),
             present_mode_fifo_latest_ready: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {
+impl fmt::Debug for PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT")
+        fmt.debug_struct("PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("present_mode_fifo_latest_ready", &self.present_mode_fifo_latest_ready)
@@ -50762,6 +50796,34 @@ impl fmt::Debug for DataGraphProcessingEngineCreateInfoARM {
             .field("p_next", &self.p_next)
             .field("processing_engine_count", &self.processing_engine_count)
             .field("p_processing_engines", &self.p_processing_engines)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_cache_incremental_mode: Bool32,
+}
+unsafe impl Send for PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {}
+unsafe impl Sync for PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {}
+impl Default for PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC,
+            p_next: ptr::null_mut(),
+            pipeline_cache_incremental_mode: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_cache_incremental_mode", &self.pipeline_cache_incremental_mode)
             .finish()
     }
 }
@@ -53337,8 +53399,8 @@ pub type FnGetDeviceFaultInfoEXT = unsafe extern "system" fn(
 ) -> Result;
 pub type FnCmdSetDepthBias2EXT =
     unsafe extern "system" fn(command_buffer: CommandBuffer, p_depth_bias_info: *const DepthBiasInfoEXT);
-pub type FnReleaseSwapchainImagesEXT =
-    unsafe extern "system" fn(device: Device, p_release_info: *const ReleaseSwapchainImagesInfoEXT) -> Result;
+pub type FnReleaseSwapchainImagesKHR =
+    unsafe extern "system" fn(device: Device, p_release_info: *const ReleaseSwapchainImagesInfoKHR) -> Result;
 pub type FnGetDeviceImageSubresourceLayout = unsafe extern "system" fn(
     device: Device,
     p_info: *const DeviceImageSubresourceInfo,

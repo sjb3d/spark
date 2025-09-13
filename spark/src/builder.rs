@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.319
+//! Generated from vk.xml version 1.4.321
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -22922,7 +22922,7 @@ impl RenderPassTransformBeginInfoQCOMBuilder {
     pub fn get_mut(&mut self) -> &mut vk::RenderPassTransformBeginInfoQCOM {
         &mut self.inner
     }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -22990,7 +22990,7 @@ impl CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder {
     pub fn get_mut(&mut self) -> &mut vk::CommandBufferInheritanceRenderPassTransformInfoQCOM {
         &mut self.inner
     }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -33205,17 +33205,17 @@ impl DeviceCreateInfoNext for PhysicalDeviceDynamicRenderingUnusedAttachmentsFea
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct SurfacePresentModeEXTBuilder {
-    inner: vk::SurfacePresentModeEXT,
+pub struct SurfacePresentModeKHRBuilder {
+    inner: vk::SurfacePresentModeKHR,
 }
-impl Builder<'_> for vk::SurfacePresentModeEXT {
-    type Type = SurfacePresentModeEXTBuilder;
+impl Builder<'_> for vk::SurfacePresentModeKHR {
+    type Type = SurfacePresentModeKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl SurfacePresentModeEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::SurfacePresentModeEXT {
+impl SurfacePresentModeKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::SurfacePresentModeKHR {
         &mut self.inner
     }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
@@ -33227,30 +33227,78 @@ impl SurfacePresentModeEXTBuilder {
         self
     }
 }
-impl Deref for SurfacePresentModeEXTBuilder {
-    type Target = vk::SurfacePresentModeEXT;
+impl Deref for SurfacePresentModeKHRBuilder {
+    type Target = vk::SurfacePresentModeKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceSurfaceInfo2KHRNext for vk::SurfacePresentModeEXT {}
-impl PhysicalDeviceSurfaceInfo2KHRNext for SurfacePresentModeEXTBuilder {}
-impl SurfaceCapabilities2KHRNext for vk::SurfacePresentScalingCapabilitiesEXT {}
+impl PhysicalDeviceSurfaceInfo2KHRNext for vk::SurfacePresentModeKHR {}
+impl PhysicalDeviceSurfaceInfo2KHRNext for SurfacePresentModeKHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct SurfacePresentModeCompatibilityEXTBuilder<'a> {
-    inner: vk::SurfacePresentModeCompatibilityEXT,
-    phantom: PhantomData<&'a ()>,
+pub struct SurfacePresentScalingCapabilitiesKHRBuilder {
+    inner: vk::SurfacePresentScalingCapabilitiesKHR,
 }
-impl<'a> Builder<'a> for vk::SurfacePresentModeCompatibilityEXT {
-    type Type = SurfacePresentModeCompatibilityEXTBuilder<'a>;
+impl Builder<'_> for vk::SurfacePresentScalingCapabilitiesKHR {
+    type Type = SurfacePresentScalingCapabilitiesKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl<'a> SurfacePresentModeCompatibilityEXTBuilder<'a> {
-    pub fn get_mut(&mut self) -> &mut vk::SurfacePresentModeCompatibilityEXT {
+impl SurfacePresentScalingCapabilitiesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::SurfacePresentScalingCapabilitiesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn supported_present_scaling(mut self, supported_present_scaling: vk::PresentScalingFlagsKHR) -> Self {
+        self.inner.supported_present_scaling = supported_present_scaling;
+        self
+    }
+    pub fn supported_present_gravity_x(mut self, supported_present_gravity_x: vk::PresentGravityFlagsKHR) -> Self {
+        self.inner.supported_present_gravity_x = supported_present_gravity_x;
+        self
+    }
+    pub fn supported_present_gravity_y(mut self, supported_present_gravity_y: vk::PresentGravityFlagsKHR) -> Self {
+        self.inner.supported_present_gravity_y = supported_present_gravity_y;
+        self
+    }
+    pub fn min_scaled_image_extent(mut self, min_scaled_image_extent: vk::Extent2D) -> Self {
+        self.inner.min_scaled_image_extent = min_scaled_image_extent;
+        self
+    }
+    pub fn max_scaled_image_extent(mut self, max_scaled_image_extent: vk::Extent2D) -> Self {
+        self.inner.max_scaled_image_extent = max_scaled_image_extent;
+        self
+    }
+}
+impl Deref for SurfacePresentScalingCapabilitiesKHRBuilder {
+    type Target = vk::SurfacePresentScalingCapabilitiesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SurfaceCapabilities2KHRNext for vk::SurfacePresentScalingCapabilitiesKHR {}
+impl SurfaceCapabilities2KHRNext for SurfacePresentScalingCapabilitiesKHRBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct SurfacePresentModeCompatibilityKHRBuilder<'a> {
+    inner: vk::SurfacePresentModeCompatibilityKHR,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::SurfacePresentModeCompatibilityKHR {
+    type Type = SurfacePresentModeCompatibilityKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> SurfacePresentModeCompatibilityKHRBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::SurfacePresentModeCompatibilityKHR {
         &mut self.inner
     }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
@@ -33263,28 +33311,28 @@ impl<'a> SurfacePresentModeCompatibilityEXTBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for SurfacePresentModeCompatibilityEXTBuilder<'a> {
-    type Target = vk::SurfacePresentModeCompatibilityEXT;
+impl<'a> Deref for SurfacePresentModeCompatibilityKHRBuilder<'a> {
+    type Target = vk::SurfacePresentModeCompatibilityKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl SurfaceCapabilities2KHRNext for vk::SurfacePresentModeCompatibilityEXT {}
-impl SurfaceCapabilities2KHRNext for SurfacePresentModeCompatibilityEXTBuilder<'_> {}
+impl SurfaceCapabilities2KHRNext for vk::SurfacePresentModeCompatibilityKHR {}
+impl SurfaceCapabilities2KHRNext for SurfacePresentModeCompatibilityKHRBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder {
-    inner: vk::PhysicalDeviceSwapchainMaintenance1FeaturesEXT,
+pub struct PhysicalDeviceSwapchainMaintenance1FeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceSwapchainMaintenance1FeaturesKHR,
 }
-impl Builder<'_> for vk::PhysicalDeviceSwapchainMaintenance1FeaturesEXT {
-    type Type = PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder;
+impl Builder<'_> for vk::PhysicalDeviceSwapchainMaintenance1FeaturesKHR {
+    type Type = PhysicalDeviceSwapchainMaintenance1FeaturesKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceSwapchainMaintenance1FeaturesEXT {
+impl PhysicalDeviceSwapchainMaintenance1FeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceSwapchainMaintenance1FeaturesKHR {
         &mut self.inner
     }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
@@ -33296,31 +33344,31 @@ impl PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder {
         self
     }
 }
-impl Deref for PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder {
-    type Target = vk::PhysicalDeviceSwapchainMaintenance1FeaturesEXT;
+impl Deref for PhysicalDeviceSwapchainMaintenance1FeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceSwapchainMaintenance1FeaturesKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSwapchainMaintenance1FeaturesEXT {}
-impl PhysicalDeviceFeatures2Next for PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder {}
-impl DeviceCreateInfoNext for vk::PhysicalDeviceSwapchainMaintenance1FeaturesEXT {}
-impl DeviceCreateInfoNext for PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSwapchainMaintenance1FeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceSwapchainMaintenance1FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceSwapchainMaintenance1FeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDeviceSwapchainMaintenance1FeaturesKHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct SwapchainPresentFenceInfoEXTBuilder<'a> {
-    inner: vk::SwapchainPresentFenceInfoEXT,
+pub struct SwapchainPresentFenceInfoKHRBuilder<'a> {
+    inner: vk::SwapchainPresentFenceInfoKHR,
     phantom: PhantomData<&'a ()>,
 }
-impl<'a> Builder<'a> for vk::SwapchainPresentFenceInfoEXT {
-    type Type = SwapchainPresentFenceInfoEXTBuilder<'a>;
+impl<'a> Builder<'a> for vk::SwapchainPresentFenceInfoKHR {
+    type Type = SwapchainPresentFenceInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl<'a> SwapchainPresentFenceInfoEXTBuilder<'a> {
-    pub fn get_mut(&mut self) -> &mut vk::SwapchainPresentFenceInfoEXT {
+impl<'a> SwapchainPresentFenceInfoKHRBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::SwapchainPresentFenceInfoKHR {
         &mut self.inner
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -33333,29 +33381,29 @@ impl<'a> SwapchainPresentFenceInfoEXTBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for SwapchainPresentFenceInfoEXTBuilder<'a> {
-    type Target = vk::SwapchainPresentFenceInfoEXT;
+impl<'a> Deref for SwapchainPresentFenceInfoKHRBuilder<'a> {
+    type Target = vk::SwapchainPresentFenceInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PresentInfoKHRNext for vk::SwapchainPresentFenceInfoEXT {}
-impl PresentInfoKHRNext for SwapchainPresentFenceInfoEXTBuilder<'_> {}
+impl PresentInfoKHRNext for vk::SwapchainPresentFenceInfoKHR {}
+impl PresentInfoKHRNext for SwapchainPresentFenceInfoKHRBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct SwapchainPresentModesCreateInfoEXTBuilder<'a> {
-    inner: vk::SwapchainPresentModesCreateInfoEXT,
+pub struct SwapchainPresentModesCreateInfoKHRBuilder<'a> {
+    inner: vk::SwapchainPresentModesCreateInfoKHR,
     phantom: PhantomData<&'a ()>,
 }
-impl<'a> Builder<'a> for vk::SwapchainPresentModesCreateInfoEXT {
-    type Type = SwapchainPresentModesCreateInfoEXTBuilder<'a>;
+impl<'a> Builder<'a> for vk::SwapchainPresentModesCreateInfoKHR {
+    type Type = SwapchainPresentModesCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl<'a> SwapchainPresentModesCreateInfoEXTBuilder<'a> {
-    pub fn get_mut(&mut self) -> &mut vk::SwapchainPresentModesCreateInfoEXT {
+impl<'a> SwapchainPresentModesCreateInfoKHRBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::SwapchainPresentModesCreateInfoKHR {
         &mut self.inner
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -33368,29 +33416,29 @@ impl<'a> SwapchainPresentModesCreateInfoEXTBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for SwapchainPresentModesCreateInfoEXTBuilder<'a> {
-    type Target = vk::SwapchainPresentModesCreateInfoEXT;
+impl<'a> Deref for SwapchainPresentModesCreateInfoKHRBuilder<'a> {
+    type Target = vk::SwapchainPresentModesCreateInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl SwapchainCreateInfoKHRNext for vk::SwapchainPresentModesCreateInfoEXT {}
-impl SwapchainCreateInfoKHRNext for SwapchainPresentModesCreateInfoEXTBuilder<'_> {}
+impl SwapchainCreateInfoKHRNext for vk::SwapchainPresentModesCreateInfoKHR {}
+impl SwapchainCreateInfoKHRNext for SwapchainPresentModesCreateInfoKHRBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct SwapchainPresentModeInfoEXTBuilder<'a> {
-    inner: vk::SwapchainPresentModeInfoEXT,
+pub struct SwapchainPresentModeInfoKHRBuilder<'a> {
+    inner: vk::SwapchainPresentModeInfoKHR,
     phantom: PhantomData<&'a ()>,
 }
-impl<'a> Builder<'a> for vk::SwapchainPresentModeInfoEXT {
-    type Type = SwapchainPresentModeInfoEXTBuilder<'a>;
+impl<'a> Builder<'a> for vk::SwapchainPresentModeInfoKHR {
+    type Type = SwapchainPresentModeInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl<'a> SwapchainPresentModeInfoEXTBuilder<'a> {
-    pub fn get_mut(&mut self) -> &mut vk::SwapchainPresentModeInfoEXT {
+impl<'a> SwapchainPresentModeInfoKHRBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::SwapchainPresentModeInfoKHR {
         &mut self.inner
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -33403,70 +33451,70 @@ impl<'a> SwapchainPresentModeInfoEXTBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for SwapchainPresentModeInfoEXTBuilder<'a> {
-    type Target = vk::SwapchainPresentModeInfoEXT;
+impl<'a> Deref for SwapchainPresentModeInfoKHRBuilder<'a> {
+    type Target = vk::SwapchainPresentModeInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PresentInfoKHRNext for vk::SwapchainPresentModeInfoEXT {}
-impl PresentInfoKHRNext for SwapchainPresentModeInfoEXTBuilder<'_> {}
+impl PresentInfoKHRNext for vk::SwapchainPresentModeInfoKHR {}
+impl PresentInfoKHRNext for SwapchainPresentModeInfoKHRBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct SwapchainPresentScalingCreateInfoEXTBuilder {
-    inner: vk::SwapchainPresentScalingCreateInfoEXT,
+pub struct SwapchainPresentScalingCreateInfoKHRBuilder {
+    inner: vk::SwapchainPresentScalingCreateInfoKHR,
 }
-impl Builder<'_> for vk::SwapchainPresentScalingCreateInfoEXT {
-    type Type = SwapchainPresentScalingCreateInfoEXTBuilder;
+impl Builder<'_> for vk::SwapchainPresentScalingCreateInfoKHR {
+    type Type = SwapchainPresentScalingCreateInfoKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl SwapchainPresentScalingCreateInfoEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::SwapchainPresentScalingCreateInfoEXT {
+impl SwapchainPresentScalingCreateInfoKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::SwapchainPresentScalingCreateInfoKHR {
         &mut self.inner
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn scaling_behavior(mut self, scaling_behavior: vk::PresentScalingFlagsEXT) -> Self {
+    pub fn scaling_behavior(mut self, scaling_behavior: vk::PresentScalingFlagsKHR) -> Self {
         self.inner.scaling_behavior = scaling_behavior;
         self
     }
-    pub fn present_gravity_x(mut self, present_gravity_x: vk::PresentGravityFlagsEXT) -> Self {
+    pub fn present_gravity_x(mut self, present_gravity_x: vk::PresentGravityFlagsKHR) -> Self {
         self.inner.present_gravity_x = present_gravity_x;
         self
     }
-    pub fn present_gravity_y(mut self, present_gravity_y: vk::PresentGravityFlagsEXT) -> Self {
+    pub fn present_gravity_y(mut self, present_gravity_y: vk::PresentGravityFlagsKHR) -> Self {
         self.inner.present_gravity_y = present_gravity_y;
         self
     }
 }
-impl Deref for SwapchainPresentScalingCreateInfoEXTBuilder {
-    type Target = vk::SwapchainPresentScalingCreateInfoEXT;
+impl Deref for SwapchainPresentScalingCreateInfoKHRBuilder {
+    type Target = vk::SwapchainPresentScalingCreateInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl SwapchainCreateInfoKHRNext for vk::SwapchainPresentScalingCreateInfoEXT {}
-impl SwapchainCreateInfoKHRNext for SwapchainPresentScalingCreateInfoEXTBuilder {}
+impl SwapchainCreateInfoKHRNext for vk::SwapchainPresentScalingCreateInfoKHR {}
+impl SwapchainCreateInfoKHRNext for SwapchainPresentScalingCreateInfoKHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct ReleaseSwapchainImagesInfoEXTBuilder<'a> {
-    inner: vk::ReleaseSwapchainImagesInfoEXT,
+pub struct ReleaseSwapchainImagesInfoKHRBuilder<'a> {
+    inner: vk::ReleaseSwapchainImagesInfoKHR,
     phantom: PhantomData<&'a ()>,
 }
-impl<'a> Builder<'a> for vk::ReleaseSwapchainImagesInfoEXT {
-    type Type = ReleaseSwapchainImagesInfoEXTBuilder<'a>;
+impl<'a> Builder<'a> for vk::ReleaseSwapchainImagesInfoKHR {
+    type Type = ReleaseSwapchainImagesInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl<'a> ReleaseSwapchainImagesInfoEXTBuilder<'a> {
-    pub fn get_mut(&mut self) -> &mut vk::ReleaseSwapchainImagesInfoEXT {
+impl<'a> ReleaseSwapchainImagesInfoKHRBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::ReleaseSwapchainImagesInfoKHR {
         &mut self.inner
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -33483,8 +33531,8 @@ impl<'a> ReleaseSwapchainImagesInfoEXTBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for ReleaseSwapchainImagesInfoEXTBuilder<'a> {
-    type Target = vk::ReleaseSwapchainImagesInfoEXT;
+impl<'a> Deref for ReleaseSwapchainImagesInfoKHRBuilder<'a> {
+    type Target = vk::ReleaseSwapchainImagesInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -36737,17 +36785,17 @@ impl DeviceCreateInfoNext for PhysicalDeviceShaderReplicatedCompositesFeaturesEX
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder {
-    inner: vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT,
+pub struct PhysicalDevicePresentModeFifoLatestReadyFeaturesKHRBuilder {
+    inner: vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR,
 }
-impl Builder<'_> for vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {
-    type Type = PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder;
+impl Builder<'_> for vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR {
+    type Type = PhysicalDevicePresentModeFifoLatestReadyFeaturesKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {
+impl PhysicalDevicePresentModeFifoLatestReadyFeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR {
         &mut self.inner
     }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
@@ -36763,16 +36811,16 @@ impl PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder {
         self
     }
 }
-impl Deref for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder {
-    type Target = vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT;
+impl Deref for PhysicalDevicePresentModeFifoLatestReadyFeaturesKHRBuilder {
+    type Target = vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {}
-impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder {}
-impl DeviceCreateInfoNext for vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT {}
-impl DeviceCreateInfoNext for PhysicalDevicePresentModeFifoLatestReadyFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentModeFifoLatestReadyFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDevicePresentModeFifoLatestReadyFeaturesKHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -39545,3 +39593,42 @@ impl DescriptorPoolCreateInfoNext for vk::DataGraphProcessingEngineCreateInfoARM
 impl DescriptorPoolCreateInfoNext for DataGraphProcessingEngineCreateInfoARMBuilder<'_> {}
 impl CommandPoolCreateInfoNext for vk::DataGraphProcessingEngineCreateInfoARM {}
 impl CommandPoolCreateInfoNext for DataGraphProcessingEngineCreateInfoARMBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDevicePipelineCacheIncrementalModeFeaturesSECBuilder {
+    inner: vk::PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC,
+}
+impl Builder<'_> for vk::PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {
+    type Type = PhysicalDevicePipelineCacheIncrementalModeFeaturesSECBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDevicePipelineCacheIncrementalModeFeaturesSECBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_cache_incremental_mode(mut self, pipeline_cache_incremental_mode: bool) -> Self {
+        self.inner.pipeline_cache_incremental_mode = if pipeline_cache_incremental_mode {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDevicePipelineCacheIncrementalModeFeaturesSECBuilder {
+    type Target = vk::PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineCacheIncrementalModeFeaturesSECBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {}
+impl DeviceCreateInfoNext for PhysicalDevicePipelineCacheIncrementalModeFeaturesSECBuilder {}
