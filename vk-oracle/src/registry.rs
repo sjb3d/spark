@@ -85,6 +85,7 @@ impl IsBlacklisted for vk::Extension {
     fn is_blacklisted(&self) -> bool {
         matches!(self.author.as_deref(), Some("GGP") | Some("QNX"))
             || self.name.contains("KHR_video")
+            || self.depends.as_deref().map_or(false, |s| s.contains("KHR_video"))
             || self.name.contains("EXT_video")
             || self.supported.as_deref() == Some("disabled")
     }
