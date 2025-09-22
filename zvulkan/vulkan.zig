@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.326
+// Generated from vk.xml version 1.4.327
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -10548,7 +10548,7 @@ pub const PhysicalDeviceSubgroupSizeControlProperties = extern struct {
 pub const PhysicalDeviceSubgroupSizeControlPropertiesEXT = PhysicalDeviceSubgroupSizeControlProperties;
 pub const PipelineShaderStageRequiredSubgroupSizeCreateInfo = extern struct {
     s_type: StructureType = .pipeline_shader_stage_required_subgroup_size_create_info,
-    p_next: ?*anyopaque = null,
+    p_next: ?*const anyopaque = null,
     required_subgroup_size: u32 = 0,
 };
 pub const PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT = PipelineShaderStageRequiredSubgroupSizeCreateInfo;
@@ -26485,10 +26485,10 @@ pub const DeviceCommands = struct {
             .fp_cmd_set_coarse_sample_order_nv = if (extensions.nv_shading_rate_image) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetCoarseSampleOrderNV")) else null,
             .fp_cmd_draw_mesh_tasks_nv = if (extensions.nv_mesh_shader) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawMeshTasksNV")) else null,
             .fp_cmd_draw_mesh_tasks_indirect_nv = if (extensions.nv_mesh_shader) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawMeshTasksIndirectNV")) else null,
-            .fp_cmd_draw_mesh_tasks_indirect_count_nv = if (extensions.nv_mesh_shader and (extensions.core_version.to_int() >= make_version(1, 2, 0).to_int() or extensions.khr_draw_indirect_count)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawMeshTasksIndirectCountNV")) else null,
+            .fp_cmd_draw_mesh_tasks_indirect_count_nv = if (extensions.nv_mesh_shader and (extensions.core_version.to_int() >= make_version(1, 2, 0).to_int() or extensions.khr_draw_indirect_count or extensions.amd_draw_indirect_count)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawMeshTasksIndirectCountNV")) else null,
             .fp_cmd_draw_mesh_tasks_ext = if (extensions.ext_mesh_shader) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawMeshTasksEXT")) else null,
             .fp_cmd_draw_mesh_tasks_indirect_ext = if (extensions.ext_mesh_shader) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawMeshTasksIndirectEXT")) else null,
-            .fp_cmd_draw_mesh_tasks_indirect_count_ext = if (extensions.ext_mesh_shader and (extensions.core_version.to_int() >= make_version(1, 2, 0).to_int() or extensions.khr_draw_indirect_count)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawMeshTasksIndirectCountEXT")) else null,
+            .fp_cmd_draw_mesh_tasks_indirect_count_ext = if (extensions.ext_mesh_shader and (extensions.core_version.to_int() >= make_version(1, 2, 0).to_int() or extensions.khr_draw_indirect_count or extensions.amd_draw_indirect_count)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawMeshTasksIndirectCountEXT")) else null,
             .fp_compile_deferred_nv = if (extensions.nv_ray_tracing) @ptrCast(try instance.get_device_proc_addr(device, "vkCompileDeferredNV")) else null,
             .fp_create_acceleration_structure_nv = if (extensions.nv_ray_tracing) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateAccelerationStructureNV")) else null,
             .fp_cmd_bind_invocation_mask_huawei = if (extensions.huawei_invocation_mask) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBindInvocationMaskHUAWEI")) else null,

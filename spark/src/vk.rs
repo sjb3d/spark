@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.326
+//! Generated from vk.xml version 1.4.327
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -31882,7 +31882,7 @@ pub type PhysicalDeviceSubgroupSizeControlPropertiesEXT = PhysicalDeviceSubgroup
 #[derive(Copy, Clone)]
 pub struct PipelineShaderStageRequiredSubgroupSizeCreateInfo {
     pub s_type: StructureType,
-    pub p_next: *mut c_void,
+    pub p_next: *const c_void,
     pub required_subgroup_size: u32,
 }
 unsafe impl Send for PipelineShaderStageRequiredSubgroupSizeCreateInfo {}
@@ -31891,7 +31891,7 @@ impl Default for PipelineShaderStageRequiredSubgroupSizeCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO,
-            p_next: ptr::null_mut(),
+            p_next: ptr::null(),
             required_subgroup_size: Default::default(),
         }
     }

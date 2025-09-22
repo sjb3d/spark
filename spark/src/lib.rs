@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.326
+//! Generated from vk.xml version 1.4.327
 
 #![allow(
     clippy::too_many_arguments,
@@ -13108,7 +13108,8 @@ impl Device {
             },
             fp_cmd_draw_mesh_tasks_indirect_count_nv: if extensions.nv_mesh_shader
                 && (extensions.core_version >= vk::Version::from_raw_parts(1, 2, 0)
-                    || extensions.khr_draw_indirect_count)
+                    || extensions.khr_draw_indirect_count
+                    || extensions.amd_draw_indirect_count)
             {
                 instance
                     .get_device_proc_addr(device, c"vkCmdDrawMeshTasksIndirectCountNV")
@@ -13132,7 +13133,8 @@ impl Device {
             },
             fp_cmd_draw_mesh_tasks_indirect_count_ext: if extensions.ext_mesh_shader
                 && (extensions.core_version >= vk::Version::from_raw_parts(1, 2, 0)
-                    || extensions.khr_draw_indirect_count)
+                    || extensions.khr_draw_indirect_count
+                    || extensions.amd_draw_indirect_count)
             {
                 instance
                     .get_device_proc_addr(device, c"vkCmdDrawMeshTasksIndirectCountEXT")

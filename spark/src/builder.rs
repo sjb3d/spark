@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.326
+//! Generated from vk.xml version 1.4.327
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -20233,8 +20233,41 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceSubgroupSizeControlFeaturesBu
 impl DeviceCreateInfoNext for vk::PhysicalDeviceSubgroupSizeControlFeatures {}
 impl DeviceCreateInfoNext for PhysicalDeviceSubgroupSizeControlFeaturesBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSubgroupSizeControlProperties {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PipelineShaderStageRequiredSubgroupSizeCreateInfoBuilder {
+    inner: vk::PipelineShaderStageRequiredSubgroupSizeCreateInfo,
+}
+impl Builder<'_> for vk::PipelineShaderStageRequiredSubgroupSizeCreateInfo {
+    type Type = PipelineShaderStageRequiredSubgroupSizeCreateInfoBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PipelineShaderStageRequiredSubgroupSizeCreateInfoBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PipelineShaderStageRequiredSubgroupSizeCreateInfo {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn required_subgroup_size(mut self, required_subgroup_size: u32) -> Self {
+        self.inner.required_subgroup_size = required_subgroup_size;
+        self
+    }
+}
+impl Deref for PipelineShaderStageRequiredSubgroupSizeCreateInfoBuilder {
+    type Target = vk::PipelineShaderStageRequiredSubgroupSizeCreateInfo;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl PipelineShaderStageCreateInfoNext for vk::PipelineShaderStageRequiredSubgroupSizeCreateInfo {}
+impl PipelineShaderStageCreateInfoNext for PipelineShaderStageRequiredSubgroupSizeCreateInfoBuilder {}
 impl ShaderCreateInfoEXTNext for vk::PipelineShaderStageRequiredSubgroupSizeCreateInfo {}
+impl ShaderCreateInfoEXTNext for PipelineShaderStageRequiredSubgroupSizeCreateInfoBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
