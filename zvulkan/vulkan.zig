@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.327
+// Generated from vk.xml version 1.4.328
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -1048,6 +1048,7 @@ pub const PipelineStageFlagBits2 = enum(u6) {
     optical_flow_nv = 29,
     convert_cooperative_vector_matrix_nv = 44,
     data_graph_arm = 42,
+    copy_indirect_khr = 46,
     _,
 };
 pub const PipelineStageFlags2 = BitField(PipelineStageFlagBits2);
@@ -1107,6 +1108,7 @@ pub const FormatFeatureFlagBits2 = enum(u6) {
     optical_flow_vector_nv = 41,
     optical_flow_cost_nv = 42,
     tensor_data_graph_arm = 48,
+    copy_image_indirect_dst_khr = 59,
     _,
 };
 pub const FormatFeatureFlags2 = BitField(FormatFeatureFlagBits2);
@@ -1229,6 +1231,13 @@ pub const BufferUsageFlagBits2 = enum(u6) {
 };
 pub const BufferUsageFlags2 = BitField(BufferUsageFlagBits2);
 pub const BufferUsageFlags2KHR = BufferUsageFlags2;
+pub const AddressCopyFlagBitsKHR = enum(u5) {
+    device_local = 0,
+    sparse = 1,
+    protected = 2,
+    _,
+};
+pub const AddressCopyFlagsKHR = BitField(AddressCopyFlagBitsKHR);
 pub const TensorCreateFlagBitsARM = enum(u6) {
     mutable_format = 0,
     protected = 1,
@@ -3274,7 +3283,6 @@ pub const StructureType = enum(i32) {
     render_pass_stripe_info_arm = 1000424003,
     render_pass_stripe_submit_info_arm = 1000424004,
     physical_device_copy_memory_indirect_features_nv = 1000426000,
-    physical_device_copy_memory_indirect_properties_nv = 1000426001,
     physical_device_memory_decompression_features_nv = 1000427000,
     physical_device_memory_decompression_properties_nv = 1000427001,
     physical_device_device_generated_commands_compute_features_nv = 1000428000,
@@ -3455,6 +3463,10 @@ pub const StructureType = enum(i32) {
     tile_memory_requirements_qcom = 1000547002,
     tile_memory_bind_info_qcom = 1000547003,
     tile_memory_size_info_qcom = 1000547004,
+    physical_device_copy_memory_indirect_features_khr = 1000549000,
+    physical_device_copy_memory_indirect_properties_khr = 1000426001,
+    copy_memory_indirect_info_khr = 1000549002,
+    copy_memory_to_image_indirect_info_khr = 1000549003,
     display_surface_stereo_create_info_nv = 1000551000,
     display_mode_stereo_properties_nv = 1000551001,
     physical_device_raw_access_chains_features_nv = 1000555000,
@@ -4640,6 +4652,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceComputeShaderDerivativesFeaturesKHR,
             *PhysicalDeviceShaderImageFootprintFeaturesNV,
             *PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV,
+            *PhysicalDeviceCopyMemoryIndirectFeaturesKHR,
             *PhysicalDeviceCopyMemoryIndirectFeaturesNV,
             *PhysicalDeviceMemoryDecompressionFeaturesNV,
             *PhysicalDeviceShadingRateImageFeaturesNV,
@@ -5286,18 +5299,43 @@ pub const BufferImageCopy = extern struct {
     image_offset: Offset3D = .{},
     image_extent: Extent3D = .{},
 };
-pub const CopyMemoryIndirectCommandNV = extern struct {
+pub const StridedDeviceAddressRangeKHR = extern struct {
+    address: DeviceAddress = 0,
+    size: DeviceSize = 0,
+    stride: DeviceSize = 0,
+};
+pub const CopyMemoryIndirectCommandKHR = extern struct {
     src_address: DeviceAddress = 0,
     dst_address: DeviceAddress = 0,
     size: DeviceSize = 0,
 };
-pub const CopyMemoryToImageIndirectCommandNV = extern struct {
+pub const CopyMemoryIndirectCommandNV = CopyMemoryIndirectCommandKHR;
+pub const CopyMemoryIndirectInfoKHR = extern struct {
+    s_type: StructureType = .copy_memory_indirect_info_khr,
+    p_next: ?*const anyopaque = null,
+    src_copy_flags: AddressCopyFlagsKHR = .none,
+    dst_copy_flags: AddressCopyFlagsKHR = .none,
+    copy_count: u32 = 0,
+    copy_address_range: StridedDeviceAddressRangeKHR = .{},
+};
+pub const CopyMemoryToImageIndirectCommandKHR = extern struct {
     src_address: DeviceAddress = 0,
     buffer_row_length: u32 = 0,
     buffer_image_height: u32 = 0,
     image_subresource: ImageSubresourceLayers = .{},
     image_offset: Offset3D = .{},
     image_extent: Extent3D = .{},
+};
+pub const CopyMemoryToImageIndirectCommandNV = CopyMemoryToImageIndirectCommandKHR;
+pub const CopyMemoryToImageIndirectInfoKHR = extern struct {
+    s_type: StructureType = .copy_memory_to_image_indirect_info_khr,
+    p_next: ?*const anyopaque = null,
+    src_copy_flags: AddressCopyFlagsKHR = .none,
+    copy_count: u32 = 0,
+    copy_address_range: StridedDeviceAddressRangeKHR = .{},
+    dst_image: Image = .null_handle,
+    dst_image_layout: ImageLayout = @enumFromInt(0),
+    p_image_subresources: ?[*]const ImageSubresourceLayers = null,
 };
 pub const ImageResolve = extern struct {
     src_subresource: ImageSubresourceLayers = .{},
@@ -6993,6 +7031,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceComputeShaderDerivativesFeaturesKHR,
             *PhysicalDeviceShaderImageFootprintFeaturesNV,
             *PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV,
+            *PhysicalDeviceCopyMemoryIndirectFeaturesKHR,
             *PhysicalDeviceCopyMemoryIndirectFeaturesNV,
             *PhysicalDeviceMemoryDecompressionFeaturesNV,
             *PhysicalDeviceShadingRateImageFeaturesNV,
@@ -7224,7 +7263,7 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceDepthStencilResolveProperties,
             *PhysicalDeviceTransformFeedbackPropertiesEXT,
             *PhysicalDeviceComputeShaderDerivativesPropertiesKHR,
-            *PhysicalDeviceCopyMemoryIndirectPropertiesNV,
+            *PhysicalDeviceCopyMemoryIndirectPropertiesKHR,
             *PhysicalDeviceMemoryDecompressionPropertiesNV,
             *PhysicalDeviceShadingRateImagePropertiesNV,
             *PhysicalDeviceMeshShaderPropertiesNV,
@@ -9571,16 +9610,23 @@ pub const PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV = extern stru
     p_next: ?*anyopaque = null,
     dedicated_allocation_image_aliasing: Bool32 = .false,
 };
+pub const PhysicalDeviceCopyMemoryIndirectFeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_copy_memory_indirect_features_khr,
+    p_next: ?*anyopaque = null,
+    indirect_memory_copy: Bool32 = .false,
+    indirect_memory_to_image_copy: Bool32 = .false,
+};
 pub const PhysicalDeviceCopyMemoryIndirectFeaturesNV = extern struct {
     s_type: StructureType = .physical_device_copy_memory_indirect_features_nv,
     p_next: ?*anyopaque = null,
     indirect_copy: Bool32 = .false,
 };
-pub const PhysicalDeviceCopyMemoryIndirectPropertiesNV = extern struct {
-    s_type: StructureType = .physical_device_copy_memory_indirect_properties_nv,
+pub const PhysicalDeviceCopyMemoryIndirectPropertiesKHR = extern struct {
+    s_type: StructureType = .physical_device_copy_memory_indirect_properties_khr,
     p_next: ?*anyopaque = null,
     supported_queues: QueueFlags = .none,
 };
+pub const PhysicalDeviceCopyMemoryIndirectPropertiesNV = PhysicalDeviceCopyMemoryIndirectPropertiesKHR;
 pub const PhysicalDeviceMemoryDecompressionFeaturesNV = extern struct {
     s_type: StructureType = .physical_device_memory_decompression_features_nv,
     p_next: ?*anyopaque = null,
@@ -15123,7 +15169,9 @@ pub const FpCmdBlitImage = *const fn (CommandBuffer, Image, ImageLayout, Image, 
 pub const FpCmdCopyBufferToImage = *const fn (CommandBuffer, Buffer, Image, ImageLayout, u32, [*c]const BufferImageCopy) callconv(.c) void;
 pub const FpCmdCopyImageToBuffer = *const fn (CommandBuffer, Image, ImageLayout, Buffer, u32, [*c]const BufferImageCopy) callconv(.c) void;
 pub const FpCmdCopyMemoryIndirectNV = *const fn (CommandBuffer, DeviceAddress, u32, u32) callconv(.c) void;
+pub const FpCmdCopyMemoryIndirectKHR = *const fn (CommandBuffer, [*c]const CopyMemoryIndirectInfoKHR) callconv(.c) void;
 pub const FpCmdCopyMemoryToImageIndirectNV = *const fn (CommandBuffer, DeviceAddress, u32, u32, Image, ImageLayout, [*c]const ImageSubresourceLayers) callconv(.c) void;
+pub const FpCmdCopyMemoryToImageIndirectKHR = *const fn (CommandBuffer, [*c]const CopyMemoryToImageIndirectInfoKHR) callconv(.c) void;
 pub const FpCmdUpdateBuffer = *const fn (CommandBuffer, Buffer, DeviceSize, DeviceSize, ?*const anyopaque) callconv(.c) void;
 pub const FpCmdFillBuffer = *const fn (CommandBuffer, Buffer, DeviceSize, DeviceSize, u32) callconv(.c) void;
 pub const FpCmdClearColorImage = *const fn (CommandBuffer, Image, ImageLayout, [*c]const ClearColorValue, u32, [*c]const ImageSubresourceRange) callconv(.c) void;
@@ -15999,6 +16047,7 @@ const ExtensionNames = struct {
     const khr_maintenance6 = "VK_KHR_maintenance6";
     const nv_descriptor_pool_overallocation = "VK_NV_descriptor_pool_overallocation";
     const qcom_tile_memory_heap = "VK_QCOM_tile_memory_heap";
+    const khr_copy_memory_indirect = "VK_KHR_copy_memory_indirect";
     const nv_display_stereo = "VK_NV_display_stereo";
     const nv_raw_access_chains = "VK_NV_raw_access_chains";
     const nv_external_compute_queue = "VK_NV_external_compute_queue";
@@ -18720,6 +18769,16 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_khr_copy_memory_indirect(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 2, 0).to_int() or (self.supports_khr_get_physical_device_properties2() and self.supports_khr_buffer_device_address());
+    }
+    pub fn enable_khr_copy_memory_indirect(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+            self.enable_khr_buffer_device_address();
+        }
+    }
+
     pub fn supports_nv_display_stereo(self: InstanceExtensions) bool {
         return self.nv_display_stereo and self.supports_khr_display() and self.supports_khr_get_display_properties2();
     }
@@ -19231,6 +19290,7 @@ pub const DeviceExtensions = packed struct {
     khr_maintenance6: bool = false,
     nv_descriptor_pool_overallocation: bool = false,
     qcom_tile_memory_heap: bool = false,
+    khr_copy_memory_indirect: bool = false,
     nv_raw_access_chains: bool = false,
     nv_external_compute_queue: bool = false,
     khr_shader_relaxed_extended_instruction: bool = false,
@@ -19934,6 +19994,8 @@ pub const DeviceExtensions = packed struct {
             self.nv_descriptor_pool_overallocation = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_tile_memory_heap) == .eq) {
             self.qcom_tile_memory_heap = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_copy_memory_indirect) == .eq) {
+            self.khr_copy_memory_indirect = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_raw_access_chains) == .eq) {
             self.nv_raw_access_chains = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_external_compute_queue) == .eq) {
@@ -20344,6 +20406,7 @@ pub const DeviceExtensions = packed struct {
         if (self.khr_maintenance6) try names.append(allocator, ExtensionNames.khr_maintenance6);
         if (self.nv_descriptor_pool_overallocation) try names.append(allocator, ExtensionNames.nv_descriptor_pool_overallocation);
         if (self.qcom_tile_memory_heap) try names.append(allocator, ExtensionNames.qcom_tile_memory_heap);
+        if (self.khr_copy_memory_indirect) try names.append(allocator, ExtensionNames.khr_copy_memory_indirect);
         if (self.nv_raw_access_chains) try names.append(allocator, ExtensionNames.nv_raw_access_chains);
         if (self.nv_external_compute_queue) try names.append(allocator, ExtensionNames.nv_external_compute_queue);
         if (self.khr_shader_relaxed_extended_instruction) try names.append(allocator, ExtensionNames.khr_shader_relaxed_extended_instruction);
@@ -23224,6 +23287,16 @@ pub const DeviceExtensions = packed struct {
         }
     }
 
+    pub fn supports_khr_copy_memory_indirect(self: DeviceExtensions) bool {
+        return self.khr_copy_memory_indirect and (self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address());
+    }
+    pub fn enable_khr_copy_memory_indirect(self: *DeviceExtensions) void {
+        self.khr_copy_memory_indirect = true;
+        if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
+            self.enable_khr_buffer_device_address();
+        }
+    }
+
     pub fn supports_nv_raw_access_chains(self: DeviceExtensions) bool {
         return self.nv_raw_access_chains;
     }
@@ -25779,7 +25852,9 @@ pub const DeviceCommands = struct {
     fp_cmd_copy_buffer_to_image: FpCmdCopyBufferToImage,
     fp_cmd_copy_image_to_buffer: FpCmdCopyImageToBuffer,
     fp_cmd_copy_memory_indirect_nv: ?FpCmdCopyMemoryIndirectNV,
+    fp_cmd_copy_memory_indirect_khr: ?FpCmdCopyMemoryIndirectKHR,
     fp_cmd_copy_memory_to_image_indirect_nv: ?FpCmdCopyMemoryToImageIndirectNV,
+    fp_cmd_copy_memory_to_image_indirect_khr: ?FpCmdCopyMemoryToImageIndirectKHR,
     fp_cmd_update_buffer: FpCmdUpdateBuffer,
     fp_cmd_fill_buffer: FpCmdFillBuffer,
     fp_cmd_clear_color_image: FpCmdClearColorImage,
@@ -26341,7 +26416,9 @@ pub const DeviceCommands = struct {
             .fp_cmd_copy_buffer_to_image = @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCopyBufferToImage")),
             .fp_cmd_copy_image_to_buffer = @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCopyImageToBuffer")),
             .fp_cmd_copy_memory_indirect_nv = if (extensions.nv_copy_memory_indirect) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCopyMemoryIndirectNV")) else null,
+            .fp_cmd_copy_memory_indirect_khr = if (extensions.khr_copy_memory_indirect) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCopyMemoryIndirectKHR")) else null,
             .fp_cmd_copy_memory_to_image_indirect_nv = if (extensions.nv_copy_memory_indirect) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCopyMemoryToImageIndirectNV")) else null,
+            .fp_cmd_copy_memory_to_image_indirect_khr = if (extensions.khr_copy_memory_indirect) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCopyMemoryToImageIndirectKHR")) else null,
             .fp_cmd_update_buffer = @ptrCast(try instance.get_device_proc_addr(device, "vkCmdUpdateBuffer")),
             .fp_cmd_fill_buffer = @ptrCast(try instance.get_device_proc_addr(device, "vkCmdFillBuffer")),
             .fp_cmd_clear_color_image = @ptrCast(try instance.get_device_proc_addr(device, "vkCmdClearColorImage")),
@@ -28514,6 +28591,13 @@ pub const DeviceCommands = struct {
     ) void {
         self.fp_cmd_copy_memory_indirect_nv.?(command_buffer, copy_buffer_address, copy_count, stride);
     }
+    pub fn cmd_copy_memory_indirect_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_copy_memory_indirect_info: *const CopyMemoryIndirectInfoKHR,
+    ) void {
+        self.fp_cmd_copy_memory_indirect_khr.?(command_buffer, p_copy_memory_indirect_info);
+    }
     pub fn cmd_copy_memory_to_image_indirect_nv(
         self: DeviceCommands,
         command_buffer: CommandBuffer,
@@ -28525,6 +28609,13 @@ pub const DeviceCommands = struct {
     ) void {
         const copy_count: u32 = @intCast(p_image_subresources.len);
         self.fp_cmd_copy_memory_to_image_indirect_nv.?(command_buffer, copy_buffer_address, copy_count, stride, dst_image, dst_image_layout, p_image_subresources.ptr);
+    }
+    pub fn cmd_copy_memory_to_image_indirect_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_copy_memory_to_image_indirect_info: *const CopyMemoryToImageIndirectInfoKHR,
+    ) void {
+        self.fp_cmd_copy_memory_to_image_indirect_khr.?(command_buffer, p_copy_memory_to_image_indirect_info);
     }
     pub fn cmd_update_buffer(
         self: DeviceCommands,

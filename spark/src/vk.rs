@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.327
+//! Generated from vk.xml version 1.4.328
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -2426,6 +2426,7 @@ impl PipelineStageFlags2 {
     pub const OPTICAL_FLOW_NV: Self = Self(0x20000000);
     pub const CONVERT_COOPERATIVE_VECTOR_MATRIX_NV: Self = Self(0x100000000000);
     pub const DATA_GRAPH_ARM: Self = Self(0x40000000000);
+    pub const COPY_INDIRECT_KHR: Self = Self(0x400000000000);
 }
 impl_bitmask!(PipelineStageFlags2);
 impl fmt::Display for PipelineStageFlags2 {
@@ -2474,6 +2475,7 @@ impl fmt::Display for PipelineStageFlags2 {
                 (0x20000000, "OPTICAL_FLOW_NV"),
                 (0x100000000000, "CONVERT_COOPERATIVE_VECTOR_MATRIX_NV"),
                 (0x40000000000, "DATA_GRAPH_ARM"),
+                (0x400000000000, "COPY_INDIRECT_KHR"),
             ],
             f,
         )
@@ -2582,6 +2584,7 @@ impl FormatFeatureFlags2 {
     pub const OPTICAL_FLOW_VECTOR_NV: Self = Self(0x20000000000);
     pub const OPTICAL_FLOW_COST_NV: Self = Self(0x40000000000);
     pub const TENSOR_DATA_GRAPH_ARM: Self = Self(0x1000000000000);
+    pub const COPY_IMAGE_INDIRECT_DST_KHR: Self = Self(0x800000000000000);
 }
 impl_bitmask!(FormatFeatureFlags2);
 impl fmt::Display for FormatFeatureFlags2 {
@@ -2638,6 +2641,7 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x20000000000, "OPTICAL_FLOW_VECTOR_NV"),
                 (0x40000000000, "OPTICAL_FLOW_COST_NV"),
                 (0x1000000000000, "TENSOR_DATA_GRAPH_ARM"),
+                (0x800000000000000, "COPY_IMAGE_INDIRECT_DST_KHR"),
             ],
             f,
         )
@@ -2959,6 +2963,25 @@ impl fmt::Display for BufferUsageFlags2 {
     }
 }
 pub type BufferUsageFlags2KHR = BufferUsageFlags2;
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct AddressCopyFlagsKHR(pub(crate) u32);
+impl AddressCopyFlagsKHR {
+    pub const DEVICE_LOCAL: Self = Self(0x1);
+    pub const SPARSE: Self = Self(0x2);
+    pub const PROTECTED: Self = Self(0x4);
+}
+impl_bitmask!(AddressCopyFlagsKHR);
+impl fmt::Display for AddressCopyFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "DEVICE_LOCAL"), (0x2, "SPARSE"), (0x4, "PROTECTED")],
+            f,
+        )
+    }
+}
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
@@ -7641,7 +7664,8 @@ impl StructureType {
     pub const SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM: Self =
         Self::RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT;
     pub const PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV: Self = Self(1000426000);
-    pub const PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV: Self = Self(1000426001);
+    pub const PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV: Self =
+        Self::PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_KHR;
     pub const PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV: Self = Self(1000427000);
     pub const PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV: Self = Self(1000427001);
     pub const PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_COMPUTE_FEATURES_NV: Self = Self(1000428000);
@@ -7857,6 +7881,10 @@ impl StructureType {
     pub const TILE_MEMORY_REQUIREMENTS_QCOM: Self = Self(1000547002);
     pub const TILE_MEMORY_BIND_INFO_QCOM: Self = Self(1000547003);
     pub const TILE_MEMORY_SIZE_INFO_QCOM: Self = Self(1000547004);
+    pub const PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_KHR: Self = Self(1000549000);
+    pub const PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_KHR: Self = Self(1000426001);
+    pub const COPY_MEMORY_INDIRECT_INFO_KHR: Self = Self(1000549002);
+    pub const COPY_MEMORY_TO_IMAGE_INDIRECT_INFO_KHR: Self = Self(1000549003);
     pub const DISPLAY_SURFACE_STEREO_CREATE_INFO_NV: Self = Self(1000551000);
     pub const DISPLAY_MODE_STEREO_PROPERTIES_NV: Self = Self(1000551001);
     pub const PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV: Self = Self(1000555000);
@@ -8655,7 +8683,6 @@ impl fmt::Display for StructureType {
             1000424003 => Some(&"RENDER_PASS_STRIPE_INFO_ARM"),
             1000424004 => Some(&"RENDER_PASS_STRIPE_SUBMIT_INFO_ARM"),
             1000426000 => Some(&"PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV"),
-            1000426001 => Some(&"PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV"),
             1000427000 => Some(&"PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV"),
             1000427001 => Some(&"PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV"),
             1000428000 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_COMPUTE_FEATURES_NV"),
@@ -8836,6 +8863,10 @@ impl fmt::Display for StructureType {
             1000547002 => Some(&"TILE_MEMORY_REQUIREMENTS_QCOM"),
             1000547003 => Some(&"TILE_MEMORY_BIND_INFO_QCOM"),
             1000547004 => Some(&"TILE_MEMORY_SIZE_INFO_QCOM"),
+            1000549000 => Some(&"PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_KHR"),
+            1000426001 => Some(&"PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_KHR"),
+            1000549002 => Some(&"COPY_MEMORY_INDIRECT_INFO_KHR"),
+            1000549003 => Some(&"COPY_MEMORY_TO_IMAGE_INDIRECT_INFO_KHR"),
             1000551000 => Some(&"DISPLAY_SURFACE_STEREO_CREATE_INFO_NV"),
             1000551001 => Some(&"DISPLAY_MODE_STEREO_PROPERTIES_NV"),
             1000555000 => Some(&"PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV"),
@@ -13556,21 +13587,111 @@ pub struct BufferImageCopy {
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
-pub struct CopyMemoryIndirectCommandNV {
-    pub src_address: DeviceAddress,
-    pub dst_address: DeviceAddress,
+pub struct StridedDeviceAddressRangeKHR {
+    pub address: DeviceAddress,
     pub size: DeviceSize,
+    pub stride: DeviceSize,
 }
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
-pub struct CopyMemoryToImageIndirectCommandNV {
+pub struct CopyMemoryIndirectCommandKHR {
+    pub src_address: DeviceAddress,
+    pub dst_address: DeviceAddress,
+    pub size: DeviceSize,
+}
+pub type CopyMemoryIndirectCommandNV = CopyMemoryIndirectCommandKHR;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyMemoryIndirectInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_copy_flags: AddressCopyFlagsKHR,
+    pub dst_copy_flags: AddressCopyFlagsKHR,
+    pub copy_count: u32,
+    pub copy_address_range: StridedDeviceAddressRangeKHR,
+}
+unsafe impl Send for CopyMemoryIndirectInfoKHR {}
+unsafe impl Sync for CopyMemoryIndirectInfoKHR {}
+impl Default for CopyMemoryIndirectInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_MEMORY_INDIRECT_INFO_KHR,
+            p_next: ptr::null(),
+            src_copy_flags: Default::default(),
+            dst_copy_flags: Default::default(),
+            copy_count: Default::default(),
+            copy_address_range: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for CopyMemoryIndirectInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyMemoryIndirectInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_copy_flags", &self.src_copy_flags)
+            .field("dst_copy_flags", &self.dst_copy_flags)
+            .field("copy_count", &self.copy_count)
+            .field("copy_address_range", &self.copy_address_range)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct CopyMemoryToImageIndirectCommandKHR {
     pub src_address: DeviceAddress,
     pub buffer_row_length: u32,
     pub buffer_image_height: u32,
     pub image_subresource: ImageSubresourceLayers,
     pub image_offset: Offset3D,
     pub image_extent: Extent3D,
+}
+pub type CopyMemoryToImageIndirectCommandNV = CopyMemoryToImageIndirectCommandKHR;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyMemoryToImageIndirectInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_copy_flags: AddressCopyFlagsKHR,
+    pub copy_count: u32,
+    pub copy_address_range: StridedDeviceAddressRangeKHR,
+    pub dst_image: Image,
+    pub dst_image_layout: ImageLayout,
+    pub p_image_subresources: *const ImageSubresourceLayers,
+}
+unsafe impl Send for CopyMemoryToImageIndirectInfoKHR {}
+unsafe impl Sync for CopyMemoryToImageIndirectInfoKHR {}
+impl Default for CopyMemoryToImageIndirectInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_MEMORY_TO_IMAGE_INDIRECT_INFO_KHR,
+            p_next: ptr::null(),
+            src_copy_flags: Default::default(),
+            copy_count: Default::default(),
+            copy_address_range: Default::default(),
+            dst_image: Default::default(),
+            dst_image_layout: Default::default(),
+            p_image_subresources: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CopyMemoryToImageIndirectInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyMemoryToImageIndirectInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_copy_flags", &self.src_copy_flags)
+            .field("copy_count", &self.copy_count)
+            .field("copy_address_range", &self.copy_address_range)
+            .field("dst_image", &self.dst_image)
+            .field("dst_image_layout", &self.dst_image_layout)
+            .field("p_image_subresources", &self.p_image_subresources)
+            .finish()
+    }
 }
 
 #[repr(C)]
@@ -27437,6 +27558,37 @@ impl fmt::Debug for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceCopyMemoryIndirectFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub indirect_memory_copy: Bool32,
+    pub indirect_memory_to_image_copy: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCopyMemoryIndirectFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceCopyMemoryIndirectFeaturesKHR {}
+impl Default for PhysicalDeviceCopyMemoryIndirectFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            indirect_memory_copy: Default::default(),
+            indirect_memory_to_image_copy: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCopyMemoryIndirectFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCopyMemoryIndirectFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("indirect_memory_copy", &self.indirect_memory_copy)
+            .field("indirect_memory_to_image_copy", &self.indirect_memory_to_image_copy)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceCopyMemoryIndirectFeaturesNV {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -27465,31 +27617,32 @@ impl fmt::Debug for PhysicalDeviceCopyMemoryIndirectFeaturesNV {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceCopyMemoryIndirectPropertiesNV {
+pub struct PhysicalDeviceCopyMemoryIndirectPropertiesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub supported_queues: QueueFlags,
 }
-unsafe impl Send for PhysicalDeviceCopyMemoryIndirectPropertiesNV {}
-unsafe impl Sync for PhysicalDeviceCopyMemoryIndirectPropertiesNV {}
-impl Default for PhysicalDeviceCopyMemoryIndirectPropertiesNV {
+unsafe impl Send for PhysicalDeviceCopyMemoryIndirectPropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceCopyMemoryIndirectPropertiesKHR {}
+impl Default for PhysicalDeviceCopyMemoryIndirectPropertiesKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV,
+            s_type: StructureType::PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
             supported_queues: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceCopyMemoryIndirectPropertiesNV {
+impl fmt::Debug for PhysicalDeviceCopyMemoryIndirectPropertiesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceCopyMemoryIndirectPropertiesNV")
+        fmt.debug_struct("PhysicalDeviceCopyMemoryIndirectPropertiesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("supported_queues", &self.supported_queues)
             .finish()
     }
 }
+pub type PhysicalDeviceCopyMemoryIndirectPropertiesNV = PhysicalDeviceCopyMemoryIndirectPropertiesKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -51547,6 +51700,10 @@ pub type FnCmdCopyMemoryIndirectNV = unsafe extern "system" fn(
     copy_count: u32,
     stride: u32,
 );
+pub type FnCmdCopyMemoryIndirectKHR = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    p_copy_memory_indirect_info: *const CopyMemoryIndirectInfoKHR,
+);
 pub type FnCmdCopyMemoryToImageIndirectNV = unsafe extern "system" fn(
     command_buffer: CommandBuffer,
     copy_buffer_address: DeviceAddress,
@@ -51555,6 +51712,10 @@ pub type FnCmdCopyMemoryToImageIndirectNV = unsafe extern "system" fn(
     dst_image: Image,
     dst_image_layout: ImageLayout,
     p_image_subresources: *const ImageSubresourceLayers,
+);
+pub type FnCmdCopyMemoryToImageIndirectKHR = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    p_copy_memory_to_image_indirect_info: *const CopyMemoryToImageIndirectInfoKHR,
 );
 pub type FnCmdUpdateBuffer = unsafe extern "system" fn(
     command_buffer: CommandBuffer,

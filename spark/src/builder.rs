@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.327
+//! Generated from vk.xml version 1.4.328
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -1882,17 +1882,52 @@ impl Deref for BufferImageCopyBuilder {
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct CopyMemoryIndirectCommandNVBuilder {
-    inner: vk::CopyMemoryIndirectCommandNV,
+pub struct StridedDeviceAddressRangeKHRBuilder {
+    inner: vk::StridedDeviceAddressRangeKHR,
 }
-impl Builder<'_> for vk::CopyMemoryIndirectCommandNV {
-    type Type = CopyMemoryIndirectCommandNVBuilder;
+impl Builder<'_> for vk::StridedDeviceAddressRangeKHR {
+    type Type = StridedDeviceAddressRangeKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl CopyMemoryIndirectCommandNVBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::CopyMemoryIndirectCommandNV {
+impl StridedDeviceAddressRangeKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::StridedDeviceAddressRangeKHR {
+        &mut self.inner
+    }
+    pub fn address(mut self, address: vk::DeviceAddress) -> Self {
+        self.inner.address = address;
+        self
+    }
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
+        self.inner.size = size;
+        self
+    }
+    pub fn stride(mut self, stride: vk::DeviceSize) -> Self {
+        self.inner.stride = stride;
+        self
+    }
+}
+impl Deref for StridedDeviceAddressRangeKHRBuilder {
+    type Target = vk::StridedDeviceAddressRangeKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct CopyMemoryIndirectCommandKHRBuilder {
+    inner: vk::CopyMemoryIndirectCommandKHR,
+}
+impl Builder<'_> for vk::CopyMemoryIndirectCommandKHR {
+    type Type = CopyMemoryIndirectCommandKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl CopyMemoryIndirectCommandKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::CopyMemoryIndirectCommandKHR {
         &mut self.inner
     }
     pub fn src_address(mut self, src_address: vk::DeviceAddress) -> Self {
@@ -1908,8 +1943,8 @@ impl CopyMemoryIndirectCommandNVBuilder {
         self
     }
 }
-impl Deref for CopyMemoryIndirectCommandNVBuilder {
-    type Target = vk::CopyMemoryIndirectCommandNV;
+impl Deref for CopyMemoryIndirectCommandKHRBuilder {
+    type Target = vk::CopyMemoryIndirectCommandKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -1917,17 +1952,60 @@ impl Deref for CopyMemoryIndirectCommandNVBuilder {
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct CopyMemoryToImageIndirectCommandNVBuilder {
-    inner: vk::CopyMemoryToImageIndirectCommandNV,
+pub struct CopyMemoryIndirectInfoKHRBuilder {
+    inner: vk::CopyMemoryIndirectInfoKHR,
 }
-impl Builder<'_> for vk::CopyMemoryToImageIndirectCommandNV {
-    type Type = CopyMemoryToImageIndirectCommandNVBuilder;
+impl Builder<'_> for vk::CopyMemoryIndirectInfoKHR {
+    type Type = CopyMemoryIndirectInfoKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl CopyMemoryToImageIndirectCommandNVBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::CopyMemoryToImageIndirectCommandNV {
+impl CopyMemoryIndirectInfoKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::CopyMemoryIndirectInfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_copy_flags(mut self, src_copy_flags: vk::AddressCopyFlagsKHR) -> Self {
+        self.inner.src_copy_flags = src_copy_flags;
+        self
+    }
+    pub fn dst_copy_flags(mut self, dst_copy_flags: vk::AddressCopyFlagsKHR) -> Self {
+        self.inner.dst_copy_flags = dst_copy_flags;
+        self
+    }
+    pub fn copy_count(mut self, copy_count: u32) -> Self {
+        self.inner.copy_count = copy_count;
+        self
+    }
+    pub fn copy_address_range(mut self, copy_address_range: vk::StridedDeviceAddressRangeKHR) -> Self {
+        self.inner.copy_address_range = copy_address_range;
+        self
+    }
+}
+impl Deref for CopyMemoryIndirectInfoKHRBuilder {
+    type Target = vk::CopyMemoryIndirectInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct CopyMemoryToImageIndirectCommandKHRBuilder {
+    inner: vk::CopyMemoryToImageIndirectCommandKHR,
+}
+impl Builder<'_> for vk::CopyMemoryToImageIndirectCommandKHR {
+    type Type = CopyMemoryToImageIndirectCommandKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl CopyMemoryToImageIndirectCommandKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::CopyMemoryToImageIndirectCommandKHR {
         &mut self.inner
     }
     pub fn src_address(mut self, src_address: vk::DeviceAddress) -> Self {
@@ -1955,8 +2033,57 @@ impl CopyMemoryToImageIndirectCommandNVBuilder {
         self
     }
 }
-impl Deref for CopyMemoryToImageIndirectCommandNVBuilder {
-    type Target = vk::CopyMemoryToImageIndirectCommandNV;
+impl Deref for CopyMemoryToImageIndirectCommandKHRBuilder {
+    type Target = vk::CopyMemoryToImageIndirectCommandKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct CopyMemoryToImageIndirectInfoKHRBuilder<'a> {
+    inner: vk::CopyMemoryToImageIndirectInfoKHR,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::CopyMemoryToImageIndirectInfoKHR {
+    type Type = CopyMemoryToImageIndirectInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> CopyMemoryToImageIndirectInfoKHRBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::CopyMemoryToImageIndirectInfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_copy_flags(mut self, src_copy_flags: vk::AddressCopyFlagsKHR) -> Self {
+        self.inner.src_copy_flags = src_copy_flags;
+        self
+    }
+    pub fn p_image_subresources(mut self, p_image_subresources: &'a [vk::ImageSubresourceLayers]) -> Self {
+        self.inner.copy_count = p_image_subresources.len() as u32;
+        self.inner.p_image_subresources = p_image_subresources.as_ptr();
+        self
+    }
+    pub fn copy_address_range(mut self, copy_address_range: vk::StridedDeviceAddressRangeKHR) -> Self {
+        self.inner.copy_address_range = copy_address_range;
+        self
+    }
+    pub fn dst_image(mut self, dst_image: vk::Image) -> Self {
+        self.inner.dst_image = dst_image;
+        self
+    }
+    pub fn dst_image_layout(mut self, dst_image_layout: vk::ImageLayout) -> Self {
+        self.inner.dst_image_layout = dst_image_layout;
+        self
+    }
+}
+impl<'a> Deref for CopyMemoryToImageIndirectInfoKHRBuilder<'a> {
+    type Target = vk::CopyMemoryToImageIndirectInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -16253,6 +16380,49 @@ impl DeviceCreateInfoNext for PhysicalDeviceDedicatedAllocationImageAliasingFeat
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct PhysicalDeviceCopyMemoryIndirectFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceCopyMemoryIndirectFeaturesKHR,
+}
+impl Builder<'_> for vk::PhysicalDeviceCopyMemoryIndirectFeaturesKHR {
+    type Type = PhysicalDeviceCopyMemoryIndirectFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceCopyMemoryIndirectFeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceCopyMemoryIndirectFeaturesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn indirect_memory_copy(mut self, indirect_memory_copy: bool) -> Self {
+        self.inner.indirect_memory_copy = if indirect_memory_copy { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn indirect_memory_to_image_copy(mut self, indirect_memory_to_image_copy: bool) -> Self {
+        self.inner.indirect_memory_to_image_copy = if indirect_memory_to_image_copy {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCopyMemoryIndirectFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceCopyMemoryIndirectFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCopyMemoryIndirectFeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCopyMemoryIndirectFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCopyMemoryIndirectFeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDeviceCopyMemoryIndirectFeaturesKHRBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct PhysicalDeviceCopyMemoryIndirectFeaturesNVBuilder {
     inner: vk::PhysicalDeviceCopyMemoryIndirectFeaturesNV,
 }
@@ -16285,7 +16455,7 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCopyMemoryIndirectFeature
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceCopyMemoryIndirectFeaturesNVBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceCopyMemoryIndirectFeaturesNV {}
 impl DeviceCreateInfoNext for PhysicalDeviceCopyMemoryIndirectFeaturesNVBuilder {}
-impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCopyMemoryIndirectPropertiesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCopyMemoryIndirectPropertiesKHR {}
 
 #[repr(transparent)]
 #[derive(Default)]

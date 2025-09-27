@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.327
+//! Generated from vk.xml version 1.4.328
 
 #![allow(
     clippy::too_many_arguments,
@@ -2753,6 +2753,16 @@ impl InstanceExtensions {
     pub fn enable_qcom_tile_memory_heap(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_khr_copy_memory_indirect(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+            || (self.supports_khr_get_physical_device_properties2() && self.supports_khr_buffer_device_address())
+    }
+    pub fn enable_khr_copy_memory_indirect(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_get_physical_device_properties2();
+            self.enable_khr_buffer_device_address();
         }
     }
     pub fn supports_nv_display_stereo(&self) -> bool {
@@ -5622,6 +5632,7 @@ pub struct DeviceExtensions {
     pub khr_maintenance6: bool,
     pub nv_descriptor_pool_overallocation: bool,
     pub qcom_tile_memory_heap: bool,
+    pub khr_copy_memory_indirect: bool,
     pub nv_raw_access_chains: bool,
     pub nv_external_compute_queue: bool,
     pub khr_shader_relaxed_extended_instruction: bool,
@@ -6325,6 +6336,8 @@ impl DeviceExtensions {
             self.nv_descriptor_pool_overallocation = true;
         } else if name == c"VK_QCOM_tile_memory_heap" {
             self.qcom_tile_memory_heap = true;
+        } else if name == c"VK_KHR_copy_memory_indirect" {
+            self.khr_copy_memory_indirect = true;
         } else if name == c"VK_NV_raw_access_chains" {
             self.nv_raw_access_chains = true;
         } else if name == c"VK_NV_external_compute_queue" {
@@ -6725,6 +6738,7 @@ impl DeviceExtensions {
             khr_maintenance6: false,
             nv_descriptor_pool_overallocation: false,
             qcom_tile_memory_heap: false,
+            khr_copy_memory_indirect: false,
             nv_raw_access_chains: false,
             nv_external_compute_queue: false,
             khr_shader_relaxed_extended_instruction: false,
@@ -9442,6 +9456,16 @@ impl DeviceExtensions {
             self.enable_khr_get_memory_requirements2();
         }
     }
+    pub fn supports_khr_copy_memory_indirect(&self) -> bool {
+        self.khr_copy_memory_indirect
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_buffer_device_address())
+    }
+    pub fn enable_khr_copy_memory_indirect(&mut self) {
+        self.khr_copy_memory_indirect = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_buffer_device_address();
+        }
+    }
     pub fn supports_nv_raw_access_chains(&self) -> bool {
         self.nv_raw_access_chains
     }
@@ -10670,6 +10694,9 @@ impl DeviceExtensions {
         if self.qcom_tile_memory_heap {
             v.push(c"VK_QCOM_tile_memory_heap");
         }
+        if self.khr_copy_memory_indirect {
+            v.push(c"VK_KHR_copy_memory_indirect");
+        }
         if self.nv_raw_access_chains {
             v.push(c"VK_NV_raw_access_chains");
         }
@@ -10885,7 +10912,9 @@ pub struct Device {
     pub fp_cmd_copy_buffer_to_image: vk::FnCmdCopyBufferToImage,
     pub fp_cmd_copy_image_to_buffer: vk::FnCmdCopyImageToBuffer,
     pub fp_cmd_copy_memory_indirect_nv: Option<vk::FnCmdCopyMemoryIndirectNV>,
+    pub fp_cmd_copy_memory_indirect_khr: Option<vk::FnCmdCopyMemoryIndirectKHR>,
     pub fp_cmd_copy_memory_to_image_indirect_nv: Option<vk::FnCmdCopyMemoryToImageIndirectNV>,
+    pub fp_cmd_copy_memory_to_image_indirect_khr: Option<vk::FnCmdCopyMemoryToImageIndirectKHR>,
     pub fp_cmd_update_buffer: vk::FnCmdUpdateBuffer,
     pub fp_cmd_fill_buffer: vk::FnCmdFillBuffer,
     pub fp_cmd_clear_color_image: vk::FnCmdClearColorImage,
@@ -11980,9 +12009,23 @@ impl Device {
             } else {
                 None
             },
+            fp_cmd_copy_memory_indirect_khr: if extensions.khr_copy_memory_indirect {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdCopyMemoryIndirectKHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_cmd_copy_memory_to_image_indirect_nv: if extensions.nv_copy_memory_indirect {
                 instance
                     .get_device_proc_addr(device, c"vkCmdCopyMemoryToImageIndirectNV")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_memory_to_image_indirect_khr: if extensions.khr_copy_memory_indirect {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdCopyMemoryToImageIndirectKHR")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -16965,6 +17008,16 @@ impl Device {
             .expect("vkCmdCopyMemoryIndirectNV is not loaded");
         (fp)(command_buffer, copy_buffer_address, copy_count, stride)
     }
+    pub unsafe fn cmd_copy_memory_indirect_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_copy_memory_indirect_info: &vk::CopyMemoryIndirectInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_copy_memory_indirect_khr
+            .expect("vkCmdCopyMemoryIndirectKHR is not loaded");
+        (fp)(command_buffer, p_copy_memory_indirect_info)
+    }
     pub unsafe fn cmd_copy_memory_to_image_indirect_nv(
         &self,
         command_buffer: vk::CommandBuffer,
@@ -16987,6 +17040,16 @@ impl Device {
             dst_image_layout,
             p_image_subresources.as_ptr(),
         )
+    }
+    pub unsafe fn cmd_copy_memory_to_image_indirect_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_copy_memory_to_image_indirect_info: &vk::CopyMemoryToImageIndirectInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_copy_memory_to_image_indirect_khr
+            .expect("vkCmdCopyMemoryToImageIndirectKHR is not loaded");
+        (fp)(command_buffer, p_copy_memory_to_image_indirect_info)
     }
     pub unsafe fn cmd_update_buffer(
         &self,
