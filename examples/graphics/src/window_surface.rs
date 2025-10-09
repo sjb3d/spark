@@ -15,6 +15,9 @@ pub fn enable_extensions(display_handle: &RawDisplayHandle, extensions: &mut Ins
         #[cfg(target_os = "android")]
         RawDisplayHandle::AndroidNdk(_) => extensions.enable_khr_android_surface(),
 
+        #[cfg(target_os = "macos")]
+        RawDisplayHandle::AppKit(_) => extensions.enable_ext_metal_surface(),
+
         _ => unimplemented!(),
     }
 }
@@ -63,6 +66,22 @@ pub fn create(
             unsafe { instance.create_android_surface_khr(&create_info, None) }
         }
 
+        #[cfg(target_os = "macos")]
+        (RawDisplayHandle::AppKit(_), RawWindowHandle::AppKit(window_handle)) => {
+            use raw_window_metal::Layer;
+            use spark::vk::CAMetalLayer;
+            use std::ptr::NonNull;
+
+            let layer = unsafe { Layer::from_ns_view(NonNull::new_unchecked(window_handle.ns_view)) };
+            let p_layer: *mut CAMetalLayer = layer.into_raw().as_ptr().cast();
+
+            let create_info = vk::MetalSurfaceCreateInfoEXT {
+                p_layer,
+                ..Default::default()
+            };
+
+            unsafe { instance.create_metal_surface_ext(&create_info, None) }
+        }
         _ => unimplemented!(),
     }
 }
