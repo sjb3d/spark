@@ -17,6 +17,8 @@ fn get_memory_type_index(
 
 #[allow(clippy::float_cmp)]
 pub fn main() {
+    let is_debug = false;
+
     // load the Vulkan lib
     let globals = Globals::new().unwrap();
 
@@ -28,7 +30,26 @@ pub fn main() {
         let app_info = vk::ApplicationInfo::builder()
             .p_application_name(Some(c"compute"))
             .api_version(version);
-        let instance_create_info = vk::InstanceCreateInfo::builder().p_application_info(Some(&app_info));
+        
+        let mut extensions = spark::InstanceExtensions::new(version);
+
+        if is_debug {
+            extensions.enable_ext_debug_utils();
+        }
+
+        #[cfg(target_os = "macos")]
+        extensions.enable_khr_portability_enumeration();
+
+        let extension_names = extensions.to_name_vec();
+        let extension_name_ptrs: Vec<_> = extension_names.iter().map(|s| s.as_ptr()).collect();
+
+        let instance_create_info = vk::InstanceCreateInfo::builder()
+            .p_application_info(Some(&app_info))
+            .pp_enabled_extension_names(&extension_name_ptrs);
+
+        #[cfg(target_os = "macos")]
+        let instance_create_info = instance_create_info.flags(vk::InstanceCreateFlags::ENUMERATE_PORTABILITY_KHR);
+
         unsafe { globals.create_instance_commands(&instance_create_info, None) }.unwrap()
     };
 
