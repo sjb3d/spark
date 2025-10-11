@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.328
+//! Generated from vk.xml version 1.4.329
 
 #![allow(
     clippy::too_many_arguments,
@@ -5650,6 +5650,7 @@ pub struct DeviceExtensions {
     pub ext_device_generated_commands: bool,
     pub khr_maintenance8: bool,
     pub mesa_image_alignment_control: bool,
+    pub khr_shader_fma: bool,
     pub ext_depth_clamp_control: bool,
     pub khr_maintenance9: bool,
     pub huawei_hdr_vivid: bool,
@@ -6369,6 +6370,8 @@ impl DeviceExtensions {
             self.khr_maintenance8 = true;
         } else if name == c"VK_MESA_image_alignment_control" {
             self.mesa_image_alignment_control = true;
+        } else if name == c"VK_KHR_shader_fma" {
+            self.khr_shader_fma = true;
         } else if name == c"VK_EXT_depth_clamp_control" {
             self.ext_depth_clamp_control = true;
         } else if name == c"VK_KHR_maintenance9" {
@@ -6756,6 +6759,7 @@ impl DeviceExtensions {
             ext_device_generated_commands: false,
             khr_maintenance8: false,
             mesa_image_alignment_control: false,
+            khr_shader_fma: false,
             ext_depth_clamp_control: false,
             khr_maintenance9: false,
             huawei_hdr_vivid: false,
@@ -9569,6 +9573,12 @@ impl DeviceExtensions {
     pub fn enable_mesa_image_alignment_control(&mut self) {
         self.mesa_image_alignment_control = true;
     }
+    pub fn supports_khr_shader_fma(&self) -> bool {
+        self.khr_shader_fma
+    }
+    pub fn enable_khr_shader_fma(&mut self) {
+        self.khr_shader_fma = true;
+    }
     pub fn supports_ext_depth_clamp_control(&self) -> bool {
         self.ext_depth_clamp_control
     }
@@ -10741,6 +10751,9 @@ impl DeviceExtensions {
         }
         if self.mesa_image_alignment_control {
             v.push(c"VK_MESA_image_alignment_control");
+        }
+        if self.khr_shader_fma {
+            v.push(c"VK_KHR_shader_fma");
         }
         if self.ext_depth_clamp_control {
             v.push(c"VK_EXT_depth_clamp_control");

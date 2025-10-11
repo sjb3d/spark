@@ -17,7 +17,6 @@ fn get_memory_type_index(
 
 #[allow(clippy::float_cmp)]
 pub fn main() {
-
     // load the Vulkan lib
     let globals = Globals::new().unwrap();
 

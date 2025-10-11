@@ -1872,7 +1872,10 @@ fn write_builders(w: &mut impl IoWrite, oracle: &Oracle) -> Res {
                                     } else {
                                         write!(w, "{slice_ident}.{as_ptr}()")?;
                                     }
-                                    if matches!(pointer_decl.element_type.as_ref(), TypeDecl::BuiltIn(BuiltInDecl::Void)) {
+                                    if matches!(
+                                        pointer_decl.element_type.as_ref(),
+                                        TypeDecl::BuiltIn(BuiltInDecl::Void)
+                                    ) {
                                         if pointer_decl.is_const {
                                             write!(w, " as *const _")?;
                                         } else {

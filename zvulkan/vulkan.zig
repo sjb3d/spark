@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.328
+// Generated from vk.xml version 1.4.329
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -3518,6 +3518,7 @@ pub const StructureType = enum(i32) {
     physical_device_image_alignment_control_features_mesa = 1000575000,
     physical_device_image_alignment_control_properties_mesa = 1000575001,
     image_alignment_control_create_info_mesa = 1000575002,
+    physical_device_shader_fma_features_khr = 1000579000,
     physical_device_depth_clamp_control_features_ext = 1000582000,
     pipeline_viewport_depth_clamp_control_create_info_ext = 1000582001,
     physical_device_maintenance_9_features_khr = 1000584000,
@@ -4746,6 +4747,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceDescriptorBufferFeaturesEXT,
             *PhysicalDeviceShaderIntegerDotProductFeatures,
             *PhysicalDeviceFragmentShaderBarycentricFeaturesKHR,
+            *PhysicalDeviceShaderFmaFeaturesKHR,
             *PhysicalDeviceRayTracingMotionBlurFeaturesNV,
             *PhysicalDeviceRayTracingValidationFeaturesNV,
             *PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV,
@@ -7123,6 +7125,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceDescriptorBufferFeaturesEXT,
             *PhysicalDeviceShaderIntegerDotProductFeatures,
             *PhysicalDeviceFragmentShaderBarycentricFeaturesKHR,
+            *PhysicalDeviceShaderFmaFeaturesKHR,
             *PhysicalDeviceRayTracingMotionBlurFeaturesNV,
             *PhysicalDeviceRayTracingValidationFeaturesNV,
             *PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV,
@@ -12561,6 +12564,13 @@ pub const PhysicalDeviceFragmentShaderBarycentricPropertiesKHR = extern struct {
     p_next: ?*anyopaque = null,
     tri_strip_vertex_order_independent_of_provoking_vertex: Bool32 = .false,
 };
+pub const PhysicalDeviceShaderFmaFeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_shader_fma_features_khr,
+    p_next: ?*anyopaque = null,
+    shader_fma_float16: Bool32 = .false,
+    shader_fma_float32: Bool32 = .false,
+    shader_fma_float64: Bool32 = .false,
+};
 pub const PhysicalDeviceRayTracingMotionBlurFeaturesNV = extern struct {
     s_type: StructureType = .physical_device_ray_tracing_motion_blur_features_nv,
     p_next: ?*anyopaque = null,
@@ -16063,6 +16073,7 @@ const ExtensionNames = struct {
     const ext_device_generated_commands = "VK_EXT_device_generated_commands";
     const khr_maintenance8 = "VK_KHR_maintenance8";
     const mesa_image_alignment_control = "VK_MESA_image_alignment_control";
+    const khr_shader_fma = "VK_KHR_shader_fma";
     const ext_depth_clamp_control = "VK_EXT_depth_clamp_control";
     const khr_maintenance9 = "VK_KHR_maintenance9";
     const ohos_surface = "VK_OHOS_surface";
@@ -19305,6 +19316,7 @@ pub const DeviceExtensions = packed struct {
     ext_device_generated_commands: bool = false,
     khr_maintenance8: bool = false,
     mesa_image_alignment_control: bool = false,
+    khr_shader_fma: bool = false,
     ext_depth_clamp_control: bool = false,
     khr_maintenance9: bool = false,
     huawei_hdr_vivid: bool = false,
@@ -20024,6 +20036,8 @@ pub const DeviceExtensions = packed struct {
             self.khr_maintenance8 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.mesa_image_alignment_control) == .eq) {
             self.mesa_image_alignment_control = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_shader_fma) == .eq) {
+            self.khr_shader_fma = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_depth_clamp_control) == .eq) {
             self.ext_depth_clamp_control = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance9) == .eq) {
@@ -20421,6 +20435,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_device_generated_commands) try names.append(allocator, ExtensionNames.ext_device_generated_commands);
         if (self.khr_maintenance8) try names.append(allocator, ExtensionNames.khr_maintenance8);
         if (self.mesa_image_alignment_control) try names.append(allocator, ExtensionNames.mesa_image_alignment_control);
+        if (self.khr_shader_fma) try names.append(allocator, ExtensionNames.khr_shader_fma);
         if (self.ext_depth_clamp_control) try names.append(allocator, ExtensionNames.ext_depth_clamp_control);
         if (self.khr_maintenance9) try names.append(allocator, ExtensionNames.khr_maintenance9);
         if (self.huawei_hdr_vivid) try names.append(allocator, ExtensionNames.huawei_hdr_vivid);
@@ -23405,6 +23420,13 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_mesa_image_alignment_control(self: *DeviceExtensions) void {
         self.mesa_image_alignment_control = true;
+    }
+
+    pub fn supports_khr_shader_fma(self: DeviceExtensions) bool {
+        return self.khr_shader_fma;
+    }
+    pub fn enable_khr_shader_fma(self: *DeviceExtensions) void {
+        self.khr_shader_fma = true;
     }
 
     pub fn supports_ext_depth_clamp_control(self: DeviceExtensions) bool {

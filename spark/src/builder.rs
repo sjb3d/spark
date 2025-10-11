@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.328
+//! Generated from vk.xml version 1.4.329
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -28542,6 +28542,49 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentShaderBarycentricFeat
 impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentShaderBarycentricFeaturesKHR {}
 impl DeviceCreateInfoNext for PhysicalDeviceFragmentShaderBarycentricFeaturesKHRBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFragmentShaderBarycentricPropertiesKHR {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceShaderFmaFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceShaderFmaFeaturesKHR,
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderFmaFeaturesKHR {
+    type Type = PhysicalDeviceShaderFmaFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceShaderFmaFeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceShaderFmaFeaturesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_fma_float16(mut self, shader_fma_float16: bool) -> Self {
+        self.inner.shader_fma_float16 = if shader_fma_float16 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn shader_fma_float32(mut self, shader_fma_float32: bool) -> Self {
+        self.inner.shader_fma_float32 = if shader_fma_float32 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn shader_fma_float64(mut self, shader_fma_float64: bool) -> Self {
+        self.inner.shader_fma_float64 = if shader_fma_float64 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderFmaFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceShaderFmaFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderFmaFeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderFmaFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderFmaFeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderFmaFeaturesKHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]

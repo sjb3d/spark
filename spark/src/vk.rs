@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.328
+//! Generated from vk.xml version 1.4.329
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -7936,6 +7936,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA: Self = Self(1000575000);
     pub const PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA: Self = Self(1000575001);
     pub const IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA: Self = Self(1000575002);
+    pub const PHYSICAL_DEVICE_SHADER_FMA_FEATURES_KHR: Self = Self(1000579000);
     pub const PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT: Self = Self(1000582000);
     pub const PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT: Self = Self(1000582001);
     pub const PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR: Self = Self(1000584000);
@@ -8918,6 +8919,7 @@ impl fmt::Display for StructureType {
             1000575000 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA"),
             1000575001 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA"),
             1000575002 => Some(&"IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA"),
+            1000579000 => Some(&"PHYSICAL_DEVICE_SHADER_FMA_FEATURES_KHR"),
             1000582000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT"),
             1000582001 => Some(&"PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT"),
             1000584000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR"),
@@ -40350,6 +40352,40 @@ impl fmt::Debug for PhysicalDeviceFragmentShaderBarycentricPropertiesKHR {
                 "tri_strip_vertex_order_independent_of_provoking_vertex",
                 &self.tri_strip_vertex_order_independent_of_provoking_vertex,
             )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderFmaFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_fma_float16: Bool32,
+    pub shader_fma_float32: Bool32,
+    pub shader_fma_float64: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderFmaFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceShaderFmaFeaturesKHR {}
+impl Default for PhysicalDeviceShaderFmaFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_FMA_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_fma_float16: Default::default(),
+            shader_fma_float32: Default::default(),
+            shader_fma_float64: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderFmaFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderFmaFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_fma_float16", &self.shader_fma_float16)
+            .field("shader_fma_float32", &self.shader_fma_float32)
+            .field("shader_fma_float64", &self.shader_fma_float64)
             .finish()
     }
 }
