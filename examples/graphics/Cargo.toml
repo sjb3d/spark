@@ -13,3 +13,6 @@ egui = "0.23"
 egui-winit = "0.23"
 raw-window-handle = "0.5"
 bytemuck = "1.14.0"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+raw-window-metal = "1.1.0"
