@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.329
+//! Generated from vk.xml version 1.4.330
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -196,6 +196,8 @@ pub type zx_handle_t = u32;
 #[allow(non_camel_case_types)]
 pub type RROutput = c_ulong;
 pub type AHardwareBuffer = Never;
+#[allow(non_camel_case_types)]
+pub type OHBufferHandle = Never;
 #[allow(non_camel_case_types)]
 pub type OHNativeWindow = Never;
 #[allow(non_camel_case_types)]
@@ -1037,8 +1039,8 @@ impl PipelineCreateFlags {
     pub const DISABLE_OPTIMIZATION: Self = Self(0x1);
     pub const ALLOW_DERIVATIVES: Self = Self(0x2);
     pub const DERIVATIVE: Self = Self(0x4);
-    pub const VIEW_INDEX_FROM_DEVICE_INDEX: Self = Self(0x8);
     pub const DISPATCH_BASE: Self = Self(0x10);
+    pub const VIEW_INDEX_FROM_DEVICE_INDEX: Self = Self(0x8);
     pub const FAIL_ON_PIPELINE_COMPILE_REQUIRED: Self = Self(0x100);
     pub const EARLY_RETURN_ON_FAILURE: Self = Self(0x200);
     pub const NO_PROTECTED_ACCESS: Self = Self(0x8000000);
@@ -1085,8 +1087,8 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x1, "DISABLE_OPTIMIZATION"),
                 (0x2, "ALLOW_DERIVATIVES"),
                 (0x4, "DERIVATIVE"),
-                (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
                 (0x10, "DISPATCH_BASE"),
+                (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
                 (0x100, "FAIL_ON_PIPELINE_COMPILE_REQUIRED"),
                 (0x200, "EARLY_RETURN_ON_FAILURE"),
                 (0x8000000, "NO_PROTECTED_ACCESS"),
@@ -1688,11 +1690,21 @@ impl fmt::Display for SampleCountFlags {
 pub struct AttachmentDescriptionFlags(pub(crate) u32);
 impl AttachmentDescriptionFlags {
     pub const MAY_ALIAS: Self = Self(0x1);
+    pub const RESOLVE_SKIP_TRANSFER_FUNCTION_KHR: Self = Self(0x2);
+    pub const RESOLVE_ENABLE_TRANSFER_FUNCTION_KHR: Self = Self(0x4);
 }
 impl_bitmask!(AttachmentDescriptionFlags);
 impl fmt::Display for AttachmentDescriptionFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x1, "MAY_ALIAS")], f)
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "MAY_ALIAS"),
+                (0x2, "RESOLVE_SKIP_TRANSFER_FUNCTION_KHR"),
+                (0x4, "RESOLVE_ENABLE_TRANSFER_FUNCTION_KHR"),
+            ],
+            f,
+        )
     }
 }
 
@@ -2290,6 +2302,8 @@ impl AccessFlags2 {
     pub const OPTICAL_FLOW_WRITE_NV: Self = Self(0x80000000000);
     pub const DATA_GRAPH_READ_ARM: Self = Self(0x800000000000);
     pub const DATA_GRAPH_WRITE_ARM: Self = Self(0x1000000000000);
+    pub const MEMORY_DECOMPRESSION_READ_EXT: Self = Self(0x80000000000000);
+    pub const MEMORY_DECOMPRESSION_WRITE_EXT: Self = Self(0x100000000000000);
 }
 impl_bitmask!(AccessFlags2);
 impl fmt::Display for AccessFlags2 {
@@ -2339,6 +2353,8 @@ impl fmt::Display for AccessFlags2 {
                 (0x80000000000, "OPTICAL_FLOW_WRITE_NV"),
                 (0x800000000000, "DATA_GRAPH_READ_ARM"),
                 (0x1000000000000, "DATA_GRAPH_WRITE_ARM"),
+                (0x80000000000000, "MEMORY_DECOMPRESSION_READ_EXT"),
+                (0x100000000000000, "MEMORY_DECOMPRESSION_WRITE_EXT"),
             ],
             f,
         )
@@ -2427,6 +2443,7 @@ impl PipelineStageFlags2 {
     pub const CONVERT_COOPERATIVE_VECTOR_MATRIX_NV: Self = Self(0x100000000000);
     pub const DATA_GRAPH_ARM: Self = Self(0x40000000000);
     pub const COPY_INDIRECT_KHR: Self = Self(0x400000000000);
+    pub const MEMORY_DECOMPRESSION_EXT: Self = Self(0x200000000000);
 }
 impl_bitmask!(PipelineStageFlags2);
 impl fmt::Display for PipelineStageFlags2 {
@@ -2476,6 +2493,7 @@ impl fmt::Display for PipelineStageFlags2 {
                 (0x100000000000, "CONVERT_COOPERATIVE_VECTOR_MATRIX_NV"),
                 (0x40000000000, "DATA_GRAPH_ARM"),
                 (0x400000000000, "COPY_INDIRECT_KHR"),
+                (0x200000000000, "MEMORY_DECOMPRESSION_EXT"),
             ],
             f,
         )
@@ -2585,6 +2603,10 @@ impl FormatFeatureFlags2 {
     pub const OPTICAL_FLOW_COST_NV: Self = Self(0x40000000000);
     pub const TENSOR_DATA_GRAPH_ARM: Self = Self(0x1000000000000);
     pub const COPY_IMAGE_INDIRECT_DST_KHR: Self = Self(0x800000000000000);
+    pub const DEPTH_COPY_ON_COMPUTE_QUEUE_KHR: Self = Self(0x10000000000000);
+    pub const DEPTH_COPY_ON_TRANSFER_QUEUE_KHR: Self = Self(0x20000000000000);
+    pub const STENCIL_COPY_ON_COMPUTE_QUEUE_KHR: Self = Self(0x40000000000000);
+    pub const STENCIL_COPY_ON_TRANSFER_QUEUE_KHR: Self = Self(0x80000000000000);
 }
 impl_bitmask!(FormatFeatureFlags2);
 impl fmt::Display for FormatFeatureFlags2 {
@@ -2642,6 +2664,10 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x40000000000, "OPTICAL_FLOW_COST_NV"),
                 (0x1000000000000, "TENSOR_DATA_GRAPH_ARM"),
                 (0x800000000000000, "COPY_IMAGE_INDIRECT_DST_KHR"),
+                (0x10000000000000, "DEPTH_COPY_ON_COMPUTE_QUEUE_KHR"),
+                (0x20000000000000, "DEPTH_COPY_ON_TRANSFER_QUEUE_KHR"),
+                (0x40000000000000, "STENCIL_COPY_ON_COMPUTE_QUEUE_KHR"),
+                (0x80000000000000, "STENCIL_COPY_ON_TRANSFER_QUEUE_KHR"),
             ],
             f,
         )
@@ -2663,6 +2689,7 @@ impl RenderingFlags {
     pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x8);
     pub const CONTENTS_INLINE_KHR: Self = Self(0x10);
     pub const PER_LAYER_FRAGMENT_DENSITY_VALVE: Self = Self(0x20);
+    pub const LOCAL_READ_CONCURRENT_ACCESS_CONTROL_KHR: Self = Self(0x100);
 }
 impl_bitmask!(RenderingFlags);
 impl fmt::Display for RenderingFlags {
@@ -2676,6 +2703,7 @@ impl fmt::Display for RenderingFlags {
                 (0x8, "ENABLE_LEGACY_DITHERING_EXT"),
                 (0x10, "CONTENTS_INLINE_KHR"),
                 (0x20, "PER_LAYER_FRAGMENT_DENSITY_VALVE"),
+                (0x100, "LOCAL_READ_CONCURRENT_ACCESS_CONTROL_KHR"),
             ],
             f,
         )
@@ -2684,16 +2712,18 @@ impl fmt::Display for RenderingFlags {
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct MemoryDecompressionMethodFlagsNV(pub(crate) u64);
-impl MemoryDecompressionMethodFlagsNV {
+pub struct MemoryDecompressionMethodFlagsEXT(pub(crate) u64);
+impl MemoryDecompressionMethodFlagsEXT {
     pub const GDEFLATE_1_0: Self = Self(0x1);
+    pub const GDEFLATE_1_0_NV: Self = Self::GDEFLATE_1_0;
 }
-impl_bitmask!(MemoryDecompressionMethodFlagsNV);
-impl fmt::Display for MemoryDecompressionMethodFlagsNV {
+impl_bitmask!(MemoryDecompressionMethodFlagsEXT);
+impl fmt::Display for MemoryDecompressionMethodFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "GDEFLATE_1_0")], f)
     }
 }
+pub type MemoryDecompressionMethodFlagsNV = MemoryDecompressionMethodFlagsEXT;
 pub type RenderingFlagsKHR = RenderingFlags;
 
 #[repr(transparent)]
@@ -2831,6 +2861,7 @@ impl PipelineCreateFlags2 {
     pub const CAPTURE_DATA_KHR: Self = Self(0x80000000);
     pub const INDIRECT_BINDABLE_EXT: Self = Self(0x4000000000);
     pub const PER_LAYER_FRAGMENT_DENSITY_VALVE: Self = Self(0x10000000000);
+    pub const N64_BIT_INDEXING_EXT: Self = Self(0x80000000000);
 }
 impl_bitmask!(PipelineCreateFlags2);
 impl fmt::Display for PipelineCreateFlags2 {
@@ -2876,6 +2907,7 @@ impl fmt::Display for PipelineCreateFlags2 {
                 (0x80000000, "CAPTURE_DATA_KHR"),
                 (0x4000000000, "INDIRECT_BINDABLE_EXT"),
                 (0x10000000000, "PER_LAYER_FRAGMENT_DENSITY_VALVE"),
+                (0x80000000000, "N64_BIT_INDEXING_EXT"),
             ],
             f,
         )
@@ -2923,6 +2955,7 @@ impl BufferUsageFlags2 {
     pub const COMPRESSED_DATA_DGF1_AMDX: Self = Self(0x200000000);
     pub const DATA_GRAPH_FOREIGN_DESCRIPTOR_ARM: Self = Self(0x20000000);
     pub const TILE_MEMORY_QCOM: Self = Self(0x8000000);
+    pub const MEMORY_DECOMPRESSION_EXT: Self = Self(0x100000000);
     pub const PREPROCESS_BUFFER_EXT: Self = Self(0x80000000);
 }
 impl_bitmask!(BufferUsageFlags2);
@@ -2956,6 +2989,7 @@ impl fmt::Display for BufferUsageFlags2 {
                 (0x200000000, "COMPRESSED_DATA_DGF1_AMDX"),
                 (0x20000000, "DATA_GRAPH_FOREIGN_DESCRIPTOR_ARM"),
                 (0x8000000, "TILE_MEMORY_QCOM"),
+                (0x100000000, "MEMORY_DECOMPRESSION_EXT"),
                 (0x80000000, "PREPROCESS_BUFFER_EXT"),
             ],
             f,
@@ -4276,6 +4310,47 @@ impl fmt::Display for ExportMetalObjectTypeFlagsEXT {
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct RenderingAttachmentFlagsKHR(pub(crate) u32);
+impl RenderingAttachmentFlagsKHR {
+    pub const INPUT_ATTACHMENT_FEEDBACK: Self = Self(0x1);
+    pub const RESOLVE_SKIP_TRANSFER_FUNCTION: Self = Self(0x2);
+    pub const RESOLVE_ENABLE_TRANSFER_FUNCTION: Self = Self(0x4);
+}
+impl_bitmask!(RenderingAttachmentFlagsKHR);
+impl fmt::Display for RenderingAttachmentFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "INPUT_ATTACHMENT_FEEDBACK"),
+                (0x2, "RESOLVE_SKIP_TRANSFER_FUNCTION"),
+                (0x4, "RESOLVE_ENABLE_TRANSFER_FUNCTION"),
+            ],
+            f,
+        )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ResolveImageFlagsKHR(pub(crate) u32);
+impl ResolveImageFlagsKHR {
+    pub const SKIP_TRANSFER_FUNCTION: Self = Self(0x1);
+    pub const ENABLE_TRANSFER_FUNCTION: Self = Self(0x2);
+}
+impl_bitmask!(ResolveImageFlagsKHR);
+impl fmt::Display for ResolveImageFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "SKIP_TRANSFER_FUNCTION"), (0x2, "ENABLE_TRANSFER_FUNCTION")],
+            f,
+        )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DeviceAddressBindingFlagsEXT(pub(crate) u32);
 impl DeviceAddressBindingFlagsEXT {
     pub const INTERNAL_OBJECT: Self = Self(0x1);
@@ -4443,6 +4518,7 @@ impl ShaderCreateFlagsEXT {
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x20);
     pub const FRAGMENT_DENSITY_MAP_ATTACHMENT: Self = Self(0x40);
     pub const INDIRECT_BINDABLE: Self = Self(0x80);
+    pub const N64_BIT_INDEXING: Self = Self(0x8000);
 }
 impl_bitmask!(ShaderCreateFlagsEXT);
 impl fmt::Display for ShaderCreateFlagsEXT {
@@ -4458,6 +4534,7 @@ impl fmt::Display for ShaderCreateFlagsEXT {
                 (0x20, "FRAGMENT_SHADING_RATE_ATTACHMENT"),
                 (0x40, "FRAGMENT_DENSITY_MAP_ATTACHMENT"),
                 (0x80, "INDIRECT_BINDABLE"),
+                (0x8000, "N64_BIT_INDEXING"),
             ],
             f,
         )
@@ -4499,6 +4576,19 @@ impl_bitmask!(SurfaceCreateFlagsOHOS);
 impl fmt::Display for SurfaceCreateFlagsOHOS {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct SwapchainImageUsageFlagsOHOS(pub(crate) u32);
+impl SwapchainImageUsageFlagsOHOS {
+    pub const SHARED: Self = Self(0x1);
+}
+impl_bitmask!(SwapchainImageUsageFlagsOHOS);
+impl fmt::Display for SwapchainImageUsageFlagsOHOS {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "SHARED")], f)
     }
 }
 
@@ -6548,8 +6638,8 @@ impl Result {
     pub const ERROR_VALIDATION_FAILED: Self = Self(-1000011001);
     pub const ERROR_OUT_OF_POOL_MEMORY: Self = Self(-1000069000);
     pub const ERROR_INVALID_EXTERNAL_HANDLE: Self = Self(-1000072003);
-    pub const ERROR_FRAGMENTATION: Self = Self(-1000161000);
     pub const ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS: Self = Self(-1000257000);
+    pub const ERROR_FRAGMENTATION: Self = Self(-1000161000);
     pub const PIPELINE_COMPILE_REQUIRED: Self = Self(1000297000);
     pub const ERROR_NOT_PERMITTED: Self = Self(-1000174001);
     pub const ERROR_SURFACE_LOST_KHR: Self = Self(-1000000000);
@@ -6605,8 +6695,8 @@ impl fmt::Display for Result {
             -1000011001 => Some(&"ERROR_VALIDATION_FAILED"),
             -1000069000 => Some(&"ERROR_OUT_OF_POOL_MEMORY"),
             -1000072003 => Some(&"ERROR_INVALID_EXTERNAL_HANDLE"),
-            -1000161000 => Some(&"ERROR_FRAGMENTATION"),
             -1000257000 => Some(&"ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS"),
+            -1000161000 => Some(&"ERROR_FRAGMENTATION"),
             1000297000 => Some(&"PIPELINE_COMPILE_REQUIRED"),
             -1000174001 => Some(&"ERROR_NOT_PERMITTED"),
             -1000000000 => Some(&"ERROR_SURFACE_LOST_KHR"),
@@ -6722,14 +6812,11 @@ impl StructureType {
     pub const MEMORY_BARRIER: Self = Self(46);
     pub const LOADER_INSTANCE_CREATE_INFO: Self = Self(47);
     pub const LOADER_DEVICE_CREATE_INFO: Self = Self(48);
-    pub const PHYSICAL_DEVICE_SUBGROUP_PROPERTIES: Self = Self(1000094000);
     pub const BIND_BUFFER_MEMORY_INFO: Self = Self(1000157000);
     pub const BIND_IMAGE_MEMORY_INFO: Self = Self(1000157001);
-    pub const PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES: Self = Self(1000083000);
     pub const MEMORY_DEDICATED_REQUIREMENTS: Self = Self(1000127000);
     pub const MEMORY_DEDICATED_ALLOCATE_INFO: Self = Self(1000127001);
     pub const MEMORY_ALLOCATE_FLAGS_INFO: Self = Self(1000060000);
-    pub const DEVICE_GROUP_RENDER_PASS_BEGIN_INFO: Self = Self(1000060003);
     pub const DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO: Self = Self(1000060004);
     pub const DEVICE_GROUP_SUBMIT_INFO: Self = Self(1000060005);
     pub const DEVICE_GROUP_BIND_SPARSE_INFO: Self = Self(1000060006);
@@ -6751,26 +6838,11 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MEMORY_PROPERTIES_2: Self = Self(1000059006);
     pub const SPARSE_IMAGE_FORMAT_PROPERTIES_2: Self = Self(1000059007);
     pub const PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2: Self = Self(1000059008);
-    pub const PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES: Self = Self(1000117000);
-    pub const RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO: Self = Self(1000117001);
     pub const IMAGE_VIEW_USAGE_CREATE_INFO: Self = Self(1000117002);
-    pub const PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO: Self = Self(1000117003);
-    pub const RENDER_PASS_MULTIVIEW_CREATE_INFO: Self = Self(1000053000);
-    pub const PHYSICAL_DEVICE_MULTIVIEW_FEATURES: Self = Self(1000053001);
-    pub const PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES: Self = Self(1000053002);
-    pub const PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES: Self = Self(1000120000);
-    pub const PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES;
     pub const PROTECTED_SUBMIT_INFO: Self = Self(1000145000);
     pub const PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES: Self = Self(1000145001);
     pub const PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES: Self = Self(1000145002);
     pub const DEVICE_QUEUE_INFO_2: Self = Self(1000145003);
-    pub const SAMPLER_YCBCR_CONVERSION_CREATE_INFO: Self = Self(1000156000);
-    pub const SAMPLER_YCBCR_CONVERSION_INFO: Self = Self(1000156001);
-    pub const BIND_IMAGE_PLANE_MEMORY_INFO: Self = Self(1000156002);
-    pub const IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO: Self = Self(1000156003);
-    pub const PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES: Self = Self(1000156004);
-    pub const SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES: Self = Self(1000156005);
-    pub const DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO: Self = Self(1000085000);
     pub const PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO: Self = Self(1000071000);
     pub const EXTERNAL_IMAGE_FORMAT_PROPERTIES: Self = Self(1000071001);
     pub const PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO: Self = Self(1000071002);
@@ -6785,8 +6857,26 @@ impl StructureType {
     pub const EXPORT_SEMAPHORE_CREATE_INFO: Self = Self(1000077000);
     pub const PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO: Self = Self(1000076000);
     pub const EXTERNAL_SEMAPHORE_PROPERTIES: Self = Self(1000076001);
+    pub const PHYSICAL_DEVICE_SUBGROUP_PROPERTIES: Self = Self(1000094000);
+    pub const PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES: Self = Self(1000083000);
+    pub const PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES: Self = Self(1000120000);
+    pub const PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES;
+    pub const DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO: Self = Self(1000085000);
     pub const PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES: Self = Self(1000168000);
     pub const DESCRIPTOR_SET_LAYOUT_SUPPORT: Self = Self(1000168001);
+    pub const SAMPLER_YCBCR_CONVERSION_CREATE_INFO: Self = Self(1000156000);
+    pub const SAMPLER_YCBCR_CONVERSION_INFO: Self = Self(1000156001);
+    pub const BIND_IMAGE_PLANE_MEMORY_INFO: Self = Self(1000156002);
+    pub const IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO: Self = Self(1000156003);
+    pub const PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES: Self = Self(1000156004);
+    pub const SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES: Self = Self(1000156005);
+    pub const DEVICE_GROUP_RENDER_PASS_BEGIN_INFO: Self = Self(1000060003);
+    pub const PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES: Self = Self(1000117000);
+    pub const RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO: Self = Self(1000117001);
+    pub const PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO: Self = Self(1000117003);
+    pub const RENDER_PASS_MULTIVIEW_CREATE_INFO: Self = Self(1000053000);
+    pub const PHYSICAL_DEVICE_MULTIVIEW_FEATURES: Self = Self(1000053001);
+    pub const PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES: Self = Self(1000053002);
     pub const PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES: Self = Self(1000063000);
     pub const PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES: Self =
         Self::PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES;
@@ -6795,39 +6885,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_VULKAN_1_2_FEATURES: Self = Self(51);
     pub const PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES: Self = Self(52);
     pub const IMAGE_FORMAT_LIST_CREATE_INFO: Self = Self(1000147000);
-    pub const ATTACHMENT_DESCRIPTION_2: Self = Self(1000109000);
-    pub const ATTACHMENT_REFERENCE_2: Self = Self(1000109001);
-    pub const SUBPASS_DESCRIPTION_2: Self = Self(1000109002);
-    pub const SUBPASS_DEPENDENCY_2: Self = Self(1000109003);
-    pub const RENDER_PASS_CREATE_INFO_2: Self = Self(1000109004);
-    pub const SUBPASS_BEGIN_INFO: Self = Self(1000109005);
-    pub const SUBPASS_END_INFO: Self = Self(1000109006);
-    pub const PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES: Self = Self(1000177000);
     pub const PHYSICAL_DEVICE_DRIVER_PROPERTIES: Self = Self(1000196000);
-    pub const PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES: Self = Self(1000180000);
-    pub const PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES: Self = Self(1000082000);
-    pub const PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES: Self = Self(1000197000);
-    pub const DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO: Self = Self(1000161000);
-    pub const PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES: Self = Self(1000161001);
-    pub const PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES: Self = Self(1000161002);
-    pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO: Self = Self(1000161003);
-    pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT: Self = Self(1000161004);
-    pub const PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES: Self = Self(1000199000);
-    pub const SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE: Self = Self(1000199001);
-    pub const PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES: Self = Self(1000221000);
-    pub const IMAGE_STENCIL_USAGE_CREATE_INFO: Self = Self(1000246000);
-    pub const PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES: Self = Self(1000130000);
-    pub const SAMPLER_REDUCTION_MODE_CREATE_INFO: Self = Self(1000130001);
     pub const PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES: Self = Self(1000211000);
-    pub const PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES: Self = Self(1000108000);
-    pub const FRAMEBUFFER_ATTACHMENTS_CREATE_INFO: Self = Self(1000108001);
-    pub const FRAMEBUFFER_ATTACHMENT_IMAGE_INFO: Self = Self(1000108002);
-    pub const RENDER_PASS_ATTACHMENT_BEGIN_INFO: Self = Self(1000108003);
-    pub const PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES: Self = Self(1000253000);
-    pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES: Self = Self(1000175000);
-    pub const PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES: Self = Self(1000241000);
-    pub const ATTACHMENT_REFERENCE_STENCIL_LAYOUT: Self = Self(1000241001);
-    pub const ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT: Self = Self(1000241002);
     pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES: Self = Self(1000261000);
     pub const PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES: Self = Self(1000207000);
     pub const PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_PROPERTIES: Self = Self(1000207001);
@@ -6840,16 +6899,43 @@ impl StructureType {
     pub const BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO: Self = Self(1000257002);
     pub const MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO: Self = Self(1000257003);
     pub const DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO: Self = Self(1000257004);
+    pub const PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES: Self = Self(1000177000);
+    pub const PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES: Self = Self(1000180000);
+    pub const PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES: Self = Self(1000082000);
+    pub const PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES: Self = Self(1000197000);
+    pub const DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO: Self = Self(1000161000);
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES: Self = Self(1000161001);
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES: Self = Self(1000161002);
+    pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO: Self = Self(1000161003);
+    pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT: Self = Self(1000161004);
+    pub const PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES: Self = Self(1000221000);
+    pub const PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES: Self = Self(1000130000);
+    pub const SAMPLER_REDUCTION_MODE_CREATE_INFO: Self = Self(1000130001);
+    pub const PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES: Self = Self(1000253000);
+    pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES: Self = Self(1000175000);
+    pub const ATTACHMENT_DESCRIPTION_2: Self = Self(1000109000);
+    pub const ATTACHMENT_REFERENCE_2: Self = Self(1000109001);
+    pub const SUBPASS_DESCRIPTION_2: Self = Self(1000109002);
+    pub const SUBPASS_DEPENDENCY_2: Self = Self(1000109003);
+    pub const RENDER_PASS_CREATE_INFO_2: Self = Self(1000109004);
+    pub const SUBPASS_BEGIN_INFO: Self = Self(1000109005);
+    pub const SUBPASS_END_INFO: Self = Self(1000109006);
+    pub const PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES: Self = Self(1000199000);
+    pub const SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE: Self = Self(1000199001);
+    pub const IMAGE_STENCIL_USAGE_CREATE_INFO: Self = Self(1000246000);
+    pub const PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES: Self = Self(1000108000);
+    pub const FRAMEBUFFER_ATTACHMENTS_CREATE_INFO: Self = Self(1000108001);
+    pub const FRAMEBUFFER_ATTACHMENT_IMAGE_INFO: Self = Self(1000108002);
+    pub const RENDER_PASS_ATTACHMENT_BEGIN_INFO: Self = Self(1000108003);
+    pub const PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES: Self = Self(1000241000);
+    pub const ATTACHMENT_REFERENCE_STENCIL_LAYOUT: Self = Self(1000241001);
+    pub const ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT: Self = Self(1000241002);
     pub const PHYSICAL_DEVICE_VULKAN_1_3_FEATURES: Self = Self(53);
     pub const PHYSICAL_DEVICE_VULKAN_1_3_PROPERTIES: Self = Self(54);
-    pub const PIPELINE_CREATION_FEEDBACK_CREATE_INFO: Self = Self(1000192000);
-    pub const PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES: Self = Self(1000215000);
     pub const PHYSICAL_DEVICE_TOOL_PROPERTIES: Self = Self(1000245000);
-    pub const PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES: Self = Self(1000276000);
     pub const PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES: Self = Self(1000295000);
     pub const DEVICE_PRIVATE_DATA_CREATE_INFO: Self = Self(1000295001);
     pub const PRIVATE_DATA_SLOT_CREATE_INFO: Self = Self(1000295002);
-    pub const PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES: Self = Self(1000297000);
     pub const MEMORY_BARRIER_2: Self = Self(1000314000);
     pub const BUFFER_MEMORY_BARRIER_2: Self = Self(1000314001);
     pub const IMAGE_MEMORY_BARRIER_2: Self = Self(1000314002);
@@ -6858,19 +6944,25 @@ impl StructureType {
     pub const SEMAPHORE_SUBMIT_INFO: Self = Self(1000314005);
     pub const COMMAND_BUFFER_SUBMIT_INFO: Self = Self(1000314006);
     pub const PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES: Self = Self(1000314007);
-    pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES: Self = Self(1000325000);
-    pub const PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES: Self = Self(1000335000);
     pub const COPY_BUFFER_INFO_2: Self = Self(1000337000);
     pub const COPY_IMAGE_INFO_2: Self = Self(1000337001);
     pub const COPY_BUFFER_TO_IMAGE_INFO_2: Self = Self(1000337002);
     pub const COPY_IMAGE_TO_BUFFER_INFO_2: Self = Self(1000337003);
-    pub const BLIT_IMAGE_INFO_2: Self = Self(1000337004);
-    pub const RESOLVE_IMAGE_INFO_2: Self = Self(1000337005);
     pub const BUFFER_COPY_2: Self = Self(1000337006);
     pub const IMAGE_COPY_2: Self = Self(1000337007);
-    pub const IMAGE_BLIT_2: Self = Self(1000337008);
     pub const BUFFER_IMAGE_COPY_2: Self = Self(1000337009);
-    pub const IMAGE_RESOLVE_2: Self = Self(1000337010);
+    pub const PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES: Self = Self(1000066000);
+    pub const FORMAT_PROPERTIES_3: Self = Self(1000360000);
+    pub const PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES: Self = Self(1000413000);
+    pub const PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES: Self = Self(1000413001);
+    pub const DEVICE_BUFFER_MEMORY_REQUIREMENTS: Self = Self(1000413002);
+    pub const DEVICE_IMAGE_MEMORY_REQUIREMENTS: Self = Self(1000413003);
+    pub const PIPELINE_CREATION_FEEDBACK_CREATE_INFO: Self = Self(1000192000);
+    pub const PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES: Self = Self(1000215000);
+    pub const PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES: Self = Self(1000276000);
+    pub const PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES: Self = Self(1000297000);
+    pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES: Self = Self(1000325000);
+    pub const PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES: Self = Self(1000335000);
     pub const PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES: Self = Self(1000225000);
     pub const PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO: Self = Self(1000225001);
     pub const PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES: Self = Self(1000225002);
@@ -6878,60 +6970,35 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES: Self = Self(1000138001);
     pub const WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK: Self = Self(1000138002);
     pub const DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO: Self = Self(1000138003);
-    pub const PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES: Self = Self(1000066000);
+    pub const PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES: Self = Self(1000280000);
+    pub const PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES: Self = Self(1000280001);
+    pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES: Self = Self(1000281001);
+    pub const BLIT_IMAGE_INFO_2: Self = Self(1000337004);
+    pub const RESOLVE_IMAGE_INFO_2: Self = Self(1000337005);
+    pub const IMAGE_BLIT_2: Self = Self(1000337008);
+    pub const IMAGE_RESOLVE_2: Self = Self(1000337010);
     pub const RENDERING_INFO: Self = Self(1000044000);
     pub const RENDERING_ATTACHMENT_INFO: Self = Self(1000044001);
     pub const PIPELINE_RENDERING_CREATE_INFO: Self = Self(1000044002);
     pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES: Self = Self(1000044003);
     pub const COMMAND_BUFFER_INHERITANCE_RENDERING_INFO: Self = Self(1000044004);
-    pub const PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES: Self = Self(1000280000);
-    pub const PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES: Self = Self(1000280001);
-    pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES: Self = Self(1000281001);
-    pub const FORMAT_PROPERTIES_3: Self = Self(1000360000);
-    pub const PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES: Self = Self(1000413000);
-    pub const PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES: Self = Self(1000413001);
-    pub const DEVICE_BUFFER_MEMORY_REQUIREMENTS: Self = Self(1000413002);
-    pub const DEVICE_IMAGE_MEMORY_REQUIREMENTS: Self = Self(1000413003);
     pub const PHYSICAL_DEVICE_VULKAN_1_4_FEATURES: Self = Self(55);
     pub const PHYSICAL_DEVICE_VULKAN_1_4_PROPERTIES: Self = Self(56);
     pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO: Self = Self(1000174000);
     pub const PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES: Self = Self(1000388000);
     pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES: Self = Self(1000388001);
-    pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES: Self = Self(1000416000);
-    pub const PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES: Self = Self(1000528000);
-    pub const PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES: Self = Self(1000544000);
-    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES: Self = Self(1000259000);
-    pub const PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO: Self = Self(1000259001);
-    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES: Self = Self(1000259002);
-    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES: Self = Self(1000525000);
-    pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO: Self = Self(1000190001);
-    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES: Self = Self(1000190002);
     pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES: Self = Self(1000265000);
     pub const MEMORY_MAP_INFO: Self = Self(1000271000);
     pub const MEMORY_UNMAP_INFO: Self = Self(1000271001);
     pub const PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES: Self = Self(1000470000);
     pub const PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES: Self = Self(1000470001);
-    pub const RENDERING_AREA_INFO: Self = Self(1000470003);
     pub const DEVICE_IMAGE_SUBRESOURCE_INFO: Self = Self(1000470004);
     pub const SUBRESOURCE_LAYOUT_2: Self = Self(1000338002);
     pub const IMAGE_SUBRESOURCE_2: Self = Self(1000338003);
-    pub const PIPELINE_CREATE_FLAGS_2_CREATE_INFO: Self = Self(1000470005);
     pub const BUFFER_USAGE_FLAGS_2_CREATE_INFO: Self = Self(1000470006);
-    pub const PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES: Self = Self(1000080000);
-    pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES: Self = Self(1000232000);
-    pub const RENDERING_ATTACHMENT_LOCATION_INFO: Self = Self(1000232001);
-    pub const RENDERING_INPUT_ATTACHMENT_INDEX_INFO: Self = Self(1000232002);
     pub const PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES: Self = Self(1000545000);
     pub const PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES: Self = Self(1000545001);
     pub const BIND_MEMORY_STATUS: Self = Self(1000545002);
-    pub const BIND_DESCRIPTOR_SETS_INFO: Self = Self(1000545003);
-    pub const PUSH_CONSTANTS_INFO: Self = Self(1000545004);
-    pub const PUSH_DESCRIPTOR_SET_INFO: Self = Self(1000545005);
-    pub const PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO: Self = Self(1000545006);
-    pub const PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES: Self = Self(1000466000);
-    pub const PIPELINE_ROBUSTNESS_CREATE_INFO: Self = Self(1000068000);
-    pub const PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES: Self = Self(1000068001);
-    pub const PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES: Self = Self(1000068002);
     pub const PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES: Self = Self(1000270000);
     pub const PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES: Self = Self(1000270001);
     pub const MEMORY_TO_IMAGE_COPY: Self = Self(1000270002);
@@ -6942,6 +7009,29 @@ impl StructureType {
     pub const COPY_IMAGE_TO_IMAGE_INFO: Self = Self(1000270007);
     pub const SUBRESOURCE_HOST_MEMCPY_SIZE: Self = Self(1000270008);
     pub const HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY: Self = Self(1000270009);
+    pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES: Self = Self(1000416000);
+    pub const PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES: Self = Self(1000528000);
+    pub const PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES: Self = Self(1000544000);
+    pub const PIPELINE_CREATE_FLAGS_2_CREATE_INFO: Self = Self(1000470005);
+    pub const PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES: Self = Self(1000080000);
+    pub const BIND_DESCRIPTOR_SETS_INFO: Self = Self(1000545003);
+    pub const PUSH_CONSTANTS_INFO: Self = Self(1000545004);
+    pub const PUSH_DESCRIPTOR_SET_INFO: Self = Self(1000545005);
+    pub const PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO: Self = Self(1000545006);
+    pub const PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES: Self = Self(1000466000);
+    pub const PIPELINE_ROBUSTNESS_CREATE_INFO: Self = Self(1000068000);
+    pub const PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES: Self = Self(1000068001);
+    pub const PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES: Self = Self(1000068002);
+    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES: Self = Self(1000259000);
+    pub const PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO: Self = Self(1000259001);
+    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES: Self = Self(1000259002);
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES: Self = Self(1000525000);
+    pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO: Self = Self(1000190001);
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES: Self = Self(1000190002);
+    pub const RENDERING_AREA_INFO: Self = Self(1000470003);
+    pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES: Self = Self(1000232000);
+    pub const RENDERING_ATTACHMENT_LOCATION_INFO: Self = Self(1000232001);
+    pub const RENDERING_INPUT_ATTACHMENT_INDEX_INFO: Self = Self(1000232002);
     pub const SWAPCHAIN_CREATE_INFO_KHR: Self = Self(1000001000);
     pub const PRESENT_INFO_KHR: Self = Self(1000001001);
     pub const DEVICE_GROUP_PRESENT_CAPABILITIES_KHR: Self = Self(1000060007);
@@ -7666,8 +7756,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV: Self = Self(1000426000);
     pub const PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV: Self =
         Self::PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_KHR;
-    pub const PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV: Self = Self(1000427000);
-    pub const PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV: Self = Self(1000427001);
+    pub const PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV: Self =
+        Self::PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_EXT;
+    pub const PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV: Self =
+        Self::PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_EXT;
     pub const PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_COMPUTE_FEATURES_NV: Self = Self(1000428000);
     pub const COMPUTE_PIPELINE_INDIRECT_BUFFER_INFO_NV: Self = Self(1000428001);
     pub const PIPELINE_INDIRECT_DEVICE_ADDRESS_INFO_NV: Self = Self(1000428002);
@@ -7885,6 +7977,9 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_KHR: Self = Self(1000426001);
     pub const COPY_MEMORY_INDIRECT_INFO_KHR: Self = Self(1000549002);
     pub const COPY_MEMORY_TO_IMAGE_INDIRECT_INFO_KHR: Self = Self(1000549003);
+    pub const PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_EXT: Self = Self(1000427000);
+    pub const PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_EXT: Self = Self(1000427001);
+    pub const DECOMPRESS_MEMORY_INFO_EXT: Self = Self(1000550002);
     pub const DISPLAY_SURFACE_STEREO_CREATE_INFO_NV: Self = Self(1000551000);
     pub const DISPLAY_MODE_STEREO_PROPERTIES_NV: Self = Self(1000551001);
     pub const PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV: Self = Self(1000555000);
@@ -7943,6 +8038,9 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MAINTENANCE_9_PROPERTIES_KHR: Self = Self(1000584001);
     pub const QUEUE_FAMILY_OWNERSHIP_TRANSFER_PROPERTIES_KHR: Self = Self(1000584002);
     pub const SURFACE_CREATE_INFO_OHOS: Self = Self(1000685000);
+    pub const NATIVE_BUFFER_OHOS: Self = Self(1000453001);
+    pub const SWAPCHAIN_IMAGE_CREATE_INFO_OHOS: Self = Self(1000453002);
+    pub const PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_OHOS: Self = Self(1000453003);
     pub const PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI: Self = Self(1000590000);
     pub const HDR_VIVID_DYNAMIC_METADATA_HUAWEI: Self = Self(1000590001);
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV: Self = Self(1000593000);
@@ -7965,10 +8063,17 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_EXT: Self = Self(1000425000);
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_EXT: Self = Self(1000425001);
     pub const RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT: Self = Self(1000425002);
-    pub const RENDERING_END_INFO_EXT: Self = Self(1000619003);
+    pub const RENDERING_END_INFO_EXT: Self = Self::RENDERING_END_INFO_KHR;
     pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT: Self = Self(1000620000);
     pub const PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR: Self = Self(1000361000);
+    pub const PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT: Self = Self(1000627000);
+    pub const PHYSICAL_DEVICE_MAINTENANCE_10_FEATURES_KHR: Self = Self(1000630000);
+    pub const PHYSICAL_DEVICE_MAINTENANCE_10_PROPERTIES_KHR: Self = Self(1000630001);
+    pub const RENDERING_ATTACHMENT_FLAGS_INFO_KHR: Self = Self(1000630002);
+    pub const RENDERING_END_INFO_KHR: Self = Self(1000619003);
+    pub const RESOLVE_IMAGE_MODE_INFO_KHR: Self = Self(1000630004);
     pub const PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC: Self = Self(1000637000);
+    pub const PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT: Self = Self(1000642000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8022,14 +8127,11 @@ impl fmt::Display for StructureType {
             46 => Some(&"MEMORY_BARRIER"),
             47 => Some(&"LOADER_INSTANCE_CREATE_INFO"),
             48 => Some(&"LOADER_DEVICE_CREATE_INFO"),
-            1000094000 => Some(&"PHYSICAL_DEVICE_SUBGROUP_PROPERTIES"),
             1000157000 => Some(&"BIND_BUFFER_MEMORY_INFO"),
             1000157001 => Some(&"BIND_IMAGE_MEMORY_INFO"),
-            1000083000 => Some(&"PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES"),
             1000127000 => Some(&"MEMORY_DEDICATED_REQUIREMENTS"),
             1000127001 => Some(&"MEMORY_DEDICATED_ALLOCATE_INFO"),
             1000060000 => Some(&"MEMORY_ALLOCATE_FLAGS_INFO"),
-            1000060003 => Some(&"DEVICE_GROUP_RENDER_PASS_BEGIN_INFO"),
             1000060004 => Some(&"DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO"),
             1000060005 => Some(&"DEVICE_GROUP_SUBMIT_INFO"),
             1000060006 => Some(&"DEVICE_GROUP_BIND_SPARSE_INFO"),
@@ -8051,25 +8153,11 @@ impl fmt::Display for StructureType {
             1000059006 => Some(&"PHYSICAL_DEVICE_MEMORY_PROPERTIES_2"),
             1000059007 => Some(&"SPARSE_IMAGE_FORMAT_PROPERTIES_2"),
             1000059008 => Some(&"PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2"),
-            1000117000 => Some(&"PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES"),
-            1000117001 => Some(&"RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO"),
             1000117002 => Some(&"IMAGE_VIEW_USAGE_CREATE_INFO"),
-            1000117003 => Some(&"PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO"),
-            1000053000 => Some(&"RENDER_PASS_MULTIVIEW_CREATE_INFO"),
-            1000053001 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_FEATURES"),
-            1000053002 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES"),
-            1000120000 => Some(&"PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES"),
             1000145000 => Some(&"PROTECTED_SUBMIT_INFO"),
             1000145001 => Some(&"PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES"),
             1000145002 => Some(&"PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES"),
             1000145003 => Some(&"DEVICE_QUEUE_INFO_2"),
-            1000156000 => Some(&"SAMPLER_YCBCR_CONVERSION_CREATE_INFO"),
-            1000156001 => Some(&"SAMPLER_YCBCR_CONVERSION_INFO"),
-            1000156002 => Some(&"BIND_IMAGE_PLANE_MEMORY_INFO"),
-            1000156003 => Some(&"IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO"),
-            1000156004 => Some(&"PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES"),
-            1000156005 => Some(&"SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES"),
-            1000085000 => Some(&"DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO"),
             1000071000 => Some(&"PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO"),
             1000071001 => Some(&"EXTERNAL_IMAGE_FORMAT_PROPERTIES"),
             1000071002 => Some(&"PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO"),
@@ -8084,47 +8172,33 @@ impl fmt::Display for StructureType {
             1000077000 => Some(&"EXPORT_SEMAPHORE_CREATE_INFO"),
             1000076000 => Some(&"PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO"),
             1000076001 => Some(&"EXTERNAL_SEMAPHORE_PROPERTIES"),
+            1000094000 => Some(&"PHYSICAL_DEVICE_SUBGROUP_PROPERTIES"),
+            1000083000 => Some(&"PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES"),
+            1000120000 => Some(&"PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES"),
+            1000085000 => Some(&"DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO"),
             1000168000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES"),
             1000168001 => Some(&"DESCRIPTOR_SET_LAYOUT_SUPPORT"),
+            1000156000 => Some(&"SAMPLER_YCBCR_CONVERSION_CREATE_INFO"),
+            1000156001 => Some(&"SAMPLER_YCBCR_CONVERSION_INFO"),
+            1000156002 => Some(&"BIND_IMAGE_PLANE_MEMORY_INFO"),
+            1000156003 => Some(&"IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO"),
+            1000156004 => Some(&"PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES"),
+            1000156005 => Some(&"SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES"),
+            1000060003 => Some(&"DEVICE_GROUP_RENDER_PASS_BEGIN_INFO"),
+            1000117000 => Some(&"PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES"),
+            1000117001 => Some(&"RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO"),
+            1000117003 => Some(&"PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO"),
+            1000053000 => Some(&"RENDER_PASS_MULTIVIEW_CREATE_INFO"),
+            1000053001 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_FEATURES"),
+            1000053002 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES"),
             1000063000 => Some(&"PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES"),
             49 => Some(&"PHYSICAL_DEVICE_VULKAN_1_1_FEATURES"),
             50 => Some(&"PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES"),
             51 => Some(&"PHYSICAL_DEVICE_VULKAN_1_2_FEATURES"),
             52 => Some(&"PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES"),
             1000147000 => Some(&"IMAGE_FORMAT_LIST_CREATE_INFO"),
-            1000109000 => Some(&"ATTACHMENT_DESCRIPTION_2"),
-            1000109001 => Some(&"ATTACHMENT_REFERENCE_2"),
-            1000109002 => Some(&"SUBPASS_DESCRIPTION_2"),
-            1000109003 => Some(&"SUBPASS_DEPENDENCY_2"),
-            1000109004 => Some(&"RENDER_PASS_CREATE_INFO_2"),
-            1000109005 => Some(&"SUBPASS_BEGIN_INFO"),
-            1000109006 => Some(&"SUBPASS_END_INFO"),
-            1000177000 => Some(&"PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES"),
             1000196000 => Some(&"PHYSICAL_DEVICE_DRIVER_PROPERTIES"),
-            1000180000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES"),
-            1000082000 => Some(&"PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES"),
-            1000197000 => Some(&"PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES"),
-            1000161000 => Some(&"DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO"),
-            1000161001 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES"),
-            1000161002 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES"),
-            1000161003 => Some(&"DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO"),
-            1000161004 => Some(&"DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT"),
-            1000199000 => Some(&"PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES"),
-            1000199001 => Some(&"SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE"),
-            1000221000 => Some(&"PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES"),
-            1000246000 => Some(&"IMAGE_STENCIL_USAGE_CREATE_INFO"),
-            1000130000 => Some(&"PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES"),
-            1000130001 => Some(&"SAMPLER_REDUCTION_MODE_CREATE_INFO"),
             1000211000 => Some(&"PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES"),
-            1000108000 => Some(&"PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES"),
-            1000108001 => Some(&"FRAMEBUFFER_ATTACHMENTS_CREATE_INFO"),
-            1000108002 => Some(&"FRAMEBUFFER_ATTACHMENT_IMAGE_INFO"),
-            1000108003 => Some(&"RENDER_PASS_ATTACHMENT_BEGIN_INFO"),
-            1000253000 => Some(&"PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES"),
-            1000175000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES"),
-            1000241000 => Some(&"PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES"),
-            1000241001 => Some(&"ATTACHMENT_REFERENCE_STENCIL_LAYOUT"),
-            1000241002 => Some(&"ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT"),
             1000261000 => Some(&"PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES"),
             1000207000 => Some(&"PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES"),
             1000207001 => Some(&"PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_PROPERTIES"),
@@ -8137,16 +8211,43 @@ impl fmt::Display for StructureType {
             1000257002 => Some(&"BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO"),
             1000257003 => Some(&"MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO"),
             1000257004 => Some(&"DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO"),
+            1000177000 => Some(&"PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES"),
+            1000180000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES"),
+            1000082000 => Some(&"PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES"),
+            1000197000 => Some(&"PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES"),
+            1000161000 => Some(&"DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO"),
+            1000161001 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES"),
+            1000161002 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES"),
+            1000161003 => Some(&"DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO"),
+            1000161004 => Some(&"DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT"),
+            1000221000 => Some(&"PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES"),
+            1000130000 => Some(&"PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES"),
+            1000130001 => Some(&"SAMPLER_REDUCTION_MODE_CREATE_INFO"),
+            1000253000 => Some(&"PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES"),
+            1000175000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES"),
+            1000109000 => Some(&"ATTACHMENT_DESCRIPTION_2"),
+            1000109001 => Some(&"ATTACHMENT_REFERENCE_2"),
+            1000109002 => Some(&"SUBPASS_DESCRIPTION_2"),
+            1000109003 => Some(&"SUBPASS_DEPENDENCY_2"),
+            1000109004 => Some(&"RENDER_PASS_CREATE_INFO_2"),
+            1000109005 => Some(&"SUBPASS_BEGIN_INFO"),
+            1000109006 => Some(&"SUBPASS_END_INFO"),
+            1000199000 => Some(&"PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES"),
+            1000199001 => Some(&"SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE"),
+            1000246000 => Some(&"IMAGE_STENCIL_USAGE_CREATE_INFO"),
+            1000108000 => Some(&"PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES"),
+            1000108001 => Some(&"FRAMEBUFFER_ATTACHMENTS_CREATE_INFO"),
+            1000108002 => Some(&"FRAMEBUFFER_ATTACHMENT_IMAGE_INFO"),
+            1000108003 => Some(&"RENDER_PASS_ATTACHMENT_BEGIN_INFO"),
+            1000241000 => Some(&"PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES"),
+            1000241001 => Some(&"ATTACHMENT_REFERENCE_STENCIL_LAYOUT"),
+            1000241002 => Some(&"ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT"),
             53 => Some(&"PHYSICAL_DEVICE_VULKAN_1_3_FEATURES"),
             54 => Some(&"PHYSICAL_DEVICE_VULKAN_1_3_PROPERTIES"),
-            1000192000 => Some(&"PIPELINE_CREATION_FEEDBACK_CREATE_INFO"),
-            1000215000 => Some(&"PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES"),
             1000245000 => Some(&"PHYSICAL_DEVICE_TOOL_PROPERTIES"),
-            1000276000 => Some(&"PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES"),
             1000295000 => Some(&"PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES"),
             1000295001 => Some(&"DEVICE_PRIVATE_DATA_CREATE_INFO"),
             1000295002 => Some(&"PRIVATE_DATA_SLOT_CREATE_INFO"),
-            1000297000 => Some(&"PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES"),
             1000314000 => Some(&"MEMORY_BARRIER_2"),
             1000314001 => Some(&"BUFFER_MEMORY_BARRIER_2"),
             1000314002 => Some(&"IMAGE_MEMORY_BARRIER_2"),
@@ -8155,19 +8256,25 @@ impl fmt::Display for StructureType {
             1000314005 => Some(&"SEMAPHORE_SUBMIT_INFO"),
             1000314006 => Some(&"COMMAND_BUFFER_SUBMIT_INFO"),
             1000314007 => Some(&"PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES"),
-            1000325000 => Some(&"PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES"),
-            1000335000 => Some(&"PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES"),
             1000337000 => Some(&"COPY_BUFFER_INFO_2"),
             1000337001 => Some(&"COPY_IMAGE_INFO_2"),
             1000337002 => Some(&"COPY_BUFFER_TO_IMAGE_INFO_2"),
             1000337003 => Some(&"COPY_IMAGE_TO_BUFFER_INFO_2"),
-            1000337004 => Some(&"BLIT_IMAGE_INFO_2"),
-            1000337005 => Some(&"RESOLVE_IMAGE_INFO_2"),
             1000337006 => Some(&"BUFFER_COPY_2"),
             1000337007 => Some(&"IMAGE_COPY_2"),
-            1000337008 => Some(&"IMAGE_BLIT_2"),
             1000337009 => Some(&"BUFFER_IMAGE_COPY_2"),
-            1000337010 => Some(&"IMAGE_RESOLVE_2"),
+            1000066000 => Some(&"PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES"),
+            1000360000 => Some(&"FORMAT_PROPERTIES_3"),
+            1000413000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES"),
+            1000413001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES"),
+            1000413002 => Some(&"DEVICE_BUFFER_MEMORY_REQUIREMENTS"),
+            1000413003 => Some(&"DEVICE_IMAGE_MEMORY_REQUIREMENTS"),
+            1000192000 => Some(&"PIPELINE_CREATION_FEEDBACK_CREATE_INFO"),
+            1000215000 => Some(&"PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES"),
+            1000276000 => Some(&"PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES"),
+            1000297000 => Some(&"PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES"),
+            1000325000 => Some(&"PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES"),
+            1000335000 => Some(&"PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES"),
             1000225000 => Some(&"PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES"),
             1000225001 => Some(&"PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO"),
             1000225002 => Some(&"PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES"),
@@ -8175,60 +8282,35 @@ impl fmt::Display for StructureType {
             1000138001 => Some(&"PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES"),
             1000138002 => Some(&"WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK"),
             1000138003 => Some(&"DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO"),
-            1000066000 => Some(&"PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES"),
+            1000280000 => Some(&"PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES"),
+            1000280001 => Some(&"PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES"),
+            1000281001 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES"),
+            1000337004 => Some(&"BLIT_IMAGE_INFO_2"),
+            1000337005 => Some(&"RESOLVE_IMAGE_INFO_2"),
+            1000337008 => Some(&"IMAGE_BLIT_2"),
+            1000337010 => Some(&"IMAGE_RESOLVE_2"),
             1000044000 => Some(&"RENDERING_INFO"),
             1000044001 => Some(&"RENDERING_ATTACHMENT_INFO"),
             1000044002 => Some(&"PIPELINE_RENDERING_CREATE_INFO"),
             1000044003 => Some(&"PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES"),
             1000044004 => Some(&"COMMAND_BUFFER_INHERITANCE_RENDERING_INFO"),
-            1000280000 => Some(&"PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES"),
-            1000280001 => Some(&"PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES"),
-            1000281001 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES"),
-            1000360000 => Some(&"FORMAT_PROPERTIES_3"),
-            1000413000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES"),
-            1000413001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES"),
-            1000413002 => Some(&"DEVICE_BUFFER_MEMORY_REQUIREMENTS"),
-            1000413003 => Some(&"DEVICE_IMAGE_MEMORY_REQUIREMENTS"),
             55 => Some(&"PHYSICAL_DEVICE_VULKAN_1_4_FEATURES"),
             56 => Some(&"PHYSICAL_DEVICE_VULKAN_1_4_PROPERTIES"),
             1000174000 => Some(&"DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO"),
             1000388000 => Some(&"PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES"),
             1000388001 => Some(&"QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES"),
-            1000416000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES"),
-            1000528000 => Some(&"PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES"),
-            1000544000 => Some(&"PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES"),
-            1000259000 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES"),
-            1000259001 => Some(&"PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO"),
-            1000259002 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES"),
-            1000525000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES"),
-            1000190001 => Some(&"PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO"),
-            1000190002 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES"),
             1000265000 => Some(&"PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES"),
             1000271000 => Some(&"MEMORY_MAP_INFO"),
             1000271001 => Some(&"MEMORY_UNMAP_INFO"),
             1000470000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES"),
             1000470001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES"),
-            1000470003 => Some(&"RENDERING_AREA_INFO"),
             1000470004 => Some(&"DEVICE_IMAGE_SUBRESOURCE_INFO"),
             1000338002 => Some(&"SUBRESOURCE_LAYOUT_2"),
             1000338003 => Some(&"IMAGE_SUBRESOURCE_2"),
-            1000470005 => Some(&"PIPELINE_CREATE_FLAGS_2_CREATE_INFO"),
             1000470006 => Some(&"BUFFER_USAGE_FLAGS_2_CREATE_INFO"),
-            1000080000 => Some(&"PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES"),
-            1000232000 => Some(&"PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES"),
-            1000232001 => Some(&"RENDERING_ATTACHMENT_LOCATION_INFO"),
-            1000232002 => Some(&"RENDERING_INPUT_ATTACHMENT_INDEX_INFO"),
             1000545000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES"),
             1000545001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES"),
             1000545002 => Some(&"BIND_MEMORY_STATUS"),
-            1000545003 => Some(&"BIND_DESCRIPTOR_SETS_INFO"),
-            1000545004 => Some(&"PUSH_CONSTANTS_INFO"),
-            1000545005 => Some(&"PUSH_DESCRIPTOR_SET_INFO"),
-            1000545006 => Some(&"PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO"),
-            1000466000 => Some(&"PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES"),
-            1000068000 => Some(&"PIPELINE_ROBUSTNESS_CREATE_INFO"),
-            1000068001 => Some(&"PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES"),
-            1000068002 => Some(&"PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES"),
             1000270000 => Some(&"PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES"),
             1000270001 => Some(&"PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES"),
             1000270002 => Some(&"MEMORY_TO_IMAGE_COPY"),
@@ -8239,6 +8321,29 @@ impl fmt::Display for StructureType {
             1000270007 => Some(&"COPY_IMAGE_TO_IMAGE_INFO"),
             1000270008 => Some(&"SUBRESOURCE_HOST_MEMCPY_SIZE"),
             1000270009 => Some(&"HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY"),
+            1000416000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES"),
+            1000528000 => Some(&"PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES"),
+            1000544000 => Some(&"PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES"),
+            1000470005 => Some(&"PIPELINE_CREATE_FLAGS_2_CREATE_INFO"),
+            1000080000 => Some(&"PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES"),
+            1000545003 => Some(&"BIND_DESCRIPTOR_SETS_INFO"),
+            1000545004 => Some(&"PUSH_CONSTANTS_INFO"),
+            1000545005 => Some(&"PUSH_DESCRIPTOR_SET_INFO"),
+            1000545006 => Some(&"PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO"),
+            1000466000 => Some(&"PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES"),
+            1000068000 => Some(&"PIPELINE_ROBUSTNESS_CREATE_INFO"),
+            1000068001 => Some(&"PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES"),
+            1000068002 => Some(&"PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES"),
+            1000259000 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES"),
+            1000259001 => Some(&"PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO"),
+            1000259002 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES"),
+            1000525000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES"),
+            1000190001 => Some(&"PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO"),
+            1000190002 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES"),
+            1000470003 => Some(&"RENDERING_AREA_INFO"),
+            1000232000 => Some(&"PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES"),
+            1000232001 => Some(&"RENDERING_ATTACHMENT_LOCATION_INFO"),
+            1000232002 => Some(&"RENDERING_INPUT_ATTACHMENT_INDEX_INFO"),
             1000001000 => Some(&"SWAPCHAIN_CREATE_INFO_KHR"),
             1000001001 => Some(&"PRESENT_INFO_KHR"),
             1000060007 => Some(&"DEVICE_GROUP_PRESENT_CAPABILITIES_KHR"),
@@ -8684,8 +8789,6 @@ impl fmt::Display for StructureType {
             1000424003 => Some(&"RENDER_PASS_STRIPE_INFO_ARM"),
             1000424004 => Some(&"RENDER_PASS_STRIPE_SUBMIT_INFO_ARM"),
             1000426000 => Some(&"PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV"),
-            1000427000 => Some(&"PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV"),
-            1000427001 => Some(&"PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV"),
             1000428000 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_COMPUTE_FEATURES_NV"),
             1000428001 => Some(&"COMPUTE_PIPELINE_INDIRECT_BUFFER_INFO_NV"),
             1000428002 => Some(&"PIPELINE_INDIRECT_DEVICE_ADDRESS_INFO_NV"),
@@ -8868,6 +8971,9 @@ impl fmt::Display for StructureType {
             1000426001 => Some(&"PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_KHR"),
             1000549002 => Some(&"COPY_MEMORY_INDIRECT_INFO_KHR"),
             1000549003 => Some(&"COPY_MEMORY_TO_IMAGE_INDIRECT_INFO_KHR"),
+            1000427000 => Some(&"PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_EXT"),
+            1000427001 => Some(&"PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_EXT"),
+            1000550002 => Some(&"DECOMPRESS_MEMORY_INFO_EXT"),
             1000551000 => Some(&"DISPLAY_SURFACE_STEREO_CREATE_INFO_NV"),
             1000551001 => Some(&"DISPLAY_MODE_STEREO_PROPERTIES_NV"),
             1000555000 => Some(&"PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV"),
@@ -8926,6 +9032,9 @@ impl fmt::Display for StructureType {
             1000584001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_9_PROPERTIES_KHR"),
             1000584002 => Some(&"QUEUE_FAMILY_OWNERSHIP_TRANSFER_PROPERTIES_KHR"),
             1000685000 => Some(&"SURFACE_CREATE_INFO_OHOS"),
+            1000453001 => Some(&"NATIVE_BUFFER_OHOS"),
+            1000453002 => Some(&"SWAPCHAIN_IMAGE_CREATE_INFO_OHOS"),
+            1000453003 => Some(&"PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_OHOS"),
             1000590000 => Some(&"PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI"),
             1000590001 => Some(&"HDR_VIVID_DYNAMIC_METADATA_HUAWEI"),
             1000593000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV"),
@@ -8948,10 +9057,16 @@ impl fmt::Display for StructureType {
             1000425000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_EXT"),
             1000425001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_EXT"),
             1000425002 => Some(&"RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT"),
-            1000619003 => Some(&"RENDERING_END_INFO_EXT"),
             1000620000 => Some(&"PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT"),
             1000361000 => Some(&"PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR"),
+            1000627000 => Some(&"PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT"),
+            1000630000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_10_FEATURES_KHR"),
+            1000630001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_10_PROPERTIES_KHR"),
+            1000630002 => Some(&"RENDERING_ATTACHMENT_FLAGS_INFO_KHR"),
+            1000619003 => Some(&"RENDERING_END_INFO_KHR"),
+            1000630004 => Some(&"RESOLVE_IMAGE_MODE_INFO_KHR"),
             1000637000 => Some(&"PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC"),
+            1000642000 => Some(&"PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -9216,8 +9331,8 @@ impl ObjectType {
     pub const DESCRIPTOR_SET: Self = Self(23);
     pub const FRAMEBUFFER: Self = Self(24);
     pub const COMMAND_POOL: Self = Self(25);
-    pub const SAMPLER_YCBCR_CONVERSION: Self = Self(1000156000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE: Self = Self(1000085000);
+    pub const SAMPLER_YCBCR_CONVERSION: Self = Self(1000156000);
     pub const PRIVATE_DATA_SLOT: Self = Self(1000295000);
     pub const SURFACE_KHR: Self = Self(1000000000);
     pub const SWAPCHAIN_KHR: Self = Self(1000001000);
@@ -9279,8 +9394,8 @@ impl fmt::Display for ObjectType {
             23 => Some(&"DESCRIPTOR_SET"),
             24 => Some(&"FRAMEBUFFER"),
             25 => Some(&"COMMAND_POOL"),
-            1000156000 => Some(&"SAMPLER_YCBCR_CONVERSION"),
             1000085000 => Some(&"DESCRIPTOR_UPDATE_TEMPLATE"),
+            1000156000 => Some(&"SAMPLER_YCBCR_CONVERSION"),
             1000295000 => Some(&"PRIVATE_DATA_SLOT"),
             1000000000 => Some(&"SURFACE_KHR"),
             1000001000 => Some(&"SWAPCHAIN_KHR"),
@@ -12081,6 +12196,7 @@ impl DriverId {
     pub const IMAGINATION_OPEN_SOURCE_MESA: Self = Self(25);
     pub const MESA_HONEYKRISP: Self = Self(26);
     pub const VULKAN_SC_EMULATION_ON_VULKAN: Self = Self(27);
+    pub const MESA_KOSMICKRISP: Self = Self(28);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -12124,6 +12240,7 @@ impl fmt::Display for DriverId {
             25 => Some(&"IMAGINATION_OPEN_SOURCE_MESA"),
             26 => Some(&"MESA_HONEYKRISP"),
             27 => Some(&"VULKAN_SC_EMULATION_ON_VULKAN"),
+            28 => Some(&"MESA_KOSMICKRISP"),
             _ => None,
         };
         if let Some(name) = name {
@@ -24277,6 +24394,74 @@ impl fmt::Debug for PhysicalDeviceMaintenance9PropertiesKHR {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance10PropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub rgba4_opaque_black_swizzled: Bool32,
+    pub resolve_srgb_format_applies_transfer_function: Bool32,
+    pub resolve_srgb_format_supports_transfer_function_control: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMaintenance10PropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance10PropertiesKHR {}
+impl Default for PhysicalDeviceMaintenance10PropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_10_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            rgba4_opaque_black_swizzled: Default::default(),
+            resolve_srgb_format_applies_transfer_function: Default::default(),
+            resolve_srgb_format_supports_transfer_function_control: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance10PropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance10PropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("rgba4_opaque_black_swizzled", &self.rgba4_opaque_black_swizzled)
+            .field(
+                "resolve_srgb_format_applies_transfer_function",
+                &self.resolve_srgb_format_applies_transfer_function,
+            )
+            .field(
+                "resolve_srgb_format_supports_transfer_function_control",
+                &self.resolve_srgb_format_supports_transfer_function_control,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance10FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub maintenance10: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMaintenance10FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance10FeaturesKHR {}
+impl Default for PhysicalDeviceMaintenance10FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_10_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            maintenance10: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance10FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance10FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("maintenance10", &self.maintenance10)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct QueueFamilyOwnershipTransferPropertiesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -27648,55 +27833,56 @@ pub type PhysicalDeviceCopyMemoryIndirectPropertiesNV = PhysicalDeviceCopyMemory
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceMemoryDecompressionFeaturesNV {
+pub struct PhysicalDeviceMemoryDecompressionFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub memory_decompression: Bool32,
 }
-unsafe impl Send for PhysicalDeviceMemoryDecompressionFeaturesNV {}
-unsafe impl Sync for PhysicalDeviceMemoryDecompressionFeaturesNV {}
-impl Default for PhysicalDeviceMemoryDecompressionFeaturesNV {
+unsafe impl Send for PhysicalDeviceMemoryDecompressionFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceMemoryDecompressionFeaturesEXT {}
+impl Default for PhysicalDeviceMemoryDecompressionFeaturesEXT {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV,
+            s_type: StructureType::PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_EXT,
             p_next: ptr::null_mut(),
             memory_decompression: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceMemoryDecompressionFeaturesNV {
+impl fmt::Debug for PhysicalDeviceMemoryDecompressionFeaturesEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceMemoryDecompressionFeaturesNV")
+        fmt.debug_struct("PhysicalDeviceMemoryDecompressionFeaturesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("memory_decompression", &self.memory_decompression)
             .finish()
     }
 }
+pub type PhysicalDeviceMemoryDecompressionFeaturesNV = PhysicalDeviceMemoryDecompressionFeaturesEXT;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceMemoryDecompressionPropertiesNV {
+pub struct PhysicalDeviceMemoryDecompressionPropertiesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
-    pub decompression_methods: MemoryDecompressionMethodFlagsNV,
+    pub decompression_methods: MemoryDecompressionMethodFlagsEXT,
     pub max_decompression_indirect_count: u64,
 }
-unsafe impl Send for PhysicalDeviceMemoryDecompressionPropertiesNV {}
-unsafe impl Sync for PhysicalDeviceMemoryDecompressionPropertiesNV {}
-impl Default for PhysicalDeviceMemoryDecompressionPropertiesNV {
+unsafe impl Send for PhysicalDeviceMemoryDecompressionPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceMemoryDecompressionPropertiesEXT {}
+impl Default for PhysicalDeviceMemoryDecompressionPropertiesEXT {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV,
+            s_type: StructureType::PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             decompression_methods: Default::default(),
             max_decompression_indirect_count: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceMemoryDecompressionPropertiesNV {
+impl fmt::Debug for PhysicalDeviceMemoryDecompressionPropertiesEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceMemoryDecompressionPropertiesNV")
+        fmt.debug_struct("PhysicalDeviceMemoryDecompressionPropertiesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("decompression_methods", &self.decompression_methods)
@@ -27707,6 +27893,7 @@ impl fmt::Debug for PhysicalDeviceMemoryDecompressionPropertiesNV {
             .finish()
     }
 }
+pub type PhysicalDeviceMemoryDecompressionPropertiesNV = PhysicalDeviceMemoryDecompressionPropertiesEXT;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -41425,28 +41612,29 @@ pub type RenderingInfoKHR = RenderingInfo;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct RenderingEndInfoEXT {
+pub struct RenderingEndInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
 }
-unsafe impl Send for RenderingEndInfoEXT {}
-unsafe impl Sync for RenderingEndInfoEXT {}
-impl Default for RenderingEndInfoEXT {
+unsafe impl Send for RenderingEndInfoKHR {}
+unsafe impl Sync for RenderingEndInfoKHR {}
+impl Default for RenderingEndInfoKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::RENDERING_END_INFO_EXT,
+            s_type: StructureType::RENDERING_END_INFO_KHR,
             p_next: ptr::null(),
         }
     }
 }
-impl fmt::Debug for RenderingEndInfoEXT {
+impl fmt::Debug for RenderingEndInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("RenderingEndInfoEXT")
+        fmt.debug_struct("RenderingEndInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .finish()
     }
 }
+pub type RenderingEndInfoEXT = RenderingEndInfoKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -44160,6 +44348,68 @@ impl fmt::Debug for PhysicalDeviceAddressBindingReportFeaturesEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct RenderingAttachmentFlagsInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: RenderingAttachmentFlagsKHR,
+}
+unsafe impl Send for RenderingAttachmentFlagsInfoKHR {}
+unsafe impl Sync for RenderingAttachmentFlagsInfoKHR {}
+impl Default for RenderingAttachmentFlagsInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDERING_ATTACHMENT_FLAGS_INFO_KHR,
+            p_next: ptr::null(),
+            flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for RenderingAttachmentFlagsInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderingAttachmentFlagsInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ResolveImageModeInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: ResolveImageFlagsKHR,
+    pub resolve_mode: ResolveModeFlags,
+    pub stencil_resolve_mode: ResolveModeFlags,
+}
+unsafe impl Send for ResolveImageModeInfoKHR {}
+unsafe impl Sync for ResolveImageModeInfoKHR {}
+impl Default for ResolveImageModeInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RESOLVE_IMAGE_MODE_INFO_KHR,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            resolve_mode: Default::default(),
+            stencil_resolve_mode: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ResolveImageModeInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ResolveImageModeInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("resolve_mode", &self.resolve_mode)
+            .field("stencil_resolve_mode", &self.stencil_resolve_mode)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct DeviceAddressBindingCallbackDataEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -44744,6 +44994,49 @@ pub struct DecompressMemoryRegionNV {
     pub compressed_size: DeviceSize,
     pub decompressed_size: DeviceSize,
     pub decompression_method: MemoryDecompressionMethodFlagsNV,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct DecompressMemoryRegionEXT {
+    pub src_address: DeviceAddress,
+    pub dst_address: DeviceAddress,
+    pub compressed_size: DeviceSize,
+    pub decompressed_size: DeviceSize,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DecompressMemoryInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub decompression_method: MemoryDecompressionMethodFlagsEXT,
+    pub region_count: u32,
+    pub p_regions: *const DecompressMemoryRegionEXT,
+}
+unsafe impl Send for DecompressMemoryInfoEXT {}
+unsafe impl Sync for DecompressMemoryInfoEXT {}
+impl Default for DecompressMemoryInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DECOMPRESS_MEMORY_INFO_EXT,
+            p_next: ptr::null(),
+            decompression_method: Default::default(),
+            region_count: Default::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DecompressMemoryInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DecompressMemoryInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("decompression_method", &self.decompression_method)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .finish()
+    }
 }
 
 #[repr(C)]
@@ -49450,6 +49743,37 @@ impl_handle!(ExternalComputeQueueNV);
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_uniform_buffer_unsized_array: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT {}
+impl Default for PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_uniform_buffer_unsized_array: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "shader_uniform_buffer_unsized_array",
+                &self.shader_uniform_buffer_unsized_array,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceFormatPackFeaturesARM {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -51149,6 +51473,118 @@ impl fmt::Debug for PhysicalDeviceShaderUntypedPointersFeaturesKHR {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_untyped_pointers", &self.shader_untyped_pointers)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct NativeBufferOHOS {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub handle: *mut OHBufferHandle,
+}
+unsafe impl Send for NativeBufferOHOS {}
+unsafe impl Sync for NativeBufferOHOS {}
+impl Default for NativeBufferOHOS {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::NATIVE_BUFFER_OHOS,
+            p_next: ptr::null(),
+            handle: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for NativeBufferOHOS {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("NativeBufferOHOS")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("handle", &self.handle)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SwapchainImageCreateInfoOHOS {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub usage: SwapchainImageUsageFlagsOHOS,
+}
+unsafe impl Send for SwapchainImageCreateInfoOHOS {}
+unsafe impl Sync for SwapchainImageCreateInfoOHOS {}
+impl Default for SwapchainImageCreateInfoOHOS {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SWAPCHAIN_IMAGE_CREATE_INFO_OHOS,
+            p_next: ptr::null(),
+            usage: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainImageCreateInfoOHOS {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainImageCreateInfoOHOS")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("usage", &self.usage)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePresentationPropertiesOHOS {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub shared_image: Bool32,
+}
+unsafe impl Send for PhysicalDevicePresentationPropertiesOHOS {}
+unsafe impl Sync for PhysicalDevicePresentationPropertiesOHOS {}
+impl Default for PhysicalDevicePresentationPropertiesOHOS {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_OHOS,
+            p_next: ptr::null(),
+            shared_image: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePresentationPropertiesOHOS {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePresentationPropertiesOHOS")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shared_image", &self.shared_image)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShader64BitIndexingFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader64_bit_indexing: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShader64BitIndexingFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShader64BitIndexingFeaturesEXT {}
+impl Default for PhysicalDeviceShader64BitIndexingFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader64_bit_indexing: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShader64BitIndexingFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShader64BitIndexingFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader64_bit_indexing", &self.shader64_bit_indexing)
             .finish()
     }
 }
@@ -53447,6 +53883,18 @@ pub type FnCmdBuildPartitionedAccelerationStructuresNV = unsafe extern "system" 
     command_buffer: CommandBuffer,
     p_build_info: *const BuildPartitionedAccelerationStructureInfoNV,
 );
+pub type FnCmdDecompressMemoryEXT = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    p_decompress_memory_info_ext: *const DecompressMemoryInfoEXT,
+);
+pub type FnCmdDecompressMemoryIndirectCountEXT = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    decompression_method: MemoryDecompressionMethodFlagsEXT,
+    indirect_commands_address: DeviceAddress,
+    indirect_commands_count_address: DeviceAddress,
+    max_decompression_count: u32,
+    stride: u32,
+);
 pub type FnCreateCuModuleNVX = unsafe extern "system" fn(
     device: Device,
     p_create_info: *const CuModuleCreateInfoNVX,
@@ -53589,8 +54037,8 @@ pub type FnCmdCudaLaunchKernelNV =
 pub type FnCmdBeginRendering =
     unsafe extern "system" fn(command_buffer: CommandBuffer, p_rendering_info: *const RenderingInfo);
 pub type FnCmdEndRendering = unsafe extern "system" fn(command_buffer: CommandBuffer);
-pub type FnCmdEndRendering2EXT =
-    unsafe extern "system" fn(command_buffer: CommandBuffer, p_rendering_end_info: *const RenderingEndInfoEXT);
+pub type FnCmdEndRendering2KHR =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_rendering_end_info: *const RenderingEndInfoKHR);
 pub type FnGetDescriptorSetLayoutHostMappingInfoVALVE = unsafe extern "system" fn(
     device: Device,
     p_binding_reference: *const DescriptorSetBindingReferenceVALVE,
@@ -54030,3 +54478,23 @@ pub type FnGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = 
     p_queue_family_data_graph_processing_engine_info: *const PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM,
     p_queue_family_data_graph_processing_engine_properties: *mut QueueFamilyDataGraphProcessingEnginePropertiesARM,
 );
+pub type FnGetSwapchainGrallocUsageOHOS = unsafe extern "system" fn(
+    device: Device,
+    format: Format,
+    image_usage: ImageUsageFlags,
+    gralloc_usage: *mut u64,
+) -> Result;
+pub type FnAcquireImageOHOS = unsafe extern "system" fn(
+    device: Device,
+    image: Image,
+    native_fence_fd: i32,
+    semaphore: Semaphore,
+    fence: Fence,
+) -> Result;
+pub type FnQueueSignalReleaseImageOHOS = unsafe extern "system" fn(
+    queue: Queue,
+    wait_semaphore_count: u32,
+    p_wait_semaphores: *const Semaphore,
+    image: Image,
+    p_native_fence_fd: *mut i32,
+) -> Result;

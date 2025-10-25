@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.329
+// Generated from vk.xml version 1.4.330
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -208,6 +208,7 @@ pub const HANDLE = ?*anyopaque;
 pub const zx_handle_t = u32;
 pub const RROutput = c_ulong;
 pub const AHardwareBuffer = opaque {};
+pub const OHBufferHandle = opaque {};
 pub const OHNativeWindow = opaque {};
 pub const MTLSharedEvent_id = ?*anyopaque;
 pub const IOSurfaceRef = ?*anyopaque;
@@ -524,8 +525,8 @@ pub const PipelineCreateFlagBits = enum(u5) {
     disable_optimization = 0,
     allow_derivatives = 1,
     derivative = 2,
-    view_index_from_device_index = 3,
     dispatch_base = 4,
+    view_index_from_device_index = 3,
     fail_on_pipeline_compile_required = 8,
     early_return_on_failure = 9,
     no_protected_access = 27,
@@ -767,6 +768,8 @@ pub const SampleCountFlagBits = enum(u5) {
 pub const SampleCountFlags = BitField(SampleCountFlagBits);
 pub const AttachmentDescriptionFlagBits = enum(u5) {
     may_alias = 0,
+    resolve_skip_transfer_function_khr = 1,
+    resolve_enable_transfer_function_khr = 2,
     _,
 };
 pub const AttachmentDescriptionFlags = BitField(AttachmentDescriptionFlagBits);
@@ -999,6 +1002,8 @@ pub const AccessFlagBits2 = enum(u6) {
     optical_flow_write_nv = 43,
     data_graph_read_arm = 47,
     data_graph_write_arm = 48,
+    memory_decompression_read_ext = 55,
+    memory_decompression_write_ext = 56,
     _,
 };
 pub const AccessFlags2 = BitField(AccessFlagBits2);
@@ -1049,6 +1054,7 @@ pub const PipelineStageFlagBits2 = enum(u6) {
     convert_cooperative_vector_matrix_nv = 44,
     data_graph_arm = 42,
     copy_indirect_khr = 46,
+    memory_decompression_ext = 45,
     _,
 };
 pub const PipelineStageFlags2 = BitField(PipelineStageFlagBits2);
@@ -1109,6 +1115,10 @@ pub const FormatFeatureFlagBits2 = enum(u6) {
     optical_flow_cost_nv = 42,
     tensor_data_graph_arm = 48,
     copy_image_indirect_dst_khr = 59,
+    depth_copy_on_compute_queue_khr = 52,
+    depth_copy_on_transfer_queue_khr = 53,
+    stencil_copy_on_compute_queue_khr = 54,
+    stencil_copy_on_transfer_queue_khr = 55,
     _,
 };
 pub const FormatFeatureFlags2 = BitField(FormatFeatureFlagBits2);
@@ -1120,14 +1130,16 @@ pub const RenderingFlagBits = enum(u5) {
     enable_legacy_dithering_ext = 3,
     contents_inline_khr = 4,
     per_layer_fragment_density_valve = 5,
+    local_read_concurrent_access_control_khr = 8,
     _,
 };
 pub const RenderingFlags = BitField(RenderingFlagBits);
-pub const MemoryDecompressionMethodFlagBitsNV = enum(u6) {
+pub const MemoryDecompressionMethodFlagBitsEXT = enum(u6) {
     gdeflate_1_0 = 0,
     _,
 };
-pub const MemoryDecompressionMethodFlagsNV = BitField(MemoryDecompressionMethodFlagBitsNV);
+pub const MemoryDecompressionMethodFlagsEXT = BitField(MemoryDecompressionMethodFlagBitsEXT);
+pub const MemoryDecompressionMethodFlagsNV = MemoryDecompressionMethodFlagsEXT;
 pub const RenderingFlagsKHR = RenderingFlags;
 pub const BuildMicromapFlagBitsEXT = enum(u5) {
     prefer_fast_trace = 0,
@@ -1196,6 +1208,7 @@ pub const PipelineCreateFlagBits2 = enum(u6) {
     capture_data_khr = 31,
     indirect_bindable_ext = 38,
     per_layer_fragment_density_valve = 40,
+    @"64_bit_indexing_ext" = 43,
     _,
 };
 pub const PipelineCreateFlags2 = BitField(PipelineCreateFlagBits2);
@@ -1226,6 +1239,7 @@ pub const BufferUsageFlagBits2 = enum(u6) {
     compressed_data_dgf1_amdx = 33,
     data_graph_foreign_descriptor_arm = 29,
     tile_memory_qcom = 27,
+    memory_decompression_ext = 32,
     preprocess_buffer_ext = 31,
     _,
 };
@@ -1701,6 +1715,19 @@ pub const ExportMetalObjectTypeFlagBitsEXT = enum(u5) {
     _,
 };
 pub const ExportMetalObjectTypeFlagsEXT = BitField(ExportMetalObjectTypeFlagBitsEXT);
+pub const RenderingAttachmentFlagBitsKHR = enum(u5) {
+    input_attachment_feedback = 0,
+    resolve_skip_transfer_function = 1,
+    resolve_enable_transfer_function = 2,
+    _,
+};
+pub const RenderingAttachmentFlagsKHR = BitField(RenderingAttachmentFlagBitsKHR);
+pub const ResolveImageFlagBitsKHR = enum(u5) {
+    skip_transfer_function = 0,
+    enable_transfer_function = 1,
+    _,
+};
+pub const ResolveImageFlagsKHR = BitField(ResolveImageFlagBitsKHR);
 pub const DeviceAddressBindingFlagBitsEXT = enum(u5) {
     internal_object = 0,
     _,
@@ -1773,6 +1800,7 @@ pub const ShaderCreateFlagBitsEXT = enum(u5) {
     fragment_shading_rate_attachment = 5,
     fragment_density_map_attachment = 6,
     indirect_bindable = 7,
+    @"64_bit_indexing" = 15,
     _,
 };
 pub const ShaderCreateFlagsEXT = BitField(ShaderCreateFlagBitsEXT);
@@ -1791,6 +1819,11 @@ pub const SurfaceCreateFlagBitsOHOS = enum(u5) {
     _,
 };
 pub const SurfaceCreateFlagsOHOS = BitField(SurfaceCreateFlagBitsOHOS);
+pub const SwapchainImageUsageFlagBitsOHOS = enum(u5) {
+    shared = 0,
+    _,
+};
+pub const SwapchainImageUsageFlagsOHOS = BitField(SwapchainImageUsageFlagBitsOHOS);
 pub const AccessFlagBits3KHR = enum(u6) {
     _,
 };
@@ -2538,8 +2571,8 @@ pub const Result = enum(i32) {
     error_validation_failed = -1000011001,
     error_out_of_pool_memory = -1000069000,
     error_invalid_external_handle = -1000072003,
-    error_fragmentation = -1000161000,
     error_invalid_opaque_capture_address = -1000257000,
+    error_fragmentation = -1000161000,
     pipeline_compile_required = 1000297000,
     error_not_permitted = -1000174001,
     error_surface_lost_khr = -1000000000,
@@ -2621,14 +2654,11 @@ pub const StructureType = enum(i32) {
     memory_barrier = 46,
     loader_instance_create_info = 47,
     loader_device_create_info = 48,
-    physical_device_subgroup_properties = 1000094000,
     bind_buffer_memory_info = 1000157000,
     bind_image_memory_info = 1000157001,
-    physical_device_16bit_storage_features = 1000083000,
     memory_dedicated_requirements = 1000127000,
     memory_dedicated_allocate_info = 1000127001,
     memory_allocate_flags_info = 1000060000,
-    device_group_render_pass_begin_info = 1000060003,
     device_group_command_buffer_begin_info = 1000060004,
     device_group_submit_info = 1000060005,
     device_group_bind_sparse_info = 1000060006,
@@ -2650,25 +2680,11 @@ pub const StructureType = enum(i32) {
     physical_device_memory_properties_2 = 1000059006,
     sparse_image_format_properties_2 = 1000059007,
     physical_device_sparse_image_format_info_2 = 1000059008,
-    physical_device_point_clipping_properties = 1000117000,
-    render_pass_input_attachment_aspect_create_info = 1000117001,
     image_view_usage_create_info = 1000117002,
-    pipeline_tessellation_domain_origin_state_create_info = 1000117003,
-    render_pass_multiview_create_info = 1000053000,
-    physical_device_multiview_features = 1000053001,
-    physical_device_multiview_properties = 1000053002,
-    physical_device_variable_pointers_features = 1000120000,
     protected_submit_info = 1000145000,
     physical_device_protected_memory_features = 1000145001,
     physical_device_protected_memory_properties = 1000145002,
     device_queue_info_2 = 1000145003,
-    sampler_ycbcr_conversion_create_info = 1000156000,
-    sampler_ycbcr_conversion_info = 1000156001,
-    bind_image_plane_memory_info = 1000156002,
-    image_plane_memory_requirements_info = 1000156003,
-    physical_device_sampler_ycbcr_conversion_features = 1000156004,
-    sampler_ycbcr_conversion_image_format_properties = 1000156005,
-    descriptor_update_template_create_info = 1000085000,
     physical_device_external_image_format_info = 1000071000,
     external_image_format_properties = 1000071001,
     physical_device_external_buffer_info = 1000071002,
@@ -2683,47 +2699,33 @@ pub const StructureType = enum(i32) {
     export_semaphore_create_info = 1000077000,
     physical_device_external_semaphore_info = 1000076000,
     external_semaphore_properties = 1000076001,
+    physical_device_subgroup_properties = 1000094000,
+    physical_device_16bit_storage_features = 1000083000,
+    physical_device_variable_pointers_features = 1000120000,
+    descriptor_update_template_create_info = 1000085000,
     physical_device_maintenance_3_properties = 1000168000,
     descriptor_set_layout_support = 1000168001,
+    sampler_ycbcr_conversion_create_info = 1000156000,
+    sampler_ycbcr_conversion_info = 1000156001,
+    bind_image_plane_memory_info = 1000156002,
+    image_plane_memory_requirements_info = 1000156003,
+    physical_device_sampler_ycbcr_conversion_features = 1000156004,
+    sampler_ycbcr_conversion_image_format_properties = 1000156005,
+    device_group_render_pass_begin_info = 1000060003,
+    physical_device_point_clipping_properties = 1000117000,
+    render_pass_input_attachment_aspect_create_info = 1000117001,
+    pipeline_tessellation_domain_origin_state_create_info = 1000117003,
+    render_pass_multiview_create_info = 1000053000,
+    physical_device_multiview_features = 1000053001,
+    physical_device_multiview_properties = 1000053002,
     physical_device_shader_draw_parameters_features = 1000063000,
     physical_device_vulkan_1_1_features = 49,
     physical_device_vulkan_1_1_properties = 50,
     physical_device_vulkan_1_2_features = 51,
     physical_device_vulkan_1_2_properties = 52,
     image_format_list_create_info = 1000147000,
-    attachment_description_2 = 1000109000,
-    attachment_reference_2 = 1000109001,
-    subpass_description_2 = 1000109002,
-    subpass_dependency_2 = 1000109003,
-    render_pass_create_info_2 = 1000109004,
-    subpass_begin_info = 1000109005,
-    subpass_end_info = 1000109006,
-    physical_device_8bit_storage_features = 1000177000,
     physical_device_driver_properties = 1000196000,
-    physical_device_shader_atomic_int64_features = 1000180000,
-    physical_device_shader_float16_int8_features = 1000082000,
-    physical_device_float_controls_properties = 1000197000,
-    descriptor_set_layout_binding_flags_create_info = 1000161000,
-    physical_device_descriptor_indexing_features = 1000161001,
-    physical_device_descriptor_indexing_properties = 1000161002,
-    descriptor_set_variable_descriptor_count_allocate_info = 1000161003,
-    descriptor_set_variable_descriptor_count_layout_support = 1000161004,
-    physical_device_depth_stencil_resolve_properties = 1000199000,
-    subpass_description_depth_stencil_resolve = 1000199001,
-    physical_device_scalar_block_layout_features = 1000221000,
-    image_stencil_usage_create_info = 1000246000,
-    physical_device_sampler_filter_minmax_properties = 1000130000,
-    sampler_reduction_mode_create_info = 1000130001,
     physical_device_vulkan_memory_model_features = 1000211000,
-    physical_device_imageless_framebuffer_features = 1000108000,
-    framebuffer_attachments_create_info = 1000108001,
-    framebuffer_attachment_image_info = 1000108002,
-    render_pass_attachment_begin_info = 1000108003,
-    physical_device_uniform_buffer_standard_layout_features = 1000253000,
-    physical_device_shader_subgroup_extended_types_features = 1000175000,
-    physical_device_separate_depth_stencil_layouts_features = 1000241000,
-    attachment_reference_stencil_layout = 1000241001,
-    attachment_description_stencil_layout = 1000241002,
     physical_device_host_query_reset_features = 1000261000,
     physical_device_timeline_semaphore_features = 1000207000,
     physical_device_timeline_semaphore_properties = 1000207001,
@@ -2736,16 +2738,43 @@ pub const StructureType = enum(i32) {
     buffer_opaque_capture_address_create_info = 1000257002,
     memory_opaque_capture_address_allocate_info = 1000257003,
     device_memory_opaque_capture_address_info = 1000257004,
+    physical_device_8bit_storage_features = 1000177000,
+    physical_device_shader_atomic_int64_features = 1000180000,
+    physical_device_shader_float16_int8_features = 1000082000,
+    physical_device_float_controls_properties = 1000197000,
+    descriptor_set_layout_binding_flags_create_info = 1000161000,
+    physical_device_descriptor_indexing_features = 1000161001,
+    physical_device_descriptor_indexing_properties = 1000161002,
+    descriptor_set_variable_descriptor_count_allocate_info = 1000161003,
+    descriptor_set_variable_descriptor_count_layout_support = 1000161004,
+    physical_device_scalar_block_layout_features = 1000221000,
+    physical_device_sampler_filter_minmax_properties = 1000130000,
+    sampler_reduction_mode_create_info = 1000130001,
+    physical_device_uniform_buffer_standard_layout_features = 1000253000,
+    physical_device_shader_subgroup_extended_types_features = 1000175000,
+    attachment_description_2 = 1000109000,
+    attachment_reference_2 = 1000109001,
+    subpass_description_2 = 1000109002,
+    subpass_dependency_2 = 1000109003,
+    render_pass_create_info_2 = 1000109004,
+    subpass_begin_info = 1000109005,
+    subpass_end_info = 1000109006,
+    physical_device_depth_stencil_resolve_properties = 1000199000,
+    subpass_description_depth_stencil_resolve = 1000199001,
+    image_stencil_usage_create_info = 1000246000,
+    physical_device_imageless_framebuffer_features = 1000108000,
+    framebuffer_attachments_create_info = 1000108001,
+    framebuffer_attachment_image_info = 1000108002,
+    render_pass_attachment_begin_info = 1000108003,
+    physical_device_separate_depth_stencil_layouts_features = 1000241000,
+    attachment_reference_stencil_layout = 1000241001,
+    attachment_description_stencil_layout = 1000241002,
     physical_device_vulkan_1_3_features = 53,
     physical_device_vulkan_1_3_properties = 54,
-    pipeline_creation_feedback_create_info = 1000192000,
-    physical_device_shader_terminate_invocation_features = 1000215000,
     physical_device_tool_properties = 1000245000,
-    physical_device_shader_demote_to_helper_invocation_features = 1000276000,
     physical_device_private_data_features = 1000295000,
     device_private_data_create_info = 1000295001,
     private_data_slot_create_info = 1000295002,
-    physical_device_pipeline_creation_cache_control_features = 1000297000,
     memory_barrier_2 = 1000314000,
     buffer_memory_barrier_2 = 1000314001,
     image_memory_barrier_2 = 1000314002,
@@ -2754,19 +2783,25 @@ pub const StructureType = enum(i32) {
     semaphore_submit_info = 1000314005,
     command_buffer_submit_info = 1000314006,
     physical_device_synchronization_2_features = 1000314007,
-    physical_device_zero_initialize_workgroup_memory_features = 1000325000,
-    physical_device_image_robustness_features = 1000335000,
     copy_buffer_info_2 = 1000337000,
     copy_image_info_2 = 1000337001,
     copy_buffer_to_image_info_2 = 1000337002,
     copy_image_to_buffer_info_2 = 1000337003,
-    blit_image_info_2 = 1000337004,
-    resolve_image_info_2 = 1000337005,
     buffer_copy_2 = 1000337006,
     image_copy_2 = 1000337007,
-    image_blit_2 = 1000337008,
     buffer_image_copy_2 = 1000337009,
-    image_resolve_2 = 1000337010,
+    physical_device_texture_compression_astc_hdr_features = 1000066000,
+    format_properties_3 = 1000360000,
+    physical_device_maintenance_4_features = 1000413000,
+    physical_device_maintenance_4_properties = 1000413001,
+    device_buffer_memory_requirements = 1000413002,
+    device_image_memory_requirements = 1000413003,
+    pipeline_creation_feedback_create_info = 1000192000,
+    physical_device_shader_terminate_invocation_features = 1000215000,
+    physical_device_shader_demote_to_helper_invocation_features = 1000276000,
+    physical_device_pipeline_creation_cache_control_features = 1000297000,
+    physical_device_zero_initialize_workgroup_memory_features = 1000325000,
+    physical_device_image_robustness_features = 1000335000,
     physical_device_subgroup_size_control_properties = 1000225000,
     pipeline_shader_stage_required_subgroup_size_create_info = 1000225001,
     physical_device_subgroup_size_control_features = 1000225002,
@@ -2774,60 +2809,35 @@ pub const StructureType = enum(i32) {
     physical_device_inline_uniform_block_properties = 1000138001,
     write_descriptor_set_inline_uniform_block = 1000138002,
     descriptor_pool_inline_uniform_block_create_info = 1000138003,
-    physical_device_texture_compression_astc_hdr_features = 1000066000,
+    physical_device_shader_integer_dot_product_features = 1000280000,
+    physical_device_shader_integer_dot_product_properties = 1000280001,
+    physical_device_texel_buffer_alignment_properties = 1000281001,
+    blit_image_info_2 = 1000337004,
+    resolve_image_info_2 = 1000337005,
+    image_blit_2 = 1000337008,
+    image_resolve_2 = 1000337010,
     rendering_info = 1000044000,
     rendering_attachment_info = 1000044001,
     pipeline_rendering_create_info = 1000044002,
     physical_device_dynamic_rendering_features = 1000044003,
     command_buffer_inheritance_rendering_info = 1000044004,
-    physical_device_shader_integer_dot_product_features = 1000280000,
-    physical_device_shader_integer_dot_product_properties = 1000280001,
-    physical_device_texel_buffer_alignment_properties = 1000281001,
-    format_properties_3 = 1000360000,
-    physical_device_maintenance_4_features = 1000413000,
-    physical_device_maintenance_4_properties = 1000413001,
-    device_buffer_memory_requirements = 1000413002,
-    device_image_memory_requirements = 1000413003,
     physical_device_vulkan_1_4_features = 55,
     physical_device_vulkan_1_4_properties = 56,
     device_queue_global_priority_create_info = 1000174000,
     physical_device_global_priority_query_features = 1000388000,
     queue_family_global_priority_properties = 1000388001,
-    physical_device_shader_subgroup_rotate_features = 1000416000,
-    physical_device_shader_float_controls_2_features = 1000528000,
-    physical_device_shader_expect_assume_features = 1000544000,
-    physical_device_line_rasterization_features = 1000259000,
-    pipeline_rasterization_line_state_create_info = 1000259001,
-    physical_device_line_rasterization_properties = 1000259002,
-    physical_device_vertex_attribute_divisor_properties = 1000525000,
-    pipeline_vertex_input_divisor_state_create_info = 1000190001,
-    physical_device_vertex_attribute_divisor_features = 1000190002,
     physical_device_index_type_uint8_features = 1000265000,
     memory_map_info = 1000271000,
     memory_unmap_info = 1000271001,
     physical_device_maintenance_5_features = 1000470000,
     physical_device_maintenance_5_properties = 1000470001,
-    rendering_area_info = 1000470003,
     device_image_subresource_info = 1000470004,
     subresource_layout_2 = 1000338002,
     image_subresource_2 = 1000338003,
-    pipeline_create_flags_2_create_info = 1000470005,
     buffer_usage_flags_2_create_info = 1000470006,
-    physical_device_push_descriptor_properties = 1000080000,
-    physical_device_dynamic_rendering_local_read_features = 1000232000,
-    rendering_attachment_location_info = 1000232001,
-    rendering_input_attachment_index_info = 1000232002,
     physical_device_maintenance_6_features = 1000545000,
     physical_device_maintenance_6_properties = 1000545001,
     bind_memory_status = 1000545002,
-    bind_descriptor_sets_info = 1000545003,
-    push_constants_info = 1000545004,
-    push_descriptor_set_info = 1000545005,
-    push_descriptor_set_with_template_info = 1000545006,
-    physical_device_pipeline_protected_access_features = 1000466000,
-    pipeline_robustness_create_info = 1000068000,
-    physical_device_pipeline_robustness_features = 1000068001,
-    physical_device_pipeline_robustness_properties = 1000068002,
     physical_device_host_image_copy_features = 1000270000,
     physical_device_host_image_copy_properties = 1000270001,
     memory_to_image_copy = 1000270002,
@@ -2838,6 +2848,29 @@ pub const StructureType = enum(i32) {
     copy_image_to_image_info = 1000270007,
     subresource_host_memcpy_size = 1000270008,
     host_image_copy_device_performance_query = 1000270009,
+    physical_device_shader_subgroup_rotate_features = 1000416000,
+    physical_device_shader_float_controls_2_features = 1000528000,
+    physical_device_shader_expect_assume_features = 1000544000,
+    pipeline_create_flags_2_create_info = 1000470005,
+    physical_device_push_descriptor_properties = 1000080000,
+    bind_descriptor_sets_info = 1000545003,
+    push_constants_info = 1000545004,
+    push_descriptor_set_info = 1000545005,
+    push_descriptor_set_with_template_info = 1000545006,
+    physical_device_pipeline_protected_access_features = 1000466000,
+    pipeline_robustness_create_info = 1000068000,
+    physical_device_pipeline_robustness_features = 1000068001,
+    physical_device_pipeline_robustness_properties = 1000068002,
+    physical_device_line_rasterization_features = 1000259000,
+    pipeline_rasterization_line_state_create_info = 1000259001,
+    physical_device_line_rasterization_properties = 1000259002,
+    physical_device_vertex_attribute_divisor_properties = 1000525000,
+    pipeline_vertex_input_divisor_state_create_info = 1000190001,
+    physical_device_vertex_attribute_divisor_features = 1000190002,
+    rendering_area_info = 1000470003,
+    physical_device_dynamic_rendering_local_read_features = 1000232000,
+    rendering_attachment_location_info = 1000232001,
+    rendering_input_attachment_index_info = 1000232002,
     swapchain_create_info_khr = 1000001000,
     present_info_khr = 1000001001,
     device_group_present_capabilities_khr = 1000060007,
@@ -3283,8 +3316,6 @@ pub const StructureType = enum(i32) {
     render_pass_stripe_info_arm = 1000424003,
     render_pass_stripe_submit_info_arm = 1000424004,
     physical_device_copy_memory_indirect_features_nv = 1000426000,
-    physical_device_memory_decompression_features_nv = 1000427000,
-    physical_device_memory_decompression_properties_nv = 1000427001,
     physical_device_device_generated_commands_compute_features_nv = 1000428000,
     compute_pipeline_indirect_buffer_info_nv = 1000428001,
     pipeline_indirect_device_address_info_nv = 1000428002,
@@ -3467,6 +3498,9 @@ pub const StructureType = enum(i32) {
     physical_device_copy_memory_indirect_properties_khr = 1000426001,
     copy_memory_indirect_info_khr = 1000549002,
     copy_memory_to_image_indirect_info_khr = 1000549003,
+    physical_device_memory_decompression_features_ext = 1000427000,
+    physical_device_memory_decompression_properties_ext = 1000427001,
+    decompress_memory_info_ext = 1000550002,
     display_surface_stereo_create_info_nv = 1000551000,
     display_mode_stereo_properties_nv = 1000551001,
     physical_device_raw_access_chains_features_nv = 1000555000,
@@ -3525,6 +3559,9 @@ pub const StructureType = enum(i32) {
     physical_device_maintenance_9_properties_khr = 1000584001,
     queue_family_ownership_transfer_properties_khr = 1000584002,
     surface_create_info_ohos = 1000685000,
+    native_buffer_ohos = 1000453001,
+    swapchain_image_create_info_ohos = 1000453002,
+    physical_device_presentation_properties_ohos = 1000453003,
     physical_device_hdr_vivid_features_huawei = 1000590000,
     hdr_vivid_dynamic_metadata_huawei = 1000590001,
     physical_device_cooperative_matrix_2_features_nv = 1000593000,
@@ -3547,10 +3584,16 @@ pub const StructureType = enum(i32) {
     physical_device_fragment_density_map_offset_features_ext = 1000425000,
     physical_device_fragment_density_map_offset_properties_ext = 1000425001,
     render_pass_fragment_density_map_offset_end_info_ext = 1000425002,
-    rendering_end_info_ext = 1000619003,
     physical_device_zero_initialize_device_memory_features_ext = 1000620000,
     physical_device_present_mode_fifo_latest_ready_features_khr = 1000361000,
+    physical_device_shader_64_bit_indexing_features_ext = 1000627000,
+    physical_device_maintenance_10_features_khr = 1000630000,
+    physical_device_maintenance_10_properties_khr = 1000630001,
+    rendering_attachment_flags_info_khr = 1000630002,
+    rendering_end_info_khr = 1000619003,
+    resolve_image_mode_info_khr = 1000630004,
     physical_device_pipeline_cache_incremental_mode_features_sec = 1000637000,
+    physical_device_shader_uniform_buffer_unsized_array_features_ext = 1000642000,
     _,
 };
 pub const SystemAllocationScope = enum(i32) {
@@ -3637,8 +3680,8 @@ pub const ObjectType = enum(i32) {
     descriptor_set = 23,
     framebuffer = 24,
     command_pool = 25,
-    sampler_ycbcr_conversion = 1000156000,
     descriptor_update_template = 1000085000,
+    sampler_ycbcr_conversion = 1000156000,
     private_data_slot = 1000295000,
     surface_khr = 1000000000,
     swapchain_khr = 1000001000,
@@ -4436,6 +4479,7 @@ pub const DriverId = enum(i32) {
     imagination_open_source_mesa = 25,
     mesa_honeykrisp = 26,
     vulkan_sc_emulation_on_vulkan = 27,
+    mesa_kosmickrisp = 28,
     _,
 };
 pub const DriverIdKHR = DriverId;
@@ -4630,6 +4674,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceMaintenance7FeaturesKHR,
             *PhysicalDeviceMaintenance8FeaturesKHR,
             *PhysicalDeviceMaintenance9FeaturesKHR,
+            *PhysicalDeviceMaintenance10FeaturesKHR,
             *PhysicalDeviceShaderDrawParametersFeatures,
             *PhysicalDeviceShaderFloat16Int8Features,
             *PhysicalDeviceHostQueryResetFeatures,
@@ -4655,7 +4700,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV,
             *PhysicalDeviceCopyMemoryIndirectFeaturesKHR,
             *PhysicalDeviceCopyMemoryIndirectFeaturesNV,
-            *PhysicalDeviceMemoryDecompressionFeaturesNV,
+            *PhysicalDeviceMemoryDecompressionFeaturesEXT,
             *PhysicalDeviceShadingRateImageFeaturesNV,
             *PhysicalDeviceInvocationMaskFeaturesHUAWEI,
             *PhysicalDeviceMeshShaderFeaturesNV,
@@ -4832,6 +4877,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE,
             *PhysicalDevicePresentMeteringFeaturesNV,
             *ExternalComputeQueueDeviceCreateInfoNV,
+            *PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT,
             *PhysicalDeviceFormatPackFeaturesARM,
             *PhysicalDeviceTensorFeaturesARM,
             *PhysicalDeviceDescriptorBufferTensorFeaturesARM,
@@ -4839,6 +4885,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceDataGraphFeaturesARM,
             *PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC,
             *PhysicalDeviceShaderUntypedPointersFeaturesKHR,
+            *PhysicalDeviceShader64BitIndexingFeaturesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -5174,6 +5221,8 @@ pub const ImageCreateInfo = extern struct {
             *ImportMetalIOSurfaceInfoEXT,
             *OpticalFlowImageFormatInfoNV,
             *ImageAlignmentControlCreateInfoMESA,
+            *NativeBufferOHOS,
+            *SwapchainImageCreateInfoOHOS,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7011,6 +7060,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceMaintenance7FeaturesKHR,
             *PhysicalDeviceMaintenance8FeaturesKHR,
             *PhysicalDeviceMaintenance9FeaturesKHR,
+            *PhysicalDeviceMaintenance10FeaturesKHR,
             *PhysicalDeviceShaderDrawParametersFeatures,
             *PhysicalDeviceShaderFloat16Int8Features,
             *PhysicalDeviceHostQueryResetFeatures,
@@ -7035,7 +7085,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV,
             *PhysicalDeviceCopyMemoryIndirectFeaturesKHR,
             *PhysicalDeviceCopyMemoryIndirectFeaturesNV,
-            *PhysicalDeviceMemoryDecompressionFeaturesNV,
+            *PhysicalDeviceMemoryDecompressionFeaturesEXT,
             *PhysicalDeviceShadingRateImageFeaturesNV,
             *PhysicalDeviceInvocationMaskFeaturesHUAWEI,
             *PhysicalDeviceMeshShaderFeaturesNV,
@@ -7207,6 +7257,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceTileShadingFeaturesQCOM,
             *PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE,
             *PhysicalDevicePresentMeteringFeaturesNV,
+            *PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT,
             *PhysicalDeviceFormatPackFeaturesARM,
             *PhysicalDeviceTensorFeaturesARM,
             *PhysicalDeviceDescriptorBufferTensorFeaturesARM,
@@ -7214,6 +7265,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceDataGraphFeaturesARM,
             *PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC,
             *PhysicalDeviceShaderUntypedPointersFeaturesKHR,
+            *PhysicalDeviceShader64BitIndexingFeaturesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7253,6 +7305,7 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceMaintenance7PropertiesKHR,
             *PhysicalDeviceLayeredApiPropertiesListKHR,
             *PhysicalDeviceMaintenance9PropertiesKHR,
+            *PhysicalDeviceMaintenance10PropertiesKHR,
             *PhysicalDeviceFloatControlsProperties,
             *PhysicalDeviceExternalMemoryHostPropertiesEXT,
             *PhysicalDeviceConservativeRasterizationPropertiesEXT,
@@ -7267,7 +7320,7 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceTransformFeedbackPropertiesEXT,
             *PhysicalDeviceComputeShaderDerivativesPropertiesKHR,
             *PhysicalDeviceCopyMemoryIndirectPropertiesKHR,
-            *PhysicalDeviceMemoryDecompressionPropertiesNV,
+            *PhysicalDeviceMemoryDecompressionPropertiesEXT,
             *PhysicalDeviceShadingRateImagePropertiesNV,
             *PhysicalDeviceMeshShaderPropertiesNV,
             *PhysicalDeviceMeshShaderPropertiesEXT,
@@ -7338,6 +7391,7 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceExternalComputeQueuePropertiesNV,
             *PhysicalDeviceTensorPropertiesARM,
             *PhysicalDeviceDescriptorBufferTensorPropertiesARM,
+            *PhysicalDevicePresentationPropertiesOHOS,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7936,6 +7990,7 @@ pub const BindImageMemoryInfo = extern struct {
             *BindImageMemorySwapchainInfoKHR,
             *BindImagePlaneMemoryInfo,
             *BindMemoryStatus,
+            *NativeBufferOHOS,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -8815,6 +8870,18 @@ pub const PhysicalDeviceMaintenance9PropertiesKHR = extern struct {
     image_2d_view_of_3d_sparse: Bool32 = .false,
     default_vertex_attribute_value: DefaultVertexAttributeValueKHR = @enumFromInt(0),
 };
+pub const PhysicalDeviceMaintenance10PropertiesKHR = extern struct {
+    s_type: StructureType = .physical_device_maintenance_10_properties_khr,
+    p_next: ?*anyopaque = null,
+    rgba4_opaque_black_swizzled: Bool32 = .false,
+    resolve_srgb_format_applies_transfer_function: Bool32 = .false,
+    resolve_srgb_format_supports_transfer_function_control: Bool32 = .false,
+};
+pub const PhysicalDeviceMaintenance10FeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_maintenance_10_features_khr,
+    p_next: ?*anyopaque = null,
+    maintenance10: Bool32 = .false,
+};
 pub const QueueFamilyOwnershipTransferPropertiesKHR = extern struct {
     s_type: StructureType = .queue_family_ownership_transfer_properties_khr,
     p_next: ?*anyopaque = null,
@@ -9630,17 +9697,19 @@ pub const PhysicalDeviceCopyMemoryIndirectPropertiesKHR = extern struct {
     supported_queues: QueueFlags = .none,
 };
 pub const PhysicalDeviceCopyMemoryIndirectPropertiesNV = PhysicalDeviceCopyMemoryIndirectPropertiesKHR;
-pub const PhysicalDeviceMemoryDecompressionFeaturesNV = extern struct {
-    s_type: StructureType = .physical_device_memory_decompression_features_nv,
+pub const PhysicalDeviceMemoryDecompressionFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_memory_decompression_features_ext,
     p_next: ?*anyopaque = null,
     memory_decompression: Bool32 = .false,
 };
-pub const PhysicalDeviceMemoryDecompressionPropertiesNV = extern struct {
-    s_type: StructureType = .physical_device_memory_decompression_properties_nv,
+pub const PhysicalDeviceMemoryDecompressionFeaturesNV = PhysicalDeviceMemoryDecompressionFeaturesEXT;
+pub const PhysicalDeviceMemoryDecompressionPropertiesEXT = extern struct {
+    s_type: StructureType = .physical_device_memory_decompression_properties_ext,
     p_next: ?*anyopaque = null,
-    decompression_methods: MemoryDecompressionMethodFlagsNV = .none,
+    decompression_methods: MemoryDecompressionMethodFlagsEXT = .none,
     max_decompression_indirect_count: u64 = 0,
 };
+pub const PhysicalDeviceMemoryDecompressionPropertiesNV = PhysicalDeviceMemoryDecompressionPropertiesEXT;
 pub const ShadingRatePaletteNV = extern struct {
     shading_rate_palette_entry_count: u32 = 0,
     p_shading_rate_palette_entries: ?[*]const ShadingRatePaletteEntryNV = null,
@@ -11594,6 +11663,17 @@ pub const ResolveImageInfo2 = extern struct {
     dst_image_layout: ImageLayout = @enumFromInt(0),
     region_count: u32 = 0,
     p_regions: ?[*]const ImageResolve2 = null,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *ResolveImageModeInfoKHR,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const ResolveImageInfo2KHR = ResolveImageInfo2;
 pub const PhysicalDeviceShaderImageAtomicInt64FeaturesEXT = extern struct {
@@ -12839,8 +12919,8 @@ pub const RenderingInfo = extern struct {
     }
 };
 pub const RenderingInfoKHR = RenderingInfo;
-pub const RenderingEndInfoEXT = extern struct {
-    s_type: StructureType = .rendering_end_info_ext,
+pub const RenderingEndInfoKHR = extern struct {
+    s_type: StructureType = .rendering_end_info_khr,
     p_next: ?*const anyopaque = null,
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
@@ -12854,6 +12934,7 @@ pub const RenderingEndInfoEXT = extern struct {
         }
     }
 };
+pub const RenderingEndInfoEXT = RenderingEndInfoKHR;
 pub const RenderingAttachmentInfo = extern struct {
     s_type: StructureType = .rendering_attachment_info,
     p_next: ?*const anyopaque = null,
@@ -12869,6 +12950,7 @@ pub const RenderingAttachmentInfo = extern struct {
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
             inline *AttachmentFeedbackLoopInfoEXT,
+            *RenderingAttachmentFlagsInfoKHR,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -13432,6 +13514,18 @@ pub const PhysicalDeviceAddressBindingReportFeaturesEXT = extern struct {
     p_next: ?*anyopaque = null,
     report_address_binding: Bool32 = .false,
 };
+pub const RenderingAttachmentFlagsInfoKHR = extern struct {
+    s_type: StructureType = .rendering_attachment_flags_info_khr,
+    p_next: ?*const anyopaque = null,
+    flags: RenderingAttachmentFlagsKHR = .none,
+};
+pub const ResolveImageModeInfoKHR = extern struct {
+    s_type: StructureType = .resolve_image_mode_info_khr,
+    p_next: ?*const anyopaque = null,
+    flags: ResolveImageFlagsKHR = .none,
+    resolve_mode: ResolveModeFlags = .none,
+    stencil_resolve_mode: ResolveModeFlags = .none,
+};
 pub const DeviceAddressBindingCallbackDataEXT = extern struct {
     s_type: StructureType = .device_address_binding_callback_data_ext,
     p_next: ?*anyopaque = null,
@@ -13587,6 +13681,19 @@ pub const DecompressMemoryRegionNV = extern struct {
     compressed_size: DeviceSize = 0,
     decompressed_size: DeviceSize = 0,
     decompression_method: MemoryDecompressionMethodFlagsNV = .none,
+};
+pub const DecompressMemoryRegionEXT = extern struct {
+    src_address: DeviceAddress = 0,
+    dst_address: DeviceAddress = 0,
+    compressed_size: DeviceSize = 0,
+    decompressed_size: DeviceSize = 0,
+};
+pub const DecompressMemoryInfoEXT = extern struct {
+    s_type: StructureType = .decompress_memory_info_ext,
+    p_next: ?*const anyopaque = null,
+    decompression_method: MemoryDecompressionMethodFlagsEXT = .none,
+    region_count: u32 = 0,
+    p_regions: ?[*]const DecompressMemoryRegionEXT = null,
 };
 pub const PhysicalDeviceShaderCoreBuiltinsPropertiesARM = extern struct {
     s_type: StructureType = .physical_device_shader_core_builtins_properties_arm,
@@ -14644,6 +14751,11 @@ pub const PhysicalDeviceExternalComputeQueuePropertiesNV = extern struct {
     max_external_queues: u32 = 0,
 };
 pub const ExternalComputeQueueNV = enum(usize) { null_handle = 0, _ };
+pub const PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_shader_uniform_buffer_unsized_array_features_ext,
+    p_next: ?*anyopaque = null,
+    shader_uniform_buffer_unsized_array: Bool32 = .false,
+};
 pub const PhysicalDeviceFormatPackFeaturesARM = extern struct {
     s_type: StructureType = .physical_device_format_pack_features_arm,
     p_next: ?*anyopaque = null,
@@ -15044,6 +15156,26 @@ pub const PhysicalDeviceShaderUntypedPointersFeaturesKHR = extern struct {
     s_type: StructureType = .physical_device_shader_untyped_pointers_features_khr,
     p_next: ?*anyopaque = null,
     shader_untyped_pointers: Bool32 = .false,
+};
+pub const NativeBufferOHOS = extern struct {
+    s_type: StructureType = .native_buffer_ohos,
+    p_next: ?*const anyopaque = null,
+    handle: ?*OHBufferHandle = null,
+};
+pub const SwapchainImageCreateInfoOHOS = extern struct {
+    s_type: StructureType = .swapchain_image_create_info_ohos,
+    p_next: ?*const anyopaque = null,
+    usage: SwapchainImageUsageFlagsOHOS = .none,
+};
+pub const PhysicalDevicePresentationPropertiesOHOS = extern struct {
+    s_type: StructureType = .physical_device_presentation_properties_ohos,
+    p_next: ?*const anyopaque = null,
+    shared_image: Bool32 = .false,
+};
+pub const PhysicalDeviceShader64BitIndexingFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_shader_64_bit_indexing_features_ext,
+    p_next: ?*anyopaque = null,
+    shader64_bit_indexing: Bool32 = .false,
 };
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
@@ -15552,6 +15684,8 @@ pub const FpCmdDecompressMemoryNV = *const fn (CommandBuffer, u32, [*c]const Dec
 pub const FpCmdDecompressMemoryIndirectCountNV = *const fn (CommandBuffer, DeviceAddress, DeviceAddress, u32) callconv(.c) void;
 pub const FpGetPartitionedAccelerationStructuresBuildSizesNV = *const fn (Device, [*c]const PartitionedAccelerationStructureInstancesInputNV, [*c]AccelerationStructureBuildSizesInfoKHR) callconv(.c) void;
 pub const FpCmdBuildPartitionedAccelerationStructuresNV = *const fn (CommandBuffer, [*c]const BuildPartitionedAccelerationStructureInfoNV) callconv(.c) void;
+pub const FpCmdDecompressMemoryEXT = *const fn (CommandBuffer, [*c]const DecompressMemoryInfoEXT) callconv(.c) void;
+pub const FpCmdDecompressMemoryIndirectCountEXT = *const fn (CommandBuffer, MemoryDecompressionMethodFlagsEXT, DeviceAddress, DeviceAddress, u32, u32) callconv(.c) void;
 pub const FpCreateCuModuleNVX = *const fn (Device, [*c]const CuModuleCreateInfoNVX, [*c]const AllocationCallbacks, [*c]CuModuleNVX) callconv(.c) Result;
 pub const FpCreateCuFunctionNVX = *const fn (Device, [*c]const CuFunctionCreateInfoNVX, [*c]const AllocationCallbacks, [*c]CuFunctionNVX) callconv(.c) Result;
 pub const FpDestroyCuModuleNVX = *const fn (Device, CuModuleNVX, [*c]const AllocationCallbacks) callconv(.c) void;
@@ -15586,7 +15720,7 @@ pub const FpDestroyCudaFunctionNV = *const fn (Device, CudaFunctionNV, [*c]const
 pub const FpCmdCudaLaunchKernelNV = *const fn (CommandBuffer, [*c]const CudaLaunchInfoNV) callconv(.c) void;
 pub const FpCmdBeginRendering = *const fn (CommandBuffer, [*c]const RenderingInfo) callconv(.c) void;
 pub const FpCmdEndRendering = *const fn (CommandBuffer) callconv(.c) void;
-pub const FpCmdEndRendering2EXT = *const fn (CommandBuffer, [*c]const RenderingEndInfoEXT) callconv(.c) void;
+pub const FpCmdEndRendering2KHR = *const fn (CommandBuffer, [*c]const RenderingEndInfoKHR) callconv(.c) void;
 pub const FpGetDescriptorSetLayoutHostMappingInfoVALVE = *const fn (Device, [*c]const DescriptorSetBindingReferenceVALVE, [*c]DescriptorSetLayoutHostMappingInfoVALVE) callconv(.c) void;
 pub const FpGetDescriptorSetHostMappingVALVE = *const fn (Device, DescriptorSet, [*c]?*anyopaque) callconv(.c) void;
 pub const FpCreateMicromapEXT = *const fn (Device, [*c]const MicromapCreateInfoEXT, [*c]const AllocationCallbacks, [*c]MicromapEXT) callconv(.c) Result;
@@ -15682,6 +15816,9 @@ pub const FpGetDataGraphPipelineAvailablePropertiesARM = *const fn (Device, [*c]
 pub const FpGetDataGraphPipelinePropertiesARM = *const fn (Device, [*c]const DataGraphPipelineInfoARM, u32, [*c]DataGraphPipelinePropertyQueryResultARM) callconv(.c) Result;
 pub const FpGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = *const fn (PhysicalDevice, u32, [*c]u32, [*c]QueueFamilyDataGraphPropertiesARM) callconv(.c) Result;
 pub const FpGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = *const fn (PhysicalDevice, [*c]const PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM, [*c]QueueFamilyDataGraphProcessingEnginePropertiesARM) callconv(.c) void;
+pub const FpGetSwapchainGrallocUsageOHOS = *const fn (Device, Format, ImageUsageFlags, [*c]u64) callconv(.c) Result;
+pub const FpAcquireImageOHOS = *const fn (Device, Image, i32, Semaphore, Fence) callconv(.c) Result;
+pub const FpQueueSignalReleaseImageOHOS = *const fn (Queue, u32, [*c]const Semaphore, Image, [*c]i32) callconv(.c) Result;
 
 const ExtensionNames = struct {
     const khr_surface = "VK_KHR_surface";
@@ -16058,6 +16195,7 @@ const ExtensionNames = struct {
     const nv_descriptor_pool_overallocation = "VK_NV_descriptor_pool_overallocation";
     const qcom_tile_memory_heap = "VK_QCOM_tile_memory_heap";
     const khr_copy_memory_indirect = "VK_KHR_copy_memory_indirect";
+    const ext_memory_decompression = "VK_EXT_memory_decompression";
     const nv_display_stereo = "VK_NV_display_stereo";
     const nv_raw_access_chains = "VK_NV_raw_access_chains";
     const nv_external_compute_queue = "VK_NV_external_compute_queue";
@@ -16077,6 +16215,7 @@ const ExtensionNames = struct {
     const ext_depth_clamp_control = "VK_EXT_depth_clamp_control";
     const khr_maintenance9 = "VK_KHR_maintenance9";
     const ohos_surface = "VK_OHOS_surface";
+    const ohos_native_buffer = "VK_OHOS_native_buffer";
     const huawei_hdr_vivid = "VK_HUAWEI_hdr_vivid";
     const nv_cooperative_matrix2 = "VK_NV_cooperative_matrix2";
     const arm_pipeline_opacity_micromap = "VK_ARM_pipeline_opacity_micromap";
@@ -16090,7 +16229,10 @@ const ExtensionNames = struct {
     const ext_fragment_density_map_offset = "VK_EXT_fragment_density_map_offset";
     const ext_zero_initialize_device_memory = "VK_EXT_zero_initialize_device_memory";
     const khr_present_mode_fifo_latest_ready = "VK_KHR_present_mode_fifo_latest_ready";
+    const ext_shader_64bit_indexing = "VK_EXT_shader_64bit_indexing";
+    const khr_maintenance10 = "VK_KHR_maintenance10";
     const sec_pipeline_cache_incremental_mode = "VK_SEC_pipeline_cache_incremental_mode";
+    const ext_shader_uniform_buffer_unsized_array = "VK_EXT_shader_uniform_buffer_unsized_array";
 };
 
 pub const InstanceExtensions = packed struct {
@@ -18790,6 +18932,14 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_ext_memory_decompression(self: InstanceExtensions) bool {
+        return self.supports_khr_get_physical_device_properties2() and self.supports_khr_buffer_device_address();
+    }
+    pub fn enable_ext_memory_decompression(self: *InstanceExtensions) void {
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_khr_buffer_device_address();
+    }
+
     pub fn supports_nv_display_stereo(self: InstanceExtensions) bool {
         return self.nv_display_stereo and self.supports_khr_display() and self.supports_khr_get_display_properties2();
     }
@@ -18961,6 +19111,24 @@ pub const InstanceExtensions = packed struct {
     }
     pub fn enable_khr_present_mode_fifo_latest_ready(self: *InstanceExtensions) void {
         self.enable_khr_swapchain();
+    }
+
+    pub fn supports_ext_shader_64bit_indexing(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_ext_shader_64bit_indexing(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_khr_maintenance10(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_khr_maintenance10(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
 };
 
@@ -19302,6 +19470,7 @@ pub const DeviceExtensions = packed struct {
     nv_descriptor_pool_overallocation: bool = false,
     qcom_tile_memory_heap: bool = false,
     khr_copy_memory_indirect: bool = false,
+    ext_memory_decompression: bool = false,
     nv_raw_access_chains: bool = false,
     nv_external_compute_queue: bool = false,
     khr_shader_relaxed_extended_instruction: bool = false,
@@ -19319,6 +19488,7 @@ pub const DeviceExtensions = packed struct {
     khr_shader_fma: bool = false,
     ext_depth_clamp_control: bool = false,
     khr_maintenance9: bool = false,
+    ohos_native_buffer: bool = false,
     huawei_hdr_vivid: bool = false,
     nv_cooperative_matrix2: bool = false,
     arm_pipeline_opacity_micromap: bool = false,
@@ -19332,7 +19502,10 @@ pub const DeviceExtensions = packed struct {
     ext_fragment_density_map_offset: bool = false,
     ext_zero_initialize_device_memory: bool = false,
     khr_present_mode_fifo_latest_ready: bool = false,
+    ext_shader_64bit_indexing: bool = false,
+    khr_maintenance10: bool = false,
     sec_pipeline_cache_incremental_mode: bool = false,
+    ext_shader_uniform_buffer_unsized_array: bool = false,
 
     pub fn enable_by_name(self: *DeviceExtensions, maybe_name: ?[*:0]const u8) void {
         const name = maybe_name orelse return;
@@ -20008,6 +20181,8 @@ pub const DeviceExtensions = packed struct {
             self.qcom_tile_memory_heap = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_copy_memory_indirect) == .eq) {
             self.khr_copy_memory_indirect = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_memory_decompression) == .eq) {
+            self.ext_memory_decompression = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_raw_access_chains) == .eq) {
             self.nv_raw_access_chains = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_external_compute_queue) == .eq) {
@@ -20042,6 +20217,8 @@ pub const DeviceExtensions = packed struct {
             self.ext_depth_clamp_control = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance9) == .eq) {
             self.khr_maintenance9 = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ohos_native_buffer) == .eq) {
+            self.ohos_native_buffer = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.huawei_hdr_vivid) == .eq) {
             self.huawei_hdr_vivid = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_cooperative_matrix2) == .eq) {
@@ -20068,8 +20245,14 @@ pub const DeviceExtensions = packed struct {
             self.ext_zero_initialize_device_memory = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_present_mode_fifo_latest_ready) == .eq) {
             self.khr_present_mode_fifo_latest_ready = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_64bit_indexing) == .eq) {
+            self.ext_shader_64bit_indexing = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance10) == .eq) {
+            self.khr_maintenance10 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.sec_pipeline_cache_incremental_mode) == .eq) {
             self.sec_pipeline_cache_incremental_mode = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_uniform_buffer_unsized_array) == .eq) {
+            self.ext_shader_uniform_buffer_unsized_array = true;
         }
     }
 
@@ -20421,6 +20604,7 @@ pub const DeviceExtensions = packed struct {
         if (self.nv_descriptor_pool_overallocation) try names.append(allocator, ExtensionNames.nv_descriptor_pool_overallocation);
         if (self.qcom_tile_memory_heap) try names.append(allocator, ExtensionNames.qcom_tile_memory_heap);
         if (self.khr_copy_memory_indirect) try names.append(allocator, ExtensionNames.khr_copy_memory_indirect);
+        if (self.ext_memory_decompression) try names.append(allocator, ExtensionNames.ext_memory_decompression);
         if (self.nv_raw_access_chains) try names.append(allocator, ExtensionNames.nv_raw_access_chains);
         if (self.nv_external_compute_queue) try names.append(allocator, ExtensionNames.nv_external_compute_queue);
         if (self.khr_shader_relaxed_extended_instruction) try names.append(allocator, ExtensionNames.khr_shader_relaxed_extended_instruction);
@@ -20438,6 +20622,7 @@ pub const DeviceExtensions = packed struct {
         if (self.khr_shader_fma) try names.append(allocator, ExtensionNames.khr_shader_fma);
         if (self.ext_depth_clamp_control) try names.append(allocator, ExtensionNames.ext_depth_clamp_control);
         if (self.khr_maintenance9) try names.append(allocator, ExtensionNames.khr_maintenance9);
+        if (self.ohos_native_buffer) try names.append(allocator, ExtensionNames.ohos_native_buffer);
         if (self.huawei_hdr_vivid) try names.append(allocator, ExtensionNames.huawei_hdr_vivid);
         if (self.nv_cooperative_matrix2) try names.append(allocator, ExtensionNames.nv_cooperative_matrix2);
         if (self.arm_pipeline_opacity_micromap) try names.append(allocator, ExtensionNames.arm_pipeline_opacity_micromap);
@@ -20451,7 +20636,10 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_fragment_density_map_offset) try names.append(allocator, ExtensionNames.ext_fragment_density_map_offset);
         if (self.ext_zero_initialize_device_memory) try names.append(allocator, ExtensionNames.ext_zero_initialize_device_memory);
         if (self.khr_present_mode_fifo_latest_ready) try names.append(allocator, ExtensionNames.khr_present_mode_fifo_latest_ready);
+        if (self.ext_shader_64bit_indexing) try names.append(allocator, ExtensionNames.ext_shader_64bit_indexing);
+        if (self.khr_maintenance10) try names.append(allocator, ExtensionNames.khr_maintenance10);
         if (self.sec_pipeline_cache_incremental_mode) try names.append(allocator, ExtensionNames.sec_pipeline_cache_incremental_mode);
+        if (self.ext_shader_uniform_buffer_unsized_array) try names.append(allocator, ExtensionNames.ext_shader_uniform_buffer_unsized_array);
         return names.toOwnedSlice(allocator);
     }
 
@@ -23312,6 +23500,14 @@ pub const DeviceExtensions = packed struct {
         }
     }
 
+    pub fn supports_ext_memory_decompression(self: DeviceExtensions) bool {
+        return self.ext_memory_decompression and self.supports_khr_buffer_device_address();
+    }
+    pub fn enable_ext_memory_decompression(self: *DeviceExtensions) void {
+        self.ext_memory_decompression = true;
+        self.enable_khr_buffer_device_address();
+    }
+
     pub fn supports_nv_raw_access_chains(self: DeviceExtensions) bool {
         return self.nv_raw_access_chains;
     }
@@ -23443,6 +23639,13 @@ pub const DeviceExtensions = packed struct {
         self.khr_maintenance9 = true;
     }
 
+    pub fn supports_ohos_native_buffer(self: DeviceExtensions) bool {
+        return self.ohos_native_buffer;
+    }
+    pub fn enable_ohos_native_buffer(self: *DeviceExtensions) void {
+        self.ohos_native_buffer = true;
+    }
+
     pub fn supports_huawei_hdr_vivid(self: DeviceExtensions) bool {
         return self.huawei_hdr_vivid and self.supports_khr_swapchain() and self.supports_ext_hdr_metadata();
     }
@@ -23553,11 +23756,32 @@ pub const DeviceExtensions = packed struct {
         self.enable_khr_swapchain();
     }
 
+    pub fn supports_ext_shader_64bit_indexing(self: DeviceExtensions) bool {
+        return self.ext_shader_64bit_indexing;
+    }
+    pub fn enable_ext_shader_64bit_indexing(self: *DeviceExtensions) void {
+        self.ext_shader_64bit_indexing = true;
+    }
+
+    pub fn supports_khr_maintenance10(self: DeviceExtensions) bool {
+        return self.khr_maintenance10;
+    }
+    pub fn enable_khr_maintenance10(self: *DeviceExtensions) void {
+        self.khr_maintenance10 = true;
+    }
+
     pub fn supports_sec_pipeline_cache_incremental_mode(self: DeviceExtensions) bool {
         return self.sec_pipeline_cache_incremental_mode;
     }
     pub fn enable_sec_pipeline_cache_incremental_mode(self: *DeviceExtensions) void {
         self.sec_pipeline_cache_incremental_mode = true;
+    }
+
+    pub fn supports_ext_shader_uniform_buffer_unsized_array(self: DeviceExtensions) bool {
+        return self.ext_shader_uniform_buffer_unsized_array;
+    }
+    pub fn enable_ext_shader_uniform_buffer_unsized_array(self: *DeviceExtensions) void {
+        self.ext_shader_uniform_buffer_unsized_array = true;
     }
 };
 
@@ -26181,6 +26405,8 @@ pub const DeviceCommands = struct {
     fp_cmd_decompress_memory_indirect_count_nv: ?FpCmdDecompressMemoryIndirectCountNV,
     fp_get_partitioned_acceleration_structures_build_sizes_nv: ?FpGetPartitionedAccelerationStructuresBuildSizesNV,
     fp_cmd_build_partitioned_acceleration_structures_nv: ?FpCmdBuildPartitionedAccelerationStructuresNV,
+    fp_cmd_decompress_memory_ext: ?FpCmdDecompressMemoryEXT,
+    fp_cmd_decompress_memory_indirect_count_ext: ?FpCmdDecompressMemoryIndirectCountEXT,
     fp_create_cu_module_nvx: ?FpCreateCuModuleNVX,
     fp_create_cu_function_nvx: ?FpCreateCuFunctionNVX,
     fp_destroy_cu_module_nvx: ?FpDestroyCuModuleNVX,
@@ -26213,7 +26439,7 @@ pub const DeviceCommands = struct {
     fp_cmd_cuda_launch_kernel_nv: ?FpCmdCudaLaunchKernelNV,
     fp_cmd_begin_rendering: ?FpCmdBeginRendering,
     fp_cmd_end_rendering: ?FpCmdEndRendering,
-    fp_cmd_end_rendering2_ext: ?FpCmdEndRendering2EXT,
+    fp_cmd_end_rendering2_khr: ?FpCmdEndRendering2KHR,
     fp_get_descriptor_set_layout_host_mapping_info_valve: ?FpGetDescriptorSetLayoutHostMappingInfoVALVE,
     fp_get_descriptor_set_host_mapping_valve: ?FpGetDescriptorSetHostMappingVALVE,
     fp_create_micromap_ext: ?FpCreateMicromapEXT,
@@ -26309,6 +26535,9 @@ pub const DeviceCommands = struct {
     fp_get_data_graph_pipeline_properties_arm: ?FpGetDataGraphPipelinePropertiesARM,
     fp_get_physical_device_queue_family_data_graph_properties_arm: ?FpGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM,
     fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm: ?FpGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM,
+    fp_get_swapchain_gralloc_usage_ohos: ?FpGetSwapchainGrallocUsageOHOS,
+    fp_acquire_image_ohos: ?FpAcquireImageOHOS,
+    fp_queue_signal_release_image_ohos: ?FpQueueSignalReleaseImageOHOS,
 
     pub fn init(globals: GlobalCommands, instance: InstanceCommands, device: Device, create_info: *const DeviceCreateInfo) MissingFunctionError!DeviceCommands {
         var extensions: DeviceExtensions = .{
@@ -26745,6 +26974,8 @@ pub const DeviceCommands = struct {
             .fp_cmd_decompress_memory_indirect_count_nv = if (extensions.nv_memory_decompression) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDecompressMemoryIndirectCountNV")) else null,
             .fp_get_partitioned_acceleration_structures_build_sizes_nv = if (extensions.nv_partitioned_acceleration_structure) @ptrCast(try instance.get_device_proc_addr(device, "vkGetPartitionedAccelerationStructuresBuildSizesNV")) else null,
             .fp_cmd_build_partitioned_acceleration_structures_nv = if (extensions.nv_partitioned_acceleration_structure) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBuildPartitionedAccelerationStructuresNV")) else null,
+            .fp_cmd_decompress_memory_ext = if (extensions.ext_memory_decompression) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDecompressMemoryEXT")) else null,
+            .fp_cmd_decompress_memory_indirect_count_ext = if (extensions.ext_memory_decompression) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDecompressMemoryIndirectCountEXT")) else null,
             .fp_create_cu_module_nvx = if (extensions.nvx_binary_import) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateCuModuleNVX")) else null,
             .fp_create_cu_function_nvx = if (extensions.nvx_binary_import) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateCuFunctionNVX")) else null,
             .fp_destroy_cu_module_nvx = if (extensions.nvx_binary_import) @ptrCast(try instance.get_device_proc_addr(device, "vkDestroyCuModuleNVX")) else null,
@@ -26777,7 +27008,7 @@ pub const DeviceCommands = struct {
             .fp_cmd_cuda_launch_kernel_nv = if (extensions.nv_cuda_kernel_launch) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCudaLaunchKernelNV")) else null,
             .fp_cmd_begin_rendering = if (extensions.core_version.to_int() >= make_version(1, 3, 0).to_int()) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBeginRendering")) else if (extensions.khr_dynamic_rendering) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBeginRenderingKHR")) else null,
             .fp_cmd_end_rendering = if (extensions.core_version.to_int() >= make_version(1, 3, 0).to_int()) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdEndRendering")) else if (extensions.khr_dynamic_rendering) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdEndRenderingKHR")) else null,
-            .fp_cmd_end_rendering2_ext = if (extensions.ext_fragment_density_map_offset) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdEndRendering2EXT")) else null,
+            .fp_cmd_end_rendering2_khr = if (extensions.khr_maintenance10) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdEndRendering2KHR")) else if (extensions.ext_fragment_density_map_offset) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdEndRendering2EXT")) else null,
             .fp_get_descriptor_set_layout_host_mapping_info_valve = if (extensions.valve_descriptor_set_host_mapping) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDescriptorSetLayoutHostMappingInfoVALVE")) else null,
             .fp_get_descriptor_set_host_mapping_valve = if (extensions.valve_descriptor_set_host_mapping) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDescriptorSetHostMappingVALVE")) else null,
             .fp_create_micromap_ext = if (extensions.ext_opacity_micromap) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateMicromapEXT")) else null,
@@ -26873,6 +27104,9 @@ pub const DeviceCommands = struct {
             .fp_get_data_graph_pipeline_properties_arm = if (extensions.arm_data_graph) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDataGraphPipelinePropertiesARM")) else null,
             .fp_get_physical_device_queue_family_data_graph_properties_arm = if (extensions.arm_data_graph) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM")) else null,
             .fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm = if (extensions.arm_data_graph) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM")) else null,
+            .fp_get_swapchain_gralloc_usage_ohos = if (extensions.ohos_native_buffer) @ptrCast(try instance.get_device_proc_addr(device, "vkGetSwapchainGrallocUsageOHOS")) else null,
+            .fp_acquire_image_ohos = if (extensions.ohos_native_buffer) @ptrCast(try instance.get_device_proc_addr(device, "vkAcquireImageOHOS")) else null,
+            .fp_queue_signal_release_image_ohos = if (extensions.ohos_native_buffer) @ptrCast(try instance.get_device_proc_addr(device, "vkQueueSignalReleaseImageOHOS")) else null,
         };
     }
     pub fn destroy_device(
@@ -32436,7 +32670,7 @@ pub const DeviceCommands = struct {
         self: DeviceCommands,
         command_buffer: CommandBuffer,
         samples: SampleCountFlags,
-        p_sample_mask: [*]const SampleMask,
+        p_sample_mask: ?[*]const SampleMask,
     ) void {
         self.fp_cmd_set_sample_mask_ext.?(command_buffer, samples, p_sample_mask);
     }
@@ -33056,6 +33290,24 @@ pub const DeviceCommands = struct {
     ) void {
         self.fp_cmd_build_partitioned_acceleration_structures_nv.?(command_buffer, p_build_info);
     }
+    pub fn cmd_decompress_memory_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_decompress_memory_info_ext: *const DecompressMemoryInfoEXT,
+    ) void {
+        self.fp_cmd_decompress_memory_ext.?(command_buffer, p_decompress_memory_info_ext);
+    }
+    pub fn cmd_decompress_memory_indirect_count_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        decompression_method: MemoryDecompressionMethodFlagsEXT,
+        indirect_commands_address: DeviceAddress,
+        indirect_commands_count_address: DeviceAddress,
+        max_decompression_count: u32,
+        stride: u32,
+    ) void {
+        self.fp_cmd_decompress_memory_indirect_count_ext.?(command_buffer, decompression_method, indirect_commands_address, indirect_commands_count_address, max_decompression_count, stride);
+    }
     pub const CreateCuModuleNVXError = error{
         OutOfHostMemory,
         InitializationFailed,
@@ -33553,12 +33805,12 @@ pub const DeviceCommands = struct {
     ) void {
         self.fp_cmd_end_rendering.?(command_buffer);
     }
-    pub fn cmd_end_rendering2_ext(
+    pub fn cmd_end_rendering2_khr(
         self: DeviceCommands,
         command_buffer: CommandBuffer,
-        p_rendering_end_info: ?*const RenderingEndInfoEXT,
+        p_rendering_end_info: ?*const RenderingEndInfoKHR,
     ) void {
-        self.fp_cmd_end_rendering2_ext.?(command_buffer, p_rendering_end_info);
+        self.fp_cmd_end_rendering2_khr.?(command_buffer, p_rendering_end_info);
     }
     pub fn get_descriptor_set_layout_host_mapping_info_valve(
         self: DeviceCommands,
@@ -34973,6 +35225,69 @@ pub const DeviceCommands = struct {
         p_queue_family_data_graph_processing_engine_properties: *QueueFamilyDataGraphProcessingEnginePropertiesARM,
     ) void {
         self.fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm.?(physical_device, p_queue_family_data_graph_processing_engine_info, p_queue_family_data_graph_processing_engine_properties);
+    }
+    pub const GetSwapchainGrallocUsageOHOSError = error{
+        InitializationFailed,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_swapchain_gralloc_usage_ohos(
+        self: DeviceCommands,
+        format: Format,
+        image_usage: ImageUsageFlags,
+    ) GetSwapchainGrallocUsageOHOSError!u64 {
+        var gralloc_usage: u64 = undefined;
+        switch (self.fp_get_swapchain_gralloc_usage_ohos.?(self.handle, format, image_usage, &gralloc_usage)) {
+            .success => return gralloc_usage,
+            .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const AcquireImageOHOSError = error{
+        OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn acquire_image_ohos(
+        self: DeviceCommands,
+        image: Image,
+        native_fence_fd: i32,
+        semaphore: Semaphore,
+        fence: Fence,
+    ) AcquireImageOHOSError!void {
+        switch (self.fp_acquire_image_ohos.?(self.handle, image, native_fence_fd, semaphore, fence)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const QueueSignalReleaseImageOHOSError = error{
+        InitializationFailed,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn queue_signal_release_image_ohos(
+        self: DeviceCommands,
+        queue: Queue,
+        p_wait_semaphores: []const Semaphore,
+        image: Image,
+    ) QueueSignalReleaseImageOHOSError!i32 {
+        const wait_semaphore_count: u32 = @intCast(p_wait_semaphores.len);
+        var p_native_fence_fd: i32 = undefined;
+        switch (self.fp_queue_signal_release_image_ohos.?(queue, wait_semaphore_count, p_wait_semaphores.ptr, image, &p_native_fence_fd)) {
+            .success => return p_native_fence_fd,
+            .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
     }
 };
 

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.329
+//! Generated from vk.xml version 1.4.330
 
 #![allow(
     clippy::too_many_arguments,
@@ -2768,6 +2768,13 @@ impl InstanceExtensions {
             self.enable_khr_buffer_device_address();
         }
     }
+    pub fn supports_ext_memory_decompression(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() && self.supports_khr_buffer_device_address()
+    }
+    pub fn enable_ext_memory_decompression(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_khr_buffer_device_address();
+    }
     pub fn supports_nv_display_stereo(&self) -> bool {
         self.nv_display_stereo && self.supports_khr_display() && self.supports_khr_get_display_properties2()
     }
@@ -2932,6 +2939,22 @@ impl InstanceExtensions {
     }
     pub fn enable_khr_present_mode_fifo_latest_ready(&mut self) {
         self.enable_khr_swapchain();
+    }
+    pub fn supports_ext_shader_64bit_indexing(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_shader_64bit_indexing(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_khr_maintenance10(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_maintenance10(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -5636,6 +5659,7 @@ pub struct DeviceExtensions {
     pub nv_descriptor_pool_overallocation: bool,
     pub qcom_tile_memory_heap: bool,
     pub khr_copy_memory_indirect: bool,
+    pub ext_memory_decompression: bool,
     pub nv_raw_access_chains: bool,
     pub nv_external_compute_queue: bool,
     pub khr_shader_relaxed_extended_instruction: bool,
@@ -5653,6 +5677,7 @@ pub struct DeviceExtensions {
     pub khr_shader_fma: bool,
     pub ext_depth_clamp_control: bool,
     pub khr_maintenance9: bool,
+    pub ohos_native_buffer: bool,
     pub huawei_hdr_vivid: bool,
     pub nv_cooperative_matrix2: bool,
     pub arm_pipeline_opacity_micromap: bool,
@@ -5666,7 +5691,10 @@ pub struct DeviceExtensions {
     pub ext_fragment_density_map_offset: bool,
     pub ext_zero_initialize_device_memory: bool,
     pub khr_present_mode_fifo_latest_ready: bool,
+    pub ext_shader_64bit_indexing: bool,
+    pub khr_maintenance10: bool,
     pub sec_pipeline_cache_incremental_mode: bool,
+    pub ext_shader_uniform_buffer_unsized_array: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -6342,6 +6370,8 @@ impl DeviceExtensions {
             self.qcom_tile_memory_heap = true;
         } else if name == c"VK_KHR_copy_memory_indirect" {
             self.khr_copy_memory_indirect = true;
+        } else if name == c"VK_EXT_memory_decompression" {
+            self.ext_memory_decompression = true;
         } else if name == c"VK_NV_raw_access_chains" {
             self.nv_raw_access_chains = true;
         } else if name == c"VK_NV_external_compute_queue" {
@@ -6376,6 +6406,8 @@ impl DeviceExtensions {
             self.ext_depth_clamp_control = true;
         } else if name == c"VK_KHR_maintenance9" {
             self.khr_maintenance9 = true;
+        } else if name == c"VK_OHOS_native_buffer" {
+            self.ohos_native_buffer = true;
         } else if name == c"VK_HUAWEI_hdr_vivid" {
             self.huawei_hdr_vivid = true;
         } else if name == c"VK_NV_cooperative_matrix2" {
@@ -6402,8 +6434,14 @@ impl DeviceExtensions {
             self.ext_zero_initialize_device_memory = true;
         } else if name == c"VK_KHR_present_mode_fifo_latest_ready" {
             self.khr_present_mode_fifo_latest_ready = true;
+        } else if name == c"VK_EXT_shader_64bit_indexing" {
+            self.ext_shader_64bit_indexing = true;
+        } else if name == c"VK_KHR_maintenance10" {
+            self.khr_maintenance10 = true;
         } else if name == c"VK_SEC_pipeline_cache_incremental_mode" {
             self.sec_pipeline_cache_incremental_mode = true;
+        } else if name == c"VK_EXT_shader_uniform_buffer_unsized_array" {
+            self.ext_shader_uniform_buffer_unsized_array = true;
         }
     }
     pub fn new(core_version: vk::Version) -> Self {
@@ -6745,6 +6783,7 @@ impl DeviceExtensions {
             nv_descriptor_pool_overallocation: false,
             qcom_tile_memory_heap: false,
             khr_copy_memory_indirect: false,
+            ext_memory_decompression: false,
             nv_raw_access_chains: false,
             nv_external_compute_queue: false,
             khr_shader_relaxed_extended_instruction: false,
@@ -6762,6 +6801,7 @@ impl DeviceExtensions {
             khr_shader_fma: false,
             ext_depth_clamp_control: false,
             khr_maintenance9: false,
+            ohos_native_buffer: false,
             huawei_hdr_vivid: false,
             nv_cooperative_matrix2: false,
             arm_pipeline_opacity_micromap: false,
@@ -6775,7 +6815,10 @@ impl DeviceExtensions {
             ext_fragment_density_map_offset: false,
             ext_zero_initialize_device_memory: false,
             khr_present_mode_fifo_latest_ready: false,
+            ext_shader_64bit_indexing: false,
+            khr_maintenance10: false,
             sec_pipeline_cache_incremental_mode: false,
+            ext_shader_uniform_buffer_unsized_array: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -9473,6 +9516,13 @@ impl DeviceExtensions {
             self.enable_khr_buffer_device_address();
         }
     }
+    pub fn supports_ext_memory_decompression(&self) -> bool {
+        self.ext_memory_decompression && self.supports_khr_buffer_device_address()
+    }
+    pub fn enable_ext_memory_decompression(&mut self) {
+        self.ext_memory_decompression = true;
+        self.enable_khr_buffer_device_address();
+    }
     pub fn supports_nv_raw_access_chains(&self) -> bool {
         self.nv_raw_access_chains
     }
@@ -9591,6 +9641,12 @@ impl DeviceExtensions {
     pub fn enable_khr_maintenance9(&mut self) {
         self.khr_maintenance9 = true;
     }
+    pub fn supports_ohos_native_buffer(&self) -> bool {
+        self.ohos_native_buffer
+    }
+    pub fn enable_ohos_native_buffer(&mut self) {
+        self.ohos_native_buffer = true;
+    }
     pub fn supports_huawei_hdr_vivid(&self) -> bool {
         self.huawei_hdr_vivid && self.supports_khr_swapchain() && self.supports_ext_hdr_metadata()
     }
@@ -9694,11 +9750,29 @@ impl DeviceExtensions {
         self.khr_present_mode_fifo_latest_ready = true;
         self.enable_khr_swapchain();
     }
+    pub fn supports_ext_shader_64bit_indexing(&self) -> bool {
+        self.ext_shader_64bit_indexing
+    }
+    pub fn enable_ext_shader_64bit_indexing(&mut self) {
+        self.ext_shader_64bit_indexing = true;
+    }
+    pub fn supports_khr_maintenance10(&self) -> bool {
+        self.khr_maintenance10
+    }
+    pub fn enable_khr_maintenance10(&mut self) {
+        self.khr_maintenance10 = true;
+    }
     pub fn supports_sec_pipeline_cache_incremental_mode(&self) -> bool {
         self.sec_pipeline_cache_incremental_mode
     }
     pub fn enable_sec_pipeline_cache_incremental_mode(&mut self) {
         self.sec_pipeline_cache_incremental_mode = true;
+    }
+    pub fn supports_ext_shader_uniform_buffer_unsized_array(&self) -> bool {
+        self.ext_shader_uniform_buffer_unsized_array
+    }
+    pub fn enable_ext_shader_uniform_buffer_unsized_array(&mut self) {
+        self.ext_shader_uniform_buffer_unsized_array = true;
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -10710,6 +10784,9 @@ impl DeviceExtensions {
         if self.khr_copy_memory_indirect {
             v.push(c"VK_KHR_copy_memory_indirect");
         }
+        if self.ext_memory_decompression {
+            v.push(c"VK_EXT_memory_decompression");
+        }
         if self.nv_raw_access_chains {
             v.push(c"VK_NV_raw_access_chains");
         }
@@ -10761,6 +10838,9 @@ impl DeviceExtensions {
         if self.khr_maintenance9 {
             v.push(c"VK_KHR_maintenance9");
         }
+        if self.ohos_native_buffer {
+            v.push(c"VK_OHOS_native_buffer");
+        }
         if self.huawei_hdr_vivid {
             v.push(c"VK_HUAWEI_hdr_vivid");
         }
@@ -10800,8 +10880,17 @@ impl DeviceExtensions {
         if self.khr_present_mode_fifo_latest_ready {
             v.push(c"VK_KHR_present_mode_fifo_latest_ready");
         }
+        if self.ext_shader_64bit_indexing {
+            v.push(c"VK_EXT_shader_64bit_indexing");
+        }
+        if self.khr_maintenance10 {
+            v.push(c"VK_KHR_maintenance10");
+        }
         if self.sec_pipeline_cache_incremental_mode {
             v.push(c"VK_SEC_pipeline_cache_incremental_mode");
+        }
+        if self.ext_shader_uniform_buffer_unsized_array {
+            v.push(c"VK_EXT_shader_uniform_buffer_unsized_array");
         }
         v
     }
@@ -11246,6 +11335,8 @@ pub struct Device {
     pub fp_get_partitioned_acceleration_structures_build_sizes_nv:
         Option<vk::FnGetPartitionedAccelerationStructuresBuildSizesNV>,
     pub fp_cmd_build_partitioned_acceleration_structures_nv: Option<vk::FnCmdBuildPartitionedAccelerationStructuresNV>,
+    pub fp_cmd_decompress_memory_ext: Option<vk::FnCmdDecompressMemoryEXT>,
+    pub fp_cmd_decompress_memory_indirect_count_ext: Option<vk::FnCmdDecompressMemoryIndirectCountEXT>,
     pub fp_create_cu_module_nvx: Option<vk::FnCreateCuModuleNVX>,
     pub fp_create_cu_function_nvx: Option<vk::FnCreateCuFunctionNVX>,
     pub fp_destroy_cu_module_nvx: Option<vk::FnDestroyCuModuleNVX>,
@@ -11279,7 +11370,7 @@ pub struct Device {
     pub fp_cmd_cuda_launch_kernel_nv: Option<vk::FnCmdCudaLaunchKernelNV>,
     pub fp_cmd_begin_rendering: Option<vk::FnCmdBeginRendering>,
     pub fp_cmd_end_rendering: Option<vk::FnCmdEndRendering>,
-    pub fp_cmd_end_rendering2_ext: Option<vk::FnCmdEndRendering2EXT>,
+    pub fp_cmd_end_rendering2_khr: Option<vk::FnCmdEndRendering2KHR>,
     pub fp_get_descriptor_set_layout_host_mapping_info_valve: Option<vk::FnGetDescriptorSetLayoutHostMappingInfoVALVE>,
     pub fp_get_descriptor_set_host_mapping_valve: Option<vk::FnGetDescriptorSetHostMappingVALVE>,
     pub fp_create_micromap_ext: Option<vk::FnCreateMicromapEXT>,
@@ -11384,6 +11475,9 @@ pub struct Device {
         Option<vk::FnGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM>,
     pub fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm:
         Option<vk::FnGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM>,
+    pub fp_get_swapchain_gralloc_usage_ohos: Option<vk::FnGetSwapchainGrallocUsageOHOS>,
+    pub fp_acquire_image_ohos: Option<vk::FnAcquireImageOHOS>,
+    pub fp_queue_signal_release_image_ohos: Option<vk::FnQueueSignalReleaseImageOHOS>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -14576,6 +14670,20 @@ impl Device {
             } else {
                 None
             },
+            fp_cmd_decompress_memory_ext: if extensions.ext_memory_decompression {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdDecompressMemoryEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_decompress_memory_indirect_count_ext: if extensions.ext_memory_decompression {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdDecompressMemoryIndirectCountEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_create_cu_module_nvx: if extensions.nvx_binary_import {
                 instance
                     .get_device_proc_addr(device, c"vkCreateCuModuleNVX")
@@ -14810,7 +14918,11 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_end_rendering2_ext: if extensions.ext_fragment_density_map_offset {
+            fp_cmd_end_rendering2_khr: if extensions.khr_maintenance10 {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdEndRendering2KHR")
+                    .map(|f| mem::transmute(f))
+            } else if extensions.ext_fragment_density_map_offset {
                 instance
                     .get_device_proc_addr(device, c"vkCmdEndRendering2EXT")
                     .map(|f| mem::transmute(f))
@@ -15550,6 +15662,27 @@ impl Device {
                         instance.handle,
                         c"vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM",
                     )
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_swapchain_gralloc_usage_ohos: if extensions.ohos_native_buffer {
+                instance
+                    .get_device_proc_addr(device, c"vkGetSwapchainGrallocUsageOHOS")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_acquire_image_ohos: if extensions.ohos_native_buffer {
+                instance
+                    .get_device_proc_addr(device, c"vkAcquireImageOHOS")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_queue_signal_release_image_ohos: if extensions.ohos_native_buffer {
+                instance
+                    .get_device_proc_addr(device, c"vkQueueSignalReleaseImageOHOS")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -22261,6 +22394,37 @@ impl Device {
             .expect("vkCmdBuildPartitionedAccelerationStructuresNV is not loaded");
         (fp)(command_buffer, p_build_info)
     }
+    pub unsafe fn cmd_decompress_memory_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_decompress_memory_info_ext: &vk::DecompressMemoryInfoEXT,
+    ) {
+        let fp = self
+            .fp_cmd_decompress_memory_ext
+            .expect("vkCmdDecompressMemoryEXT is not loaded");
+        (fp)(command_buffer, p_decompress_memory_info_ext)
+    }
+    pub unsafe fn cmd_decompress_memory_indirect_count_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        decompression_method: vk::MemoryDecompressionMethodFlagsEXT,
+        indirect_commands_address: vk::DeviceAddress,
+        indirect_commands_count_address: vk::DeviceAddress,
+        max_decompression_count: u32,
+        stride: u32,
+    ) {
+        let fp = self
+            .fp_cmd_decompress_memory_indirect_count_ext
+            .expect("vkCmdDecompressMemoryIndirectCountEXT is not loaded");
+        (fp)(
+            command_buffer,
+            decompression_method,
+            indirect_commands_address,
+            indirect_commands_count_address,
+            max_decompression_count,
+            stride,
+        )
+    }
     pub unsafe fn create_cu_module_nvx(
         &self,
         p_create_info: &vk::CuModuleCreateInfoNVX,
@@ -22680,13 +22844,23 @@ impl Device {
         let fp = self.fp_cmd_end_rendering.expect("vkCmdEndRendering is not loaded");
         (fp)(command_buffer)
     }
+    pub unsafe fn cmd_end_rendering2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_rendering_end_info: Option<&vk::RenderingEndInfoKHR>,
+    ) {
+        let fp = self
+            .fp_cmd_end_rendering2_khr
+            .expect("vkCmdEndRendering2KHR is not loaded");
+        (fp)(command_buffer, p_rendering_end_info.map_or(ptr::null(), |r| r))
+    }
     pub unsafe fn cmd_end_rendering2_ext(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_rendering_end_info: Option<&vk::RenderingEndInfoEXT>,
+        p_rendering_end_info: Option<&vk::RenderingEndInfoKHR>,
     ) {
         let fp = self
-            .fp_cmd_end_rendering2_ext
+            .fp_cmd_end_rendering2_khr
             .expect("vkCmdEndRendering2EXT is not loaded");
         (fp)(command_buffer, p_rendering_end_info.map_or(ptr::null(), |r| r))
     }
@@ -24146,5 +24320,57 @@ impl Device {
             p_queue_family_data_graph_processing_engine_info,
             p_queue_family_data_graph_processing_engine_properties,
         )
+    }
+    pub unsafe fn get_swapchain_gralloc_usage_ohos(
+        &self,
+        format: vk::Format,
+        image_usage: vk::ImageUsageFlags,
+    ) -> Result<u64> {
+        let fp = self
+            .fp_get_swapchain_gralloc_usage_ohos
+            .expect("vkGetSwapchainGrallocUsageOHOS is not loaded");
+        let mut gralloc_usage = MaybeUninit::<_>::uninit();
+        let err = (fp)(self.handle, format, image_usage, gralloc_usage.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(gralloc_usage.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn acquire_image_ohos(
+        &self,
+        image: vk::Image,
+        native_fence_fd: i32,
+        semaphore: vk::Semaphore,
+        fence: vk::Fence,
+    ) -> Result<()> {
+        let fp = self.fp_acquire_image_ohos.expect("vkAcquireImageOHOS is not loaded");
+        let err = (fp)(self.handle, image, native_fence_fd, semaphore, fence);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn queue_signal_release_image_ohos(
+        &self,
+        queue: vk::Queue,
+        p_wait_semaphores: &[vk::Semaphore],
+        image: vk::Image,
+    ) -> Result<i32> {
+        let fp = self
+            .fp_queue_signal_release_image_ohos
+            .expect("vkQueueSignalReleaseImageOHOS is not loaded");
+        let wait_semaphore_count = p_wait_semaphores.len() as u32;
+        let mut p_native_fence_fd = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            queue,
+            wait_semaphore_count,
+            p_wait_semaphores.as_ptr(),
+            image,
+            p_native_fence_fd.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(p_native_fence_fd.assume_init()),
+            _ => Err(err),
+        }
     }
 }
