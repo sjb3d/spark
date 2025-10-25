@@ -197,7 +197,7 @@ pub type zx_handle_t = u32;
 pub type RROutput = c_ulong;
 pub type AHardwareBuffer = Never;
 #[allow(non_camel_case_types)]
-pub type OHNativeWindow = *mut c_void;
+pub type OHNativeWindow = Never;
 #[allow(non_camel_case_types)]
 pub type MTLSharedEvent_id = *mut c_void;
 #[allow(non_camel_case_types)]

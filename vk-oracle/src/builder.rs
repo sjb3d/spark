@@ -1328,7 +1328,8 @@ impl<'a> OracleBuilder<'a> {
                 // Zircon
                 "zx_handle_t" => TypeDecl::BuiltIn(BuiltInDecl::U32),
                 // Open Harmony OS
-                "OHNativeWindow" => opaque_ptr(),
+                "OHNativeWindow" => TypeDecl::External(ExternalDecl::Opaque),
+                "OHBufferHandle" => TypeDecl::External(ExternalDecl::Opaque),
                 // Extra
                 "Version" => TypeDecl::BuiltIn(BuiltInDecl::U32),
                 _ => panic!("unknown external type: {name}"),
