@@ -117,7 +117,15 @@ fn version_num(i: &str) -> Res<u16> {
 fn version(i: &str) -> Res<Version> {
     map(
         tuple((
-            preceded(tag("VK_VERSION_"), version_num),
+            preceded(
+                alt((
+                    tag("VK_VERSION_"),
+                    tag("VK_BASE_VERSION_"),
+                    tag("VK_GRAPHICS_VERSION_"),
+                    tag("VK_COMPUTE_VERSION_"),
+                )),
+                version_num,
+            ),
             preceded(tag("_"), version_num),
         )),
         |(a, b)| Version::new(a, b),
