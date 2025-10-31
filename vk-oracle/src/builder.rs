@@ -1330,6 +1330,7 @@ impl<'a> OracleBuilder<'a> {
                 // Open Harmony OS
                 "OHNativeWindow" => TypeDecl::External(ExternalDecl::Opaque),
                 "OHBufferHandle" => TypeDecl::External(ExternalDecl::Opaque),
+                "OH_NativeBuffer" => TypeDecl::External(ExternalDecl::Opaque),
                 // Extra
                 "Version" => TypeDecl::BuiltIn(BuiltInDecl::U32),
                 _ => panic!("unknown external type: {name}"),
