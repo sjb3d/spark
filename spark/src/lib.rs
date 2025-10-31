@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.330
+//! Generated from vk.xml version 1.4.331
 
 #![allow(
     clippy::too_many_arguments,
@@ -2373,6 +2373,18 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_ohos_external_memory(&self) -> bool {
+        (self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            || (self.supports_khr_sampler_ycbcr_conversion() && self.supports_khr_external_memory()))
+            && self.supports_ext_queue_family_foreign()
+    }
+    pub fn enable_ohos_external_memory(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_sampler_ycbcr_conversion();
+            self.enable_khr_external_memory();
+        }
+        self.enable_ext_queue_family_foreign();
+    }
     pub fn supports_ext_external_memory_acquire_unmodified(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_external_memory()
     }
@@ -2877,6 +2889,14 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_depth_clamp_zero_one(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_arm_performance_counters_by_region(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_arm_performance_counters_by_region(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -5605,6 +5625,7 @@ pub struct DeviceExtensions {
     pub ext_image_compression_control_swapchain: bool,
     pub qcom_image_processing: bool,
     pub ext_nested_command_buffer: bool,
+    pub ohos_external_memory: bool,
     pub ext_external_memory_acquire_unmodified: bool,
     pub ext_extended_dynamic_state3: bool,
     pub ext_subpass_merge_feedback: bool,
@@ -5683,6 +5704,7 @@ pub struct DeviceExtensions {
     pub arm_pipeline_opacity_micromap: bool,
     pub ext_external_memory_metal: bool,
     pub khr_depth_clamp_zero_one: bool,
+    pub arm_performance_counters_by_region: bool,
     pub ext_vertex_attribute_robustness: bool,
     pub arm_format_pack: bool,
     pub valve_fragment_density_map_layered: bool,
@@ -6262,6 +6284,8 @@ impl DeviceExtensions {
             self.qcom_image_processing = true;
         } else if name == c"VK_EXT_nested_command_buffer" {
             self.ext_nested_command_buffer = true;
+        } else if name == c"VK_OHOS_external_memory" {
+            self.ohos_external_memory = true;
         } else if name == c"VK_EXT_external_memory_acquire_unmodified" {
             self.ext_external_memory_acquire_unmodified = true;
         } else if name == c"VK_EXT_extended_dynamic_state3" {
@@ -6418,6 +6442,8 @@ impl DeviceExtensions {
             self.ext_external_memory_metal = true;
         } else if name == c"VK_KHR_depth_clamp_zero_one" {
             self.khr_depth_clamp_zero_one = true;
+        } else if name == c"VK_ARM_performance_counters_by_region" {
+            self.arm_performance_counters_by_region = true;
         } else if name == c"VK_EXT_vertex_attribute_robustness" {
             self.ext_vertex_attribute_robustness = true;
         } else if name == c"VK_ARM_format_pack" {
@@ -6729,6 +6755,7 @@ impl DeviceExtensions {
             ext_image_compression_control_swapchain: false,
             qcom_image_processing: false,
             ext_nested_command_buffer: false,
+            ohos_external_memory: false,
             ext_external_memory_acquire_unmodified: false,
             ext_extended_dynamic_state3: false,
             ext_subpass_merge_feedback: false,
@@ -6807,6 +6834,7 @@ impl DeviceExtensions {
             arm_pipeline_opacity_micromap: false,
             ext_external_memory_metal: false,
             khr_depth_clamp_zero_one: false,
+            arm_performance_counters_by_region: false,
             ext_vertex_attribute_robustness: false,
             arm_format_pack: false,
             valve_fragment_density_map_layered: false,
@@ -9068,6 +9096,23 @@ impl DeviceExtensions {
     pub fn enable_ext_nested_command_buffer(&mut self) {
         self.ext_nested_command_buffer = true;
     }
+    pub fn supports_ohos_external_memory(&self) -> bool {
+        self.ohos_external_memory
+            && (self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+                || (self.supports_khr_sampler_ycbcr_conversion()
+                    && self.supports_khr_external_memory()
+                    && self.supports_khr_dedicated_allocation()))
+            && self.supports_ext_queue_family_foreign()
+    }
+    pub fn enable_ohos_external_memory(&mut self) {
+        self.ohos_external_memory = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_sampler_ycbcr_conversion();
+            self.enable_khr_external_memory();
+            self.enable_khr_dedicated_allocation();
+        }
+        self.enable_ext_queue_family_foreign();
+    }
     pub fn supports_ext_external_memory_acquire_unmodified(&self) -> bool {
         self.ext_external_memory_acquire_unmodified
             && (self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_external_memory())
@@ -9684,6 +9729,12 @@ impl DeviceExtensions {
     }
     pub fn enable_khr_depth_clamp_zero_one(&mut self) {
         self.khr_depth_clamp_zero_one = true;
+    }
+    pub fn supports_arm_performance_counters_by_region(&self) -> bool {
+        self.arm_performance_counters_by_region
+    }
+    pub fn enable_arm_performance_counters_by_region(&mut self) {
+        self.arm_performance_counters_by_region = true;
     }
     pub fn supports_ext_vertex_attribute_robustness(&self) -> bool {
         self.ext_vertex_attribute_robustness
@@ -10622,6 +10673,9 @@ impl DeviceExtensions {
         if self.ext_nested_command_buffer {
             v.push(c"VK_EXT_nested_command_buffer");
         }
+        if self.ohos_external_memory {
+            v.push(c"VK_OHOS_external_memory");
+        }
         if self.ext_external_memory_acquire_unmodified {
             v.push(c"VK_EXT_external_memory_acquire_unmodified");
         }
@@ -10855,6 +10909,9 @@ impl DeviceExtensions {
         }
         if self.khr_depth_clamp_zero_one {
             v.push(c"VK_KHR_depth_clamp_zero_one");
+        }
+        if self.arm_performance_counters_by_region {
+            v.push(c"VK_ARM_performance_counters_by_region");
         }
         if self.ext_vertex_attribute_robustness {
             v.push(c"VK_EXT_vertex_attribute_robustness");
@@ -11475,9 +11532,13 @@ pub struct Device {
         Option<vk::FnGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM>,
     pub fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm:
         Option<vk::FnGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM>,
+    pub fp_get_native_buffer_properties_ohos: Option<vk::FnGetNativeBufferPropertiesOHOS>,
+    pub fp_get_memory_native_buffer_ohos: Option<vk::FnGetMemoryNativeBufferOHOS>,
     pub fp_get_swapchain_gralloc_usage_ohos: Option<vk::FnGetSwapchainGrallocUsageOHOS>,
     pub fp_acquire_image_ohos: Option<vk::FnAcquireImageOHOS>,
     pub fp_queue_signal_release_image_ohos: Option<vk::FnQueueSignalReleaseImageOHOS>,
+    pub fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm:
+        Option<vk::FnEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -15666,6 +15727,20 @@ impl Device {
             } else {
                 None
             },
+            fp_get_native_buffer_properties_ohos: if extensions.ohos_external_memory {
+                instance
+                    .get_device_proc_addr(device, c"vkGetNativeBufferPropertiesOHOS")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_memory_native_buffer_ohos: if extensions.ohos_external_memory {
+                instance
+                    .get_device_proc_addr(device, c"vkGetMemoryNativeBufferOHOS")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_get_swapchain_gralloc_usage_ohos: if extensions.ohos_native_buffer {
                 instance
                     .get_device_proc_addr(device, c"vkGetSwapchainGrallocUsageOHOS")
@@ -15683,6 +15758,18 @@ impl Device {
             fp_queue_signal_release_image_ohos: if extensions.ohos_native_buffer {
                 instance
                     .get_device_proc_addr(device, c"vkQueueSignalReleaseImageOHOS")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm: if extensions
+                .arm_performance_counters_by_region
+            {
+                globals
+                    .get_instance_proc_addr(
+                        instance.handle,
+                        c"vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM",
+                    )
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -24321,6 +24408,34 @@ impl Device {
             p_queue_family_data_graph_processing_engine_properties,
         )
     }
+    pub unsafe fn get_native_buffer_properties_ohos(
+        &self,
+        buffer: &vk::OH_NativeBuffer,
+        p_properties: &mut vk::NativeBufferPropertiesOHOS,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_native_buffer_properties_ohos
+            .expect("vkGetNativeBufferPropertiesOHOS is not loaded");
+        let err = (fp)(self.handle, buffer, p_properties);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_memory_native_buffer_ohos(
+        &self,
+        p_info: &vk::MemoryGetNativeBufferInfoOHOS,
+    ) -> Result<*mut vk::OH_NativeBuffer> {
+        let fp = self
+            .fp_get_memory_native_buffer_ohos
+            .expect("vkGetMemoryNativeBufferOHOS is not loaded");
+        let mut p_buffer = MaybeUninit::<_>::uninit();
+        let err = (fp)(self.handle, p_info, p_buffer.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(p_buffer.assume_init()),
+            _ => Err(err),
+        }
+    }
     pub unsafe fn get_swapchain_gralloc_usage_ohos(
         &self,
         format: vk::Format,
@@ -24370,6 +24485,29 @@ impl Device {
         );
         match err {
             vk::Result::SUCCESS => Ok(p_native_fence_fd.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn enumerate_physical_device_queue_family_performance_counters_by_region_arm(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+        p_counter_count: &mut u32,
+        p_counters: *mut vk::PerformanceCounterARM,
+        p_counter_descriptions: *mut vk::PerformanceCounterDescriptionARM,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm
+            .expect("vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM is not loaded");
+        let err = (fp)(
+            physical_device,
+            queue_family_index,
+            p_counter_count,
+            p_counters,
+            p_counter_descriptions,
+        );
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
             _ => Err(err),
         }
     }

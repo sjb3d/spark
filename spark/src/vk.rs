@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.330
+//! Generated from vk.xml version 1.4.331
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -196,6 +196,8 @@ pub type zx_handle_t = u32;
 #[allow(non_camel_case_types)]
 pub type RROutput = c_ulong;
 pub type AHardwareBuffer = Never;
+#[allow(non_camel_case_types)]
+pub type OH_NativeBuffer = Never;
 #[allow(non_camel_case_types)]
 pub type OHBufferHandle = Never;
 #[allow(non_camel_case_types)]
@@ -3579,6 +3581,7 @@ impl ExternalMemoryHandleTypeFlags {
     pub const HOST_MAPPED_FOREIGN_MEMORY_EXT: Self = Self(0x100);
     pub const ZIRCON_VMO_FUCHSIA: Self = Self(0x800);
     pub const RDMA_ADDRESS_NV: Self = Self(0x1000);
+    pub const OH_NATIVE_BUFFER_OHOS: Self = Self(0x8000);
     pub const MTLBUFFER_EXT: Self = Self(0x10000);
     pub const MTLTEXTURE_EXT: Self = Self(0x20000);
     pub const MTLHEAP_EXT: Self = Self(0x40000);
@@ -3602,6 +3605,7 @@ impl fmt::Display for ExternalMemoryHandleTypeFlags {
                 (0x100, "HOST_MAPPED_FOREIGN_MEMORY_EXT"),
                 (0x800, "ZIRCON_VMO_FUCHSIA"),
                 (0x1000, "RDMA_ADDRESS_NV"),
+                (0x8000, "OH_NATIVE_BUFFER_OHOS"),
                 (0x10000, "MTLBUFFER_EXT"),
                 (0x20000, "MTLTEXTURE_EXT"),
                 (0x40000, "MTLHEAP_EXT"),
@@ -4589,6 +4593,17 @@ impl_bitmask!(SwapchainImageUsageFlagsOHOS);
 impl fmt::Display for SwapchainImageUsageFlagsOHOS {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "SHARED")], f)
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct PerformanceCounterDescriptionFlagsARM(pub(crate) u32);
+impl PerformanceCounterDescriptionFlagsARM {}
+impl_bitmask!(PerformanceCounterDescriptionFlagsARM);
+impl fmt::Display for PerformanceCounterDescriptionFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 
@@ -7774,6 +7789,12 @@ impl StructureType {
     pub const IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM: Self = Self(1000440002);
     pub const PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_FEATURES_EXT: Self = Self(1000451000);
     pub const PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_PROPERTIES_EXT: Self = Self(1000451001);
+    pub const NATIVE_BUFFER_USAGE_OHOS: Self = Self(1000452000);
+    pub const NATIVE_BUFFER_PROPERTIES_OHOS: Self = Self(1000452001);
+    pub const NATIVE_BUFFER_FORMAT_PROPERTIES_OHOS: Self = Self(1000452002);
+    pub const IMPORT_NATIVE_BUFFER_INFO_OHOS: Self = Self(1000452003);
+    pub const MEMORY_GET_NATIVE_BUFFER_INFO_OHOS: Self = Self(1000452004);
+    pub const EXTERNAL_FORMAT_OHOS: Self = Self(1000452005);
     pub const EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_EXT: Self = Self(1000453000);
     pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT: Self = Self(1000455000);
     pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_PROPERTIES_EXT: Self = Self(1000455001);
@@ -8051,6 +8072,11 @@ impl StructureType {
     pub const MEMORY_METAL_HANDLE_PROPERTIES_EXT: Self = Self(1000602001);
     pub const MEMORY_GET_METAL_HANDLE_INFO_EXT: Self = Self(1000602002);
     pub const PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR: Self = Self(1000421000);
+    pub const PHYSICAL_DEVICE_PERFORMANCE_COUNTERS_BY_REGION_FEATURES_ARM: Self = Self(1000605000);
+    pub const PHYSICAL_DEVICE_PERFORMANCE_COUNTERS_BY_REGION_PROPERTIES_ARM: Self = Self(1000605001);
+    pub const PERFORMANCE_COUNTER_ARM: Self = Self(1000605002);
+    pub const PERFORMANCE_COUNTER_DESCRIPTION_ARM: Self = Self(1000605003);
+    pub const RENDER_PASS_PERFORMANCE_COUNTERS_BY_REGION_BEGIN_INFO_ARM: Self = Self(1000605004);
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000608000);
     pub const PHYSICAL_DEVICE_FORMAT_PACK_FEATURES_ARM: Self = Self(1000609000);
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_LAYERED_FEATURES_VALVE: Self = Self(1000611000);
@@ -8803,6 +8829,12 @@ impl fmt::Display for StructureType {
             1000440002 => Some(&"IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM"),
             1000451000 => Some(&"PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_FEATURES_EXT"),
             1000451001 => Some(&"PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_PROPERTIES_EXT"),
+            1000452000 => Some(&"NATIVE_BUFFER_USAGE_OHOS"),
+            1000452001 => Some(&"NATIVE_BUFFER_PROPERTIES_OHOS"),
+            1000452002 => Some(&"NATIVE_BUFFER_FORMAT_PROPERTIES_OHOS"),
+            1000452003 => Some(&"IMPORT_NATIVE_BUFFER_INFO_OHOS"),
+            1000452004 => Some(&"MEMORY_GET_NATIVE_BUFFER_INFO_OHOS"),
+            1000452005 => Some(&"EXTERNAL_FORMAT_OHOS"),
             1000453000 => Some(&"EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_EXT"),
             1000455000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT"),
             1000455001 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_PROPERTIES_EXT"),
@@ -9045,6 +9077,11 @@ impl fmt::Display for StructureType {
             1000602001 => Some(&"MEMORY_METAL_HANDLE_PROPERTIES_EXT"),
             1000602002 => Some(&"MEMORY_GET_METAL_HANDLE_INFO_EXT"),
             1000421000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR"),
+            1000605000 => Some(&"PHYSICAL_DEVICE_PERFORMANCE_COUNTERS_BY_REGION_FEATURES_ARM"),
+            1000605001 => Some(&"PHYSICAL_DEVICE_PERFORMANCE_COUNTERS_BY_REGION_PROPERTIES_ARM"),
+            1000605002 => Some(&"PERFORMANCE_COUNTER_ARM"),
+            1000605003 => Some(&"PERFORMANCE_COUNTER_DESCRIPTION_ARM"),
+            1000605004 => Some(&"RENDER_PASS_PERFORMANCE_COUNTERS_BY_REGION_BEGIN_INFO_ARM"),
             1000608000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT"),
             1000609000 => Some(&"PHYSICAL_DEVICE_FORMAT_PACK_FEATURES_ARM"),
             1000611000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_LAYERED_FEATURES_VALVE"),
@@ -51537,7 +51574,7 @@ impl fmt::Debug for SwapchainImageCreateInfoOHOS {
 #[derive(Copy, Clone)]
 pub struct PhysicalDevicePresentationPropertiesOHOS {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub shared_image: Bool32,
 }
 unsafe impl Send for PhysicalDevicePresentationPropertiesOHOS {}
@@ -51546,7 +51583,7 @@ impl Default for PhysicalDevicePresentationPropertiesOHOS {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_OHOS,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             shared_image: Default::default(),
         }
     }
@@ -51585,6 +51622,371 @@ impl fmt::Debug for PhysicalDeviceShader64BitIndexingFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader64_bit_indexing", &self.shader64_bit_indexing)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct NativeBufferUsageOHOS {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ohos_native_buffer_usage: u64,
+}
+unsafe impl Send for NativeBufferUsageOHOS {}
+unsafe impl Sync for NativeBufferUsageOHOS {}
+impl Default for NativeBufferUsageOHOS {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::NATIVE_BUFFER_USAGE_OHOS,
+            p_next: ptr::null_mut(),
+            ohos_native_buffer_usage: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for NativeBufferUsageOHOS {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("NativeBufferUsageOHOS")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ohos_native_buffer_usage", &self.ohos_native_buffer_usage)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct NativeBufferPropertiesOHOS {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub allocation_size: DeviceSize,
+    pub memory_type_bits: u32,
+}
+unsafe impl Send for NativeBufferPropertiesOHOS {}
+unsafe impl Sync for NativeBufferPropertiesOHOS {}
+impl Default for NativeBufferPropertiesOHOS {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::NATIVE_BUFFER_PROPERTIES_OHOS,
+            p_next: ptr::null_mut(),
+            allocation_size: Default::default(),
+            memory_type_bits: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for NativeBufferPropertiesOHOS {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("NativeBufferPropertiesOHOS")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("allocation_size", &self.allocation_size)
+            .field("memory_type_bits", &self.memory_type_bits)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct NativeBufferFormatPropertiesOHOS {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub format: Format,
+    pub external_format: u64,
+    pub format_features: FormatFeatureFlags,
+    pub sampler_ycbcr_conversion_components: ComponentMapping,
+    pub suggested_ycbcr_model: SamplerYcbcrModelConversion,
+    pub suggested_ycbcr_range: SamplerYcbcrRange,
+    pub suggested_x_chroma_offset: ChromaLocation,
+    pub suggested_y_chroma_offset: ChromaLocation,
+}
+unsafe impl Send for NativeBufferFormatPropertiesOHOS {}
+unsafe impl Sync for NativeBufferFormatPropertiesOHOS {}
+impl Default for NativeBufferFormatPropertiesOHOS {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::NATIVE_BUFFER_FORMAT_PROPERTIES_OHOS,
+            p_next: ptr::null_mut(),
+            format: Default::default(),
+            external_format: Default::default(),
+            format_features: Default::default(),
+            sampler_ycbcr_conversion_components: Default::default(),
+            suggested_ycbcr_model: Default::default(),
+            suggested_ycbcr_range: Default::default(),
+            suggested_x_chroma_offset: Default::default(),
+            suggested_y_chroma_offset: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for NativeBufferFormatPropertiesOHOS {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("NativeBufferFormatPropertiesOHOS")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("format", &self.format)
+            .field("external_format", &self.external_format)
+            .field("format_features", &self.format_features)
+            .field(
+                "sampler_ycbcr_conversion_components",
+                &self.sampler_ycbcr_conversion_components,
+            )
+            .field("suggested_ycbcr_model", &self.suggested_ycbcr_model)
+            .field("suggested_ycbcr_range", &self.suggested_ycbcr_range)
+            .field("suggested_x_chroma_offset", &self.suggested_x_chroma_offset)
+            .field("suggested_y_chroma_offset", &self.suggested_y_chroma_offset)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImportNativeBufferInfoOHOS {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub buffer: *mut OH_NativeBuffer,
+}
+unsafe impl Send for ImportNativeBufferInfoOHOS {}
+unsafe impl Sync for ImportNativeBufferInfoOHOS {}
+impl Default for ImportNativeBufferInfoOHOS {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMPORT_NATIVE_BUFFER_INFO_OHOS,
+            p_next: ptr::null(),
+            buffer: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for ImportNativeBufferInfoOHOS {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImportNativeBufferInfoOHOS")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("buffer", &self.buffer)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryGetNativeBufferInfoOHOS {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub memory: DeviceMemory,
+}
+unsafe impl Send for MemoryGetNativeBufferInfoOHOS {}
+unsafe impl Sync for MemoryGetNativeBufferInfoOHOS {}
+impl Default for MemoryGetNativeBufferInfoOHOS {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_GET_NATIVE_BUFFER_INFO_OHOS,
+            p_next: ptr::null(),
+            memory: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryGetNativeBufferInfoOHOS {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryGetNativeBufferInfoOHOS")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory", &self.memory)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExternalFormatOHOS {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub external_format: u64,
+}
+unsafe impl Send for ExternalFormatOHOS {}
+unsafe impl Sync for ExternalFormatOHOS {}
+impl Default for ExternalFormatOHOS {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXTERNAL_FORMAT_OHOS,
+            p_next: ptr::null_mut(),
+            external_format: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ExternalFormatOHOS {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExternalFormatOHOS")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("external_format", &self.external_format)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePerformanceCountersByRegionFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub performance_counters_by_region: Bool32,
+}
+unsafe impl Send for PhysicalDevicePerformanceCountersByRegionFeaturesARM {}
+unsafe impl Sync for PhysicalDevicePerformanceCountersByRegionFeaturesARM {}
+impl Default for PhysicalDevicePerformanceCountersByRegionFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PERFORMANCE_COUNTERS_BY_REGION_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            performance_counters_by_region: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePerformanceCountersByRegionFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePerformanceCountersByRegionFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("performance_counters_by_region", &self.performance_counters_by_region)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePerformanceCountersByRegionPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_per_region_performance_counters: u32,
+    pub performance_counter_region_size: Extent2D,
+    pub row_stride_alignment: u32,
+    pub region_alignment: u32,
+    pub identity_transform_order: Bool32,
+}
+unsafe impl Send for PhysicalDevicePerformanceCountersByRegionPropertiesARM {}
+unsafe impl Sync for PhysicalDevicePerformanceCountersByRegionPropertiesARM {}
+impl Default for PhysicalDevicePerformanceCountersByRegionPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PERFORMANCE_COUNTERS_BY_REGION_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            max_per_region_performance_counters: Default::default(),
+            performance_counter_region_size: Default::default(),
+            row_stride_alignment: Default::default(),
+            region_alignment: Default::default(),
+            identity_transform_order: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePerformanceCountersByRegionPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePerformanceCountersByRegionPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_per_region_performance_counters",
+                &self.max_per_region_performance_counters,
+            )
+            .field("performance_counter_region_size", &self.performance_counter_region_size)
+            .field("row_stride_alignment", &self.row_stride_alignment)
+            .field("region_alignment", &self.region_alignment)
+            .field("identity_transform_order", &self.identity_transform_order)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerformanceCounterARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub counter_id: u32,
+}
+unsafe impl Send for PerformanceCounterARM {}
+unsafe impl Sync for PerformanceCounterARM {}
+impl Default for PerformanceCounterARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PERFORMANCE_COUNTER_ARM,
+            p_next: ptr::null_mut(),
+            counter_id: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PerformanceCounterARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceCounterARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("counter_id", &self.counter_id)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerformanceCounterDescriptionARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub flags: PerformanceCounterDescriptionFlagsARM,
+    pub name: [c_char; MAX_DESCRIPTION_SIZE],
+}
+unsafe impl Send for PerformanceCounterDescriptionARM {}
+unsafe impl Sync for PerformanceCounterDescriptionARM {}
+impl Default for PerformanceCounterDescriptionARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PERFORMANCE_COUNTER_DESCRIPTION_ARM,
+            p_next: ptr::null_mut(),
+            flags: Default::default(),
+            name: [Default::default(); MAX_DESCRIPTION_SIZE],
+        }
+    }
+}
+impl fmt::Debug for PerformanceCounterDescriptionARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceCounterDescriptionARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("name", &self.name)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassPerformanceCountersByRegionBeginInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub counter_address_count: u32,
+    pub p_counter_addresses: *const DeviceAddress,
+    pub serialize_regions: Bool32,
+    pub counter_index_count: u32,
+    pub p_counter_indices: *mut u32,
+}
+unsafe impl Send for RenderPassPerformanceCountersByRegionBeginInfoARM {}
+unsafe impl Sync for RenderPassPerformanceCountersByRegionBeginInfoARM {}
+impl Default for RenderPassPerformanceCountersByRegionBeginInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDER_PASS_PERFORMANCE_COUNTERS_BY_REGION_BEGIN_INFO_ARM,
+            p_next: ptr::null_mut(),
+            counter_address_count: Default::default(),
+            p_counter_addresses: ptr::null(),
+            serialize_regions: Default::default(),
+            counter_index_count: Default::default(),
+            p_counter_indices: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassPerformanceCountersByRegionBeginInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassPerformanceCountersByRegionBeginInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("counter_address_count", &self.counter_address_count)
+            .field("p_counter_addresses", &self.p_counter_addresses)
+            .field("serialize_regions", &self.serialize_regions)
+            .field("counter_index_count", &self.counter_index_count)
+            .field("p_counter_indices", &self.p_counter_indices)
             .finish()
     }
 }
@@ -54478,6 +54880,16 @@ pub type FnGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = 
     p_queue_family_data_graph_processing_engine_info: *const PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM,
     p_queue_family_data_graph_processing_engine_properties: *mut QueueFamilyDataGraphProcessingEnginePropertiesARM,
 );
+pub type FnGetNativeBufferPropertiesOHOS = unsafe extern "system" fn(
+    device: Device,
+    buffer: *const OH_NativeBuffer,
+    p_properties: *mut NativeBufferPropertiesOHOS,
+) -> Result;
+pub type FnGetMemoryNativeBufferOHOS = unsafe extern "system" fn(
+    device: Device,
+    p_info: *const MemoryGetNativeBufferInfoOHOS,
+    p_buffer: *mut *mut OH_NativeBuffer,
+) -> Result;
 pub type FnGetSwapchainGrallocUsageOHOS = unsafe extern "system" fn(
     device: Device,
     format: Format,
@@ -54497,4 +54909,11 @@ pub type FnQueueSignalReleaseImageOHOS = unsafe extern "system" fn(
     p_wait_semaphores: *const Semaphore,
     image: Image,
     p_native_fence_fd: *mut i32,
+) -> Result;
+pub type FnEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = unsafe extern "system" fn(
+    physical_device: PhysicalDevice,
+    queue_family_index: u32,
+    p_counter_count: *mut u32,
+    p_counters: *mut PerformanceCounterARM,
+    p_counter_descriptions: *mut PerformanceCounterDescriptionARM,
 ) -> Result;

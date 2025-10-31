@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.330
+//! Generated from vk.xml version 1.4.331
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -40354,3 +40354,234 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShader64BitIndexingFeatur
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceShader64BitIndexingFeaturesEXTBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShader64BitIndexingFeaturesEXT {}
 impl DeviceCreateInfoNext for PhysicalDeviceShader64BitIndexingFeaturesEXTBuilder {}
+impl ImageFormatProperties2Next for vk::NativeBufferUsageOHOS {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct NativeBufferPropertiesOHOSBuilder<'a> {
+    inner: vk::NativeBufferPropertiesOHOS,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::NativeBufferPropertiesOHOS {
+    type Type = NativeBufferPropertiesOHOSBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait NativeBufferPropertiesOHOSNext {}
+impl<'a> NativeBufferPropertiesOHOSBuilder<'a> {
+    pub fn insert_next<T: NativeBufferPropertiesOHOSNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::NativeBufferPropertiesOHOS {
+        &mut self.inner
+    }
+}
+impl<'a> Deref for NativeBufferPropertiesOHOSBuilder<'a> {
+    type Target = vk::NativeBufferPropertiesOHOS;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl NativeBufferPropertiesOHOSNext for vk::NativeBufferFormatPropertiesOHOS {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ImportNativeBufferInfoOHOSBuilder<'a> {
+    inner: vk::ImportNativeBufferInfoOHOS,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::ImportNativeBufferInfoOHOS {
+    type Type = ImportNativeBufferInfoOHOSBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> ImportNativeBufferInfoOHOSBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::ImportNativeBufferInfoOHOS {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn buffer(mut self, buffer: *mut vk::OH_NativeBuffer) -> Self {
+        self.inner.buffer = buffer;
+        self
+    }
+}
+impl<'a> Deref for ImportNativeBufferInfoOHOSBuilder<'a> {
+    type Target = vk::ImportNativeBufferInfoOHOS;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl MemoryAllocateInfoNext for vk::ImportNativeBufferInfoOHOS {}
+impl MemoryAllocateInfoNext for ImportNativeBufferInfoOHOSBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct MemoryGetNativeBufferInfoOHOSBuilder {
+    inner: vk::MemoryGetNativeBufferInfoOHOS,
+}
+impl Builder<'_> for vk::MemoryGetNativeBufferInfoOHOS {
+    type Type = MemoryGetNativeBufferInfoOHOSBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl MemoryGetNativeBufferInfoOHOSBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::MemoryGetNativeBufferInfoOHOS {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
+        self.inner.memory = memory;
+        self
+    }
+}
+impl Deref for MemoryGetNativeBufferInfoOHOSBuilder {
+    type Target = vk::MemoryGetNativeBufferInfoOHOS;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ExternalFormatOHOSBuilder {
+    inner: vk::ExternalFormatOHOS,
+}
+impl Builder<'_> for vk::ExternalFormatOHOS {
+    type Type = ExternalFormatOHOSBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ExternalFormatOHOSBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ExternalFormatOHOS {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn external_format(mut self, external_format: u64) -> Self {
+        self.inner.external_format = external_format;
+        self
+    }
+}
+impl Deref for ExternalFormatOHOSBuilder {
+    type Target = vk::ExternalFormatOHOS;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageCreateInfoNext for vk::ExternalFormatOHOS {}
+impl ImageCreateInfoNext for ExternalFormatOHOSBuilder {}
+impl SamplerYcbcrConversionCreateInfoNext for vk::ExternalFormatOHOS {}
+impl SamplerYcbcrConversionCreateInfoNext for ExternalFormatOHOSBuilder {}
+impl AttachmentDescription2Next for vk::ExternalFormatOHOS {}
+impl AttachmentDescription2Next for ExternalFormatOHOSBuilder {}
+impl GraphicsPipelineCreateInfoNext for vk::ExternalFormatOHOS {}
+impl GraphicsPipelineCreateInfoNext for ExternalFormatOHOSBuilder {}
+impl CommandBufferInheritanceInfoNext for vk::ExternalFormatOHOS {}
+impl CommandBufferInheritanceInfoNext for ExternalFormatOHOSBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDevicePerformanceCountersByRegionFeaturesARMBuilder {
+    inner: vk::PhysicalDevicePerformanceCountersByRegionFeaturesARM,
+}
+impl Builder<'_> for vk::PhysicalDevicePerformanceCountersByRegionFeaturesARM {
+    type Type = PhysicalDevicePerformanceCountersByRegionFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDevicePerformanceCountersByRegionFeaturesARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDevicePerformanceCountersByRegionFeaturesARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn performance_counters_by_region(mut self, performance_counters_by_region: bool) -> Self {
+        self.inner.performance_counters_by_region = if performance_counters_by_region {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDevicePerformanceCountersByRegionFeaturesARMBuilder {
+    type Target = vk::PhysicalDevicePerformanceCountersByRegionFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePerformanceCountersByRegionFeaturesARM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePerformanceCountersByRegionFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePerformanceCountersByRegionFeaturesARM {}
+impl DeviceCreateInfoNext for PhysicalDevicePerformanceCountersByRegionFeaturesARMBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePerformanceCountersByRegionPropertiesARM {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct RenderPassPerformanceCountersByRegionBeginInfoARMBuilder<'a> {
+    inner: vk::RenderPassPerformanceCountersByRegionBeginInfoARM,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::RenderPassPerformanceCountersByRegionBeginInfoARM {
+    type Type = RenderPassPerformanceCountersByRegionBeginInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> RenderPassPerformanceCountersByRegionBeginInfoARMBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::RenderPassPerformanceCountersByRegionBeginInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn counter_address_count(mut self, counter_address_count: u32) -> Self {
+        self.inner.counter_address_count = counter_address_count;
+        self
+    }
+    pub fn p_counter_addresses(mut self, p_counter_addresses: &'a vk::DeviceAddress) -> Self {
+        self.inner.p_counter_addresses = p_counter_addresses;
+        self
+    }
+    pub fn serialize_regions(mut self, serialize_regions: bool) -> Self {
+        self.inner.serialize_regions = if serialize_regions { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn counter_index_count(mut self, counter_index_count: u32) -> Self {
+        self.inner.counter_index_count = counter_index_count;
+        self
+    }
+    pub fn p_counter_indices(mut self, p_counter_indices: *mut u32) -> Self {
+        self.inner.p_counter_indices = p_counter_indices;
+        self
+    }
+}
+impl<'a> Deref for RenderPassPerformanceCountersByRegionBeginInfoARMBuilder<'a> {
+    type Target = vk::RenderPassPerformanceCountersByRegionBeginInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl RenderPassBeginInfoNext for vk::RenderPassPerformanceCountersByRegionBeginInfoARM {}
+impl RenderPassBeginInfoNext for RenderPassPerformanceCountersByRegionBeginInfoARMBuilder<'_> {}
+impl RenderingInfoNext for vk::RenderPassPerformanceCountersByRegionBeginInfoARM {}
+impl RenderingInfoNext for RenderPassPerformanceCountersByRegionBeginInfoARMBuilder<'_> {}
