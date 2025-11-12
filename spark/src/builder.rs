@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.331
+//! Generated from vk.xml version 1.4.332
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -3533,6 +3533,52 @@ impl PipelineCacheHeaderVersionOneBuilder {
 }
 impl Deref for PipelineCacheHeaderVersionOneBuilder {
     type Target = vk::PipelineCacheHeaderVersionOne;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PipelineCacheHeaderVersionDataGraphQCOMBuilder {
+    inner: vk::PipelineCacheHeaderVersionDataGraphQCOM,
+}
+impl Builder<'_> for vk::PipelineCacheHeaderVersionDataGraphQCOM {
+    type Type = PipelineCacheHeaderVersionDataGraphQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PipelineCacheHeaderVersionDataGraphQCOMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PipelineCacheHeaderVersionDataGraphQCOM {
+        &mut self.inner
+    }
+    pub fn header_size(mut self, header_size: u32) -> Self {
+        self.inner.header_size = header_size;
+        self
+    }
+    pub fn header_version(mut self, header_version: vk::PipelineCacheHeaderVersion) -> Self {
+        self.inner.header_version = header_version;
+        self
+    }
+    pub fn cache_type(mut self, cache_type: vk::DataGraphModelCacheTypeQCOM) -> Self {
+        self.inner.cache_type = cache_type;
+        self
+    }
+    pub fn cache_version(mut self, cache_version: u32) -> Self {
+        self.inner.cache_version = cache_version;
+        self
+    }
+    pub fn toolchain_version(
+        mut self,
+        toolchain_version: [u32; vk::DATA_GRAPH_MODEL_TOOLCHAIN_VERSION_LENGTH_QCOM],
+    ) -> Self {
+        self.inner.toolchain_version = toolchain_version;
+        self
+    }
+}
+impl Deref for PipelineCacheHeaderVersionDataGraphQCOMBuilder {
+    type Target = vk::PipelineCacheHeaderVersionDataGraphQCOM;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -38030,8 +38076,45 @@ impl Deref for DispatchTileInfoQCOMBuilder {
     }
 }
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVEBuilder {
+    inner: vk::PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE,
+}
+impl Builder<'_> for vk::PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE {
+    type Type = PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVEBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVEBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn fragment_density_map_layered(mut self, fragment_density_map_layered: bool) -> Self {
+        self.inner.fragment_density_map_layered = if fragment_density_map_layered {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVEBuilder {
+    type Target = vk::PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVEBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE {}
+impl DeviceCreateInfoNext for PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVEBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -40214,6 +40297,75 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineCacheIncrementalM
 impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineCacheIncrementalModeFeaturesSECBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {}
 impl DeviceCreateInfoNext for PhysicalDevicePipelineCacheIncrementalModeFeaturesSECBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineBuiltinModelCreateInfoQCOMBuilder<'a> {
+    inner: vk::DataGraphPipelineBuiltinModelCreateInfoQCOM,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DataGraphPipelineBuiltinModelCreateInfoQCOM {
+    type Type = DataGraphPipelineBuiltinModelCreateInfoQCOMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> DataGraphPipelineBuiltinModelCreateInfoQCOMBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineBuiltinModelCreateInfoQCOM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_operation(mut self, p_operation: &'a vk::PhysicalDeviceDataGraphOperationSupportARM) -> Self {
+        self.inner.p_operation = p_operation;
+        self
+    }
+}
+impl<'a> Deref for DataGraphPipelineBuiltinModelCreateInfoQCOMBuilder<'a> {
+    type Target = vk::DataGraphPipelineBuiltinModelCreateInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DataGraphPipelineCreateInfoARMNext for vk::DataGraphPipelineBuiltinModelCreateInfoQCOM {}
+impl DataGraphPipelineCreateInfoARMNext for DataGraphPipelineBuiltinModelCreateInfoQCOMBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceDataGraphModelFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceDataGraphModelFeaturesQCOM,
+}
+impl Builder<'_> for vk::PhysicalDeviceDataGraphModelFeaturesQCOM {
+    type Type = PhysicalDeviceDataGraphModelFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceDataGraphModelFeaturesQCOMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceDataGraphModelFeaturesQCOM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn data_graph_model(mut self, data_graph_model: bool) -> Self {
+        self.inner.data_graph_model = if data_graph_model { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDataGraphModelFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceDataGraphModelFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDataGraphModelFeaturesQCOM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDataGraphModelFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDataGraphModelFeaturesQCOM {}
+impl DeviceCreateInfoNext for PhysicalDeviceDataGraphModelFeaturesQCOMBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]

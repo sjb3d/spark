@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.331
+// Generated from vk.xml version 1.4.332
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -198,6 +198,7 @@ pub const partitioned_acceleration_structure_partition_index_global_nv: u32 = 0x
 pub const compressed_triangle_format_dgf1_byte_alignment_amdx = 128;
 pub const compressed_triangle_format_dgf1_byte_stride_amdx = 128;
 pub const max_physical_device_data_graph_operation_set_name_size_arm = 128;
+pub const data_graph_model_toolchain_version_length_qcom = 3;
 pub const wl_display = opaque {};
 pub const Display = opaque {};
 pub const VisualID = c_ulong;
@@ -1994,6 +1995,7 @@ pub const BorderColor = enum(i32) {
 };
 pub const PipelineCacheHeaderVersion = enum(i32) {
     one = 1,
+    data_graph_qcom = 1000629000,
     _,
 };
 pub const ComponentSwizzle = enum(i32) {
@@ -3604,6 +3606,8 @@ pub const StructureType = enum(i32) {
     physical_device_zero_initialize_device_memory_features_ext = 1000620000,
     physical_device_present_mode_fifo_latest_ready_features_khr = 1000361000,
     physical_device_shader_64_bit_indexing_features_ext = 1000627000,
+    physical_device_data_graph_model_features_qcom = 1000629000,
+    data_graph_pipeline_builtin_model_create_info_qcom = 1000629001,
     physical_device_maintenance_10_features_khr = 1000630000,
     physical_device_maintenance_10_properties_khr = 1000630001,
     rendering_attachment_flags_info_khr = 1000630002,
@@ -4197,10 +4201,18 @@ pub const DataGraphPipelineSessionBindPointTypeARM = enum(i32) {
 };
 pub const PhysicalDeviceDataGraphProcessingEngineTypeARM = enum(i32) {
     default = 0,
+    neural_qcom = 1000629000,
+    compute_qcom = 1000629001,
     _,
 };
 pub const PhysicalDeviceDataGraphOperationTypeARM = enum(i32) {
     spirv_extended_instruction_set = 0,
+    neural_model_qcom = 1000629000,
+    builtin_model_qcom = 1000629001,
+    _,
+};
+pub const DataGraphModelCacheTypeQCOM = enum(i32) {
+    generic_binary = 0,
     _,
 };
 pub const ColorSpaceKHR = enum(i32) {
@@ -4901,6 +4913,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderFloat8FeaturesEXT,
             *PhysicalDeviceDataGraphFeaturesARM,
             *PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC,
+            *PhysicalDeviceDataGraphModelFeaturesQCOM,
             *PhysicalDeviceShaderUntypedPointersFeaturesKHR,
             *PhysicalDeviceShader64BitIndexingFeaturesEXT,
             *PhysicalDevicePerformanceCountersByRegionFeaturesARM,
@@ -5843,6 +5856,13 @@ pub const PipelineCacheHeaderVersionOne = extern struct {
     vendor_id: u32 = 0,
     device_id: u32 = 0,
     pipeline_cache_uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
+};
+pub const PipelineCacheHeaderVersionDataGraphQCOM = extern struct {
+    header_size: u32 = 0,
+    header_version: PipelineCacheHeaderVersion = @enumFromInt(0),
+    cache_type: DataGraphModelCacheTypeQCOM = @enumFromInt(0),
+    cache_version: u32 = 0,
+    toolchain_version: [data_graph_model_toolchain_version_length_qcom]u32 = [_]u32{0} ** data_graph_model_toolchain_version_length_qcom,
 };
 pub const PushConstantRange = extern struct {
     stage_flags: ShaderStageFlags = .none,
@@ -7287,6 +7307,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderFloat8FeaturesEXT,
             *PhysicalDeviceDataGraphFeaturesARM,
             *PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC,
+            *PhysicalDeviceDataGraphModelFeaturesQCOM,
             *PhysicalDeviceShaderUntypedPointersFeaturesKHR,
             *PhysicalDeviceShader64BitIndexingFeaturesEXT,
             *PhysicalDevicePerformanceCountersByRegionFeaturesARM,
@@ -15068,6 +15089,7 @@ pub const DataGraphPipelineCreateInfoARM = extern struct {
             *DataGraphPipelineShaderModuleCreateInfoARM,
             *DataGraphPipelineIdentifierCreateInfoARM,
             *DataGraphProcessingEngineCreateInfoARM,
+            *DataGraphPipelineBuiltinModelCreateInfoQCOM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -15180,6 +15202,16 @@ pub const PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC = extern struct 
     s_type: StructureType = .physical_device_pipeline_cache_incremental_mode_features_sec,
     p_next: ?*anyopaque = null,
     pipeline_cache_incremental_mode: Bool32 = .false,
+};
+pub const DataGraphPipelineBuiltinModelCreateInfoQCOM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_builtin_model_create_info_qcom,
+    p_next: ?*const anyopaque = null,
+    p_operation: ?*const PhysicalDeviceDataGraphOperationSupportARM = null,
+};
+pub const PhysicalDeviceDataGraphModelFeaturesQCOM = extern struct {
+    s_type: StructureType = .physical_device_data_graph_model_features_qcom,
+    p_next: ?*const anyopaque = null,
+    data_graph_model: Bool32 = .false,
 };
 pub const PhysicalDeviceShaderUntypedPointersFeaturesKHR = extern struct {
     s_type: StructureType = .physical_device_shader_untyped_pointers_features_khr,
@@ -16347,6 +16379,7 @@ const ExtensionNames = struct {
     const ext_zero_initialize_device_memory = "VK_EXT_zero_initialize_device_memory";
     const khr_present_mode_fifo_latest_ready = "VK_KHR_present_mode_fifo_latest_ready";
     const ext_shader_64bit_indexing = "VK_EXT_shader_64bit_indexing";
+    const qcom_data_graph_model = "VK_QCOM_data_graph_model";
     const khr_maintenance10 = "VK_KHR_maintenance10";
     const sec_pipeline_cache_incremental_mode = "VK_SEC_pipeline_cache_incremental_mode";
     const ext_shader_uniform_buffer_unsized_array = "VK_EXT_shader_uniform_buffer_unsized_array";
@@ -18011,6 +18044,15 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_nv_cuda_kernel_launch(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_nv_cuda_kernel_launch(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_qcom_tile_shading(self: InstanceExtensions) bool {
         return self.supports_qcom_tile_properties() or self.supports_khr_get_physical_device_properties2();
     }
@@ -18361,6 +18403,15 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_ext_frame_boundary(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_ext_frame_boundary(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_ext_multisampled_render_to_single_sampled(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 2, 0).to_int() or (self.supports_khr_create_renderpass2() and self.supports_khr_depth_stencil_resolve());
     }
@@ -18491,6 +18542,15 @@ pub const InstanceExtensions = packed struct {
     }
     pub fn enable_ext_pageable_device_local_memory(self: *InstanceExtensions) void {
         self.enable_ext_memory_priority();
+    }
+
+    pub fn supports_khr_shader_subgroup_rotate(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_khr_shader_subgroup_rotate(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
 
     pub fn supports_arm_scheduling_controls(self: InstanceExtensions) bool {
@@ -18753,6 +18813,15 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_amd_anti_lag(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_amd_anti_lag(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_amdx_dense_geometry_format(self: InstanceExtensions) bool {
         return self.supports_khr_acceleration_structure() and (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_maintenance5());
     }
@@ -18861,6 +18930,24 @@ pub const InstanceExtensions = packed struct {
         self.enable_khr_ray_tracing_pipeline();
     }
 
+    pub fn supports_nv_cooperative_vector(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_nv_cooperative_vector(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_nv_extended_sparse_address_space(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_nv_extended_sparse_address_space(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_ext_mutable_descriptor_type(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_maintenance3();
     }
@@ -18941,6 +19028,15 @@ pub const InstanceExtensions = packed struct {
         self.enable_khr_maintenance5();
     }
 
+    pub fn supports_qcom_multiview_per_view_render_areas(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_qcom_multiview_per_view_render_areas(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_khr_compute_shader_derivatives(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
@@ -18955,6 +19051,15 @@ pub const InstanceExtensions = packed struct {
     }
     pub fn enable_qcom_image_processing2(self: *InstanceExtensions) void {
         self.enable_qcom_image_processing();
+    }
+
+    pub fn supports_qcom_ycbcr_degamma(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_qcom_ycbcr_degamma(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
 
     pub fn supports_qcom_filter_cubic_clamp(self: InstanceExtensions) bool {
@@ -18980,6 +19085,15 @@ pub const InstanceExtensions = packed struct {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
     pub fn enable_khr_vertex_attribute_divisor(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_khr_unified_image_layouts(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_khr_unified_image_layouts(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -19077,6 +19191,69 @@ pub const InstanceExtensions = packed struct {
         self.enable_khr_get_display_properties2();
     }
 
+    pub fn supports_nv_raw_access_chains(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_nv_raw_access_chains(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_khr_shader_relaxed_extended_instruction(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_khr_shader_relaxed_extended_instruction(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_nv_command_buffer_inheritance(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_nv_command_buffer_inheritance(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_nv_shader_atomic_float16_vector(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_nv_shader_atomic_float16_vector(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_ext_shader_replicated_composites(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_ext_shader_replicated_composites(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_ext_shader_float8(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_ext_shader_float8(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_nv_ray_tracing_validation(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_nv_ray_tracing_validation(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_nv_cluster_acceleration_structure(self: InstanceExtensions) bool {
         return self.supports_khr_acceleration_structure();
     }
@@ -19107,6 +19284,15 @@ pub const InstanceExtensions = packed struct {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
     pub fn enable_mesa_image_alignment_control(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_khr_shader_fma(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_khr_shader_fma(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -19199,6 +19385,15 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_arm_format_pack(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_arm_format_pack(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_valve_fragment_density_map_layered(self: InstanceExtensions) bool {
         return (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_maintenance5()) and self.supports_ext_fragment_density_map();
     }
@@ -19213,6 +19408,15 @@ pub const InstanceExtensions = packed struct {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
     pub fn enable_khr_robustness2(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_nv_present_metering(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_nv_present_metering(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -19259,10 +19463,35 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_qcom_data_graph_model(self: InstanceExtensions) bool {
+        return self.supports_arm_data_graph();
+    }
+    pub fn enable_qcom_data_graph_model(self: *InstanceExtensions) void {
+        self.enable_arm_data_graph();
+    }
+
     pub fn supports_khr_maintenance10(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
     pub fn enable_khr_maintenance10(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_sec_pipeline_cache_incremental_mode(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_sec_pipeline_cache_incremental_mode(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_ext_shader_uniform_buffer_unsized_array(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_ext_shader_uniform_buffer_unsized_array(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -19642,6 +19871,7 @@ pub const DeviceExtensions = packed struct {
     ext_zero_initialize_device_memory: bool = false,
     khr_present_mode_fifo_latest_ready: bool = false,
     ext_shader_64bit_indexing: bool = false,
+    qcom_data_graph_model: bool = false,
     khr_maintenance10: bool = false,
     sec_pipeline_cache_incremental_mode: bool = false,
     ext_shader_uniform_buffer_unsized_array: bool = false,
@@ -20390,6 +20620,8 @@ pub const DeviceExtensions = packed struct {
             self.khr_present_mode_fifo_latest_ready = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_64bit_indexing) == .eq) {
             self.ext_shader_64bit_indexing = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_data_graph_model) == .eq) {
+            self.qcom_data_graph_model = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance10) == .eq) {
             self.khr_maintenance10 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.sec_pipeline_cache_incremental_mode) == .eq) {
@@ -20782,6 +21014,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_zero_initialize_device_memory) try names.append(allocator, ExtensionNames.ext_zero_initialize_device_memory);
         if (self.khr_present_mode_fifo_latest_ready) try names.append(allocator, ExtensionNames.khr_present_mode_fifo_latest_ready);
         if (self.ext_shader_64bit_indexing) try names.append(allocator, ExtensionNames.ext_shader_64bit_indexing);
+        if (self.qcom_data_graph_model) try names.append(allocator, ExtensionNames.qcom_data_graph_model);
         if (self.khr_maintenance10) try names.append(allocator, ExtensionNames.khr_maintenance10);
         if (self.sec_pipeline_cache_incremental_mode) try names.append(allocator, ExtensionNames.sec_pipeline_cache_incremental_mode);
         if (self.ext_shader_uniform_buffer_unsized_array) try names.append(allocator, ExtensionNames.ext_shader_uniform_buffer_unsized_array);
@@ -23926,6 +24159,14 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_ext_shader_64bit_indexing(self: *DeviceExtensions) void {
         self.ext_shader_64bit_indexing = true;
+    }
+
+    pub fn supports_qcom_data_graph_model(self: DeviceExtensions) bool {
+        return self.qcom_data_graph_model and self.supports_arm_data_graph();
+    }
+    pub fn enable_qcom_data_graph_model(self: *DeviceExtensions) void {
+        self.qcom_data_graph_model = true;
+        self.enable_arm_data_graph();
     }
 
     pub fn supports_khr_maintenance10(self: DeviceExtensions) bool {

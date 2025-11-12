@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.331
+//! Generated from vk.xml version 1.4.332
 
 #![allow(
     clippy::too_many_arguments,
@@ -1790,6 +1790,14 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_nv_cuda_kernel_launch(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_cuda_kernel_launch(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_qcom_tile_shading(&self) -> bool {
         self.supports_qcom_tile_properties() || self.supports_khr_get_physical_device_properties2()
     }
@@ -2115,6 +2123,14 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_ext_frame_boundary(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_frame_boundary(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_ext_multisampled_render_to_single_sampled(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
             || (self.supports_khr_create_renderpass2() && self.supports_khr_depth_stencil_resolve())
@@ -2232,6 +2248,14 @@ impl InstanceExtensions {
     }
     pub fn enable_ext_pageable_device_local_memory(&mut self) {
         self.enable_ext_memory_priority();
+    }
+    pub fn supports_khr_shader_subgroup_rotate(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_shader_subgroup_rotate(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_arm_scheduling_controls(&self) -> bool {
         self.supports_arm_shader_core_builtins()
@@ -2486,6 +2510,14 @@ impl InstanceExtensions {
             self.enable_khr_dynamic_rendering();
         }
     }
+    pub fn supports_amd_anti_lag(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_amd_anti_lag(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_amdx_dense_geometry_format(&self) -> bool {
         self.supports_khr_acceleration_structure()
             && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5())
@@ -2595,6 +2627,22 @@ impl InstanceExtensions {
     pub fn enable_nv_ray_tracing_invocation_reorder(&mut self) {
         self.enable_khr_ray_tracing_pipeline();
     }
+    pub fn supports_nv_cooperative_vector(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_cooperative_vector(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_nv_extended_sparse_address_space(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_extended_sparse_address_space(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_ext_mutable_descriptor_type(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_maintenance3()
     }
@@ -2670,6 +2718,14 @@ impl InstanceExtensions {
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 3, 0));
         self.enable_khr_maintenance5();
     }
+    pub fn supports_qcom_multiview_per_view_render_areas(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_qcom_multiview_per_view_render_areas(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_khr_compute_shader_derivatives(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
@@ -2683,6 +2739,14 @@ impl InstanceExtensions {
     }
     pub fn enable_qcom_image_processing2(&mut self) {
         self.enable_qcom_image_processing();
+    }
+    pub fn supports_qcom_ycbcr_degamma(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_qcom_ycbcr_degamma(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_qcom_filter_cubic_clamp(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_ext_sampler_filter_minmax()
@@ -2707,6 +2771,14 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_vertex_attribute_divisor(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_khr_unified_image_layouts(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_unified_image_layouts(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -2795,6 +2867,62 @@ impl InstanceExtensions {
         self.enable_khr_display();
         self.enable_khr_get_display_properties2();
     }
+    pub fn supports_nv_raw_access_chains(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_raw_access_chains(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_khr_shader_relaxed_extended_instruction(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_shader_relaxed_extended_instruction(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_nv_command_buffer_inheritance(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_command_buffer_inheritance(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_nv_shader_atomic_float16_vector(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_shader_atomic_float16_vector(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_ext_shader_replicated_composites(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_shader_replicated_composites(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_ext_shader_float8(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_shader_float8(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_nv_ray_tracing_validation(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_ray_tracing_validation(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_nv_cluster_acceleration_structure(&self) -> bool {
         self.supports_khr_acceleration_structure()
     }
@@ -2825,6 +2953,14 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_mesa_image_alignment_control(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_khr_shader_fma(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_shader_fma(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -2909,6 +3045,14 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_arm_format_pack(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_arm_format_pack(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_valve_fragment_density_map_layered(&self) -> bool {
         (self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5())
             && self.supports_ext_fragment_density_map()
@@ -2923,6 +3067,14 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_robustness2(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_nv_present_metering(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_present_metering(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -2968,10 +3120,32 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_qcom_data_graph_model(&self) -> bool {
+        self.supports_arm_data_graph()
+    }
+    pub fn enable_qcom_data_graph_model(&mut self) {
+        self.enable_arm_data_graph();
+    }
     pub fn supports_khr_maintenance10(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_maintenance10(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_sec_pipeline_cache_incremental_mode(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_sec_pipeline_cache_incremental_mode(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_ext_shader_uniform_buffer_unsized_array(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_shader_uniform_buffer_unsized_array(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -5714,6 +5888,7 @@ pub struct DeviceExtensions {
     pub ext_zero_initialize_device_memory: bool,
     pub khr_present_mode_fifo_latest_ready: bool,
     pub ext_shader_64bit_indexing: bool,
+    pub qcom_data_graph_model: bool,
     pub khr_maintenance10: bool,
     pub sec_pipeline_cache_incremental_mode: bool,
     pub ext_shader_uniform_buffer_unsized_array: bool,
@@ -6462,6 +6637,8 @@ impl DeviceExtensions {
             self.khr_present_mode_fifo_latest_ready = true;
         } else if name == c"VK_EXT_shader_64bit_indexing" {
             self.ext_shader_64bit_indexing = true;
+        } else if name == c"VK_QCOM_data_graph_model" {
+            self.qcom_data_graph_model = true;
         } else if name == c"VK_KHR_maintenance10" {
             self.khr_maintenance10 = true;
         } else if name == c"VK_SEC_pipeline_cache_incremental_mode" {
@@ -6844,6 +7021,7 @@ impl DeviceExtensions {
             ext_zero_initialize_device_memory: false,
             khr_present_mode_fifo_latest_ready: false,
             ext_shader_64bit_indexing: false,
+            qcom_data_graph_model: false,
             khr_maintenance10: false,
             sec_pipeline_cache_incremental_mode: false,
             ext_shader_uniform_buffer_unsized_array: false,
@@ -9807,6 +9985,13 @@ impl DeviceExtensions {
     pub fn enable_ext_shader_64bit_indexing(&mut self) {
         self.ext_shader_64bit_indexing = true;
     }
+    pub fn supports_qcom_data_graph_model(&self) -> bool {
+        self.qcom_data_graph_model && self.supports_arm_data_graph()
+    }
+    pub fn enable_qcom_data_graph_model(&mut self) {
+        self.qcom_data_graph_model = true;
+        self.enable_arm_data_graph();
+    }
     pub fn supports_khr_maintenance10(&self) -> bool {
         self.khr_maintenance10
     }
@@ -10939,6 +11124,9 @@ impl DeviceExtensions {
         }
         if self.ext_shader_64bit_indexing {
             v.push(c"VK_EXT_shader_64bit_indexing");
+        }
+        if self.qcom_data_graph_model {
+            v.push(c"VK_QCOM_data_graph_model");
         }
         if self.khr_maintenance10 {
             v.push(c"VK_KHR_maintenance10");

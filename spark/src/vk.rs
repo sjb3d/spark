@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.331
+//! Generated from vk.xml version 1.4.332
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -178,6 +178,7 @@ pub const PARTITIONED_ACCELERATION_STRUCTURE_PARTITION_INDEX_GLOBAL_NV: u32 = 0x
 pub const COMPRESSED_TRIANGLE_FORMAT_DGF1_BYTE_ALIGNMENT_AMDX: usize = 128;
 pub const COMPRESSED_TRIANGLE_FORMAT_DGF1_BYTE_STRIDE_AMDX: usize = 128;
 pub const MAX_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_SET_NAME_SIZE_ARM: usize = 128;
+pub const DATA_GRAPH_MODEL_TOOLCHAIN_VERSION_LENGTH_QCOM: usize = 3;
 #[allow(non_camel_case_types)]
 pub type wl_display = Never;
 pub type Display = Never;
@@ -5153,11 +5154,13 @@ impl fmt::Display for BorderColor {
 pub struct PipelineCacheHeaderVersion(pub(crate) i32);
 impl PipelineCacheHeaderVersion {
     pub const ONE: Self = Self(1);
+    pub const DATA_GRAPH_QCOM: Self = Self(1000629000);
 }
 impl fmt::Display for PipelineCacheHeaderVersion {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             1 => Some(&"ONE"),
+            1000629000 => Some(&"DATA_GRAPH_QCOM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -8093,6 +8096,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT: Self = Self(1000620000);
     pub const PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR: Self = Self(1000361000);
     pub const PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT: Self = Self(1000627000);
+    pub const PHYSICAL_DEVICE_DATA_GRAPH_MODEL_FEATURES_QCOM: Self = Self(1000629000);
+    pub const DATA_GRAPH_PIPELINE_BUILTIN_MODEL_CREATE_INFO_QCOM: Self = Self(1000629001);
     pub const PHYSICAL_DEVICE_MAINTENANCE_10_FEATURES_KHR: Self = Self(1000630000);
     pub const PHYSICAL_DEVICE_MAINTENANCE_10_PROPERTIES_KHR: Self = Self(1000630001);
     pub const RENDERING_ATTACHMENT_FLAGS_INFO_KHR: Self = Self(1000630002);
@@ -9097,6 +9102,8 @@ impl fmt::Display for StructureType {
             1000620000 => Some(&"PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT"),
             1000361000 => Some(&"PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR"),
             1000627000 => Some(&"PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT"),
+            1000629000 => Some(&"PHYSICAL_DEVICE_DATA_GRAPH_MODEL_FEATURES_QCOM"),
+            1000629001 => Some(&"DATA_GRAPH_PIPELINE_BUILTIN_MODEL_CREATE_INFO_QCOM"),
             1000630000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_10_FEATURES_KHR"),
             1000630001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_10_PROPERTIES_KHR"),
             1000630002 => Some(&"RENDERING_ATTACHMENT_FLAGS_INFO_KHR"),
@@ -11283,11 +11290,15 @@ impl fmt::Display for DataGraphPipelineSessionBindPointTypeARM {
 pub struct PhysicalDeviceDataGraphProcessingEngineTypeARM(pub(crate) i32);
 impl PhysicalDeviceDataGraphProcessingEngineTypeARM {
     pub const DEFAULT: Self = Self(0);
+    pub const NEURAL_QCOM: Self = Self(1000629000);
+    pub const COMPUTE_QCOM: Self = Self(1000629001);
 }
 impl fmt::Display for PhysicalDeviceDataGraphProcessingEngineTypeARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"DEFAULT"),
+            1000629000 => Some(&"NEURAL_QCOM"),
+            1000629001 => Some(&"COMPUTE_QCOM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11303,11 +11314,35 @@ impl fmt::Display for PhysicalDeviceDataGraphProcessingEngineTypeARM {
 pub struct PhysicalDeviceDataGraphOperationTypeARM(pub(crate) i32);
 impl PhysicalDeviceDataGraphOperationTypeARM {
     pub const SPIRV_EXTENDED_INSTRUCTION_SET: Self = Self(0);
+    pub const NEURAL_MODEL_QCOM: Self = Self(1000629000);
+    pub const BUILTIN_MODEL_QCOM: Self = Self(1000629001);
 }
 impl fmt::Display for PhysicalDeviceDataGraphOperationTypeARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"SPIRV_EXTENDED_INSTRUCTION_SET"),
+            1000629000 => Some(&"NEURAL_MODEL_QCOM"),
+            1000629001 => Some(&"BUILTIN_MODEL_QCOM"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DataGraphModelCacheTypeQCOM(pub(crate) i32);
+impl DataGraphModelCacheTypeQCOM {
+    pub const GENERIC_BINARY: Self = Self(0);
+}
+impl fmt::Display for DataGraphModelCacheTypeQCOM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"GENERIC_BINARY"),
             _ => None,
         };
         if let Some(name) = name {
@@ -14792,6 +14827,38 @@ impl fmt::Debug for PipelineCacheHeaderVersionOne {
             .field("vendor_id", &self.vendor_id)
             .field("device_id", &self.device_id)
             .field("pipeline_cache_uuid", &self.pipeline_cache_uuid)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PipelineCacheHeaderVersionDataGraphQCOM {
+    pub header_size: u32,
+    pub header_version: PipelineCacheHeaderVersion,
+    pub cache_type: DataGraphModelCacheTypeQCOM,
+    pub cache_version: u32,
+    pub toolchain_version: [u32; DATA_GRAPH_MODEL_TOOLCHAIN_VERSION_LENGTH_QCOM],
+}
+impl Default for PipelineCacheHeaderVersionDataGraphQCOM {
+    fn default() -> Self {
+        Self {
+            header_size: Default::default(),
+            header_version: Default::default(),
+            cache_type: Default::default(),
+            cache_version: Default::default(),
+            toolchain_version: [Default::default(); DATA_GRAPH_MODEL_TOOLCHAIN_VERSION_LENGTH_QCOM],
+        }
+    }
+}
+impl fmt::Debug for PipelineCacheHeaderVersionDataGraphQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineCacheHeaderVersionDataGraphQCOM")
+            .field("header_size", &self.header_size)
+            .field("header_version", &self.header_version)
+            .field("cache_type", &self.cache_type)
+            .field("cache_version", &self.cache_version)
+            .field("toolchain_version", &self.toolchain_version)
             .finish()
     }
 }
@@ -51482,6 +51549,62 @@ impl fmt::Debug for PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("pipeline_cache_incremental_mode", &self.pipeline_cache_incremental_mode)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineBuiltinModelCreateInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_operation: *const PhysicalDeviceDataGraphOperationSupportARM,
+}
+unsafe impl Send for DataGraphPipelineBuiltinModelCreateInfoQCOM {}
+unsafe impl Sync for DataGraphPipelineBuiltinModelCreateInfoQCOM {}
+impl Default for DataGraphPipelineBuiltinModelCreateInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_BUILTIN_MODEL_CREATE_INFO_QCOM,
+            p_next: ptr::null(),
+            p_operation: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineBuiltinModelCreateInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineBuiltinModelCreateInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_operation", &self.p_operation)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDataGraphModelFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub data_graph_model: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDataGraphModelFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceDataGraphModelFeaturesQCOM {}
+impl Default for PhysicalDeviceDataGraphModelFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DATA_GRAPH_MODEL_FEATURES_QCOM,
+            p_next: ptr::null(),
+            data_graph_model: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDataGraphModelFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDataGraphModelFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("data_graph_model", &self.data_graph_model)
             .finish()
     }
 }
