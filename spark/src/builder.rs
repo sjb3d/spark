@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.333
+//! Generated from vk.xml version 1.4.334
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -34241,6 +34241,45 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingInvocationReord
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingInvocationReorderFeaturesEXTBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesEXT {}
 impl DeviceCreateInfoNext for PhysicalDeviceRayTracingInvocationReorderFeaturesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV,
+}
+impl Builder<'_> for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+    type Type = PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ray_tracing_invocation_reorder(mut self, ray_tracing_invocation_reorder: bool) -> Self {
+        self.inner.ray_tracing_invocation_reorder = if ray_tracing_invocation_reorder {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
+impl DeviceCreateInfoNext for PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingInvocationReorderPropertiesEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingInvocationReorderPropertiesNV {}
 

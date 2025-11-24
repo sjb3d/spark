@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.333
+// Generated from vk.xml version 1.4.334
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -3435,6 +3435,7 @@ pub const StructureType = enum(i32) {
     swapchain_present_scaling_create_info_khr = 1000275004,
     release_swapchain_images_info_khr = 1000275005,
     physical_device_multiview_per_view_viewports_features_qcom = 1000488000,
+    physical_device_ray_tracing_invocation_reorder_features_nv = 1000490000,
     physical_device_ray_tracing_invocation_reorder_properties_nv = 1000490001,
     physical_device_cooperative_vector_features_nv = 1000491000,
     physical_device_cooperative_vector_properties_nv = 1000491001,
@@ -4868,6 +4869,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceSwapchainMaintenance1FeaturesKHR,
             *PhysicalDeviceDepthBiasControlFeaturesEXT,
             *PhysicalDeviceRayTracingInvocationReorderFeaturesEXT,
+            *PhysicalDeviceRayTracingInvocationReorderFeaturesNV,
             *PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV,
             *PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM,
             *PhysicalDeviceRayTracingPositionFetchFeaturesKHR,
@@ -7267,6 +7269,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceSwapchainMaintenance1FeaturesKHR,
             *PhysicalDeviceDepthBiasControlFeaturesEXT,
             *PhysicalDeviceRayTracingInvocationReorderFeaturesEXT,
+            *PhysicalDeviceRayTracingInvocationReorderFeaturesNV,
             *PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV,
             *PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM,
             *PhysicalDeviceRayTracingPositionFetchFeaturesKHR,
@@ -13890,7 +13893,11 @@ pub const PhysicalDeviceRayTracingInvocationReorderFeaturesEXT = extern struct {
     p_next: ?*anyopaque = null,
     ray_tracing_invocation_reorder: Bool32 = .false,
 };
-pub const PhysicalDeviceRayTracingInvocationReorderFeaturesNV = PhysicalDeviceRayTracingInvocationReorderFeaturesEXT;
+pub const PhysicalDeviceRayTracingInvocationReorderFeaturesNV = extern struct {
+    s_type: StructureType = .physical_device_ray_tracing_invocation_reorder_features_nv,
+    p_next: ?*anyopaque = null,
+    ray_tracing_invocation_reorder: Bool32 = .false,
+};
 pub const PhysicalDeviceRayTracingInvocationReorderPropertiesEXT = extern struct {
     s_type: StructureType = .physical_device_ray_tracing_invocation_reorder_properties_ext,
     p_next: ?*anyopaque = null,

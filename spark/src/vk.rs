@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.333
+//! Generated from vk.xml version 1.4.334
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -7906,8 +7906,7 @@ impl StructureType {
     pub const SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_KHR: Self = Self(1000275004);
     pub const RELEASE_SWAPCHAIN_IMAGES_INFO_KHR: Self = Self(1000275005);
     pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM: Self = Self(1000488000);
-    pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV: Self =
-        Self::PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_EXT;
+    pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV: Self = Self(1000490000);
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV: Self = Self(1000490001);
     pub const PHYSICAL_DEVICE_COOPERATIVE_VECTOR_FEATURES_NV: Self = Self(1000491000);
     pub const PHYSICAL_DEVICE_COOPERATIVE_VECTOR_PROPERTIES_NV: Self = Self(1000491001);
@@ -8942,6 +8941,7 @@ impl fmt::Display for StructureType {
             1000275004 => Some(&"SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_KHR"),
             1000275005 => Some(&"RELEASE_SWAPCHAIN_IMAGES_INFO_KHR"),
             1000488000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM"),
+            1000490000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV"),
             1000490001 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV"),
             1000491000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_VECTOR_FEATURES_NV"),
             1000491001 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_VECTOR_PROPERTIES_NV"),
@@ -45794,7 +45794,34 @@ impl fmt::Debug for PhysicalDeviceRayTracingInvocationReorderFeaturesEXT {
             .finish()
     }
 }
-pub type PhysicalDeviceRayTracingInvocationReorderFeaturesNV = PhysicalDeviceRayTracingInvocationReorderFeaturesEXT;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ray_tracing_invocation_reorder: Bool32,
+}
+unsafe impl Send for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
+impl Default for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            ray_tracing_invocation_reorder: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayTracingInvocationReorderFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ray_tracing_invocation_reorder", &self.ray_tracing_invocation_reorder)
+            .finish()
+    }
+}
 
 #[repr(C)]
 #[derive(Copy, Clone)]
