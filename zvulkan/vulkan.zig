@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.332
+// Generated from vk.xml version 1.4.333
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -714,13 +714,13 @@ pub const SparseImageFormatFlags = BitField(SparseImageFormatFlagBits);
 pub const SubpassDescriptionFlagBits = enum(u5) {
     per_view_attributes_nvx = 0,
     per_view_position_x_only_nvx = 1,
-    fragment_region_qcom = 2,
-    shader_resolve_qcom = 3,
     tile_shading_apron_qcom = 8,
     rasterization_order_attachment_color_access_ext = 4,
     rasterization_order_attachment_depth_access_ext = 5,
     rasterization_order_attachment_stencil_access_ext = 6,
     enable_legacy_dithering_ext = 7,
+    fragment_region_ext = 2,
+    custom_resolve_ext = 3,
     _,
 };
 pub const SubpassDescriptionFlags = BitField(SubpassDescriptionFlagBits);
@@ -1132,6 +1132,8 @@ pub const RenderingFlagBits = enum(u5) {
     enable_legacy_dithering_ext = 3,
     contents_inline_khr = 4,
     per_layer_fragment_density_valve = 5,
+    fragment_region_ext = 6,
+    custom_resolve_ext = 7,
     local_read_concurrent_access_control_khr = 8,
     _,
 };
@@ -1598,6 +1600,7 @@ pub const ResolveModeFlagBits = enum(u5) {
     min = 2,
     max = 3,
     external_format_downsample_android = 4,
+    custom_ext = 5,
     _,
 };
 pub const ResolveModeFlags = BitField(ResolveModeFlagBits);
@@ -3432,7 +3435,6 @@ pub const StructureType = enum(i32) {
     swapchain_present_scaling_create_info_khr = 1000275004,
     release_swapchain_images_info_khr = 1000275005,
     physical_device_multiview_per_view_viewports_features_qcom = 1000488000,
-    physical_device_ray_tracing_invocation_reorder_features_nv = 1000490000,
     physical_device_ray_tracing_invocation_reorder_properties_nv = 1000490001,
     physical_device_cooperative_vector_features_nv = 1000491000,
     physical_device_cooperative_vector_properties_nv = 1000491001,
@@ -3567,6 +3569,8 @@ pub const StructureType = enum(i32) {
     physical_device_image_alignment_control_properties_mesa = 1000575001,
     image_alignment_control_create_info_mesa = 1000575002,
     physical_device_shader_fma_features_khr = 1000579000,
+    physical_device_ray_tracing_invocation_reorder_features_ext = 1000581000,
+    physical_device_ray_tracing_invocation_reorder_properties_ext = 1000581001,
     physical_device_depth_clamp_control_features_ext = 1000582000,
     pipeline_viewport_depth_clamp_control_create_info_ext = 1000582001,
     physical_device_maintenance_9_features_khr = 1000584000,
@@ -3606,6 +3610,9 @@ pub const StructureType = enum(i32) {
     physical_device_zero_initialize_device_memory_features_ext = 1000620000,
     physical_device_present_mode_fifo_latest_ready_features_khr = 1000361000,
     physical_device_shader_64_bit_indexing_features_ext = 1000627000,
+    physical_device_custom_resolve_features_ext = 1000628000,
+    begin_custom_resolve_info_ext = 1000628001,
+    custom_resolve_create_info_ext = 1000628002,
     physical_device_data_graph_model_features_qcom = 1000629000,
     data_graph_pipeline_builtin_model_create_info_qcom = 1000629001,
     physical_device_maintenance_10_features_khr = 1000630000,
@@ -3733,11 +3740,12 @@ pub const ObjectType = enum(i32) {
     indirect_execution_set_ext = 1000572001,
     _,
 };
-pub const RayTracingInvocationReorderModeNV = enum(i32) {
+pub const RayTracingInvocationReorderModeEXT = enum(i32) {
     none = 0,
     reorder = 1,
     _,
 };
+pub const RayTracingInvocationReorderModeNV = RayTracingInvocationReorderModeEXT;
 pub const IndirectCommandsTokenTypeNV = enum(i32) {
     shader_group = 0,
     state_flags = 1,
@@ -4802,6 +4810,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceMutableDescriptorTypeFeaturesEXT,
             *PhysicalDeviceDepthClipControlFeaturesEXT,
             *PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT,
+            *PhysicalDeviceCustomResolveFeaturesEXT,
             *PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT,
             *PhysicalDeviceDepthClampControlFeaturesEXT,
             *PhysicalDeviceVertexInputDynamicStateFeaturesEXT,
@@ -4858,7 +4867,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT,
             *PhysicalDeviceSwapchainMaintenance1FeaturesKHR,
             *PhysicalDeviceDepthBiasControlFeaturesEXT,
-            *PhysicalDeviceRayTracingInvocationReorderFeaturesNV,
+            *PhysicalDeviceRayTracingInvocationReorderFeaturesEXT,
             *PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV,
             *PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM,
             *PhysicalDeviceRayTracingPositionFetchFeaturesKHR,
@@ -5826,6 +5835,7 @@ pub const GraphicsPipelineCreateInfo = extern struct {
             *PipelineLibraryCreateInfoKHR,
             *PipelineFragmentShadingRateStateCreateInfoKHR,
             *PipelineFragmentShadingRateEnumStateCreateInfoNV,
+            *CustomResolveCreateInfoEXT,
             *PipelineRenderingCreateInfo,
             *AttachmentSampleCountInfoAMD,
             *MultiviewPerViewAttributesInfoNVX,
@@ -6002,6 +6012,7 @@ pub const CommandBufferInheritanceInfo = extern struct {
             inline *CommandBufferInheritanceConditionalRenderingInfoEXT,
             *ExternalFormatANDROID,
             *CommandBufferInheritanceRenderPassTransformInfoQCOM,
+            *CustomResolveCreateInfoEXT,
             *CommandBufferInheritanceViewportScissorInfoNV,
             *CommandBufferInheritanceRenderingInfo,
             *AttachmentSampleCountInfoAMD,
@@ -7199,6 +7210,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceMutableDescriptorTypeFeaturesEXT,
             *PhysicalDeviceDepthClipControlFeaturesEXT,
             *PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT,
+            *PhysicalDeviceCustomResolveFeaturesEXT,
             *PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT,
             *PhysicalDeviceDepthClampControlFeaturesEXT,
             *PhysicalDeviceVertexInputDynamicStateFeaturesEXT,
@@ -7254,7 +7266,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT,
             *PhysicalDeviceSwapchainMaintenance1FeaturesKHR,
             *PhysicalDeviceDepthBiasControlFeaturesEXT,
-            *PhysicalDeviceRayTracingInvocationReorderFeaturesNV,
+            *PhysicalDeviceRayTracingInvocationReorderFeaturesEXT,
             *PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV,
             *PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM,
             *PhysicalDeviceRayTracingPositionFetchFeaturesKHR,
@@ -7413,6 +7425,7 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceImageProcessingPropertiesQCOM,
             *PhysicalDeviceOpticalFlowPropertiesNV,
             *PhysicalDeviceShaderCoreBuiltinsPropertiesARM,
+            *PhysicalDeviceRayTracingInvocationReorderPropertiesEXT,
             *PhysicalDeviceRayTracingInvocationReorderPropertiesNV,
             *PhysicalDeviceExtendedSparseAddressSpacePropertiesNV,
             *PhysicalDeviceShaderCorePropertiesARM,
@@ -8416,7 +8429,7 @@ pub const DisplayModeProperties2KHR = extern struct {
 };
 pub const DisplayModeStereoPropertiesNV = extern struct {
     s_type: StructureType = .display_mode_stereo_properties_nv,
-    p_next: ?*const anyopaque = null,
+    p_next: ?*anyopaque = null,
     hdmi_3d_supported: Bool32 = .false,
 };
 pub const DisplayPlaneInfo2KHR = extern struct {
@@ -10239,7 +10252,7 @@ pub const PhysicalDeviceScalarBlockLayoutFeatures = extern struct {
 pub const PhysicalDeviceScalarBlockLayoutFeaturesEXT = PhysicalDeviceScalarBlockLayoutFeatures;
 pub const SurfaceProtectedCapabilitiesKHR = extern struct {
     s_type: StructureType = .surface_protected_capabilities_khr,
-    p_next: ?*const anyopaque = null,
+    p_next: ?*anyopaque = null,
     supports_protected: Bool32 = .false,
 };
 pub const PhysicalDeviceUniformBufferStandardLayoutFeatures = extern struct {
@@ -11804,7 +11817,7 @@ pub const PipelineFragmentShadingRateEnumStateCreateInfoNV = extern struct {
 };
 pub const AccelerationStructureBuildSizesInfoKHR = extern struct {
     s_type: StructureType = .acceleration_structure_build_sizes_info_khr,
-    p_next: ?*const anyopaque = null,
+    p_next: ?*anyopaque = null,
     acceleration_structure_size: DeviceSize = 0,
     update_scratch_size: DeviceSize = 0,
     build_scratch_size: DeviceSize = 0,
@@ -11862,6 +11875,24 @@ pub const PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT = extern struct {
     s_type: StructureType = .physical_device_zero_initialize_device_memory_features_ext,
     p_next: ?*anyopaque = null,
     zero_initialize_device_memory: Bool32 = .false,
+};
+pub const BeginCustomResolveInfoEXT = extern struct {
+    s_type: StructureType = .begin_custom_resolve_info_ext,
+    p_next: ?*anyopaque = null,
+};
+pub const PhysicalDeviceCustomResolveFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_custom_resolve_features_ext,
+    p_next: ?*anyopaque = null,
+    custom_resolve: Bool32 = .false,
+};
+pub const CustomResolveCreateInfoEXT = extern struct {
+    s_type: StructureType = .custom_resolve_create_info_ext,
+    p_next: ?*const anyopaque = null,
+    custom_resolve: Bool32 = .false,
+    color_attachment_count: u32 = 0,
+    p_color_attachment_formats: ?[*]const Format = null,
+    depth_attachment_format: Format = @enumFromInt(0),
+    stencil_attachment_format: Format = @enumFromInt(0),
 };
 pub const PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT = extern struct {
     s_type: StructureType = .physical_device_device_generated_commands_features_ext,
@@ -13611,7 +13642,7 @@ pub const OpticalFlowImageFormatInfoNV = extern struct {
 };
 pub const OpticalFlowImageFormatPropertiesNV = extern struct {
     s_type: StructureType = .optical_flow_image_format_properties_nv,
-    p_next: ?*const anyopaque = null,
+    p_next: ?*anyopaque = null,
     format: Format = @enumFromInt(0),
 };
 pub const OpticalFlowSessionCreateInfoNV = extern struct {
@@ -13854,15 +13885,22 @@ pub const PhysicalDeviceDepthBiasControlFeaturesEXT = extern struct {
     float_representation: Bool32 = .false,
     depth_bias_exact: Bool32 = .false,
 };
-pub const PhysicalDeviceRayTracingInvocationReorderFeaturesNV = extern struct {
-    s_type: StructureType = .physical_device_ray_tracing_invocation_reorder_features_nv,
+pub const PhysicalDeviceRayTracingInvocationReorderFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_ray_tracing_invocation_reorder_features_ext,
     p_next: ?*anyopaque = null,
     ray_tracing_invocation_reorder: Bool32 = .false,
+};
+pub const PhysicalDeviceRayTracingInvocationReorderFeaturesNV = PhysicalDeviceRayTracingInvocationReorderFeaturesEXT;
+pub const PhysicalDeviceRayTracingInvocationReorderPropertiesEXT = extern struct {
+    s_type: StructureType = .physical_device_ray_tracing_invocation_reorder_properties_ext,
+    p_next: ?*anyopaque = null,
+    ray_tracing_invocation_reorder_reordering_hint: RayTracingInvocationReorderModeEXT = @enumFromInt(0),
+    max_shader_binding_table_record_index: u32 = 0,
 };
 pub const PhysicalDeviceRayTracingInvocationReorderPropertiesNV = extern struct {
     s_type: StructureType = .physical_device_ray_tracing_invocation_reorder_properties_nv,
     p_next: ?*anyopaque = null,
-    ray_tracing_invocation_reorder_reordering_hint: RayTracingInvocationReorderModeNV = @enumFromInt(0),
+    ray_tracing_invocation_reorder_reordering_hint: RayTracingInvocationReorderModeEXT = @enumFromInt(0),
 };
 pub const PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV = extern struct {
     s_type: StructureType = .physical_device_extended_sparse_address_space_features_nv,
@@ -13987,6 +14025,7 @@ pub const ShaderCreateInfoEXT = extern struct {
         switch (@TypeOf(next)) {
             inline *ValidationFeaturesEXT,
             *PipelineShaderStageRequiredSubgroupSizeCreateInfo,
+            *CustomResolveCreateInfoEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -14374,7 +14413,7 @@ pub const GetLatencyMarkerInfoNV = extern struct {
 };
 pub const LatencyTimingsFrameReportNV = extern struct {
     s_type: StructureType = .latency_timings_frame_report_nv,
-    p_next: ?*const anyopaque = null,
+    p_next: ?*anyopaque = null,
     present_id: u64 = 0,
     input_sample_time_us: u64 = 0,
     sim_start_time_us: u64 = 0,
@@ -14880,7 +14919,7 @@ pub const WriteDescriptorSetTensorARM = extern struct {
 };
 pub const TensorFormatPropertiesARM = extern struct {
     s_type: StructureType = .tensor_format_properties_arm,
-    p_next: ?*const anyopaque = null,
+    p_next: ?*anyopaque = null,
     optimal_tiling_tensor_features: FormatFeatureFlags2 = .none,
     linear_tiling_tensor_features: FormatFeatureFlags2 = .none,
 };
@@ -15210,7 +15249,7 @@ pub const DataGraphPipelineBuiltinModelCreateInfoQCOM = extern struct {
 };
 pub const PhysicalDeviceDataGraphModelFeaturesQCOM = extern struct {
     s_type: StructureType = .physical_device_data_graph_model_features_qcom,
-    p_next: ?*const anyopaque = null,
+    p_next: ?*anyopaque = null,
     data_graph_model: Bool32 = .false,
 };
 pub const PhysicalDeviceShaderUntypedPointersFeaturesKHR = extern struct {
@@ -15472,6 +15511,7 @@ pub const FpCmdBeginQuery = *const fn (CommandBuffer, QueryPool, u32, QueryContr
 pub const FpCmdEndQuery = *const fn (CommandBuffer, QueryPool, u32) callconv(.c) void;
 pub const FpCmdBeginConditionalRenderingEXT = *const fn (CommandBuffer, [*c]const ConditionalRenderingBeginInfoEXT) callconv(.c) void;
 pub const FpCmdEndConditionalRenderingEXT = *const fn (CommandBuffer) callconv(.c) void;
+pub const FpCmdBeginCustomResolveEXT = *const fn (CommandBuffer, [*c]const BeginCustomResolveInfoEXT) callconv(.c) void;
 pub const FpCmdResetQueryPool = *const fn (CommandBuffer, QueryPool, u32, u32) callconv(.c) void;
 pub const FpCmdWriteTimestamp = *const fn (CommandBuffer, PipelineStageFlags, QueryPool, u32) callconv(.c) void;
 pub const FpCmdCopyQueryPoolResults = *const fn (CommandBuffer, QueryPool, u32, u32, Buffer, DeviceSize, DeviceSize, QueryResultFlags) callconv(.c) void;
@@ -16360,6 +16400,7 @@ const ExtensionNames = struct {
     const khr_maintenance8 = "VK_KHR_maintenance8";
     const mesa_image_alignment_control = "VK_MESA_image_alignment_control";
     const khr_shader_fma = "VK_KHR_shader_fma";
+    const ext_ray_tracing_invocation_reorder = "VK_EXT_ray_tracing_invocation_reorder";
     const ext_depth_clamp_control = "VK_EXT_depth_clamp_control";
     const khr_maintenance9 = "VK_KHR_maintenance9";
     const ohos_surface = "VK_OHOS_surface";
@@ -16379,6 +16420,7 @@ const ExtensionNames = struct {
     const ext_zero_initialize_device_memory = "VK_EXT_zero_initialize_device_memory";
     const khr_present_mode_fifo_latest_ready = "VK_KHR_present_mode_fifo_latest_ready";
     const ext_shader_64bit_indexing = "VK_EXT_shader_64bit_indexing";
+    const ext_custom_resolve = "VK_EXT_custom_resolve";
     const qcom_data_graph_model = "VK_QCOM_data_graph_model";
     const khr_maintenance10 = "VK_KHR_maintenance10";
     const sec_pipeline_cache_incremental_mode = "VK_SEC_pipeline_cache_incremental_mode";
@@ -19298,6 +19340,13 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_ext_ray_tracing_invocation_reorder(self: InstanceExtensions) bool {
+        return self.supports_khr_ray_tracing_pipeline();
+    }
+    pub fn enable_ext_ray_tracing_invocation_reorder(self: *InstanceExtensions) void {
+        self.enable_khr_ray_tracing_pipeline();
+    }
+
     pub fn supports_ext_depth_clamp_control(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
@@ -19458,6 +19507,15 @@ pub const InstanceExtensions = packed struct {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
     pub fn enable_ext_shader_64bit_indexing(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_ext_custom_resolve(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_ext_custom_resolve(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -19853,6 +19911,7 @@ pub const DeviceExtensions = packed struct {
     khr_maintenance8: bool = false,
     mesa_image_alignment_control: bool = false,
     khr_shader_fma: bool = false,
+    ext_ray_tracing_invocation_reorder: bool = false,
     ext_depth_clamp_control: bool = false,
     khr_maintenance9: bool = false,
     ohos_native_buffer: bool = false,
@@ -19871,6 +19930,7 @@ pub const DeviceExtensions = packed struct {
     ext_zero_initialize_device_memory: bool = false,
     khr_present_mode_fifo_latest_ready: bool = false,
     ext_shader_64bit_indexing: bool = false,
+    ext_custom_resolve: bool = false,
     qcom_data_graph_model: bool = false,
     khr_maintenance10: bool = false,
     sec_pipeline_cache_incremental_mode: bool = false,
@@ -20584,6 +20644,8 @@ pub const DeviceExtensions = packed struct {
             self.mesa_image_alignment_control = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_shader_fma) == .eq) {
             self.khr_shader_fma = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_ray_tracing_invocation_reorder) == .eq) {
+            self.ext_ray_tracing_invocation_reorder = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_depth_clamp_control) == .eq) {
             self.ext_depth_clamp_control = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance9) == .eq) {
@@ -20620,6 +20682,8 @@ pub const DeviceExtensions = packed struct {
             self.khr_present_mode_fifo_latest_ready = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_64bit_indexing) == .eq) {
             self.ext_shader_64bit_indexing = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_custom_resolve) == .eq) {
+            self.ext_custom_resolve = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_data_graph_model) == .eq) {
             self.qcom_data_graph_model = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance10) == .eq) {
@@ -20996,6 +21060,7 @@ pub const DeviceExtensions = packed struct {
         if (self.khr_maintenance8) try names.append(allocator, ExtensionNames.khr_maintenance8);
         if (self.mesa_image_alignment_control) try names.append(allocator, ExtensionNames.mesa_image_alignment_control);
         if (self.khr_shader_fma) try names.append(allocator, ExtensionNames.khr_shader_fma);
+        if (self.ext_ray_tracing_invocation_reorder) try names.append(allocator, ExtensionNames.ext_ray_tracing_invocation_reorder);
         if (self.ext_depth_clamp_control) try names.append(allocator, ExtensionNames.ext_depth_clamp_control);
         if (self.khr_maintenance9) try names.append(allocator, ExtensionNames.khr_maintenance9);
         if (self.ohos_native_buffer) try names.append(allocator, ExtensionNames.ohos_native_buffer);
@@ -21014,6 +21079,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_zero_initialize_device_memory) try names.append(allocator, ExtensionNames.ext_zero_initialize_device_memory);
         if (self.khr_present_mode_fifo_latest_ready) try names.append(allocator, ExtensionNames.khr_present_mode_fifo_latest_ready);
         if (self.ext_shader_64bit_indexing) try names.append(allocator, ExtensionNames.ext_shader_64bit_indexing);
+        if (self.ext_custom_resolve) try names.append(allocator, ExtensionNames.ext_custom_resolve);
         if (self.qcom_data_graph_model) try names.append(allocator, ExtensionNames.qcom_data_graph_model);
         if (self.khr_maintenance10) try names.append(allocator, ExtensionNames.khr_maintenance10);
         if (self.sec_pipeline_cache_incremental_mode) try names.append(allocator, ExtensionNames.sec_pipeline_cache_incremental_mode);
@@ -24016,6 +24082,14 @@ pub const DeviceExtensions = packed struct {
         self.khr_shader_fma = true;
     }
 
+    pub fn supports_ext_ray_tracing_invocation_reorder(self: DeviceExtensions) bool {
+        return self.ext_ray_tracing_invocation_reorder and self.supports_khr_ray_tracing_pipeline();
+    }
+    pub fn enable_ext_ray_tracing_invocation_reorder(self: *DeviceExtensions) void {
+        self.ext_ray_tracing_invocation_reorder = true;
+        self.enable_khr_ray_tracing_pipeline();
+    }
+
     pub fn supports_ext_depth_clamp_control(self: DeviceExtensions) bool {
         return self.ext_depth_clamp_control;
     }
@@ -24159,6 +24233,13 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_ext_shader_64bit_indexing(self: *DeviceExtensions) void {
         self.ext_shader_64bit_indexing = true;
+    }
+
+    pub fn supports_ext_custom_resolve(self: DeviceExtensions) bool {
+        return self.ext_custom_resolve;
+    }
+    pub fn enable_ext_custom_resolve(self: *DeviceExtensions) void {
+        self.ext_custom_resolve = true;
     }
 
     pub fn supports_qcom_data_graph_model(self: DeviceExtensions) bool {
@@ -26521,6 +26602,7 @@ pub const DeviceCommands = struct {
     fp_cmd_end_query: FpCmdEndQuery,
     fp_cmd_begin_conditional_rendering_ext: ?FpCmdBeginConditionalRenderingEXT,
     fp_cmd_end_conditional_rendering_ext: ?FpCmdEndConditionalRenderingEXT,
+    fp_cmd_begin_custom_resolve_ext: ?FpCmdBeginCustomResolveEXT,
     fp_cmd_reset_query_pool: FpCmdResetQueryPool,
     fp_cmd_write_timestamp: FpCmdWriteTimestamp,
     fp_cmd_copy_query_pool_results: FpCmdCopyQueryPoolResults,
@@ -27093,6 +27175,7 @@ pub const DeviceCommands = struct {
             .fp_cmd_end_query = @ptrCast(try instance.get_device_proc_addr(device, "vkCmdEndQuery")),
             .fp_cmd_begin_conditional_rendering_ext = if (extensions.ext_conditional_rendering) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBeginConditionalRenderingEXT")) else null,
             .fp_cmd_end_conditional_rendering_ext = if (extensions.ext_conditional_rendering) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdEndConditionalRenderingEXT")) else null,
+            .fp_cmd_begin_custom_resolve_ext = if (extensions.ext_custom_resolve and (extensions.core_version.to_int() >= make_version(1, 3, 0).to_int() or extensions.khr_dynamic_rendering)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBeginCustomResolveEXT")) else null,
             .fp_cmd_reset_query_pool = @ptrCast(try instance.get_device_proc_addr(device, "vkCmdResetQueryPool")),
             .fp_cmd_write_timestamp = @ptrCast(try instance.get_device_proc_addr(device, "vkCmdWriteTimestamp")),
             .fp_cmd_copy_query_pool_results = @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCopyQueryPoolResults")),
@@ -29425,6 +29508,13 @@ pub const DeviceCommands = struct {
         command_buffer: CommandBuffer,
     ) void {
         self.fp_cmd_end_conditional_rendering_ext.?(command_buffer);
+    }
+    pub fn cmd_begin_custom_resolve_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_begin_custom_resolve_info: ?*const BeginCustomResolveInfoEXT,
+    ) void {
+        self.fp_cmd_begin_custom_resolve_ext.?(command_buffer, p_begin_custom_resolve_info);
     }
     pub fn cmd_reset_query_pool(
         self: DeviceCommands,

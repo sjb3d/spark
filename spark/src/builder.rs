@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.332
+//! Generated from vk.xml version 1.4.333
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -25434,6 +25434,123 @@ impl DeviceCreateInfoNext for PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEX
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct BeginCustomResolveInfoEXTBuilder {
+    inner: vk::BeginCustomResolveInfoEXT,
+}
+impl Builder<'_> for vk::BeginCustomResolveInfoEXT {
+    type Type = BeginCustomResolveInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl BeginCustomResolveInfoEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::BeginCustomResolveInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+}
+impl Deref for BeginCustomResolveInfoEXTBuilder {
+    type Target = vk::BeginCustomResolveInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceCustomResolveFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceCustomResolveFeaturesEXT,
+}
+impl Builder<'_> for vk::PhysicalDeviceCustomResolveFeaturesEXT {
+    type Type = PhysicalDeviceCustomResolveFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceCustomResolveFeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceCustomResolveFeaturesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn custom_resolve(mut self, custom_resolve: bool) -> Self {
+        self.inner.custom_resolve = if custom_resolve { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCustomResolveFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceCustomResolveFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCustomResolveFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCustomResolveFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCustomResolveFeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDeviceCustomResolveFeaturesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct CustomResolveCreateInfoEXTBuilder<'a> {
+    inner: vk::CustomResolveCreateInfoEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::CustomResolveCreateInfoEXT {
+    type Type = CustomResolveCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> CustomResolveCreateInfoEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::CustomResolveCreateInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn custom_resolve(mut self, custom_resolve: bool) -> Self {
+        self.inner.custom_resolve = if custom_resolve { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn color_attachment_count(mut self, color_attachment_count: u32) -> Self {
+        self.inner.color_attachment_count = color_attachment_count;
+        self
+    }
+    pub fn p_color_attachment_formats(mut self, p_color_attachment_formats: &'a [vk::Format]) -> Self {
+        self.inner.color_attachment_count = p_color_attachment_formats.len() as u32;
+        self.inner.p_color_attachment_formats = p_color_attachment_formats.as_ptr();
+        self
+    }
+    pub fn depth_attachment_format(mut self, depth_attachment_format: vk::Format) -> Self {
+        self.inner.depth_attachment_format = depth_attachment_format;
+        self
+    }
+    pub fn stencil_attachment_format(mut self, stencil_attachment_format: vk::Format) -> Self {
+        self.inner.stencil_attachment_format = stencil_attachment_format;
+        self
+    }
+}
+impl<'a> Deref for CustomResolveCreateInfoEXTBuilder<'a> {
+    type Target = vk::CustomResolveCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl GraphicsPipelineCreateInfoNext for vk::CustomResolveCreateInfoEXT {}
+impl GraphicsPipelineCreateInfoNext for CustomResolveCreateInfoEXTBuilder<'_> {}
+impl CommandBufferInheritanceInfoNext for vk::CustomResolveCreateInfoEXT {}
+impl CommandBufferInheritanceInfoNext for CustomResolveCreateInfoEXTBuilder<'_> {}
+impl ShaderCreateInfoEXTNext for vk::CustomResolveCreateInfoEXT {}
+impl ShaderCreateInfoEXTNext for CustomResolveCreateInfoEXTBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct PhysicalDeviceDeviceGeneratedCommandsFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT,
 }
@@ -34088,17 +34205,17 @@ impl DeviceCreateInfoNext for PhysicalDeviceDepthBiasControlFeaturesEXTBuilder {
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {
-    inner: vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV,
+pub struct PhysicalDeviceRayTracingInvocationReorderFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceRayTracingInvocationReorderFeaturesEXT,
 }
-impl Builder<'_> for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
-    type Type = PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder;
+impl Builder<'_> for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesEXT {
+    type Type = PhysicalDeviceRayTracingInvocationReorderFeaturesEXTBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+impl PhysicalDeviceRayTracingInvocationReorderFeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceRayTracingInvocationReorderFeaturesEXT {
         &mut self.inner
     }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
@@ -34114,16 +34231,17 @@ impl PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {
         self
     }
 }
-impl Deref for PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {
-    type Target = vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV;
+impl Deref for PhysicalDeviceRayTracingInvocationReorderFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceRayTracingInvocationReorderFeaturesEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
-impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {}
-impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
-impl DeviceCreateInfoNext for PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingInvocationReorderFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDeviceRayTracingInvocationReorderFeaturesEXTBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingInvocationReorderPropertiesEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingInvocationReorderPropertiesNV {}
 
 #[repr(transparent)]
@@ -40347,7 +40465,7 @@ impl PhysicalDeviceDataGraphModelFeaturesQCOMBuilder {
     pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceDataGraphModelFeaturesQCOM {
         &mut self.inner
     }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }

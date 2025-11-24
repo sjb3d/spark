@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.332
+//! Generated from vk.xml version 1.4.333
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -1545,8 +1545,8 @@ pub struct SubpassDescriptionFlags(pub(crate) u32);
 impl SubpassDescriptionFlags {
     pub const PER_VIEW_ATTRIBUTES_NVX: Self = Self(0x1);
     pub const PER_VIEW_POSITION_X_ONLY_NVX: Self = Self(0x2);
-    pub const FRAGMENT_REGION_QCOM: Self = Self(0x4);
-    pub const SHADER_RESOLVE_QCOM: Self = Self(0x8);
+    pub const FRAGMENT_REGION_QCOM: Self = Self::FRAGMENT_REGION_EXT;
+    pub const SHADER_RESOLVE_QCOM: Self = Self::CUSTOM_RESOLVE_EXT;
     pub const TILE_SHADING_APRON_QCOM: Self = Self(0x100);
     pub const RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_ARM: Self =
         Self::RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_EXT;
@@ -1558,6 +1558,8 @@ impl SubpassDescriptionFlags {
     pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_EXT: Self = Self(0x20);
     pub const RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_EXT: Self = Self(0x40);
     pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x80);
+    pub const FRAGMENT_REGION_EXT: Self = Self(0x4);
+    pub const CUSTOM_RESOLVE_EXT: Self = Self(0x8);
 }
 impl_bitmask!(SubpassDescriptionFlags);
 impl fmt::Display for SubpassDescriptionFlags {
@@ -1567,13 +1569,13 @@ impl fmt::Display for SubpassDescriptionFlags {
             &[
                 (0x1, "PER_VIEW_ATTRIBUTES_NVX"),
                 (0x2, "PER_VIEW_POSITION_X_ONLY_NVX"),
-                (0x4, "FRAGMENT_REGION_QCOM"),
-                (0x8, "SHADER_RESOLVE_QCOM"),
                 (0x100, "TILE_SHADING_APRON_QCOM"),
                 (0x10, "RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_EXT"),
                 (0x20, "RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_EXT"),
                 (0x40, "RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_EXT"),
                 (0x80, "ENABLE_LEGACY_DITHERING_EXT"),
+                (0x4, "FRAGMENT_REGION_EXT"),
+                (0x8, "CUSTOM_RESOLVE_EXT"),
             ],
             f,
         )
@@ -2692,6 +2694,8 @@ impl RenderingFlags {
     pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x8);
     pub const CONTENTS_INLINE_KHR: Self = Self(0x10);
     pub const PER_LAYER_FRAGMENT_DENSITY_VALVE: Self = Self(0x20);
+    pub const FRAGMENT_REGION_EXT: Self = Self(0x40);
+    pub const CUSTOM_RESOLVE_EXT: Self = Self(0x80);
     pub const LOCAL_READ_CONCURRENT_ACCESS_CONTROL_KHR: Self = Self(0x100);
 }
 impl_bitmask!(RenderingFlags);
@@ -2706,6 +2710,8 @@ impl fmt::Display for RenderingFlags {
                 (0x8, "ENABLE_LEGACY_DITHERING_EXT"),
                 (0x10, "CONTENTS_INLINE_KHR"),
                 (0x20, "PER_LAYER_FRAGMENT_DENSITY_VALVE"),
+                (0x40, "FRAGMENT_REGION_EXT"),
+                (0x80, "CUSTOM_RESOLVE_EXT"),
                 (0x100, "LOCAL_READ_CONCURRENT_ACCESS_CONTROL_KHR"),
             ],
             f,
@@ -3996,6 +4002,7 @@ impl ResolveModeFlags {
     pub const MIN_KHR: Self = Self::MIN;
     pub const MAX_KHR: Self = Self::MAX;
     pub const EXTERNAL_FORMAT_DOWNSAMPLE_ANDROID: Self = Self(0x10);
+    pub const CUSTOM_EXT: Self = Self(0x20);
 }
 impl_bitmask!(ResolveModeFlags);
 impl fmt::Display for ResolveModeFlags {
@@ -4008,6 +4015,7 @@ impl fmt::Display for ResolveModeFlags {
                 (0x4, "MIN"),
                 (0x8, "MAX"),
                 (0x10, "EXTERNAL_FORMAT_DOWNSAMPLE_ANDROID"),
+                (0x20, "CUSTOM_EXT"),
             ],
             f,
         )
@@ -7898,7 +7906,8 @@ impl StructureType {
     pub const SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_KHR: Self = Self(1000275004);
     pub const RELEASE_SWAPCHAIN_IMAGES_INFO_KHR: Self = Self(1000275005);
     pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM: Self = Self(1000488000);
-    pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV: Self = Self(1000490000);
+    pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV: Self =
+        Self::PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_EXT;
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV: Self = Self(1000490001);
     pub const PHYSICAL_DEVICE_COOPERATIVE_VECTOR_FEATURES_NV: Self = Self(1000491000);
     pub const PHYSICAL_DEVICE_COOPERATIVE_VECTOR_PROPERTIES_NV: Self = Self(1000491001);
@@ -8056,6 +8065,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA: Self = Self(1000575001);
     pub const IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA: Self = Self(1000575002);
     pub const PHYSICAL_DEVICE_SHADER_FMA_FEATURES_KHR: Self = Self(1000579000);
+    pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_EXT: Self = Self(1000581000);
+    pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_EXT: Self = Self(1000581001);
     pub const PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT: Self = Self(1000582000);
     pub const PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT: Self = Self(1000582001);
     pub const PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR: Self = Self(1000584000);
@@ -8096,6 +8107,9 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT: Self = Self(1000620000);
     pub const PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR: Self = Self(1000361000);
     pub const PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT: Self = Self(1000627000);
+    pub const PHYSICAL_DEVICE_CUSTOM_RESOLVE_FEATURES_EXT: Self = Self(1000628000);
+    pub const BEGIN_CUSTOM_RESOLVE_INFO_EXT: Self = Self(1000628001);
+    pub const CUSTOM_RESOLVE_CREATE_INFO_EXT: Self = Self(1000628002);
     pub const PHYSICAL_DEVICE_DATA_GRAPH_MODEL_FEATURES_QCOM: Self = Self(1000629000);
     pub const DATA_GRAPH_PIPELINE_BUILTIN_MODEL_CREATE_INFO_QCOM: Self = Self(1000629001);
     pub const PHYSICAL_DEVICE_MAINTENANCE_10_FEATURES_KHR: Self = Self(1000630000);
@@ -8928,7 +8942,6 @@ impl fmt::Display for StructureType {
             1000275004 => Some(&"SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_KHR"),
             1000275005 => Some(&"RELEASE_SWAPCHAIN_IMAGES_INFO_KHR"),
             1000488000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM"),
-            1000490000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV"),
             1000490001 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV"),
             1000491000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_VECTOR_FEATURES_NV"),
             1000491001 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_VECTOR_PROPERTIES_NV"),
@@ -9063,6 +9076,8 @@ impl fmt::Display for StructureType {
             1000575001 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA"),
             1000575002 => Some(&"IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA"),
             1000579000 => Some(&"PHYSICAL_DEVICE_SHADER_FMA_FEATURES_KHR"),
+            1000581000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_EXT"),
+            1000581001 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_EXT"),
             1000582000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT"),
             1000582001 => Some(&"PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT"),
             1000584000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR"),
@@ -9102,6 +9117,9 @@ impl fmt::Display for StructureType {
             1000620000 => Some(&"PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT"),
             1000361000 => Some(&"PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR"),
             1000627000 => Some(&"PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT"),
+            1000628000 => Some(&"PHYSICAL_DEVICE_CUSTOM_RESOLVE_FEATURES_EXT"),
+            1000628001 => Some(&"BEGIN_CUSTOM_RESOLVE_INFO_EXT"),
+            1000628002 => Some(&"CUSTOM_RESOLVE_CREATE_INFO_EXT"),
             1000629000 => Some(&"PHYSICAL_DEVICE_DATA_GRAPH_MODEL_FEATURES_QCOM"),
             1000629001 => Some(&"DATA_GRAPH_PIPELINE_BUILTIN_MODEL_CREATE_INFO_QCOM"),
             1000630000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_10_FEATURES_KHR"),
@@ -9480,12 +9498,14 @@ impl fmt::Display for ObjectType {
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct RayTracingInvocationReorderModeNV(pub(crate) i32);
-impl RayTracingInvocationReorderModeNV {
+pub struct RayTracingInvocationReorderModeEXT(pub(crate) i32);
+impl RayTracingInvocationReorderModeEXT {
     pub const NONE: Self = Self(0);
     pub const REORDER: Self = Self(1);
+    pub const NONE_NV: Self = Self::NONE;
+    pub const REORDER_NV: Self = Self::REORDER;
 }
-impl fmt::Display for RayTracingInvocationReorderModeNV {
+impl fmt::Display for RayTracingInvocationReorderModeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"NONE"),
@@ -9499,6 +9519,7 @@ impl fmt::Display for RayTracingInvocationReorderModeNV {
         }
     }
 }
+pub type RayTracingInvocationReorderModeNV = RayTracingInvocationReorderModeEXT;
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -22224,7 +22245,7 @@ impl fmt::Debug for DisplayModeProperties2KHR {
 #[derive(Copy, Clone)]
 pub struct DisplayModeStereoPropertiesNV {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub hdmi_3d_supported: Bool32,
 }
 unsafe impl Send for DisplayModeStereoPropertiesNV {}
@@ -22233,7 +22254,7 @@ impl Default for DisplayModeStereoPropertiesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::DISPLAY_MODE_STEREO_PROPERTIES_NV,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             hdmi_3d_supported: Default::default(),
         }
     }
@@ -29964,7 +29985,7 @@ pub type PhysicalDeviceScalarBlockLayoutFeaturesEXT = PhysicalDeviceScalarBlockL
 #[derive(Copy, Clone)]
 pub struct SurfaceProtectedCapabilitiesKHR {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub supports_protected: Bool32,
 }
 unsafe impl Send for SurfaceProtectedCapabilitiesKHR {}
@@ -29973,7 +29994,7 @@ impl Default for SurfaceProtectedCapabilitiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::SURFACE_PROTECTED_CAPABILITIES_KHR,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             supports_protected: Default::default(),
         }
     }
@@ -36985,7 +37006,7 @@ impl fmt::Debug for PipelineFragmentShadingRateEnumStateCreateInfoNV {
 #[derive(Copy, Clone)]
 pub struct AccelerationStructureBuildSizesInfoKHR {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub acceleration_structure_size: DeviceSize,
     pub update_scratch_size: DeviceSize,
     pub build_scratch_size: DeviceSize,
@@ -36996,7 +37017,7 @@ impl Default for AccelerationStructureBuildSizesInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_BUILD_SIZES_INFO_KHR,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             acceleration_structure_size: Default::default(),
             update_scratch_size: Default::default(),
             build_scratch_size: Default::default(),
@@ -37303,6 +37324,99 @@ impl fmt::Debug for PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("zero_initialize_device_memory", &self.zero_initialize_device_memory)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BeginCustomResolveInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+}
+unsafe impl Send for BeginCustomResolveInfoEXT {}
+unsafe impl Sync for BeginCustomResolveInfoEXT {}
+impl Default for BeginCustomResolveInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BEGIN_CUSTOM_RESOLVE_INFO_EXT,
+            p_next: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for BeginCustomResolveInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BeginCustomResolveInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCustomResolveFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub custom_resolve: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCustomResolveFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceCustomResolveFeaturesEXT {}
+impl Default for PhysicalDeviceCustomResolveFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_CUSTOM_RESOLVE_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            custom_resolve: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCustomResolveFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCustomResolveFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("custom_resolve", &self.custom_resolve)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CustomResolveCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub custom_resolve: Bool32,
+    pub color_attachment_count: u32,
+    pub p_color_attachment_formats: *const Format,
+    pub depth_attachment_format: Format,
+    pub stencil_attachment_format: Format,
+}
+unsafe impl Send for CustomResolveCreateInfoEXT {}
+unsafe impl Sync for CustomResolveCreateInfoEXT {}
+impl Default for CustomResolveCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CUSTOM_RESOLVE_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            custom_resolve: Default::default(),
+            color_attachment_count: Default::default(),
+            p_color_attachment_formats: ptr::null(),
+            depth_attachment_format: Default::default(),
+            stencil_attachment_format: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for CustomResolveCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CustomResolveCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("custom_resolve", &self.custom_resolve)
+            .field("color_attachment_count", &self.color_attachment_count)
+            .field("p_color_attachment_formats", &self.p_color_attachment_formats)
+            .field("depth_attachment_format", &self.depth_attachment_format)
+            .field("stencil_attachment_format", &self.stencil_attachment_format)
             .finish()
     }
 }
@@ -44667,7 +44781,7 @@ impl fmt::Debug for OpticalFlowImageFormatInfoNV {
 #[derive(Copy, Clone)]
 pub struct OpticalFlowImageFormatPropertiesNV {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub format: Format,
 }
 unsafe impl Send for OpticalFlowImageFormatPropertiesNV {}
@@ -44676,7 +44790,7 @@ impl Default for OpticalFlowImageFormatPropertiesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::OPTICAL_FLOW_IMAGE_FORMAT_PROPERTIES_NV,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             format: Default::default(),
         }
     }
@@ -45655,28 +45769,66 @@ impl fmt::Debug for PhysicalDeviceDepthBiasControlFeaturesEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+pub struct PhysicalDeviceRayTracingInvocationReorderFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub ray_tracing_invocation_reorder: Bool32,
 }
-unsafe impl Send for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
-unsafe impl Sync for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
-impl Default for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+unsafe impl Send for PhysicalDeviceRayTracingInvocationReorderFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceRayTracingInvocationReorderFeaturesEXT {}
+impl Default for PhysicalDeviceRayTracingInvocationReorderFeaturesEXT {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV,
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_EXT,
             p_next: ptr::null_mut(),
             ray_tracing_invocation_reorder: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+impl fmt::Debug for PhysicalDeviceRayTracingInvocationReorderFeaturesEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceRayTracingInvocationReorderFeaturesNV")
+        fmt.debug_struct("PhysicalDeviceRayTracingInvocationReorderFeaturesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("ray_tracing_invocation_reorder", &self.ray_tracing_invocation_reorder)
+            .finish()
+    }
+}
+pub type PhysicalDeviceRayTracingInvocationReorderFeaturesNV = PhysicalDeviceRayTracingInvocationReorderFeaturesEXT;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayTracingInvocationReorderPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ray_tracing_invocation_reorder_reordering_hint: RayTracingInvocationReorderModeEXT,
+    pub max_shader_binding_table_record_index: u32,
+}
+unsafe impl Send for PhysicalDeviceRayTracingInvocationReorderPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceRayTracingInvocationReorderPropertiesEXT {}
+impl Default for PhysicalDeviceRayTracingInvocationReorderPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            ray_tracing_invocation_reorder_reordering_hint: Default::default(),
+            max_shader_binding_table_record_index: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayTracingInvocationReorderPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayTracingInvocationReorderPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "ray_tracing_invocation_reorder_reordering_hint",
+                &self.ray_tracing_invocation_reorder_reordering_hint,
+            )
+            .field(
+                "max_shader_binding_table_record_index",
+                &self.max_shader_binding_table_record_index,
+            )
             .finish()
     }
 }
@@ -45686,7 +45838,7 @@ impl fmt::Debug for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
 pub struct PhysicalDeviceRayTracingInvocationReorderPropertiesNV {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
-    pub ray_tracing_invocation_reorder_reordering_hint: RayTracingInvocationReorderModeNV,
+    pub ray_tracing_invocation_reorder_reordering_hint: RayTracingInvocationReorderModeEXT,
 }
 unsafe impl Send for PhysicalDeviceRayTracingInvocationReorderPropertiesNV {}
 unsafe impl Sync for PhysicalDeviceRayTracingInvocationReorderPropertiesNV {}
@@ -47729,7 +47881,7 @@ impl fmt::Debug for GetLatencyMarkerInfoNV {
 #[derive(Copy, Clone)]
 pub struct LatencyTimingsFrameReportNV {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub present_id: u64,
     pub input_sample_time_us: u64,
     pub sim_start_time_us: u64,
@@ -47751,7 +47903,7 @@ impl Default for LatencyTimingsFrameReportNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::LATENCY_TIMINGS_FRAME_REPORT_NV,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             present_id: Default::default(),
             input_sample_time_us: Default::default(),
             sim_start_time_us: Default::default(),
@@ -50118,7 +50270,7 @@ impl fmt::Debug for WriteDescriptorSetTensorARM {
 #[derive(Copy, Clone)]
 pub struct TensorFormatPropertiesARM {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub optimal_tiling_tensor_features: FormatFeatureFlags2,
     pub linear_tiling_tensor_features: FormatFeatureFlags2,
 }
@@ -50128,7 +50280,7 @@ impl Default for TensorFormatPropertiesARM {
     fn default() -> Self {
         Self {
             s_type: StructureType::TENSOR_FORMAT_PROPERTIES_ARM,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             optimal_tiling_tensor_features: Default::default(),
             linear_tiling_tensor_features: Default::default(),
         }
@@ -51585,7 +51737,7 @@ impl fmt::Debug for DataGraphPipelineBuiltinModelCreateInfoQCOM {
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceDataGraphModelFeaturesQCOM {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub data_graph_model: Bool32,
 }
 unsafe impl Send for PhysicalDeviceDataGraphModelFeaturesQCOM {}
@@ -51594,7 +51746,7 @@ impl Default for PhysicalDeviceDataGraphModelFeaturesQCOM {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DATA_GRAPH_MODEL_FEATURES_QCOM,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             data_graph_model: Default::default(),
         }
     }
@@ -52801,6 +52953,10 @@ pub type FnCmdBeginConditionalRenderingEXT = unsafe extern "system" fn(
     p_conditional_rendering_begin: *const ConditionalRenderingBeginInfoEXT,
 );
 pub type FnCmdEndConditionalRenderingEXT = unsafe extern "system" fn(command_buffer: CommandBuffer);
+pub type FnCmdBeginCustomResolveEXT = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    p_begin_custom_resolve_info: *const BeginCustomResolveInfoEXT,
+);
 pub type FnCmdResetQueryPool =
     unsafe extern "system" fn(command_buffer: CommandBuffer, query_pool: QueryPool, first_query: u32, query_count: u32);
 pub type FnCmdWriteTimestamp = unsafe extern "system" fn(

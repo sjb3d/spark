@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.332
+//! Generated from vk.xml version 1.4.333
 
 #![allow(
     clippy::too_many_arguments,
@@ -2965,6 +2965,12 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_ext_ray_tracing_invocation_reorder(&self) -> bool {
+        self.supports_khr_ray_tracing_pipeline()
+    }
+    pub fn enable_ext_ray_tracing_invocation_reorder(&mut self) {
+        self.enable_khr_ray_tracing_pipeline();
+    }
     pub fn supports_ext_depth_clamp_control(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
@@ -3116,6 +3122,14 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_shader_64bit_indexing(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_ext_custom_resolve(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_custom_resolve(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -5870,6 +5884,7 @@ pub struct DeviceExtensions {
     pub khr_maintenance8: bool,
     pub mesa_image_alignment_control: bool,
     pub khr_shader_fma: bool,
+    pub ext_ray_tracing_invocation_reorder: bool,
     pub ext_depth_clamp_control: bool,
     pub khr_maintenance9: bool,
     pub ohos_native_buffer: bool,
@@ -5888,6 +5903,7 @@ pub struct DeviceExtensions {
     pub ext_zero_initialize_device_memory: bool,
     pub khr_present_mode_fifo_latest_ready: bool,
     pub ext_shader_64bit_indexing: bool,
+    pub ext_custom_resolve: bool,
     pub qcom_data_graph_model: bool,
     pub khr_maintenance10: bool,
     pub sec_pipeline_cache_incremental_mode: bool,
@@ -6601,6 +6617,8 @@ impl DeviceExtensions {
             self.mesa_image_alignment_control = true;
         } else if name == c"VK_KHR_shader_fma" {
             self.khr_shader_fma = true;
+        } else if name == c"VK_EXT_ray_tracing_invocation_reorder" {
+            self.ext_ray_tracing_invocation_reorder = true;
         } else if name == c"VK_EXT_depth_clamp_control" {
             self.ext_depth_clamp_control = true;
         } else if name == c"VK_KHR_maintenance9" {
@@ -6637,6 +6655,8 @@ impl DeviceExtensions {
             self.khr_present_mode_fifo_latest_ready = true;
         } else if name == c"VK_EXT_shader_64bit_indexing" {
             self.ext_shader_64bit_indexing = true;
+        } else if name == c"VK_EXT_custom_resolve" {
+            self.ext_custom_resolve = true;
         } else if name == c"VK_QCOM_data_graph_model" {
             self.qcom_data_graph_model = true;
         } else if name == c"VK_KHR_maintenance10" {
@@ -7003,6 +7023,7 @@ impl DeviceExtensions {
             khr_maintenance8: false,
             mesa_image_alignment_control: false,
             khr_shader_fma: false,
+            ext_ray_tracing_invocation_reorder: false,
             ext_depth_clamp_control: false,
             khr_maintenance9: false,
             ohos_native_buffer: false,
@@ -7021,6 +7042,7 @@ impl DeviceExtensions {
             ext_zero_initialize_device_memory: false,
             khr_present_mode_fifo_latest_ready: false,
             ext_shader_64bit_indexing: false,
+            ext_custom_resolve: false,
             qcom_data_graph_model: false,
             khr_maintenance10: false,
             sec_pipeline_cache_incremental_mode: false,
@@ -9852,6 +9874,13 @@ impl DeviceExtensions {
     pub fn enable_khr_shader_fma(&mut self) {
         self.khr_shader_fma = true;
     }
+    pub fn supports_ext_ray_tracing_invocation_reorder(&self) -> bool {
+        self.ext_ray_tracing_invocation_reorder && self.supports_khr_ray_tracing_pipeline()
+    }
+    pub fn enable_ext_ray_tracing_invocation_reorder(&mut self) {
+        self.ext_ray_tracing_invocation_reorder = true;
+        self.enable_khr_ray_tracing_pipeline();
+    }
     pub fn supports_ext_depth_clamp_control(&self) -> bool {
         self.ext_depth_clamp_control
     }
@@ -9984,6 +10013,12 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_shader_64bit_indexing(&mut self) {
         self.ext_shader_64bit_indexing = true;
+    }
+    pub fn supports_ext_custom_resolve(&self) -> bool {
+        self.ext_custom_resolve
+    }
+    pub fn enable_ext_custom_resolve(&mut self) {
+        self.ext_custom_resolve = true;
     }
     pub fn supports_qcom_data_graph_model(&self) -> bool {
         self.qcom_data_graph_model && self.supports_arm_data_graph()
@@ -11071,6 +11106,9 @@ impl DeviceExtensions {
         if self.khr_shader_fma {
             v.push(c"VK_KHR_shader_fma");
         }
+        if self.ext_ray_tracing_invocation_reorder {
+            v.push(c"VK_EXT_ray_tracing_invocation_reorder");
+        }
         if self.ext_depth_clamp_control {
             v.push(c"VK_EXT_depth_clamp_control");
         }
@@ -11124,6 +11162,9 @@ impl DeviceExtensions {
         }
         if self.ext_shader_64bit_indexing {
             v.push(c"VK_EXT_shader_64bit_indexing");
+        }
+        if self.ext_custom_resolve {
+            v.push(c"VK_EXT_custom_resolve");
         }
         if self.qcom_data_graph_model {
             v.push(c"VK_QCOM_data_graph_model");
@@ -11279,6 +11320,7 @@ pub struct Device {
     pub fp_cmd_end_query: vk::FnCmdEndQuery,
     pub fp_cmd_begin_conditional_rendering_ext: Option<vk::FnCmdBeginConditionalRenderingEXT>,
     pub fp_cmd_end_conditional_rendering_ext: Option<vk::FnCmdEndConditionalRenderingEXT>,
+    pub fp_cmd_begin_custom_resolve_ext: Option<vk::FnCmdBeginCustomResolveEXT>,
     pub fp_cmd_reset_query_pool: vk::FnCmdResetQueryPool,
     pub fp_cmd_write_timestamp: vk::FnCmdWriteTimestamp,
     pub fp_cmd_copy_query_pool_results: vk::FnCmdCopyQueryPoolResults,
@@ -12459,6 +12501,15 @@ impl Device {
             fp_cmd_end_conditional_rendering_ext: if extensions.ext_conditional_rendering {
                 instance
                     .get_device_proc_addr(device, c"vkCmdEndConditionalRenderingEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_custom_resolve_ext: if extensions.ext_custom_resolve
+                && (extensions.core_version >= vk::Version::from_raw_parts(1, 3, 0) || extensions.khr_dynamic_rendering)
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdBeginCustomResolveEXT")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -17682,6 +17733,16 @@ impl Device {
             .fp_cmd_end_conditional_rendering_ext
             .expect("vkCmdEndConditionalRenderingEXT is not loaded");
         (fp)(command_buffer)
+    }
+    pub unsafe fn cmd_begin_custom_resolve_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_begin_custom_resolve_info: Option<&vk::BeginCustomResolveInfoEXT>,
+    ) {
+        let fp = self
+            .fp_cmd_begin_custom_resolve_ext
+            .expect("vkCmdBeginCustomResolveEXT is not loaded");
+        (fp)(command_buffer, p_begin_custom_resolve_info.map_or(ptr::null(), |r| r))
     }
     pub unsafe fn cmd_reset_query_pool(
         &self,
