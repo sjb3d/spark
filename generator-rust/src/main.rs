@@ -1845,7 +1845,14 @@ fn write_builders(w: &mut impl IoWrite, oracle: &Oracle) -> Res {
                                     let slice_ident = AsIdent(&slice_member.short_name);
                                     if slice_member.is_optional && is_multi_slice {
                                         if transform.optional_param.len() > 1 {
-                                            writeln!(w, "if let Some(len) = {slice_ident}.map(|s| s.len()) {{")?;
+                                            let TypeDecl::Pointer(pointer_decl) = &slice_member.ty else {
+                                                panic!("unexpected type for slice");
+                                            };
+                                            let as_ref = if pointer_decl.is_const { "" } else { ".as_ref()" };
+                                            writeln!(
+                                                w,
+                                                "if let Some(len) = {slice_ident}{as_ref}.map(|s| s.len()) {{"
+                                            )?;
                                             writeln!(w, "assert_eq!(self.inner.{ident}, len {as_dest}); }}")?;
                                         }
                                     } else {
