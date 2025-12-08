@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.334
+//! Generated from vk.xml version 1.4.335
 
 #![allow(
     clippy::too_many_arguments,
@@ -1276,6 +1276,18 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+    pub fn supports_ext_present_timing(&self) -> bool {
+        self.supports_khr_swapchain()
+            && self.supports_khr_present_id2()
+            && self.supports_khr_get_surface_capabilities2()
+            && self.supports_khr_calibrated_timestamps()
+    }
+    pub fn enable_ext_present_timing(&mut self) {
+        self.enable_khr_swapchain();
+        self.enable_khr_present_id2();
+        self.enable_khr_get_surface_capabilities2();
+        self.enable_khr_calibrated_timestamps();
     }
     pub fn supports_intel_shader_integer_functions2(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -5669,6 +5681,7 @@ pub struct DeviceExtensions {
     pub nv_scissor_exclusive: bool,
     pub nv_device_diagnostic_checkpoints: bool,
     pub khr_timeline_semaphore: bool,
+    pub ext_present_timing: bool,
     pub intel_shader_integer_functions2: bool,
     pub intel_performance_query: bool,
     pub khr_vulkan_memory_model: bool,
@@ -6187,6 +6200,8 @@ impl DeviceExtensions {
             self.nv_device_diagnostic_checkpoints = true;
         } else if name == c"VK_KHR_timeline_semaphore" {
             self.khr_timeline_semaphore = true;
+        } else if name == c"VK_EXT_present_timing" {
+            self.ext_present_timing = true;
         } else if name == c"VK_INTEL_shader_integer_functions2" {
             self.intel_shader_integer_functions2 = true;
         } else if name == c"VK_INTEL_performance_query" {
@@ -6808,6 +6823,7 @@ impl DeviceExtensions {
             nv_scissor_exclusive: false,
             nv_device_diagnostic_checkpoints: false,
             khr_timeline_semaphore: false,
+            ext_present_timing: false,
             intel_shader_integer_functions2: false,
             intel_performance_query: false,
             khr_vulkan_memory_model: false,
@@ -8163,6 +8179,18 @@ impl DeviceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
             self.khr_timeline_semaphore = true;
         }
+    }
+    pub fn supports_ext_present_timing(&self) -> bool {
+        self.ext_present_timing
+            && self.supports_khr_swapchain()
+            && self.supports_khr_present_id2()
+            && self.supports_khr_calibrated_timestamps()
+    }
+    pub fn enable_ext_present_timing(&mut self) {
+        self.ext_present_timing = true;
+        self.enable_khr_swapchain();
+        self.enable_khr_present_id2();
+        self.enable_khr_calibrated_timestamps();
     }
     pub fn supports_intel_shader_integer_functions2(&self) -> bool {
         self.intel_shader_integer_functions2
@@ -10461,6 +10489,9 @@ impl DeviceExtensions {
         if self.khr_timeline_semaphore {
             v.push(c"VK_KHR_timeline_semaphore");
         }
+        if self.ext_present_timing {
+            v.push(c"VK_EXT_present_timing");
+        }
         if self.intel_shader_integer_functions2 {
             v.push(c"VK_INTEL_shader_integer_functions2");
         }
@@ -11697,6 +11728,10 @@ pub struct Device {
     pub fp_destroy_shader_ext: Option<vk::FnDestroyShaderEXT>,
     pub fp_get_shader_binary_data_ext: Option<vk::FnGetShaderBinaryDataEXT>,
     pub fp_cmd_bind_shaders_ext: Option<vk::FnCmdBindShadersEXT>,
+    pub fp_set_swapchain_present_timing_queue_size_ext: Option<vk::FnSetSwapchainPresentTimingQueueSizeEXT>,
+    pub fp_get_swapchain_timing_properties_ext: Option<vk::FnGetSwapchainTimingPropertiesEXT>,
+    pub fp_get_swapchain_time_domain_properties_ext: Option<vk::FnGetSwapchainTimeDomainPropertiesEXT>,
+    pub fp_get_past_presentation_timing_ext: Option<vk::FnGetPastPresentationTimingEXT>,
     pub fp_get_physical_device_cooperative_matrix_properties_khr:
         Option<vk::FnGetPhysicalDeviceCooperativeMatrixPropertiesKHR>,
     pub fp_get_execution_graph_pipeline_scratch_size_amdx: Option<vk::FnGetExecutionGraphPipelineScratchSizeAMDX>,
@@ -15522,6 +15557,34 @@ impl Device {
             fp_cmd_bind_shaders_ext: if extensions.ext_shader_object {
                 instance
                     .get_device_proc_addr(device, c"vkCmdBindShadersEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_swapchain_present_timing_queue_size_ext: if extensions.ext_present_timing {
+                instance
+                    .get_device_proc_addr(device, c"vkSetSwapchainPresentTimingQueueSizeEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_swapchain_timing_properties_ext: if extensions.ext_present_timing {
+                instance
+                    .get_device_proc_addr(device, c"vkGetSwapchainTimingPropertiesEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_swapchain_time_domain_properties_ext: if extensions.ext_present_timing {
+                instance
+                    .get_device_proc_addr(device, c"vkGetSwapchainTimeDomainPropertiesEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_past_presentation_timing_ext: if extensions.ext_present_timing {
+                instance
+                    .get_device_proc_addr(device, c"vkGetPastPresentationTimingEXT")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -23796,6 +23859,78 @@ impl Device {
             p_stages.as_ptr(),
             p_shaders.map_or(ptr::null(), |r| r.as_ptr()),
         )
+    }
+    pub unsafe fn set_swapchain_present_timing_queue_size_ext(
+        &self,
+        swapchain: vk::SwapchainKHR,
+        size: u32,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_set_swapchain_present_timing_queue_size_ext
+            .expect("vkSetSwapchainPresentTimingQueueSizeEXT is not loaded");
+        let err = (fp)(self.handle, swapchain, size);
+        match err {
+            vk::Result::SUCCESS | vk::Result::NOT_READY => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_swapchain_timing_properties_ext(
+        &self,
+        swapchain: vk::SwapchainKHR,
+        p_swapchain_timing_properties: &mut vk::SwapchainTimingPropertiesEXT,
+        p_swapchain_timing_properties_counter: Option<&mut u64>,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_swapchain_timing_properties_ext
+            .expect("vkGetSwapchainTimingPropertiesEXT is not loaded");
+        let err = (fp)(
+            self.handle,
+            swapchain,
+            p_swapchain_timing_properties,
+            p_swapchain_timing_properties_counter.map_or(ptr::null_mut(), |r| r),
+        );
+        match err {
+            vk::Result::SUCCESS | vk::Result::NOT_READY => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_swapchain_time_domain_properties_ext(
+        &self,
+        swapchain: vk::SwapchainKHR,
+        p_swapchain_time_domain_properties: &mut vk::SwapchainTimeDomainPropertiesEXT,
+        p_time_domains_counter: Option<&mut u64>,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_swapchain_time_domain_properties_ext
+            .expect("vkGetSwapchainTimeDomainPropertiesEXT is not loaded");
+        let err = (fp)(
+            self.handle,
+            swapchain,
+            p_swapchain_time_domain_properties,
+            p_time_domains_counter.map_or(ptr::null_mut(), |r| r),
+        );
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_past_presentation_timing_ext(
+        &self,
+        p_past_presentation_timing_info: &vk::PastPresentationTimingInfoEXT,
+        p_past_presentation_timing_properties: &mut vk::PastPresentationTimingPropertiesEXT,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_past_presentation_timing_ext
+            .expect("vkGetPastPresentationTimingEXT is not loaded");
+        let err = (fp)(
+            self.handle,
+            p_past_presentation_timing_info,
+            p_past_presentation_timing_properties,
+        );
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
     }
     pub unsafe fn get_physical_device_cooperative_matrix_properties_khr(
         &self,

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.334
+//! Generated from vk.xml version 1.4.335
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -11058,6 +11058,471 @@ impl DeviceCreateInfoNext for PhysicalDevicePresentWait2FeaturesKHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct PhysicalDevicePresentTimingFeaturesEXTBuilder {
+    inner: vk::PhysicalDevicePresentTimingFeaturesEXT,
+}
+impl Builder<'_> for vk::PhysicalDevicePresentTimingFeaturesEXT {
+    type Type = PhysicalDevicePresentTimingFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDevicePresentTimingFeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDevicePresentTimingFeaturesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_timing(mut self, present_timing: bool) -> Self {
+        self.inner.present_timing = if present_timing { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn present_at_absolute_time(mut self, present_at_absolute_time: bool) -> Self {
+        self.inner.present_at_absolute_time = if present_at_absolute_time { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn present_at_relative_time(mut self, present_at_relative_time: bool) -> Self {
+        self.inner.present_at_relative_time = if present_at_relative_time { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePresentTimingFeaturesEXTBuilder {
+    type Target = vk::PhysicalDevicePresentTimingFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentTimingFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentTimingFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePresentTimingFeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDevicePresentTimingFeaturesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PresentTimingSurfaceCapabilitiesEXTBuilder {
+    inner: vk::PresentTimingSurfaceCapabilitiesEXT,
+}
+impl Builder<'_> for vk::PresentTimingSurfaceCapabilitiesEXT {
+    type Type = PresentTimingSurfaceCapabilitiesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PresentTimingSurfaceCapabilitiesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PresentTimingSurfaceCapabilitiesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_timing_supported(mut self, present_timing_supported: bool) -> Self {
+        self.inner.present_timing_supported = if present_timing_supported { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn present_at_absolute_time_supported(mut self, present_at_absolute_time_supported: bool) -> Self {
+        self.inner.present_at_absolute_time_supported = if present_at_absolute_time_supported {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn present_at_relative_time_supported(mut self, present_at_relative_time_supported: bool) -> Self {
+        self.inner.present_at_relative_time_supported = if present_at_relative_time_supported {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn present_stage_queries(mut self, present_stage_queries: vk::PresentStageFlagsEXT) -> Self {
+        self.inner.present_stage_queries = present_stage_queries;
+        self
+    }
+}
+impl Deref for PresentTimingSurfaceCapabilitiesEXTBuilder {
+    type Target = vk::PresentTimingSurfaceCapabilitiesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SurfaceCapabilities2KHRNext for vk::PresentTimingSurfaceCapabilitiesEXT {}
+impl SurfaceCapabilities2KHRNext for PresentTimingSurfaceCapabilitiesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct SwapchainTimingPropertiesEXTBuilder {
+    inner: vk::SwapchainTimingPropertiesEXT,
+}
+impl Builder<'_> for vk::SwapchainTimingPropertiesEXT {
+    type Type = SwapchainTimingPropertiesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl SwapchainTimingPropertiesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::SwapchainTimingPropertiesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn refresh_duration(mut self, refresh_duration: u64) -> Self {
+        self.inner.refresh_duration = refresh_duration;
+        self
+    }
+    pub fn refresh_interval(mut self, refresh_interval: u64) -> Self {
+        self.inner.refresh_interval = refresh_interval;
+        self
+    }
+}
+impl Deref for SwapchainTimingPropertiesEXTBuilder {
+    type Target = vk::SwapchainTimingPropertiesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct SwapchainTimeDomainPropertiesEXTBuilder<'a> {
+    inner: vk::SwapchainTimeDomainPropertiesEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::SwapchainTimeDomainPropertiesEXT {
+    type Type = SwapchainTimeDomainPropertiesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> SwapchainTimeDomainPropertiesEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::SwapchainTimeDomainPropertiesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_time_domains(
+        mut self,
+        p_time_domains: Option<&'a mut [vk::TimeDomainKHR]>,
+        p_time_domain_ids: Option<&'a mut [u64]>,
+    ) -> Self {
+        self.inner.time_domain_count = p_time_domains
+            .as_ref()
+            .map(|s| s.len() as u32)
+            .or(p_time_domain_ids.as_ref().map(|s| s.len() as u32))
+            .unwrap_or(0);
+        if let Some(len) = p_time_domains.as_ref().map(|s| s.len()) {
+            assert_eq!(self.inner.time_domain_count, len as u32);
+        }
+        if let Some(len) = p_time_domain_ids.as_ref().map(|s| s.len()) {
+            assert_eq!(self.inner.time_domain_count, len as u32);
+        }
+        self.inner.p_time_domains = p_time_domains.map_or(ptr::null_mut(), |s| s.as_mut_ptr());
+        self.inner.p_time_domain_ids = p_time_domain_ids.map_or(ptr::null_mut(), |s| s.as_mut_ptr());
+        self
+    }
+}
+impl<'a> Deref for SwapchainTimeDomainPropertiesEXTBuilder<'a> {
+    type Target = vk::SwapchainTimeDomainPropertiesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PresentStageTimeEXTBuilder {
+    inner: vk::PresentStageTimeEXT,
+}
+impl Builder<'_> for vk::PresentStageTimeEXT {
+    type Type = PresentStageTimeEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PresentStageTimeEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PresentStageTimeEXT {
+        &mut self.inner
+    }
+    pub fn stage(mut self, stage: vk::PresentStageFlagsEXT) -> Self {
+        self.inner.stage = stage;
+        self
+    }
+    pub fn time(mut self, time: u64) -> Self {
+        self.inner.time = time;
+        self
+    }
+}
+impl Deref for PresentStageTimeEXTBuilder {
+    type Target = vk::PresentStageTimeEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PastPresentationTimingInfoEXTBuilder {
+    inner: vk::PastPresentationTimingInfoEXT,
+}
+impl Builder<'_> for vk::PastPresentationTimingInfoEXT {
+    type Type = PastPresentationTimingInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PastPresentationTimingInfoEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PastPresentationTimingInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::PastPresentationTimingFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn swapchain(mut self, swapchain: vk::SwapchainKHR) -> Self {
+        self.inner.swapchain = swapchain;
+        self
+    }
+}
+impl Deref for PastPresentationTimingInfoEXTBuilder {
+    type Target = vk::PastPresentationTimingInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PastPresentationTimingPropertiesEXTBuilder<'a> {
+    inner: vk::PastPresentationTimingPropertiesEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::PastPresentationTimingPropertiesEXT {
+    type Type = PastPresentationTimingPropertiesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> PastPresentationTimingPropertiesEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::PastPresentationTimingPropertiesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn timing_properties_counter(mut self, timing_properties_counter: u64) -> Self {
+        self.inner.timing_properties_counter = timing_properties_counter;
+        self
+    }
+    pub fn time_domains_counter(mut self, time_domains_counter: u64) -> Self {
+        self.inner.time_domains_counter = time_domains_counter;
+        self
+    }
+    pub fn p_presentation_timings(mut self, p_presentation_timings: &'a mut [vk::PastPresentationTimingEXT]) -> Self {
+        self.inner.presentation_timing_count = p_presentation_timings.len() as u32;
+        self.inner.p_presentation_timings = p_presentation_timings.as_mut_ptr();
+        self
+    }
+}
+impl<'a> Deref for PastPresentationTimingPropertiesEXTBuilder<'a> {
+    type Target = vk::PastPresentationTimingPropertiesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PastPresentationTimingEXTBuilder<'a> {
+    inner: vk::PastPresentationTimingEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::PastPresentationTimingEXT {
+    type Type = PastPresentationTimingEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> PastPresentationTimingEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::PastPresentationTimingEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_id(mut self, present_id: u64) -> Self {
+        self.inner.present_id = present_id;
+        self
+    }
+    pub fn target_time(mut self, target_time: u64) -> Self {
+        self.inner.target_time = target_time;
+        self
+    }
+    pub fn p_present_stages(mut self, p_present_stages: &'a mut [vk::PresentStageTimeEXT]) -> Self {
+        self.inner.present_stage_count = p_present_stages.len() as u32;
+        self.inner.p_present_stages = p_present_stages.as_mut_ptr();
+        self
+    }
+    pub fn time_domain(mut self, time_domain: vk::TimeDomainKHR) -> Self {
+        self.inner.time_domain = time_domain;
+        self
+    }
+    pub fn time_domain_id(mut self, time_domain_id: u64) -> Self {
+        self.inner.time_domain_id = time_domain_id;
+        self
+    }
+    pub fn report_complete(mut self, report_complete: bool) -> Self {
+        self.inner.report_complete = if report_complete { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PastPresentationTimingEXTBuilder<'a> {
+    type Target = vk::PastPresentationTimingEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PresentTimingsInfoEXTBuilder<'a> {
+    inner: vk::PresentTimingsInfoEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::PresentTimingsInfoEXT {
+    type Type = PresentTimingsInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> PresentTimingsInfoEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::PresentTimingsInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_timing_infos(mut self, p_timing_infos: &'a [vk::PresentTimingInfoEXT]) -> Self {
+        self.inner.swapchain_count = p_timing_infos.len() as u32;
+        self.inner.p_timing_infos = p_timing_infos.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for PresentTimingsInfoEXTBuilder<'a> {
+    type Target = vk::PresentTimingsInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PresentInfoKHRNext for vk::PresentTimingsInfoEXT {}
+impl PresentInfoKHRNext for PresentTimingsInfoEXTBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PresentTimingInfoEXTBuilder {
+    inner: vk::PresentTimingInfoEXT,
+}
+impl Builder<'_> for vk::PresentTimingInfoEXT {
+    type Type = PresentTimingInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PresentTimingInfoEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PresentTimingInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::PresentTimingInfoFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn target_time(mut self, target_time: u64) -> Self {
+        self.inner.target_time = target_time;
+        self
+    }
+    pub fn time_domain_id(mut self, time_domain_id: u64) -> Self {
+        self.inner.time_domain_id = time_domain_id;
+        self
+    }
+    pub fn present_stage_queries(mut self, present_stage_queries: vk::PresentStageFlagsEXT) -> Self {
+        self.inner.present_stage_queries = present_stage_queries;
+        self
+    }
+    pub fn target_time_domain_present_stage(
+        mut self,
+        target_time_domain_present_stage: vk::PresentStageFlagsEXT,
+    ) -> Self {
+        self.inner.target_time_domain_present_stage = target_time_domain_present_stage;
+        self
+    }
+}
+impl Deref for PresentTimingInfoEXTBuilder {
+    type Target = vk::PresentTimingInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct SwapchainCalibratedTimestampInfoEXTBuilder {
+    inner: vk::SwapchainCalibratedTimestampInfoEXT,
+}
+impl Builder<'_> for vk::SwapchainCalibratedTimestampInfoEXT {
+    type Type = SwapchainCalibratedTimestampInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl SwapchainCalibratedTimestampInfoEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::SwapchainCalibratedTimestampInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn swapchain(mut self, swapchain: vk::SwapchainKHR) -> Self {
+        self.inner.swapchain = swapchain;
+        self
+    }
+    pub fn present_stage(mut self, present_stage: vk::PresentStageFlagsEXT) -> Self {
+        self.inner.present_stage = present_stage;
+        self
+    }
+    pub fn time_domain_id(mut self, time_domain_id: u64) -> Self {
+        self.inner.time_domain_id = time_domain_id;
+        self
+    }
+}
+impl Deref for SwapchainCalibratedTimestampInfoEXTBuilder {
+    type Target = vk::SwapchainCalibratedTimestampInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl CalibratedTimestampInfoKHRNext for vk::SwapchainCalibratedTimestampInfoEXT {}
+impl CalibratedTimestampInfoKHRNext for SwapchainCalibratedTimestampInfoEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct HdrMetadataEXTBuilder<'a> {
     inner: vk::HdrMetadataEXT,
     phantom: PhantomData<&'a ()>,
@@ -14231,16 +14696,24 @@ impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceConservativeRasterizati
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct CalibratedTimestampInfoKHRBuilder {
+pub struct CalibratedTimestampInfoKHRBuilder<'a> {
     inner: vk::CalibratedTimestampInfoKHR,
+    phantom: PhantomData<&'a ()>,
 }
-impl Builder<'_> for vk::CalibratedTimestampInfoKHR {
-    type Type = CalibratedTimestampInfoKHRBuilder;
+impl<'a> Builder<'a> for vk::CalibratedTimestampInfoKHR {
+    type Type = CalibratedTimestampInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl CalibratedTimestampInfoKHRBuilder {
+pub trait CalibratedTimestampInfoKHRNext {}
+impl<'a> CalibratedTimestampInfoKHRBuilder<'a> {
+    pub fn insert_next<T: CalibratedTimestampInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn get_mut(&mut self) -> &mut vk::CalibratedTimestampInfoKHR {
         &mut self.inner
     }
@@ -14253,7 +14726,7 @@ impl CalibratedTimestampInfoKHRBuilder {
         self
     }
 }
-impl Deref for CalibratedTimestampInfoKHRBuilder {
+impl<'a> Deref for CalibratedTimestampInfoKHRBuilder<'a> {
     type Target = vk::CalibratedTimestampInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner

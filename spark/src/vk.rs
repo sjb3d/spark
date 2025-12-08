@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.334
+//! Generated from vk.xml version 1.4.335
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -3205,6 +3205,7 @@ impl SwapchainCreateFlagsKHR {
     pub const SPLIT_INSTANCE_BIND_REGIONS: Self = Self(0x1);
     pub const PROTECTED: Self = Self(0x2);
     pub const MUTABLE_FORMAT: Self = Self(0x4);
+    pub const PRESENT_TIMING_EXT: Self = Self(0x200);
     pub const DEFERRED_MEMORY_ALLOCATION_EXT: Self = Self::DEFERRED_MEMORY_ALLOCATION;
     pub const PRESENT_ID_2: Self = Self(0x40);
     pub const PRESENT_WAIT_2: Self = Self(0x80);
@@ -3219,6 +3220,7 @@ impl fmt::Display for SwapchainCreateFlagsKHR {
                 (0x1, "SPLIT_INSTANCE_BIND_REGIONS"),
                 (0x2, "PROTECTED"),
                 (0x4, "MUTABLE_FORMAT"),
+                (0x200, "PRESENT_TIMING_EXT"),
                 (0x40, "PRESENT_ID_2"),
                 (0x80, "PRESENT_WAIT_2"),
                 (0x8, "DEFERRED_MEMORY_ALLOCATION"),
@@ -4589,6 +4591,70 @@ impl_bitmask!(SurfaceCreateFlagsOHOS);
 impl fmt::Display for SurfaceCreateFlagsOHOS {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct PresentStageFlagsEXT(pub(crate) u32);
+impl PresentStageFlagsEXT {
+    pub const QUEUE_OPERATIONS_END: Self = Self(0x1);
+    pub const REQUEST_DEQUEUED: Self = Self(0x2);
+    pub const IMAGE_FIRST_PIXEL_OUT: Self = Self(0x4);
+    pub const IMAGE_FIRST_PIXEL_VISIBLE: Self = Self(0x8);
+}
+impl_bitmask!(PresentStageFlagsEXT);
+impl fmt::Display for PresentStageFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "QUEUE_OPERATIONS_END"),
+                (0x2, "REQUEST_DEQUEUED"),
+                (0x4, "IMAGE_FIRST_PIXEL_OUT"),
+                (0x8, "IMAGE_FIRST_PIXEL_VISIBLE"),
+            ],
+            f,
+        )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct PastPresentationTimingFlagsEXT(pub(crate) u32);
+impl PastPresentationTimingFlagsEXT {
+    pub const ALLOW_PARTIAL_RESULTS: Self = Self(0x1);
+    pub const ALLOW_OUT_OF_ORDER_RESULTS: Self = Self(0x2);
+}
+impl_bitmask!(PastPresentationTimingFlagsEXT);
+impl fmt::Display for PastPresentationTimingFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "ALLOW_PARTIAL_RESULTS"), (0x2, "ALLOW_OUT_OF_ORDER_RESULTS")],
+            f,
+        )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct PresentTimingInfoFlagsEXT(pub(crate) u32);
+impl PresentTimingInfoFlagsEXT {
+    pub const PRESENT_AT_RELATIVE_TIME: Self = Self(0x1);
+    pub const PRESENT_AT_NEAREST_REFRESH_CYCLE: Self = Self(0x2);
+}
+impl_bitmask!(PresentTimingInfoFlagsEXT);
+impl fmt::Display for PresentTimingInfoFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "PRESENT_AT_RELATIVE_TIME"),
+                (0x2, "PRESENT_AT_NEAREST_REFRESH_CYCLE"),
+            ],
+            f,
+        )
     }
 }
 
@@ -6681,6 +6747,7 @@ impl Result {
     pub const ERROR_FRAGMENTATION_EXT: Self = Self::ERROR_FRAGMENTATION;
     pub const ERROR_NOT_PERMITTED_EXT: Self = Self::ERROR_NOT_PERMITTED;
     pub const ERROR_NOT_PERMITTED_KHR: Self = Self::ERROR_NOT_PERMITTED;
+    pub const ERROR_PRESENT_TIMING_QUEUE_FULL_EXT: Self = Self(-1000208000);
     pub const ERROR_INVALID_DEVICE_ADDRESS_EXT: Self = Self::ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS;
     pub const ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT: Self = Self(-1000255000);
     pub const ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR: Self = Self::ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS;
@@ -6732,6 +6799,7 @@ impl fmt::Display for Result {
             -1000003001 => Some(&"ERROR_INCOMPATIBLE_DISPLAY_KHR"),
             -1000012000 => Some(&"ERROR_INVALID_SHADER_NV"),
             -1000158000 => Some(&"ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT"),
+            -1000208000 => Some(&"ERROR_PRESENT_TIMING_QUEUE_FULL_EXT"),
             -1000255000 => Some(&"ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT"),
             1000268000 => Some(&"THREAD_IDLE_KHR"),
             1000268001 => Some(&"THREAD_DONE_KHR"),
@@ -7408,6 +7476,16 @@ impl StructureType {
     pub const TIMELINE_SEMAPHORE_SUBMIT_INFO_KHR: Self = Self::TIMELINE_SEMAPHORE_SUBMIT_INFO;
     pub const SEMAPHORE_WAIT_INFO_KHR: Self = Self::SEMAPHORE_WAIT_INFO;
     pub const SEMAPHORE_SIGNAL_INFO_KHR: Self = Self::SEMAPHORE_SIGNAL_INFO;
+    pub const PHYSICAL_DEVICE_PRESENT_TIMING_FEATURES_EXT: Self = Self(1000208000);
+    pub const SWAPCHAIN_TIMING_PROPERTIES_EXT: Self = Self(1000208001);
+    pub const SWAPCHAIN_TIME_DOMAIN_PROPERTIES_EXT: Self = Self(1000208002);
+    pub const PRESENT_TIMINGS_INFO_EXT: Self = Self(1000208003);
+    pub const PRESENT_TIMING_INFO_EXT: Self = Self(1000208004);
+    pub const PAST_PRESENTATION_TIMING_INFO_EXT: Self = Self(1000208005);
+    pub const PAST_PRESENTATION_TIMING_PROPERTIES_EXT: Self = Self(1000208006);
+    pub const PAST_PRESENTATION_TIMING_EXT: Self = Self(1000208007);
+    pub const PRESENT_TIMING_SURFACE_CAPABILITIES_EXT: Self = Self(1000208008);
+    pub const SWAPCHAIN_CALIBRATED_TIMESTAMP_INFO_EXT: Self = Self(1000208009);
     pub const PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL: Self = Self(1000209000);
     pub const QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL: Self = Self(1000210000);
     pub const QUERY_POOL_CREATE_INFO_INTEL: Self = Self::QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL;
@@ -8589,6 +8667,16 @@ impl fmt::Display for StructureType {
             1000206001 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV"),
             1000314008 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV"),
             1000314009 => Some(&"CHECKPOINT_DATA_2_NV"),
+            1000208000 => Some(&"PHYSICAL_DEVICE_PRESENT_TIMING_FEATURES_EXT"),
+            1000208001 => Some(&"SWAPCHAIN_TIMING_PROPERTIES_EXT"),
+            1000208002 => Some(&"SWAPCHAIN_TIME_DOMAIN_PROPERTIES_EXT"),
+            1000208003 => Some(&"PRESENT_TIMINGS_INFO_EXT"),
+            1000208004 => Some(&"PRESENT_TIMING_INFO_EXT"),
+            1000208005 => Some(&"PAST_PRESENTATION_TIMING_INFO_EXT"),
+            1000208006 => Some(&"PAST_PRESENTATION_TIMING_PROPERTIES_EXT"),
+            1000208007 => Some(&"PAST_PRESENTATION_TIMING_EXT"),
+            1000208008 => Some(&"PRESENT_TIMING_SURFACE_CAPABILITIES_EXT"),
+            1000208009 => Some(&"SWAPCHAIN_CALIBRATED_TIMESTAMP_INFO_EXT"),
             1000209000 => Some(&"PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL"),
             1000210000 => Some(&"QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL"),
             1000210001 => Some(&"INITIALIZE_PERFORMANCE_API_INFO_INTEL"),
@@ -9807,6 +9895,8 @@ impl TimeDomainKHR {
     pub const CLOCK_MONOTONIC_EXT: Self = Self::CLOCK_MONOTONIC;
     pub const CLOCK_MONOTONIC_RAW_EXT: Self = Self::CLOCK_MONOTONIC_RAW;
     pub const QUERY_PERFORMANCE_COUNTER_EXT: Self = Self::QUERY_PERFORMANCE_COUNTER;
+    pub const PRESENT_STAGE_LOCAL_EXT: Self = Self(1000208000);
+    pub const SWAPCHAIN_LOCAL_EXT: Self = Self(1000208001);
 }
 impl fmt::Display for TimeDomainKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9815,6 +9905,8 @@ impl fmt::Display for TimeDomainKHR {
             1 => Some(&"CLOCK_MONOTONIC"),
             2 => Some(&"CLOCK_MONOTONIC_RAW"),
             3 => Some(&"QUERY_PERFORMANCE_COUNTER"),
+            1000208000 => Some(&"PRESENT_STAGE_LOCAL_EXT"),
+            1000208001 => Some(&"SWAPCHAIN_LOCAL_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -21565,6 +21657,377 @@ impl fmt::Debug for PhysicalDevicePresentWait2FeaturesKHR {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("present_wait2", &self.present_wait2)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePresentTimingFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_timing: Bool32,
+    pub present_at_absolute_time: Bool32,
+    pub present_at_relative_time: Bool32,
+}
+unsafe impl Send for PhysicalDevicePresentTimingFeaturesEXT {}
+unsafe impl Sync for PhysicalDevicePresentTimingFeaturesEXT {}
+impl Default for PhysicalDevicePresentTimingFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRESENT_TIMING_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            present_timing: Default::default(),
+            present_at_absolute_time: Default::default(),
+            present_at_relative_time: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePresentTimingFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePresentTimingFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_timing", &self.present_timing)
+            .field("present_at_absolute_time", &self.present_at_absolute_time)
+            .field("present_at_relative_time", &self.present_at_relative_time)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PresentTimingSurfaceCapabilitiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_timing_supported: Bool32,
+    pub present_at_absolute_time_supported: Bool32,
+    pub present_at_relative_time_supported: Bool32,
+    pub present_stage_queries: PresentStageFlagsEXT,
+}
+unsafe impl Send for PresentTimingSurfaceCapabilitiesEXT {}
+unsafe impl Sync for PresentTimingSurfaceCapabilitiesEXT {}
+impl Default for PresentTimingSurfaceCapabilitiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PRESENT_TIMING_SURFACE_CAPABILITIES_EXT,
+            p_next: ptr::null_mut(),
+            present_timing_supported: Default::default(),
+            present_at_absolute_time_supported: Default::default(),
+            present_at_relative_time_supported: Default::default(),
+            present_stage_queries: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PresentTimingSurfaceCapabilitiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PresentTimingSurfaceCapabilitiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_timing_supported", &self.present_timing_supported)
+            .field(
+                "present_at_absolute_time_supported",
+                &self.present_at_absolute_time_supported,
+            )
+            .field(
+                "present_at_relative_time_supported",
+                &self.present_at_relative_time_supported,
+            )
+            .field("present_stage_queries", &self.present_stage_queries)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SwapchainTimingPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub refresh_duration: u64,
+    pub refresh_interval: u64,
+}
+unsafe impl Send for SwapchainTimingPropertiesEXT {}
+unsafe impl Sync for SwapchainTimingPropertiesEXT {}
+impl Default for SwapchainTimingPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SWAPCHAIN_TIMING_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            refresh_duration: Default::default(),
+            refresh_interval: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainTimingPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainTimingPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("refresh_duration", &self.refresh_duration)
+            .field("refresh_interval", &self.refresh_interval)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SwapchainTimeDomainPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub time_domain_count: u32,
+    pub p_time_domains: *mut TimeDomainKHR,
+    pub p_time_domain_ids: *mut u64,
+}
+unsafe impl Send for SwapchainTimeDomainPropertiesEXT {}
+unsafe impl Sync for SwapchainTimeDomainPropertiesEXT {}
+impl Default for SwapchainTimeDomainPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SWAPCHAIN_TIME_DOMAIN_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            time_domain_count: Default::default(),
+            p_time_domains: ptr::null_mut(),
+            p_time_domain_ids: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainTimeDomainPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainTimeDomainPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("time_domain_count", &self.time_domain_count)
+            .field("p_time_domains", &self.p_time_domains)
+            .field("p_time_domain_ids", &self.p_time_domain_ids)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct PresentStageTimeEXT {
+    pub stage: PresentStageFlagsEXT,
+    pub time: u64,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PastPresentationTimingInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: PastPresentationTimingFlagsEXT,
+    pub swapchain: SwapchainKHR,
+}
+unsafe impl Send for PastPresentationTimingInfoEXT {}
+unsafe impl Sync for PastPresentationTimingInfoEXT {}
+impl Default for PastPresentationTimingInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PAST_PRESENTATION_TIMING_INFO_EXT,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            swapchain: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PastPresentationTimingInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PastPresentationTimingInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("swapchain", &self.swapchain)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PastPresentationTimingPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub timing_properties_counter: u64,
+    pub time_domains_counter: u64,
+    pub presentation_timing_count: u32,
+    pub p_presentation_timings: *mut PastPresentationTimingEXT,
+}
+unsafe impl Send for PastPresentationTimingPropertiesEXT {}
+unsafe impl Sync for PastPresentationTimingPropertiesEXT {}
+impl Default for PastPresentationTimingPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PAST_PRESENTATION_TIMING_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            timing_properties_counter: Default::default(),
+            time_domains_counter: Default::default(),
+            presentation_timing_count: Default::default(),
+            p_presentation_timings: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for PastPresentationTimingPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PastPresentationTimingPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("timing_properties_counter", &self.timing_properties_counter)
+            .field("time_domains_counter", &self.time_domains_counter)
+            .field("presentation_timing_count", &self.presentation_timing_count)
+            .field("p_presentation_timings", &self.p_presentation_timings)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PastPresentationTimingEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_id: u64,
+    pub target_time: u64,
+    pub present_stage_count: u32,
+    pub p_present_stages: *mut PresentStageTimeEXT,
+    pub time_domain: TimeDomainKHR,
+    pub time_domain_id: u64,
+    pub report_complete: Bool32,
+}
+unsafe impl Send for PastPresentationTimingEXT {}
+unsafe impl Sync for PastPresentationTimingEXT {}
+impl Default for PastPresentationTimingEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PAST_PRESENTATION_TIMING_EXT,
+            p_next: ptr::null_mut(),
+            present_id: Default::default(),
+            target_time: Default::default(),
+            present_stage_count: Default::default(),
+            p_present_stages: ptr::null_mut(),
+            time_domain: Default::default(),
+            time_domain_id: Default::default(),
+            report_complete: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PastPresentationTimingEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PastPresentationTimingEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_id", &self.present_id)
+            .field("target_time", &self.target_time)
+            .field("present_stage_count", &self.present_stage_count)
+            .field("p_present_stages", &self.p_present_stages)
+            .field("time_domain", &self.time_domain)
+            .field("time_domain_id", &self.time_domain_id)
+            .field("report_complete", &self.report_complete)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PresentTimingsInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub swapchain_count: u32,
+    pub p_timing_infos: *const PresentTimingInfoEXT,
+}
+unsafe impl Send for PresentTimingsInfoEXT {}
+unsafe impl Sync for PresentTimingsInfoEXT {}
+impl Default for PresentTimingsInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PRESENT_TIMINGS_INFO_EXT,
+            p_next: ptr::null(),
+            swapchain_count: Default::default(),
+            p_timing_infos: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PresentTimingsInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PresentTimingsInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("swapchain_count", &self.swapchain_count)
+            .field("p_timing_infos", &self.p_timing_infos)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PresentTimingInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: PresentTimingInfoFlagsEXT,
+    pub target_time: u64,
+    pub time_domain_id: u64,
+    pub present_stage_queries: PresentStageFlagsEXT,
+    pub target_time_domain_present_stage: PresentStageFlagsEXT,
+}
+unsafe impl Send for PresentTimingInfoEXT {}
+unsafe impl Sync for PresentTimingInfoEXT {}
+impl Default for PresentTimingInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PRESENT_TIMING_INFO_EXT,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            target_time: Default::default(),
+            time_domain_id: Default::default(),
+            present_stage_queries: Default::default(),
+            target_time_domain_present_stage: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PresentTimingInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PresentTimingInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("target_time", &self.target_time)
+            .field("time_domain_id", &self.time_domain_id)
+            .field("present_stage_queries", &self.present_stage_queries)
+            .field(
+                "target_time_domain_present_stage",
+                &self.target_time_domain_present_stage,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SwapchainCalibratedTimestampInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub swapchain: SwapchainKHR,
+    pub present_stage: PresentStageFlagsEXT,
+    pub time_domain_id: u64,
+}
+unsafe impl Send for SwapchainCalibratedTimestampInfoEXT {}
+unsafe impl Sync for SwapchainCalibratedTimestampInfoEXT {}
+impl Default for SwapchainCalibratedTimestampInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SWAPCHAIN_CALIBRATED_TIMESTAMP_INFO_EXT,
+            p_next: ptr::null(),
+            swapchain: Default::default(),
+            present_stage: Default::default(),
+            time_domain_id: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainCalibratedTimestampInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainCalibratedTimestampInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("swapchain", &self.swapchain)
+            .field("present_stage", &self.present_stage)
+            .field("time_domain_id", &self.time_domain_id)
             .finish()
     }
 }
@@ -54923,6 +55386,25 @@ pub type FnCmdBindShadersEXT = unsafe extern "system" fn(
     p_stages: *const ShaderStageFlags,
     p_shaders: *const ShaderEXT,
 );
+pub type FnSetSwapchainPresentTimingQueueSizeEXT =
+    unsafe extern "system" fn(device: Device, swapchain: SwapchainKHR, size: u32) -> Result;
+pub type FnGetSwapchainTimingPropertiesEXT = unsafe extern "system" fn(
+    device: Device,
+    swapchain: SwapchainKHR,
+    p_swapchain_timing_properties: *mut SwapchainTimingPropertiesEXT,
+    p_swapchain_timing_properties_counter: *mut u64,
+) -> Result;
+pub type FnGetSwapchainTimeDomainPropertiesEXT = unsafe extern "system" fn(
+    device: Device,
+    swapchain: SwapchainKHR,
+    p_swapchain_time_domain_properties: *mut SwapchainTimeDomainPropertiesEXT,
+    p_time_domains_counter: *mut u64,
+) -> Result;
+pub type FnGetPastPresentationTimingEXT = unsafe extern "system" fn(
+    device: Device,
+    p_past_presentation_timing_info: *const PastPresentationTimingInfoEXT,
+    p_past_presentation_timing_properties: *mut PastPresentationTimingPropertiesEXT,
+) -> Result;
 pub type FnGetPhysicalDeviceCooperativeMatrixPropertiesKHR = unsafe extern "system" fn(
     physical_device: PhysicalDevice,
     p_property_count: *mut u32,

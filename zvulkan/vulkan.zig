@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.334
+// Generated from vk.xml version 1.4.335
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -1319,6 +1319,7 @@ pub const SwapchainCreateFlagBitsKHR = enum(u5) {
     split_instance_bind_regions = 0,
     protected = 1,
     mutable_format = 2,
+    present_timing_ext = 9,
     present_id_2 = 6,
     present_wait_2 = 7,
     deferred_memory_allocation = 3,
@@ -1825,6 +1826,26 @@ pub const SurfaceCreateFlagBitsOHOS = enum(u5) {
     _,
 };
 pub const SurfaceCreateFlagsOHOS = BitField(SurfaceCreateFlagBitsOHOS);
+pub const PresentStageFlagBitsEXT = enum(u5) {
+    queue_operations_end = 0,
+    request_dequeued = 1,
+    image_first_pixel_out = 2,
+    image_first_pixel_visible = 3,
+    _,
+};
+pub const PresentStageFlagsEXT = BitField(PresentStageFlagBitsEXT);
+pub const PastPresentationTimingFlagBitsEXT = enum(u5) {
+    allow_partial_results = 0,
+    allow_out_of_order_results = 1,
+    _,
+};
+pub const PastPresentationTimingFlagsEXT = BitField(PastPresentationTimingFlagBitsEXT);
+pub const PresentTimingInfoFlagBitsEXT = enum(u5) {
+    present_at_relative_time = 0,
+    present_at_nearest_refresh_cycle = 1,
+    _,
+};
+pub const PresentTimingInfoFlagsEXT = BitField(PresentTimingInfoFlagBitsEXT);
 pub const SwapchainImageUsageFlagBitsOHOS = enum(u5) {
     shared = 0,
     _,
@@ -2593,6 +2614,7 @@ pub const Result = enum(i32) {
     error_incompatible_display_khr = -1000003001,
     error_invalid_shader_nv = -1000012000,
     error_invalid_drm_format_modifier_plane_layout_ext = -1000158000,
+    error_present_timing_queue_full_ext = -1000208000,
     error_full_screen_exclusive_mode_lost_ext = -1000255000,
     thread_idle_khr = 1000268000,
     thread_done_khr = 1000268001,
@@ -3083,6 +3105,16 @@ pub const StructureType = enum(i32) {
     queue_family_checkpoint_properties_nv = 1000206001,
     queue_family_checkpoint_properties_2_nv = 1000314008,
     checkpoint_data_2_nv = 1000314009,
+    physical_device_present_timing_features_ext = 1000208000,
+    swapchain_timing_properties_ext = 1000208001,
+    swapchain_time_domain_properties_ext = 1000208002,
+    present_timings_info_ext = 1000208003,
+    present_timing_info_ext = 1000208004,
+    past_presentation_timing_info_ext = 1000208005,
+    past_presentation_timing_properties_ext = 1000208006,
+    past_presentation_timing_ext = 1000208007,
+    present_timing_surface_capabilities_ext = 1000208008,
+    swapchain_calibrated_timestamp_info_ext = 1000208009,
     physical_device_shader_integer_functions_2_features_intel = 1000209000,
     query_pool_performance_query_create_info_intel = 1000210000,
     initialize_performance_api_info_intel = 1000210001,
@@ -3825,6 +3857,8 @@ pub const TimeDomainKHR = enum(i32) {
     clock_monotonic = 1,
     clock_monotonic_raw = 2,
     query_performance_counter = 3,
+    present_stage_local_ext = 1000208000,
+    swapchain_local_ext = 1000208001,
     _,
 };
 pub const TimeDomainEXT = TimeDomainKHR;
@@ -4699,6 +4733,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDevicePresentId2FeaturesKHR,
             *PhysicalDevicePresentWaitFeaturesKHR,
             *PhysicalDevicePresentWait2FeaturesKHR,
+            *PhysicalDevicePresentTimingFeaturesEXT,
             *PhysicalDevice16BitStorageFeatures,
             *PhysicalDeviceShaderSubgroupExtendedTypesFeatures,
             *PhysicalDeviceSamplerYcbcrConversionFeatures,
@@ -6683,6 +6718,7 @@ pub const PresentInfoKHR = extern struct {
             *DeviceGroupPresentInfoKHR,
             *PresentIdKHR,
             *PresentId2KHR,
+            *PresentTimingsInfoEXT,
             *PresentTimesInfoGOOGLE,
             *FrameBoundaryEXT,
             *SwapchainPresentFenceInfoKHR,
@@ -7103,6 +7139,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDevicePresentId2FeaturesKHR,
             *PhysicalDevicePresentWaitFeaturesKHR,
             *PhysicalDevicePresentWait2FeaturesKHR,
+            *PhysicalDevicePresentTimingFeaturesEXT,
             *PhysicalDevice16BitStorageFeatures,
             *PhysicalDeviceShaderSubgroupExtendedTypesFeatures,
             *PhysicalDeviceSamplerYcbcrConversionFeatures,
@@ -8213,6 +8250,85 @@ pub const PhysicalDevicePresentWait2FeaturesKHR = extern struct {
     p_next: ?*anyopaque = null,
     present_wait2: Bool32 = .false,
 };
+pub const PhysicalDevicePresentTimingFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_present_timing_features_ext,
+    p_next: ?*anyopaque = null,
+    present_timing: Bool32 = .false,
+    present_at_absolute_time: Bool32 = .false,
+    present_at_relative_time: Bool32 = .false,
+};
+pub const PresentTimingSurfaceCapabilitiesEXT = extern struct {
+    s_type: StructureType = .present_timing_surface_capabilities_ext,
+    p_next: ?*anyopaque = null,
+    present_timing_supported: Bool32 = .false,
+    present_at_absolute_time_supported: Bool32 = .false,
+    present_at_relative_time_supported: Bool32 = .false,
+    present_stage_queries: PresentStageFlagsEXT = .none,
+};
+pub const SwapchainTimingPropertiesEXT = extern struct {
+    s_type: StructureType = .swapchain_timing_properties_ext,
+    p_next: ?*anyopaque = null,
+    refresh_duration: u64 = 0,
+    refresh_interval: u64 = 0,
+};
+pub const SwapchainTimeDomainPropertiesEXT = extern struct {
+    s_type: StructureType = .swapchain_time_domain_properties_ext,
+    p_next: ?*anyopaque = null,
+    time_domain_count: u32 = 0,
+    p_time_domains: ?[*]TimeDomainKHR = null,
+    p_time_domain_ids: ?[*]u64 = null,
+};
+pub const PresentStageTimeEXT = extern struct {
+    stage: PresentStageFlagsEXT = .none,
+    time: u64 = 0,
+};
+pub const PastPresentationTimingInfoEXT = extern struct {
+    s_type: StructureType = .past_presentation_timing_info_ext,
+    p_next: ?*const anyopaque = null,
+    flags: PastPresentationTimingFlagsEXT = .none,
+    swapchain: SwapchainKHR = .null_handle,
+};
+pub const PastPresentationTimingPropertiesEXT = extern struct {
+    s_type: StructureType = .past_presentation_timing_properties_ext,
+    p_next: ?*anyopaque = null,
+    timing_properties_counter: u64 = 0,
+    time_domains_counter: u64 = 0,
+    presentation_timing_count: u32 = 0,
+    p_presentation_timings: ?[*]PastPresentationTimingEXT = null,
+};
+pub const PastPresentationTimingEXT = extern struct {
+    s_type: StructureType = .past_presentation_timing_ext,
+    p_next: ?*anyopaque = null,
+    present_id: u64 = 0,
+    target_time: u64 = 0,
+    present_stage_count: u32 = 0,
+    p_present_stages: ?[*]PresentStageTimeEXT = null,
+    time_domain: TimeDomainKHR = @enumFromInt(0),
+    time_domain_id: u64 = 0,
+    report_complete: Bool32 = .false,
+};
+pub const PresentTimingsInfoEXT = extern struct {
+    s_type: StructureType = .present_timings_info_ext,
+    p_next: ?*const anyopaque = null,
+    swapchain_count: u32 = 0,
+    p_timing_infos: ?[*]const PresentTimingInfoEXT = null,
+};
+pub const PresentTimingInfoEXT = extern struct {
+    s_type: StructureType = .present_timing_info_ext,
+    p_next: ?*const anyopaque = null,
+    flags: PresentTimingInfoFlagsEXT = .none,
+    target_time: u64 = 0,
+    time_domain_id: u64 = 0,
+    present_stage_queries: PresentStageFlagsEXT = .none,
+    target_time_domain_present_stage: PresentStageFlagsEXT = .none,
+};
+pub const SwapchainCalibratedTimestampInfoEXT = extern struct {
+    s_type: StructureType = .swapchain_calibrated_timestamp_info_ext,
+    p_next: ?*const anyopaque = null,
+    swapchain: SwapchainKHR = .null_handle,
+    present_stage: PresentStageFlagsEXT = .none,
+    time_domain_id: u64 = 0,
+};
 pub const HdrMetadataEXT = extern struct {
     s_type: StructureType = .hdr_metadata_ext,
     p_next: ?*const anyopaque = null,
@@ -8370,7 +8486,8 @@ pub const SurfaceCapabilities2KHR = extern struct {
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
-            inline *DisplayNativeHdrSurfaceCapabilitiesAMD,
+            inline *PresentTimingSurfaceCapabilitiesEXT,
+            *DisplayNativeHdrSurfaceCapabilitiesAMD,
             *SharedPresentSurfaceCapabilitiesKHR,
             *SurfaceProtectedCapabilitiesKHR,
             *SurfaceCapabilitiesFullScreenExclusiveEXT,
@@ -9170,6 +9287,17 @@ pub const CalibratedTimestampInfoKHR = extern struct {
     s_type: StructureType = .calibrated_timestamp_info_khr,
     p_next: ?*const anyopaque = null,
     time_domain: TimeDomainKHR = @enumFromInt(0),
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *SwapchainCalibratedTimestampInfoEXT,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const CalibratedTimestampInfoEXT = CalibratedTimestampInfoKHR;
 pub const PhysicalDeviceShaderCorePropertiesAMD = extern struct {
@@ -15951,6 +16079,10 @@ pub const FpCreateShadersEXT = *const fn (Device, u32, [*c]const ShaderCreateInf
 pub const FpDestroyShaderEXT = *const fn (Device, ShaderEXT, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpGetShaderBinaryDataEXT = *const fn (Device, ShaderEXT, [*c]usize, ?*anyopaque) callconv(.c) Result;
 pub const FpCmdBindShadersEXT = *const fn (CommandBuffer, u32, [*c]const ShaderStageFlags, [*c]const ShaderEXT) callconv(.c) void;
+pub const FpSetSwapchainPresentTimingQueueSizeEXT = *const fn (Device, SwapchainKHR, u32) callconv(.c) Result;
+pub const FpGetSwapchainTimingPropertiesEXT = *const fn (Device, SwapchainKHR, [*c]SwapchainTimingPropertiesEXT, [*c]u64) callconv(.c) Result;
+pub const FpGetSwapchainTimeDomainPropertiesEXT = *const fn (Device, SwapchainKHR, [*c]SwapchainTimeDomainPropertiesEXT, [*c]u64) callconv(.c) Result;
+pub const FpGetPastPresentationTimingEXT = *const fn (Device, [*c]const PastPresentationTimingInfoEXT, [*c]PastPresentationTimingPropertiesEXT) callconv(.c) Result;
 pub const FpGetPhysicalDeviceCooperativeMatrixPropertiesKHR = *const fn (PhysicalDevice, [*c]u32, [*c]CooperativeMatrixPropertiesKHR) callconv(.c) Result;
 pub const FpGetExecutionGraphPipelineScratchSizeAMDX = *const fn (Device, Pipeline, [*c]ExecutionGraphPipelineScratchSizeAMDX) callconv(.c) Result;
 pub const FpGetExecutionGraphPipelineNodeIndexAMDX = *const fn (Device, Pipeline, [*c]const PipelineShaderStageNodeCreateInfoAMDX, [*c]u32) callconv(.c) Result;
@@ -16178,6 +16310,7 @@ const ExtensionNames = struct {
     const nv_scissor_exclusive = "VK_NV_scissor_exclusive";
     const nv_device_diagnostic_checkpoints = "VK_NV_device_diagnostic_checkpoints";
     const khr_timeline_semaphore = "VK_KHR_timeline_semaphore";
+    const ext_present_timing = "VK_EXT_present_timing";
     const intel_shader_integer_functions2 = "VK_INTEL_shader_integer_functions2";
     const intel_performance_query = "VK_INTEL_performance_query";
     const khr_vulkan_memory_model = "VK_KHR_vulkan_memory_model";
@@ -17551,6 +17684,16 @@ pub const InstanceExtensions = packed struct {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+
+    pub fn supports_ext_present_timing(self: InstanceExtensions) bool {
+        return self.supports_khr_swapchain() and self.supports_khr_present_id2() and self.supports_khr_get_surface_capabilities2() and self.supports_khr_calibrated_timestamps();
+    }
+    pub fn enable_ext_present_timing(self: *InstanceExtensions) void {
+        self.enable_khr_swapchain();
+        self.enable_khr_present_id2();
+        self.enable_khr_get_surface_capabilities2();
+        self.enable_khr_calibrated_timestamps();
     }
 
     pub fn supports_intel_shader_integer_functions2(self: InstanceExtensions) bool {
@@ -19703,6 +19846,7 @@ pub const DeviceExtensions = packed struct {
     nv_scissor_exclusive: bool = false,
     nv_device_diagnostic_checkpoints: bool = false,
     khr_timeline_semaphore: bool = false,
+    ext_present_timing: bool = false,
     intel_shader_integer_functions2: bool = false,
     intel_performance_query: bool = false,
     khr_vulkan_memory_model: bool = false,
@@ -20221,6 +20365,8 @@ pub const DeviceExtensions = packed struct {
             self.nv_device_diagnostic_checkpoints = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_timeline_semaphore) == .eq) {
             self.khr_timeline_semaphore = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_present_timing) == .eq) {
+            self.ext_present_timing = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.intel_shader_integer_functions2) == .eq) {
             self.intel_shader_integer_functions2 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.intel_performance_query) == .eq) {
@@ -20852,6 +20998,7 @@ pub const DeviceExtensions = packed struct {
         if (self.nv_scissor_exclusive) try names.append(allocator, ExtensionNames.nv_scissor_exclusive);
         if (self.nv_device_diagnostic_checkpoints) try names.append(allocator, ExtensionNames.nv_device_diagnostic_checkpoints);
         if (self.khr_timeline_semaphore) try names.append(allocator, ExtensionNames.khr_timeline_semaphore);
+        if (self.ext_present_timing) try names.append(allocator, ExtensionNames.ext_present_timing);
         if (self.intel_shader_integer_functions2) try names.append(allocator, ExtensionNames.intel_shader_integer_functions2);
         if (self.intel_performance_query) try names.append(allocator, ExtensionNames.intel_performance_query);
         if (self.khr_vulkan_memory_model) try names.append(allocator, ExtensionNames.khr_vulkan_memory_model);
@@ -22263,6 +22410,16 @@ pub const DeviceExtensions = packed struct {
         if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
             self.khr_timeline_semaphore = true;
         }
+    }
+
+    pub fn supports_ext_present_timing(self: DeviceExtensions) bool {
+        return self.ext_present_timing and self.supports_khr_swapchain() and self.supports_khr_present_id2() and self.supports_khr_calibrated_timestamps();
+    }
+    pub fn enable_ext_present_timing(self: *DeviceExtensions) void {
+        self.ext_present_timing = true;
+        self.enable_khr_swapchain();
+        self.enable_khr_present_id2();
+        self.enable_khr_calibrated_timestamps();
     }
 
     pub fn supports_intel_shader_integer_functions2(self: DeviceExtensions) bool {
@@ -26974,6 +27131,10 @@ pub const DeviceCommands = struct {
     fp_destroy_shader_ext: ?FpDestroyShaderEXT,
     fp_get_shader_binary_data_ext: ?FpGetShaderBinaryDataEXT,
     fp_cmd_bind_shaders_ext: ?FpCmdBindShadersEXT,
+    fp_set_swapchain_present_timing_queue_size_ext: ?FpSetSwapchainPresentTimingQueueSizeEXT,
+    fp_get_swapchain_timing_properties_ext: ?FpGetSwapchainTimingPropertiesEXT,
+    fp_get_swapchain_time_domain_properties_ext: ?FpGetSwapchainTimeDomainPropertiesEXT,
+    fp_get_past_presentation_timing_ext: ?FpGetPastPresentationTimingEXT,
     fp_get_physical_device_cooperative_matrix_properties_khr: ?FpGetPhysicalDeviceCooperativeMatrixPropertiesKHR,
     fp_get_execution_graph_pipeline_scratch_size_amdx: ?FpGetExecutionGraphPipelineScratchSizeAMDX,
     fp_get_execution_graph_pipeline_node_index_amdx: ?FpGetExecutionGraphPipelineNodeIndexAMDX,
@@ -27547,6 +27708,10 @@ pub const DeviceCommands = struct {
             .fp_destroy_shader_ext = if (extensions.ext_shader_object) @ptrCast(try instance.get_device_proc_addr(device, "vkDestroyShaderEXT")) else null,
             .fp_get_shader_binary_data_ext = if (extensions.ext_shader_object) @ptrCast(try instance.get_device_proc_addr(device, "vkGetShaderBinaryDataEXT")) else null,
             .fp_cmd_bind_shaders_ext = if (extensions.ext_shader_object) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBindShadersEXT")) else null,
+            .fp_set_swapchain_present_timing_queue_size_ext = if (extensions.ext_present_timing) @ptrCast(try instance.get_device_proc_addr(device, "vkSetSwapchainPresentTimingQueueSizeEXT")) else null,
+            .fp_get_swapchain_timing_properties_ext = if (extensions.ext_present_timing) @ptrCast(try instance.get_device_proc_addr(device, "vkGetSwapchainTimingPropertiesEXT")) else null,
+            .fp_get_swapchain_time_domain_properties_ext = if (extensions.ext_present_timing) @ptrCast(try instance.get_device_proc_addr(device, "vkGetSwapchainTimeDomainPropertiesEXT")) else null,
+            .fp_get_past_presentation_timing_ext = if (extensions.ext_present_timing) @ptrCast(try instance.get_device_proc_addr(device, "vkGetPastPresentationTimingEXT")) else null,
             .fp_get_physical_device_cooperative_matrix_properties_khr = if (extensions.khr_cooperative_matrix) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR")) else null,
             .fp_get_execution_graph_pipeline_scratch_size_amdx = if (extensions.amdx_shader_enqueue) @ptrCast(try instance.get_device_proc_addr(device, "vkGetExecutionGraphPipelineScratchSizeAMDX")) else null,
             .fp_get_execution_graph_pipeline_node_index_amdx = if (extensions.amdx_shader_enqueue) @ptrCast(try instance.get_device_proc_addr(device, "vkGetExecutionGraphPipelineNodeIndexAMDX")) else null,
@@ -29762,6 +29927,7 @@ pub const DeviceCommands = struct {
         FullScreenExclusiveModeLostExt,
         Unknown,
         ValidationFailed,
+        PresentTimingQueueFullExt,
         Unexpected,
     };
     pub fn queue_present_khr(
@@ -29780,6 +29946,7 @@ pub const DeviceCommands = struct {
             .error_full_screen_exclusive_mode_lost_ext => return error.FullScreenExclusiveModeLostExt,
             .error_unknown => return error.Unknown,
             .error_validation_failed => return error.ValidationFailed,
+            .error_present_timing_queue_full_ext => return error.PresentTimingQueueFullExt,
             else => return error.Unexpected,
         }
     }
@@ -34906,6 +35073,102 @@ pub const DeviceCommands = struct {
             assert(stage_count == s.len);
         }
         self.fp_cmd_bind_shaders_ext.?(command_buffer, stage_count, p_stages.ptr, if (p_shaders) |slice| slice.ptr orelse null);
+    }
+    pub const SetSwapchainPresentTimingQueueSizeEXTError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn set_swapchain_present_timing_queue_size_ext(
+        self: DeviceCommands,
+        swapchain: SwapchainKHR,
+        size: u32,
+    ) SetSwapchainPresentTimingQueueSizeEXTError!GetFenceStatusResult {
+        switch (self.fp_set_swapchain_present_timing_queue_size_ext.?(self.handle, swapchain, size)) {
+            .success => return .success,
+            .not_ready => return .not_ready,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const GetSwapchainTimingPropertiesEXTError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_swapchain_timing_properties_ext(
+        self: DeviceCommands,
+        swapchain: SwapchainKHR,
+        p_swapchain_timing_properties: *SwapchainTimingPropertiesEXT,
+        p_swapchain_timing_properties_counter: ?*u64,
+    ) GetSwapchainTimingPropertiesEXTError!GetFenceStatusResult {
+        switch (self.fp_get_swapchain_timing_properties_ext.?(self.handle, swapchain, p_swapchain_timing_properties, p_swapchain_timing_properties_counter)) {
+            .success => return .success,
+            .not_ready => return .not_ready,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const GetSwapchainTimeDomainPropertiesEXTError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_swapchain_time_domain_properties_ext(
+        self: DeviceCommands,
+        swapchain: SwapchainKHR,
+        p_swapchain_time_domain_properties: *SwapchainTimeDomainPropertiesEXT,
+        p_time_domains_counter: ?*u64,
+    ) GetSwapchainTimeDomainPropertiesEXTError!EnumerateResult {
+        switch (self.fp_get_swapchain_time_domain_properties_ext.?(self.handle, swapchain, p_swapchain_time_domain_properties, p_time_domains_counter)) {
+            .success => return .success,
+            .incomplete => return .incomplete,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const GetPastPresentationTimingEXTError = error{
+        DeviceLost,
+        OutOfDateKhr,
+        SurfaceLostKhr,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_past_presentation_timing_ext(
+        self: DeviceCommands,
+        p_past_presentation_timing_info: *const PastPresentationTimingInfoEXT,
+        p_past_presentation_timing_properties: *PastPresentationTimingPropertiesEXT,
+    ) GetPastPresentationTimingEXTError!EnumerateResult {
+        switch (self.fp_get_past_presentation_timing_ext.?(self.handle, p_past_presentation_timing_info, p_past_presentation_timing_properties)) {
+            .success => return .success,
+            .incomplete => return .incomplete,
+            .error_device_lost => return error.DeviceLost,
+            .error_out_of_date_khr => return error.OutOfDateKhr,
+            .error_surface_lost_khr => return error.SurfaceLostKhr,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
     }
     pub const GetPhysicalDeviceCooperativeMatrixPropertiesKHRError = error{
         OutOfHostMemory,
