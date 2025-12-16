@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.335
+// Generated from vk.xml version 1.4.336
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -199,6 +199,9 @@ pub const compressed_triangle_format_dgf1_byte_alignment_amdx = 128;
 pub const compressed_triangle_format_dgf1_byte_stride_amdx = 128;
 pub const max_physical_device_data_graph_operation_set_name_size_arm = 128;
 pub const data_graph_model_toolchain_version_length_qcom = 3;
+pub const compute_occupancy_priority_low_nv: f32 = 0.25;
+pub const compute_occupancy_priority_normal_nv: f32 = 0.5;
+pub const compute_occupancy_priority_high_nv: f32 = 0.75;
 pub const wl_display = opaque {};
 pub const Display = opaque {};
 pub const VisualID = c_ulong;
@@ -3655,6 +3658,8 @@ pub const StructureType = enum(i32) {
     resolve_image_mode_info_khr = 1000630004,
     physical_device_pipeline_cache_incremental_mode_features_sec = 1000637000,
     physical_device_shader_uniform_buffer_unsized_array_features_ext = 1000642000,
+    compute_occupancy_priority_parameters_nv = 1000645000,
+    physical_device_compute_occupancy_priority_features_nv = 1000645001,
     _,
 };
 pub const SystemAllocationScope = enum(i32) {
@@ -4963,6 +4968,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderUntypedPointersFeaturesKHR,
             *PhysicalDeviceShader64BitIndexingFeaturesEXT,
             *PhysicalDevicePerformanceCountersByRegionFeaturesARM,
+            *PhysicalDeviceComputeOccupancyPriorityFeaturesNV,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7363,6 +7369,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderUntypedPointersFeaturesKHR,
             *PhysicalDeviceShader64BitIndexingFeaturesEXT,
             *PhysicalDevicePerformanceCountersByRegionFeaturesARM,
+            *PhysicalDeviceComputeOccupancyPriorityFeaturesNV,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -15495,6 +15502,17 @@ pub const RenderPassPerformanceCountersByRegionBeginInfoARM = extern struct {
     counter_index_count: u32 = 0,
     p_counter_indices: ?*u32 = null,
 };
+pub const ComputeOccupancyPriorityParametersNV = extern struct {
+    s_type: StructureType = .compute_occupancy_priority_parameters_nv,
+    p_next: ?*const anyopaque = null,
+    occupancy_priority: f32 = 0,
+    occupancy_throttling: f32 = 0,
+};
+pub const PhysicalDeviceComputeOccupancyPriorityFeaturesNV = extern struct {
+    s_type: StructureType = .physical_device_compute_occupancy_priority_features_nv,
+    p_next: ?*anyopaque = null,
+    compute_occupancy_priority: Bool32 = .false,
+};
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpEnumeratePhysicalDevices = *const fn (Instance, [*c]u32, [*c]PhysicalDevice) callconv(.c) Result;
@@ -16145,6 +16163,7 @@ pub const FpGetSwapchainGrallocUsageOHOS = *const fn (Device, Format, ImageUsage
 pub const FpAcquireImageOHOS = *const fn (Device, Image, i32, Semaphore, Fence) callconv(.c) Result;
 pub const FpQueueSignalReleaseImageOHOS = *const fn (Queue, u32, [*c]const Semaphore, Image, [*c]i32) callconv(.c) Result;
 pub const FpEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = *const fn (PhysicalDevice, u32, [*c]u32, [*c]PerformanceCounterARM, [*c]PerformanceCounterDescriptionARM) callconv(.c) Result;
+pub const FpCmdSetComputeOccupancyPriorityNV = *const fn (CommandBuffer, [*c]const ComputeOccupancyPriorityParametersNV) callconv(.c) void;
 
 const ExtensionNames = struct {
     const khr_surface = "VK_KHR_surface";
@@ -16565,6 +16584,7 @@ const ExtensionNames = struct {
     const khr_maintenance10 = "VK_KHR_maintenance10";
     const sec_pipeline_cache_incremental_mode = "VK_SEC_pipeline_cache_incremental_mode";
     const ext_shader_uniform_buffer_unsized_array = "VK_EXT_shader_uniform_buffer_unsized_array";
+    const nv_compute_occupancy_priority = "VK_NV_compute_occupancy_priority";
 };
 
 pub const InstanceExtensions = packed struct {
@@ -19704,6 +19724,15 @@ pub const InstanceExtensions = packed struct {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+
+    pub fn supports_nv_compute_occupancy_priority(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_nv_compute_occupancy_priority(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
 };
 
 pub const DeviceExtensions = packed struct {
@@ -20086,6 +20115,7 @@ pub const DeviceExtensions = packed struct {
     khr_maintenance10: bool = false,
     sec_pipeline_cache_incremental_mode: bool = false,
     ext_shader_uniform_buffer_unsized_array: bool = false,
+    nv_compute_occupancy_priority: bool = false,
 
     pub fn enable_by_name(self: *DeviceExtensions, maybe_name: ?[*:0]const u8) void {
         const name = maybe_name orelse return;
@@ -20845,6 +20875,8 @@ pub const DeviceExtensions = packed struct {
             self.sec_pipeline_cache_incremental_mode = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_uniform_buffer_unsized_array) == .eq) {
             self.ext_shader_uniform_buffer_unsized_array = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_compute_occupancy_priority) == .eq) {
+            self.nv_compute_occupancy_priority = true;
         }
     }
 
@@ -21238,6 +21270,7 @@ pub const DeviceExtensions = packed struct {
         if (self.khr_maintenance10) try names.append(allocator, ExtensionNames.khr_maintenance10);
         if (self.sec_pipeline_cache_incremental_mode) try names.append(allocator, ExtensionNames.sec_pipeline_cache_incremental_mode);
         if (self.ext_shader_uniform_buffer_unsized_array) try names.append(allocator, ExtensionNames.ext_shader_uniform_buffer_unsized_array);
+        if (self.nv_compute_occupancy_priority) try names.append(allocator, ExtensionNames.nv_compute_occupancy_priority);
         return names.toOwnedSlice(allocator);
     }
 
@@ -24434,6 +24467,13 @@ pub const DeviceExtensions = packed struct {
     pub fn enable_ext_shader_uniform_buffer_unsized_array(self: *DeviceExtensions) void {
         self.ext_shader_uniform_buffer_unsized_array = true;
     }
+
+    pub fn supports_nv_compute_occupancy_priority(self: DeviceExtensions) bool {
+        return self.nv_compute_occupancy_priority;
+    }
+    pub fn enable_nv_compute_occupancy_priority(self: *DeviceExtensions) void {
+        self.nv_compute_occupancy_priority = true;
+    }
 };
 
 pub const GlobalCommands = struct {
@@ -27197,6 +27237,7 @@ pub const DeviceCommands = struct {
     fp_acquire_image_ohos: ?FpAcquireImageOHOS,
     fp_queue_signal_release_image_ohos: ?FpQueueSignalReleaseImageOHOS,
     fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm: ?FpEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM,
+    fp_cmd_set_compute_occupancy_priority_nv: ?FpCmdSetComputeOccupancyPriorityNV,
 
     pub fn init(globals: GlobalCommands, instance: InstanceCommands, device: Device, create_info: *const DeviceCreateInfo) MissingFunctionError!DeviceCommands {
         var extensions: DeviceExtensions = .{
@@ -27774,6 +27815,7 @@ pub const DeviceCommands = struct {
             .fp_acquire_image_ohos = if (extensions.ohos_native_buffer) @ptrCast(try instance.get_device_proc_addr(device, "vkAcquireImageOHOS")) else null,
             .fp_queue_signal_release_image_ohos = if (extensions.ohos_native_buffer) @ptrCast(try instance.get_device_proc_addr(device, "vkQueueSignalReleaseImageOHOS")) else null,
             .fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm = if (extensions.arm_performance_counters_by_region) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM")) else null,
+            .fp_cmd_set_compute_occupancy_priority_nv = if (extensions.nv_compute_occupancy_priority) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetComputeOccupancyPriorityNV")) else null,
         };
     }
     pub fn destroy_device(
@@ -36127,6 +36169,13 @@ pub const DeviceCommands = struct {
             .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
+    }
+    pub fn cmd_set_compute_occupancy_priority_nv(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_parameters: *const ComputeOccupancyPriorityParametersNV,
+    ) void {
+        self.fp_cmd_set_compute_occupancy_priority_nv.?(command_buffer, p_parameters);
     }
 };
 

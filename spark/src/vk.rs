@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.335
+//! Generated from vk.xml version 1.4.336
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -179,6 +179,9 @@ pub const COMPRESSED_TRIANGLE_FORMAT_DGF1_BYTE_ALIGNMENT_AMDX: usize = 128;
 pub const COMPRESSED_TRIANGLE_FORMAT_DGF1_BYTE_STRIDE_AMDX: usize = 128;
 pub const MAX_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_SET_NAME_SIZE_ARM: usize = 128;
 pub const DATA_GRAPH_MODEL_TOOLCHAIN_VERSION_LENGTH_QCOM: usize = 3;
+pub const COMPUTE_OCCUPANCY_PRIORITY_LOW_NV: f32 = 0.25_f32;
+pub const COMPUTE_OCCUPANCY_PRIORITY_NORMAL_NV: f32 = 0.5_f32;
+pub const COMPUTE_OCCUPANCY_PRIORITY_HIGH_NV: f32 = 0.75_f32;
 #[allow(non_camel_case_types)]
 pub type wl_display = Never;
 pub type Display = Never;
@@ -8196,6 +8199,8 @@ impl StructureType {
     pub const RESOLVE_IMAGE_MODE_INFO_KHR: Self = Self(1000630004);
     pub const PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC: Self = Self(1000637000);
     pub const PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT: Self = Self(1000642000);
+    pub const COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV: Self = Self(1000645000);
+    pub const PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV: Self = Self(1000645001);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9217,6 +9222,8 @@ impl fmt::Display for StructureType {
             1000630004 => Some(&"RESOLVE_IMAGE_MODE_INFO_KHR"),
             1000637000 => Some(&"PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC"),
             1000642000 => Some(&"PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT"),
+            1000645000 => Some(&"COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV"),
+            1000645001 => Some(&"PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -52755,6 +52762,65 @@ impl fmt::Debug for RenderPassPerformanceCountersByRegionBeginInfoARM {
             .finish()
     }
 }
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ComputeOccupancyPriorityParametersNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub occupancy_priority: f32,
+    pub occupancy_throttling: f32,
+}
+unsafe impl Send for ComputeOccupancyPriorityParametersNV {}
+unsafe impl Sync for ComputeOccupancyPriorityParametersNV {}
+impl Default for ComputeOccupancyPriorityParametersNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV,
+            p_next: ptr::null(),
+            occupancy_priority: Default::default(),
+            occupancy_throttling: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ComputeOccupancyPriorityParametersNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ComputeOccupancyPriorityParametersNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("occupancy_priority", &self.occupancy_priority)
+            .field("occupancy_throttling", &self.occupancy_throttling)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceComputeOccupancyPriorityFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub compute_occupancy_priority: Bool32,
+}
+unsafe impl Send for PhysicalDeviceComputeOccupancyPriorityFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceComputeOccupancyPriorityFeaturesNV {}
+impl Default for PhysicalDeviceComputeOccupancyPriorityFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            compute_occupancy_priority: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceComputeOccupancyPriorityFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceComputeOccupancyPriorityFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("compute_occupancy_priority", &self.compute_occupancy_priority)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -55705,3 +55771,5 @@ pub type FnEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = un
     p_counters: *mut PerformanceCounterARM,
     p_counter_descriptions: *mut PerformanceCounterDescriptionARM,
 ) -> Result;
+pub type FnCmdSetComputeOccupancyPriorityNV =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_parameters: *const ComputeOccupancyPriorityParametersNV);

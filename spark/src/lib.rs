@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.335
+//! Generated from vk.xml version 1.4.336
 
 #![allow(
     clippy::too_many_arguments,
@@ -3176,6 +3176,14 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_nv_compute_occupancy_priority(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_compute_occupancy_priority(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_surface {
@@ -5921,6 +5929,7 @@ pub struct DeviceExtensions {
     pub khr_maintenance10: bool,
     pub sec_pipeline_cache_incremental_mode: bool,
     pub ext_shader_uniform_buffer_unsized_array: bool,
+    pub nv_compute_occupancy_priority: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -6680,6 +6689,8 @@ impl DeviceExtensions {
             self.sec_pipeline_cache_incremental_mode = true;
         } else if name == c"VK_EXT_shader_uniform_buffer_unsized_array" {
             self.ext_shader_uniform_buffer_unsized_array = true;
+        } else if name == c"VK_NV_compute_occupancy_priority" {
+            self.nv_compute_occupancy_priority = true;
         }
     }
     pub fn new(core_version: vk::Version) -> Self {
@@ -7063,6 +7074,7 @@ impl DeviceExtensions {
             khr_maintenance10: false,
             sec_pipeline_cache_incremental_mode: false,
             ext_shader_uniform_buffer_unsized_array: false,
+            nv_compute_occupancy_priority: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -10073,6 +10085,12 @@ impl DeviceExtensions {
     pub fn enable_ext_shader_uniform_buffer_unsized_array(&mut self) {
         self.ext_shader_uniform_buffer_unsized_array = true;
     }
+    pub fn supports_nv_compute_occupancy_priority(&self) -> bool {
+        self.nv_compute_occupancy_priority
+    }
+    pub fn enable_nv_compute_occupancy_priority(&mut self) {
+        self.nv_compute_occupancy_priority = true;
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -11209,6 +11227,9 @@ impl DeviceExtensions {
         if self.ext_shader_uniform_buffer_unsized_array {
             v.push(c"VK_EXT_shader_uniform_buffer_unsized_array");
         }
+        if self.nv_compute_occupancy_priority {
+            v.push(c"VK_NV_compute_occupancy_priority");
+        }
         v
     }
 }
@@ -11804,6 +11825,7 @@ pub struct Device {
     pub fp_queue_signal_release_image_ohos: Option<vk::FnQueueSignalReleaseImageOHOS>,
     pub fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm:
         Option<vk::FnEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM>,
+    pub fp_cmd_set_compute_occupancy_priority_nv: Option<vk::FnCmdSetComputeOccupancyPriorityNV>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -16072,6 +16094,13 @@ impl Device {
                         instance.handle,
                         c"vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM",
                     )
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_compute_occupancy_priority_nv: if extensions.nv_compute_occupancy_priority {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdSetComputeOccupancyPriorityNV")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -24894,5 +24923,15 @@ impl Device {
             vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
             _ => Err(err),
         }
+    }
+    pub unsafe fn cmd_set_compute_occupancy_priority_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_parameters: &vk::ComputeOccupancyPriorityParametersNV,
+    ) {
+        let fp = self
+            .fp_cmd_set_compute_occupancy_priority_nv
+            .expect("vkCmdSetComputeOccupancyPriorityNV is not loaded");
+        (fp)(command_buffer, p_parameters)
     }
 }

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.335
+//! Generated from vk.xml version 1.4.336
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -41367,3 +41367,77 @@ impl RenderPassBeginInfoNext for vk::RenderPassPerformanceCountersByRegionBeginI
 impl RenderPassBeginInfoNext for RenderPassPerformanceCountersByRegionBeginInfoARMBuilder<'_> {}
 impl RenderingInfoNext for vk::RenderPassPerformanceCountersByRegionBeginInfoARM {}
 impl RenderingInfoNext for RenderPassPerformanceCountersByRegionBeginInfoARMBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ComputeOccupancyPriorityParametersNVBuilder {
+    inner: vk::ComputeOccupancyPriorityParametersNV,
+}
+impl Builder<'_> for vk::ComputeOccupancyPriorityParametersNV {
+    type Type = ComputeOccupancyPriorityParametersNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ComputeOccupancyPriorityParametersNVBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ComputeOccupancyPriorityParametersNV {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn occupancy_priority(mut self, occupancy_priority: f32) -> Self {
+        self.inner.occupancy_priority = occupancy_priority;
+        self
+    }
+    pub fn occupancy_throttling(mut self, occupancy_throttling: f32) -> Self {
+        self.inner.occupancy_throttling = occupancy_throttling;
+        self
+    }
+}
+impl Deref for ComputeOccupancyPriorityParametersNVBuilder {
+    type Target = vk::ComputeOccupancyPriorityParametersNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceComputeOccupancyPriorityFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceComputeOccupancyPriorityFeaturesNV,
+}
+impl Builder<'_> for vk::PhysicalDeviceComputeOccupancyPriorityFeaturesNV {
+    type Type = PhysicalDeviceComputeOccupancyPriorityFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceComputeOccupancyPriorityFeaturesNVBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceComputeOccupancyPriorityFeaturesNV {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn compute_occupancy_priority(mut self, compute_occupancy_priority: bool) -> Self {
+        self.inner.compute_occupancy_priority = if compute_occupancy_priority {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceComputeOccupancyPriorityFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceComputeOccupancyPriorityFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceComputeOccupancyPriorityFeaturesNV {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceComputeOccupancyPriorityFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceComputeOccupancyPriorityFeaturesNV {}
+impl DeviceCreateInfoNext for PhysicalDeviceComputeOccupancyPriorityFeaturesNVBuilder {}
