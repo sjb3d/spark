@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.336
+// Generated from vk.xml version 1.4.337
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -213,7 +213,6 @@ pub const zx_handle_t = u32;
 pub const RROutput = c_ulong;
 pub const AHardwareBuffer = opaque {};
 pub const OH_NativeBuffer = opaque {};
-pub const OHBufferHandle = opaque {};
 pub const OHNativeWindow = opaque {};
 pub const MTLSharedEvent_id = ?*anyopaque;
 pub const IOSurfaceRef = ?*anyopaque;
@@ -1849,11 +1848,6 @@ pub const PresentTimingInfoFlagBitsEXT = enum(u5) {
     _,
 };
 pub const PresentTimingInfoFlagsEXT = BitField(PresentTimingInfoFlagBitsEXT);
-pub const SwapchainImageUsageFlagBitsOHOS = enum(u5) {
-    shared = 0,
-    _,
-};
-pub const SwapchainImageUsageFlagsOHOS = BitField(SwapchainImageUsageFlagBitsOHOS);
 pub const PerformanceCounterDescriptionFlagBitsARM = enum(u5) {
     _,
 };
@@ -2406,6 +2400,36 @@ pub const Format = enum(i32) {
     pvrtc1_4bpp_srgb_block_img = 1000054005,
     pvrtc2_2bpp_srgb_block_img = 1000054006,
     pvrtc2_4bpp_srgb_block_img = 1000054007,
+    astc_3x3x3_unorm_block_ext = 1000288000,
+    astc_3x3x3_srgb_block_ext = 1000288001,
+    astc_3x3x3_sfloat_block_ext = 1000288002,
+    astc_4x3x3_unorm_block_ext = 1000288003,
+    astc_4x3x3_srgb_block_ext = 1000288004,
+    astc_4x3x3_sfloat_block_ext = 1000288005,
+    astc_4x4x3_unorm_block_ext = 1000288006,
+    astc_4x4x3_srgb_block_ext = 1000288007,
+    astc_4x4x3_sfloat_block_ext = 1000288008,
+    astc_4x4x4_unorm_block_ext = 1000288009,
+    astc_4x4x4_srgb_block_ext = 1000288010,
+    astc_4x4x4_sfloat_block_ext = 1000288011,
+    astc_5x4x4_unorm_block_ext = 1000288012,
+    astc_5x4x4_srgb_block_ext = 1000288013,
+    astc_5x4x4_sfloat_block_ext = 1000288014,
+    astc_5x5x4_unorm_block_ext = 1000288015,
+    astc_5x5x4_srgb_block_ext = 1000288016,
+    astc_5x5x4_sfloat_block_ext = 1000288017,
+    astc_5x5x5_unorm_block_ext = 1000288018,
+    astc_5x5x5_srgb_block_ext = 1000288019,
+    astc_5x5x5_sfloat_block_ext = 1000288020,
+    astc_6x5x5_unorm_block_ext = 1000288021,
+    astc_6x5x5_srgb_block_ext = 1000288022,
+    astc_6x5x5_sfloat_block_ext = 1000288023,
+    astc_6x6x5_unorm_block_ext = 1000288024,
+    astc_6x6x5_srgb_block_ext = 1000288025,
+    astc_6x6x5_sfloat_block_ext = 1000288026,
+    astc_6x6x6_unorm_block_ext = 1000288027,
+    astc_6x6x6_srgb_block_ext = 1000288028,
+    astc_6x6x6_sfloat_block_ext = 1000288029,
     r8_bool_arm = 1000460000,
     r16g16_sfixed5_nv = 1000464000,
     r10x6_uint_pack16_arm = 1000609000,
@@ -3202,6 +3226,7 @@ pub const StructureType = enum(i32) {
     sampler_custom_border_color_create_info_ext = 1000287000,
     physical_device_custom_border_color_properties_ext = 1000287001,
     physical_device_custom_border_color_features_ext = 1000287002,
+    physical_device_texture_compression_astc_3d_features_ext = 1000288000,
     pipeline_library_create_info_khr = 1000290000,
     physical_device_present_barrier_features_nv = 1000292000,
     surface_capabilities_present_barrier_nv = 1000292001,
@@ -3613,9 +3638,6 @@ pub const StructureType = enum(i32) {
     physical_device_maintenance_9_properties_khr = 1000584001,
     queue_family_ownership_transfer_properties_khr = 1000584002,
     surface_create_info_ohos = 1000685000,
-    native_buffer_ohos = 1000453001,
-    swapchain_image_create_info_ohos = 1000453002,
-    physical_device_presentation_properties_ohos = 1000453003,
     physical_device_hdr_vivid_features_huawei = 1000590000,
     hdr_vivid_dynamic_metadata_huawei = 1000590001,
     physical_device_cooperative_matrix_2_features_nv = 1000593000,
@@ -3656,6 +3678,8 @@ pub const StructureType = enum(i32) {
     rendering_attachment_flags_info_khr = 1000630002,
     rendering_end_info_khr = 1000619003,
     resolve_image_mode_info_khr = 1000630004,
+    physical_device_shader_long_vector_features_ext = 1000635000,
+    physical_device_shader_long_vector_properties_ext = 1000635001,
     physical_device_pipeline_cache_incremental_mode_features_sec = 1000637000,
     physical_device_shader_uniform_buffer_unsized_array_features_ext = 1000642000,
     compute_occupancy_priority_parameters_nv = 1000645000,
@@ -4969,6 +4993,8 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShader64BitIndexingFeaturesEXT,
             *PhysicalDevicePerformanceCountersByRegionFeaturesARM,
             *PhysicalDeviceComputeOccupancyPriorityFeaturesNV,
+            *PhysicalDeviceShaderLongVectorFeaturesEXT,
+            *PhysicalDeviceTextureCompressionASTC3DFeaturesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -5305,8 +5331,6 @@ pub const ImageCreateInfo = extern struct {
             *ImportMetalIOSurfaceInfoEXT,
             *OpticalFlowImageFormatInfoNV,
             *ImageAlignmentControlCreateInfoMESA,
-            *NativeBufferOHOS,
-            *SwapchainImageCreateInfoOHOS,
             *ExternalFormatOHOS,
             => {
                 next.p_next = @constCast(self.p_next);
@@ -7370,6 +7394,8 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShader64BitIndexingFeaturesEXT,
             *PhysicalDevicePerformanceCountersByRegionFeaturesARM,
             *PhysicalDeviceComputeOccupancyPriorityFeaturesNV,
+            *PhysicalDeviceShaderLongVectorFeaturesEXT,
+            *PhysicalDeviceTextureCompressionASTC3DFeaturesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7496,8 +7522,8 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceExternalComputeQueuePropertiesNV,
             *PhysicalDeviceTensorPropertiesARM,
             *PhysicalDeviceDescriptorBufferTensorPropertiesARM,
-            *PhysicalDevicePresentationPropertiesOHOS,
             *PhysicalDevicePerformanceCountersByRegionPropertiesARM,
+            *PhysicalDeviceShaderLongVectorPropertiesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -8097,7 +8123,6 @@ pub const BindImageMemoryInfo = extern struct {
             *BindImageMemorySwapchainInfoKHR,
             *BindImagePlaneMemoryInfo,
             *BindMemoryStatus,
-            *NativeBufferOHOS,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -15399,21 +15424,6 @@ pub const PhysicalDeviceShaderUntypedPointersFeaturesKHR = extern struct {
     p_next: ?*anyopaque = null,
     shader_untyped_pointers: Bool32 = .false,
 };
-pub const NativeBufferOHOS = extern struct {
-    s_type: StructureType = .native_buffer_ohos,
-    p_next: ?*const anyopaque = null,
-    handle: ?*OHBufferHandle = null,
-};
-pub const SwapchainImageCreateInfoOHOS = extern struct {
-    s_type: StructureType = .swapchain_image_create_info_ohos,
-    p_next: ?*const anyopaque = null,
-    usage: SwapchainImageUsageFlagsOHOS = .none,
-};
-pub const PhysicalDevicePresentationPropertiesOHOS = extern struct {
-    s_type: StructureType = .physical_device_presentation_properties_ohos,
-    p_next: ?*anyopaque = null,
-    shared_image: Bool32 = .false,
-};
 pub const PhysicalDeviceShader64BitIndexingFeaturesEXT = extern struct {
     s_type: StructureType = .physical_device_shader_64_bit_indexing_features_ext,
     p_next: ?*anyopaque = null,
@@ -15512,6 +15522,21 @@ pub const PhysicalDeviceComputeOccupancyPriorityFeaturesNV = extern struct {
     s_type: StructureType = .physical_device_compute_occupancy_priority_features_nv,
     p_next: ?*anyopaque = null,
     compute_occupancy_priority: Bool32 = .false,
+};
+pub const PhysicalDeviceShaderLongVectorFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_shader_long_vector_features_ext,
+    p_next: ?*anyopaque = null,
+    long_vector: Bool32 = .false,
+};
+pub const PhysicalDeviceShaderLongVectorPropertiesEXT = extern struct {
+    s_type: StructureType = .physical_device_shader_long_vector_properties_ext,
+    p_next: ?*anyopaque = null,
+    max_vector_components: u32 = 0,
+};
+pub const PhysicalDeviceTextureCompressionASTC3DFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_texture_compression_astc_3d_features_ext,
+    p_next: ?*anyopaque = null,
+    texture_compression_astc_3d: Bool32 = .false,
 };
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
@@ -16159,9 +16184,6 @@ pub const FpGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = *const fn (Phys
 pub const FpGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = *const fn (PhysicalDevice, [*c]const PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM, [*c]QueueFamilyDataGraphProcessingEnginePropertiesARM) callconv(.c) void;
 pub const FpGetNativeBufferPropertiesOHOS = *const fn (Device, ?*const OH_NativeBuffer, [*c]NativeBufferPropertiesOHOS) callconv(.c) Result;
 pub const FpGetMemoryNativeBufferOHOS = *const fn (Device, [*c]const MemoryGetNativeBufferInfoOHOS, [*c]?*OH_NativeBuffer) callconv(.c) Result;
-pub const FpGetSwapchainGrallocUsageOHOS = *const fn (Device, Format, ImageUsageFlags, [*c]u64) callconv(.c) Result;
-pub const FpAcquireImageOHOS = *const fn (Device, Image, i32, Semaphore, Fence) callconv(.c) Result;
-pub const FpQueueSignalReleaseImageOHOS = *const fn (Queue, u32, [*c]const Semaphore, Image, [*c]i32) callconv(.c) Result;
 pub const FpEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = *const fn (PhysicalDevice, u32, [*c]u32, [*c]PerformanceCounterARM, [*c]PerformanceCounterDescriptionARM) callconv(.c) Result;
 pub const FpCmdSetComputeOccupancyPriorityNV = *const fn (CommandBuffer, [*c]const ComputeOccupancyPriorityParametersNV) callconv(.c) void;
 
@@ -16393,6 +16415,7 @@ const ExtensionNames = struct {
     const ext_acquire_drm_display = "VK_EXT_acquire_drm_display";
     const ext_robustness2 = "VK_EXT_robustness2";
     const ext_custom_border_color = "VK_EXT_custom_border_color";
+    const ext_texture_compression_astc_3d = "VK_EXT_texture_compression_astc_3d";
     const google_user_type = "VK_GOOGLE_user_type";
     const khr_pipeline_library = "VK_KHR_pipeline_library";
     const nv_present_barrier = "VK_NV_present_barrier";
@@ -16563,7 +16586,6 @@ const ExtensionNames = struct {
     const ext_depth_clamp_control = "VK_EXT_depth_clamp_control";
     const khr_maintenance9 = "VK_KHR_maintenance9";
     const ohos_surface = "VK_OHOS_surface";
-    const ohos_native_buffer = "VK_OHOS_native_buffer";
     const huawei_hdr_vivid = "VK_HUAWEI_hdr_vivid";
     const nv_cooperative_matrix2 = "VK_NV_cooperative_matrix2";
     const arm_pipeline_opacity_micromap = "VK_ARM_pipeline_opacity_micromap";
@@ -16582,6 +16604,7 @@ const ExtensionNames = struct {
     const ext_custom_resolve = "VK_EXT_custom_resolve";
     const qcom_data_graph_model = "VK_QCOM_data_graph_model";
     const khr_maintenance10 = "VK_KHR_maintenance10";
+    const ext_shader_long_vector = "VK_EXT_shader_long_vector";
     const sec_pipeline_cache_incremental_mode = "VK_SEC_pipeline_cache_incremental_mode";
     const ext_shader_uniform_buffer_unsized_array = "VK_EXT_shader_uniform_buffer_unsized_array";
     const nv_compute_occupancy_priority = "VK_NV_compute_occupancy_priority";
@@ -18202,6 +18225,15 @@ pub const InstanceExtensions = packed struct {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
     pub fn enable_ext_custom_border_color(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_ext_texture_compression_astc_3d(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_ext_texture_compression_astc_3d(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -19932,6 +19964,7 @@ pub const DeviceExtensions = packed struct {
     ext_device_memory_report: bool = false,
     ext_robustness2: bool = false,
     ext_custom_border_color: bool = false,
+    ext_texture_compression_astc_3d: bool = false,
     google_user_type: bool = false,
     khr_pipeline_library: bool = false,
     nv_present_barrier: bool = false,
@@ -20094,7 +20127,6 @@ pub const DeviceExtensions = packed struct {
     ext_ray_tracing_invocation_reorder: bool = false,
     ext_depth_clamp_control: bool = false,
     khr_maintenance9: bool = false,
-    ohos_native_buffer: bool = false,
     huawei_hdr_vivid: bool = false,
     nv_cooperative_matrix2: bool = false,
     arm_pipeline_opacity_micromap: bool = false,
@@ -20113,6 +20145,7 @@ pub const DeviceExtensions = packed struct {
     ext_custom_resolve: bool = false,
     qcom_data_graph_model: bool = false,
     khr_maintenance10: bool = false,
+    ext_shader_long_vector: bool = false,
     sec_pipeline_cache_incremental_mode: bool = false,
     ext_shader_uniform_buffer_unsized_array: bool = false,
     nv_compute_occupancy_priority: bool = false,
@@ -20509,6 +20542,8 @@ pub const DeviceExtensions = packed struct {
             self.ext_robustness2 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_custom_border_color) == .eq) {
             self.ext_custom_border_color = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_texture_compression_astc_3d) == .eq) {
+            self.ext_texture_compression_astc_3d = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.google_user_type) == .eq) {
             self.google_user_type = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_pipeline_library) == .eq) {
@@ -20833,8 +20868,6 @@ pub const DeviceExtensions = packed struct {
             self.ext_depth_clamp_control = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance9) == .eq) {
             self.khr_maintenance9 = true;
-        } else if (std.mem.orderZ(u8, name, ExtensionNames.ohos_native_buffer) == .eq) {
-            self.ohos_native_buffer = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.huawei_hdr_vivid) == .eq) {
             self.huawei_hdr_vivid = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_cooperative_matrix2) == .eq) {
@@ -20871,6 +20904,8 @@ pub const DeviceExtensions = packed struct {
             self.qcom_data_graph_model = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance10) == .eq) {
             self.khr_maintenance10 = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_long_vector) == .eq) {
+            self.ext_shader_long_vector = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.sec_pipeline_cache_incremental_mode) == .eq) {
             self.sec_pipeline_cache_incremental_mode = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_uniform_buffer_unsized_array) == .eq) {
@@ -21087,6 +21122,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_device_memory_report) try names.append(allocator, ExtensionNames.ext_device_memory_report);
         if (self.ext_robustness2) try names.append(allocator, ExtensionNames.ext_robustness2);
         if (self.ext_custom_border_color) try names.append(allocator, ExtensionNames.ext_custom_border_color);
+        if (self.ext_texture_compression_astc_3d) try names.append(allocator, ExtensionNames.ext_texture_compression_astc_3d);
         if (self.google_user_type) try names.append(allocator, ExtensionNames.google_user_type);
         if (self.khr_pipeline_library) try names.append(allocator, ExtensionNames.khr_pipeline_library);
         if (self.nv_present_barrier) try names.append(allocator, ExtensionNames.nv_present_barrier);
@@ -21249,7 +21285,6 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_ray_tracing_invocation_reorder) try names.append(allocator, ExtensionNames.ext_ray_tracing_invocation_reorder);
         if (self.ext_depth_clamp_control) try names.append(allocator, ExtensionNames.ext_depth_clamp_control);
         if (self.khr_maintenance9) try names.append(allocator, ExtensionNames.khr_maintenance9);
-        if (self.ohos_native_buffer) try names.append(allocator, ExtensionNames.ohos_native_buffer);
         if (self.huawei_hdr_vivid) try names.append(allocator, ExtensionNames.huawei_hdr_vivid);
         if (self.nv_cooperative_matrix2) try names.append(allocator, ExtensionNames.nv_cooperative_matrix2);
         if (self.arm_pipeline_opacity_micromap) try names.append(allocator, ExtensionNames.arm_pipeline_opacity_micromap);
@@ -21268,6 +21303,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_custom_resolve) try names.append(allocator, ExtensionNames.ext_custom_resolve);
         if (self.qcom_data_graph_model) try names.append(allocator, ExtensionNames.qcom_data_graph_model);
         if (self.khr_maintenance10) try names.append(allocator, ExtensionNames.khr_maintenance10);
+        if (self.ext_shader_long_vector) try names.append(allocator, ExtensionNames.ext_shader_long_vector);
         if (self.sec_pipeline_cache_incremental_mode) try names.append(allocator, ExtensionNames.sec_pipeline_cache_incremental_mode);
         if (self.ext_shader_uniform_buffer_unsized_array) try names.append(allocator, ExtensionNames.ext_shader_uniform_buffer_unsized_array);
         if (self.nv_compute_occupancy_priority) try names.append(allocator, ExtensionNames.nv_compute_occupancy_priority);
@@ -22932,6 +22968,13 @@ pub const DeviceExtensions = packed struct {
         self.ext_custom_border_color = true;
     }
 
+    pub fn supports_ext_texture_compression_astc_3d(self: DeviceExtensions) bool {
+        return self.ext_texture_compression_astc_3d;
+    }
+    pub fn enable_ext_texture_compression_astc_3d(self: *DeviceExtensions) void {
+        self.ext_texture_compression_astc_3d = true;
+    }
+
     pub fn supports_google_user_type(self: DeviceExtensions) bool {
         return self.google_user_type;
     }
@@ -24301,13 +24344,6 @@ pub const DeviceExtensions = packed struct {
         self.khr_maintenance9 = true;
     }
 
-    pub fn supports_ohos_native_buffer(self: DeviceExtensions) bool {
-        return self.ohos_native_buffer;
-    }
-    pub fn enable_ohos_native_buffer(self: *DeviceExtensions) void {
-        self.ohos_native_buffer = true;
-    }
-
     pub fn supports_huawei_hdr_vivid(self: DeviceExtensions) bool {
         return self.huawei_hdr_vivid and self.supports_khr_swapchain() and self.supports_ext_hdr_metadata();
     }
@@ -24452,6 +24488,15 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_khr_maintenance10(self: *DeviceExtensions) void {
         self.khr_maintenance10 = true;
+    }
+
+    pub fn supports_ext_shader_long_vector(self: DeviceExtensions) bool {
+        return self.ext_shader_long_vector and self.core_version.to_int() >= make_version(1, 2, 0).to_int();
+    }
+    pub fn enable_ext_shader_long_vector(self: *DeviceExtensions) void {
+        self.ext_shader_long_vector = true;
+        // depends on minimum core version, caller must specify
+        assert(self.core_version.to_int() >= make_version(1, 2, 0).to_int());
     }
 
     pub fn supports_sec_pipeline_cache_incremental_mode(self: DeviceExtensions) bool {
@@ -27233,9 +27278,6 @@ pub const DeviceCommands = struct {
     fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm: ?FpGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM,
     fp_get_native_buffer_properties_ohos: ?FpGetNativeBufferPropertiesOHOS,
     fp_get_memory_native_buffer_ohos: ?FpGetMemoryNativeBufferOHOS,
-    fp_get_swapchain_gralloc_usage_ohos: ?FpGetSwapchainGrallocUsageOHOS,
-    fp_acquire_image_ohos: ?FpAcquireImageOHOS,
-    fp_queue_signal_release_image_ohos: ?FpQueueSignalReleaseImageOHOS,
     fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm: ?FpEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM,
     fp_cmd_set_compute_occupancy_priority_nv: ?FpCmdSetComputeOccupancyPriorityNV,
 
@@ -27811,9 +27853,6 @@ pub const DeviceCommands = struct {
             .fp_get_physical_device_queue_family_data_graph_processing_engine_properties_arm = if (extensions.arm_data_graph) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM")) else null,
             .fp_get_native_buffer_properties_ohos = if (extensions.ohos_external_memory) @ptrCast(try instance.get_device_proc_addr(device, "vkGetNativeBufferPropertiesOHOS")) else null,
             .fp_get_memory_native_buffer_ohos = if (extensions.ohos_external_memory) @ptrCast(try instance.get_device_proc_addr(device, "vkGetMemoryNativeBufferOHOS")) else null,
-            .fp_get_swapchain_gralloc_usage_ohos = if (extensions.ohos_native_buffer) @ptrCast(try instance.get_device_proc_addr(device, "vkGetSwapchainGrallocUsageOHOS")) else null,
-            .fp_acquire_image_ohos = if (extensions.ohos_native_buffer) @ptrCast(try instance.get_device_proc_addr(device, "vkAcquireImageOHOS")) else null,
-            .fp_queue_signal_release_image_ohos = if (extensions.ohos_native_buffer) @ptrCast(try instance.get_device_proc_addr(device, "vkQueueSignalReleaseImageOHOS")) else null,
             .fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm = if (extensions.arm_performance_counters_by_region) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM")) else null,
             .fp_cmd_set_compute_occupancy_priority_nv = if (extensions.nv_compute_occupancy_priority) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetComputeOccupancyPriorityNV")) else null,
         };
@@ -36075,69 +36114,6 @@ pub const DeviceCommands = struct {
         switch (self.fp_get_memory_native_buffer_ohos.?(self.handle, p_info, &p_buffer)) {
             .success => return p_buffer,
             .error_out_of_host_memory => return error.OutOfHostMemory,
-            .error_unknown => return error.Unknown,
-            .error_validation_failed => return error.ValidationFailed,
-            else => return error.Unexpected,
-        }
-    }
-    pub const GetSwapchainGrallocUsageOHOSError = error{
-        InitializationFailed,
-        Unknown,
-        ValidationFailed,
-        Unexpected,
-    };
-    pub fn get_swapchain_gralloc_usage_ohos(
-        self: DeviceCommands,
-        format: Format,
-        image_usage: ImageUsageFlags,
-    ) GetSwapchainGrallocUsageOHOSError!u64 {
-        var gralloc_usage: u64 = undefined;
-        switch (self.fp_get_swapchain_gralloc_usage_ohos.?(self.handle, format, image_usage, &gralloc_usage)) {
-            .success => return gralloc_usage,
-            .error_initialization_failed => return error.InitializationFailed,
-            .error_unknown => return error.Unknown,
-            .error_validation_failed => return error.ValidationFailed,
-            else => return error.Unexpected,
-        }
-    }
-    pub const AcquireImageOHOSError = error{
-        OutOfHostMemory,
-        Unknown,
-        ValidationFailed,
-        Unexpected,
-    };
-    pub fn acquire_image_ohos(
-        self: DeviceCommands,
-        image: Image,
-        native_fence_fd: i32,
-        semaphore: Semaphore,
-        fence: Fence,
-    ) AcquireImageOHOSError!void {
-        switch (self.fp_acquire_image_ohos.?(self.handle, image, native_fence_fd, semaphore, fence)) {
-            .success => return,
-            .error_out_of_host_memory => return error.OutOfHostMemory,
-            .error_unknown => return error.Unknown,
-            .error_validation_failed => return error.ValidationFailed,
-            else => return error.Unexpected,
-        }
-    }
-    pub const QueueSignalReleaseImageOHOSError = error{
-        InitializationFailed,
-        Unknown,
-        ValidationFailed,
-        Unexpected,
-    };
-    pub fn queue_signal_release_image_ohos(
-        self: DeviceCommands,
-        queue: Queue,
-        p_wait_semaphores: []const Semaphore,
-        image: Image,
-    ) QueueSignalReleaseImageOHOSError!i32 {
-        const wait_semaphore_count: u32 = @intCast(p_wait_semaphores.len);
-        var p_native_fence_fd: i32 = undefined;
-        switch (self.fp_queue_signal_release_image_ohos.?(queue, wait_semaphore_count, p_wait_semaphores.ptr, image, &p_native_fence_fd)) {
-            .success => return p_native_fence_fd,
-            .error_initialization_failed => return error.InitializationFailed,
             .error_unknown => return error.Unknown,
             .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,

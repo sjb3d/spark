@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.336
+//! Generated from vk.xml version 1.4.337
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -202,8 +202,6 @@ pub type RROutput = c_ulong;
 pub type AHardwareBuffer = Never;
 #[allow(non_camel_case_types)]
 pub type OH_NativeBuffer = Never;
-#[allow(non_camel_case_types)]
-pub type OHBufferHandle = Never;
 #[allow(non_camel_case_types)]
 pub type OHNativeWindow = Never;
 #[allow(non_camel_case_types)]
@@ -4663,19 +4661,6 @@ impl fmt::Display for PresentTimingInfoFlagsEXT {
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SwapchainImageUsageFlagsOHOS(pub(crate) u32);
-impl SwapchainImageUsageFlagsOHOS {
-    pub const SHARED: Self = Self(0x1);
-}
-impl_bitmask!(SwapchainImageUsageFlagsOHOS);
-impl fmt::Display for SwapchainImageUsageFlagsOHOS {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x1, "SHARED")], f)
-    }
-}
-
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PerformanceCounterDescriptionFlagsARM(pub(crate) u32);
 impl PerformanceCounterDescriptionFlagsARM {}
 impl_bitmask!(PerformanceCounterDescriptionFlagsARM);
@@ -5902,6 +5887,36 @@ impl Format {
     pub const G16_B16_R16_3PLANE_422_UNORM_KHR: Self = Self::G16_B16_R16_3PLANE_422_UNORM;
     pub const G16_B16R16_2PLANE_422_UNORM_KHR: Self = Self::G16_B16R16_2PLANE_422_UNORM;
     pub const G16_B16_R16_3PLANE_444_UNORM_KHR: Self = Self::G16_B16_R16_3PLANE_444_UNORM;
+    pub const ASTC_3X3X3_UNORM_BLOCK_EXT: Self = Self(1000288000);
+    pub const ASTC_3X3X3_SRGB_BLOCK_EXT: Self = Self(1000288001);
+    pub const ASTC_3X3X3_SFLOAT_BLOCK_EXT: Self = Self(1000288002);
+    pub const ASTC_4X3X3_UNORM_BLOCK_EXT: Self = Self(1000288003);
+    pub const ASTC_4X3X3_SRGB_BLOCK_EXT: Self = Self(1000288004);
+    pub const ASTC_4X3X3_SFLOAT_BLOCK_EXT: Self = Self(1000288005);
+    pub const ASTC_4X4X3_UNORM_BLOCK_EXT: Self = Self(1000288006);
+    pub const ASTC_4X4X3_SRGB_BLOCK_EXT: Self = Self(1000288007);
+    pub const ASTC_4X4X3_SFLOAT_BLOCK_EXT: Self = Self(1000288008);
+    pub const ASTC_4X4X4_UNORM_BLOCK_EXT: Self = Self(1000288009);
+    pub const ASTC_4X4X4_SRGB_BLOCK_EXT: Self = Self(1000288010);
+    pub const ASTC_4X4X4_SFLOAT_BLOCK_EXT: Self = Self(1000288011);
+    pub const ASTC_5X4X4_UNORM_BLOCK_EXT: Self = Self(1000288012);
+    pub const ASTC_5X4X4_SRGB_BLOCK_EXT: Self = Self(1000288013);
+    pub const ASTC_5X4X4_SFLOAT_BLOCK_EXT: Self = Self(1000288014);
+    pub const ASTC_5X5X4_UNORM_BLOCK_EXT: Self = Self(1000288015);
+    pub const ASTC_5X5X4_SRGB_BLOCK_EXT: Self = Self(1000288016);
+    pub const ASTC_5X5X4_SFLOAT_BLOCK_EXT: Self = Self(1000288017);
+    pub const ASTC_5X5X5_UNORM_BLOCK_EXT: Self = Self(1000288018);
+    pub const ASTC_5X5X5_SRGB_BLOCK_EXT: Self = Self(1000288019);
+    pub const ASTC_5X5X5_SFLOAT_BLOCK_EXT: Self = Self(1000288020);
+    pub const ASTC_6X5X5_UNORM_BLOCK_EXT: Self = Self(1000288021);
+    pub const ASTC_6X5X5_SRGB_BLOCK_EXT: Self = Self(1000288022);
+    pub const ASTC_6X5X5_SFLOAT_BLOCK_EXT: Self = Self(1000288023);
+    pub const ASTC_6X6X5_UNORM_BLOCK_EXT: Self = Self(1000288024);
+    pub const ASTC_6X6X5_SRGB_BLOCK_EXT: Self = Self(1000288025);
+    pub const ASTC_6X6X5_SFLOAT_BLOCK_EXT: Self = Self(1000288026);
+    pub const ASTC_6X6X6_UNORM_BLOCK_EXT: Self = Self(1000288027);
+    pub const ASTC_6X6X6_SRGB_BLOCK_EXT: Self = Self(1000288028);
+    pub const ASTC_6X6X6_SFLOAT_BLOCK_EXT: Self = Self(1000288029);
     pub const G8_B8R8_2PLANE_444_UNORM_EXT: Self = Self::G8_B8R8_2PLANE_444_UNORM;
     pub const G10X6_B10X6R10X6_2PLANE_444_UNORM_3PACK16_EXT: Self = Self::G10X6_B10X6R10X6_2PLANE_444_UNORM_3PACK16;
     pub const G12X4_B12X4R12X4_2PLANE_444_UNORM_3PACK16_EXT: Self = Self::G12X4_B12X4R12X4_2PLANE_444_UNORM_3PACK16;
@@ -6180,6 +6195,36 @@ impl fmt::Display for Format {
             1000054005 => Some(&"PVRTC1_4BPP_SRGB_BLOCK_IMG"),
             1000054006 => Some(&"PVRTC2_2BPP_SRGB_BLOCK_IMG"),
             1000054007 => Some(&"PVRTC2_4BPP_SRGB_BLOCK_IMG"),
+            1000288000 => Some(&"ASTC_3X3X3_UNORM_BLOCK_EXT"),
+            1000288001 => Some(&"ASTC_3X3X3_SRGB_BLOCK_EXT"),
+            1000288002 => Some(&"ASTC_3X3X3_SFLOAT_BLOCK_EXT"),
+            1000288003 => Some(&"ASTC_4X3X3_UNORM_BLOCK_EXT"),
+            1000288004 => Some(&"ASTC_4X3X3_SRGB_BLOCK_EXT"),
+            1000288005 => Some(&"ASTC_4X3X3_SFLOAT_BLOCK_EXT"),
+            1000288006 => Some(&"ASTC_4X4X3_UNORM_BLOCK_EXT"),
+            1000288007 => Some(&"ASTC_4X4X3_SRGB_BLOCK_EXT"),
+            1000288008 => Some(&"ASTC_4X4X3_SFLOAT_BLOCK_EXT"),
+            1000288009 => Some(&"ASTC_4X4X4_UNORM_BLOCK_EXT"),
+            1000288010 => Some(&"ASTC_4X4X4_SRGB_BLOCK_EXT"),
+            1000288011 => Some(&"ASTC_4X4X4_SFLOAT_BLOCK_EXT"),
+            1000288012 => Some(&"ASTC_5X4X4_UNORM_BLOCK_EXT"),
+            1000288013 => Some(&"ASTC_5X4X4_SRGB_BLOCK_EXT"),
+            1000288014 => Some(&"ASTC_5X4X4_SFLOAT_BLOCK_EXT"),
+            1000288015 => Some(&"ASTC_5X5X4_UNORM_BLOCK_EXT"),
+            1000288016 => Some(&"ASTC_5X5X4_SRGB_BLOCK_EXT"),
+            1000288017 => Some(&"ASTC_5X5X4_SFLOAT_BLOCK_EXT"),
+            1000288018 => Some(&"ASTC_5X5X5_UNORM_BLOCK_EXT"),
+            1000288019 => Some(&"ASTC_5X5X5_SRGB_BLOCK_EXT"),
+            1000288020 => Some(&"ASTC_5X5X5_SFLOAT_BLOCK_EXT"),
+            1000288021 => Some(&"ASTC_6X5X5_UNORM_BLOCK_EXT"),
+            1000288022 => Some(&"ASTC_6X5X5_SRGB_BLOCK_EXT"),
+            1000288023 => Some(&"ASTC_6X5X5_SFLOAT_BLOCK_EXT"),
+            1000288024 => Some(&"ASTC_6X6X5_UNORM_BLOCK_EXT"),
+            1000288025 => Some(&"ASTC_6X6X5_SRGB_BLOCK_EXT"),
+            1000288026 => Some(&"ASTC_6X6X5_SFLOAT_BLOCK_EXT"),
+            1000288027 => Some(&"ASTC_6X6X6_UNORM_BLOCK_EXT"),
+            1000288028 => Some(&"ASTC_6X6X6_SRGB_BLOCK_EXT"),
+            1000288029 => Some(&"ASTC_6X6X6_SFLOAT_BLOCK_EXT"),
             1000460000 => Some(&"R8_BOOL_ARM"),
             1000464000 => Some(&"R16G16_SFIXED5_NV"),
             1000609000 => Some(&"R10X6_UINT_PACK16_ARM"),
@@ -7646,6 +7691,7 @@ impl StructureType {
     pub const SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT: Self = Self(1000287000);
     pub const PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT: Self = Self(1000287001);
     pub const PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT: Self = Self(1000287002);
+    pub const PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_3D_FEATURES_EXT: Self = Self(1000288000);
     pub const PIPELINE_LIBRARY_CREATE_INFO_KHR: Self = Self(1000290000);
     pub const PHYSICAL_DEVICE_PRESENT_BARRIER_FEATURES_NV: Self = Self(1000292000);
     pub const SURFACE_CAPABILITIES_PRESENT_BARRIER_NV: Self = Self(1000292001);
@@ -8153,9 +8199,6 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MAINTENANCE_9_PROPERTIES_KHR: Self = Self(1000584001);
     pub const QUEUE_FAMILY_OWNERSHIP_TRANSFER_PROPERTIES_KHR: Self = Self(1000584002);
     pub const SURFACE_CREATE_INFO_OHOS: Self = Self(1000685000);
-    pub const NATIVE_BUFFER_OHOS: Self = Self(1000453001);
-    pub const SWAPCHAIN_IMAGE_CREATE_INFO_OHOS: Self = Self(1000453002);
-    pub const PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_OHOS: Self = Self(1000453003);
     pub const PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI: Self = Self(1000590000);
     pub const HDR_VIVID_DYNAMIC_METADATA_HUAWEI: Self = Self(1000590001);
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV: Self = Self(1000593000);
@@ -8197,6 +8240,8 @@ impl StructureType {
     pub const RENDERING_ATTACHMENT_FLAGS_INFO_KHR: Self = Self(1000630002);
     pub const RENDERING_END_INFO_KHR: Self = Self(1000619003);
     pub const RESOLVE_IMAGE_MODE_INFO_KHR: Self = Self(1000630004);
+    pub const PHYSICAL_DEVICE_SHADER_LONG_VECTOR_FEATURES_EXT: Self = Self(1000635000);
+    pub const PHYSICAL_DEVICE_SHADER_LONG_VECTOR_PROPERTIES_EXT: Self = Self(1000635001);
     pub const PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC: Self = Self(1000637000);
     pub const PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT: Self = Self(1000642000);
     pub const COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV: Self = Self(1000645000);
@@ -8766,6 +8811,7 @@ impl fmt::Display for StructureType {
             1000287000 => Some(&"SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT"),
             1000287001 => Some(&"PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT"),
             1000287002 => Some(&"PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT"),
+            1000288000 => Some(&"PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_3D_FEATURES_EXT"),
             1000290000 => Some(&"PIPELINE_LIBRARY_CREATE_INFO_KHR"),
             1000292000 => Some(&"PHYSICAL_DEVICE_PRESENT_BARRIER_FEATURES_NV"),
             1000292001 => Some(&"SURFACE_CAPABILITIES_PRESENT_BARRIER_NV"),
@@ -9177,9 +9223,6 @@ impl fmt::Display for StructureType {
             1000584001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_9_PROPERTIES_KHR"),
             1000584002 => Some(&"QUEUE_FAMILY_OWNERSHIP_TRANSFER_PROPERTIES_KHR"),
             1000685000 => Some(&"SURFACE_CREATE_INFO_OHOS"),
-            1000453001 => Some(&"NATIVE_BUFFER_OHOS"),
-            1000453002 => Some(&"SWAPCHAIN_IMAGE_CREATE_INFO_OHOS"),
-            1000453003 => Some(&"PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_OHOS"),
             1000590000 => Some(&"PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI"),
             1000590001 => Some(&"HDR_VIVID_DYNAMIC_METADATA_HUAWEI"),
             1000593000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV"),
@@ -9220,6 +9263,8 @@ impl fmt::Display for StructureType {
             1000630002 => Some(&"RENDERING_ATTACHMENT_FLAGS_INFO_KHR"),
             1000619003 => Some(&"RENDERING_END_INFO_KHR"),
             1000630004 => Some(&"RESOLVE_IMAGE_MODE_INFO_KHR"),
+            1000635000 => Some(&"PHYSICAL_DEVICE_SHADER_LONG_VECTOR_FEATURES_EXT"),
+            1000635001 => Some(&"PHYSICAL_DEVICE_SHADER_LONG_VECTOR_PROPERTIES_EXT"),
             1000637000 => Some(&"PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC"),
             1000642000 => Some(&"PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT"),
             1000645000 => Some(&"COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV"),
@@ -52288,90 +52333,6 @@ impl fmt::Debug for PhysicalDeviceShaderUntypedPointersFeaturesKHR {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct NativeBufferOHOS {
-    pub s_type: StructureType,
-    pub p_next: *const c_void,
-    pub handle: *mut OHBufferHandle,
-}
-unsafe impl Send for NativeBufferOHOS {}
-unsafe impl Sync for NativeBufferOHOS {}
-impl Default for NativeBufferOHOS {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::NATIVE_BUFFER_OHOS,
-            p_next: ptr::null(),
-            handle: ptr::null_mut(),
-        }
-    }
-}
-impl fmt::Debug for NativeBufferOHOS {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("NativeBufferOHOS")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
-            .field("handle", &self.handle)
-            .finish()
-    }
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct SwapchainImageCreateInfoOHOS {
-    pub s_type: StructureType,
-    pub p_next: *const c_void,
-    pub usage: SwapchainImageUsageFlagsOHOS,
-}
-unsafe impl Send for SwapchainImageCreateInfoOHOS {}
-unsafe impl Sync for SwapchainImageCreateInfoOHOS {}
-impl Default for SwapchainImageCreateInfoOHOS {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::SWAPCHAIN_IMAGE_CREATE_INFO_OHOS,
-            p_next: ptr::null(),
-            usage: Default::default(),
-        }
-    }
-}
-impl fmt::Debug for SwapchainImageCreateInfoOHOS {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SwapchainImageCreateInfoOHOS")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
-            .field("usage", &self.usage)
-            .finish()
-    }
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct PhysicalDevicePresentationPropertiesOHOS {
-    pub s_type: StructureType,
-    pub p_next: *mut c_void,
-    pub shared_image: Bool32,
-}
-unsafe impl Send for PhysicalDevicePresentationPropertiesOHOS {}
-unsafe impl Sync for PhysicalDevicePresentationPropertiesOHOS {}
-impl Default for PhysicalDevicePresentationPropertiesOHOS {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_OHOS,
-            p_next: ptr::null_mut(),
-            shared_image: Default::default(),
-        }
-    }
-}
-impl fmt::Debug for PhysicalDevicePresentationPropertiesOHOS {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDevicePresentationPropertiesOHOS")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
-            .field("shared_image", &self.shared_image)
-            .finish()
-    }
-}
-
-#[repr(C)]
-#[derive(Copy, Clone)]
 pub struct PhysicalDeviceShader64BitIndexingFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -52818,6 +52779,90 @@ impl fmt::Debug for PhysicalDeviceComputeOccupancyPriorityFeaturesNV {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("compute_occupancy_priority", &self.compute_occupancy_priority)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderLongVectorFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub long_vector: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderLongVectorFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderLongVectorFeaturesEXT {}
+impl Default for PhysicalDeviceShaderLongVectorFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_LONG_VECTOR_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            long_vector: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderLongVectorFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderLongVectorFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("long_vector", &self.long_vector)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderLongVectorPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_vector_components: u32,
+}
+unsafe impl Send for PhysicalDeviceShaderLongVectorPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderLongVectorPropertiesEXT {}
+impl Default for PhysicalDeviceShaderLongVectorPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_LONG_VECTOR_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            max_vector_components: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderLongVectorPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderLongVectorPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_vector_components", &self.max_vector_components)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTextureCompressionASTC3DFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub texture_compression_astc_3d: Bool32,
+}
+unsafe impl Send for PhysicalDeviceTextureCompressionASTC3DFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceTextureCompressionASTC3DFeaturesEXT {}
+impl Default for PhysicalDeviceTextureCompressionASTC3DFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_3D_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            texture_compression_astc_3d: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTextureCompressionASTC3DFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTextureCompressionASTC3DFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("texture_compression_astc_3d", &self.texture_compression_astc_3d)
             .finish()
     }
 }
@@ -55743,26 +55788,6 @@ pub type FnGetMemoryNativeBufferOHOS = unsafe extern "system" fn(
     device: Device,
     p_info: *const MemoryGetNativeBufferInfoOHOS,
     p_buffer: *mut *mut OH_NativeBuffer,
-) -> Result;
-pub type FnGetSwapchainGrallocUsageOHOS = unsafe extern "system" fn(
-    device: Device,
-    format: Format,
-    image_usage: ImageUsageFlags,
-    gralloc_usage: *mut u64,
-) -> Result;
-pub type FnAcquireImageOHOS = unsafe extern "system" fn(
-    device: Device,
-    image: Image,
-    native_fence_fd: i32,
-    semaphore: Semaphore,
-    fence: Fence,
-) -> Result;
-pub type FnQueueSignalReleaseImageOHOS = unsafe extern "system" fn(
-    queue: Queue,
-    wait_semaphore_count: u32,
-    p_wait_semaphores: *const Semaphore,
-    image: Image,
-    p_native_fence_fd: *mut i32,
 ) -> Result;
 pub type FnEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = unsafe extern "system" fn(
     physical_device: PhysicalDevice,

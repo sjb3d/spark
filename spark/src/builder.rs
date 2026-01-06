@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.336
+//! Generated from vk.xml version 1.4.337
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -41034,76 +41034,6 @@ impl DeviceCreateInfoNext for PhysicalDeviceShaderUntypedPointersFeaturesKHRBuil
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct NativeBufferOHOSBuilder<'a> {
-    inner: vk::NativeBufferOHOS,
-    phantom: PhantomData<&'a ()>,
-}
-impl<'a> Builder<'a> for vk::NativeBufferOHOS {
-    type Type = NativeBufferOHOSBuilder<'a>;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl<'a> NativeBufferOHOSBuilder<'a> {
-    pub fn get_mut(&mut self) -> &mut vk::NativeBufferOHOS {
-        &mut self.inner
-    }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn handle(mut self, handle: *mut vk::OHBufferHandle) -> Self {
-        self.inner.handle = handle;
-        self
-    }
-}
-impl<'a> Deref for NativeBufferOHOSBuilder<'a> {
-    type Target = vk::NativeBufferOHOS;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl ImageCreateInfoNext for vk::NativeBufferOHOS {}
-impl ImageCreateInfoNext for NativeBufferOHOSBuilder<'_> {}
-impl BindImageMemoryInfoNext for vk::NativeBufferOHOS {}
-impl BindImageMemoryInfoNext for NativeBufferOHOSBuilder<'_> {}
-
-#[repr(transparent)]
-#[derive(Default)]
-pub struct SwapchainImageCreateInfoOHOSBuilder {
-    inner: vk::SwapchainImageCreateInfoOHOS,
-}
-impl Builder<'_> for vk::SwapchainImageCreateInfoOHOS {
-    type Type = SwapchainImageCreateInfoOHOSBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl SwapchainImageCreateInfoOHOSBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::SwapchainImageCreateInfoOHOS {
-        &mut self.inner
-    }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn usage(mut self, usage: vk::SwapchainImageUsageFlagsOHOS) -> Self {
-        self.inner.usage = usage;
-        self
-    }
-}
-impl Deref for SwapchainImageCreateInfoOHOSBuilder {
-    type Target = vk::SwapchainImageCreateInfoOHOS;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl ImageCreateInfoNext for vk::SwapchainImageCreateInfoOHOS {}
-impl ImageCreateInfoNext for SwapchainImageCreateInfoOHOSBuilder {}
-impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePresentationPropertiesOHOS {}
-
-#[repr(transparent)]
-#[derive(Default)]
 pub struct PhysicalDeviceShader64BitIndexingFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceShader64BitIndexingFeaturesEXT,
 }
@@ -41441,3 +41371,78 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceComputeOccupancyPriorityF
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceComputeOccupancyPriorityFeaturesNVBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceComputeOccupancyPriorityFeaturesNV {}
 impl DeviceCreateInfoNext for PhysicalDeviceComputeOccupancyPriorityFeaturesNVBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceShaderLongVectorFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderLongVectorFeaturesEXT,
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderLongVectorFeaturesEXT {
+    type Type = PhysicalDeviceShaderLongVectorFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceShaderLongVectorFeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceShaderLongVectorFeaturesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn long_vector(mut self, long_vector: bool) -> Self {
+        self.inner.long_vector = if long_vector { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderLongVectorFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderLongVectorFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderLongVectorFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderLongVectorFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderLongVectorFeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderLongVectorFeaturesEXTBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderLongVectorPropertiesEXT {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceTextureCompressionASTC3DFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceTextureCompressionASTC3DFeaturesEXT,
+}
+impl Builder<'_> for vk::PhysicalDeviceTextureCompressionASTC3DFeaturesEXT {
+    type Type = PhysicalDeviceTextureCompressionASTC3DFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceTextureCompressionASTC3DFeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceTextureCompressionASTC3DFeaturesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn texture_compression_astc_3d(mut self, texture_compression_astc_3d: bool) -> Self {
+        self.inner.texture_compression_astc_3d = if texture_compression_astc_3d {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceTextureCompressionASTC3DFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceTextureCompressionASTC3DFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceTextureCompressionASTC3DFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceTextureCompressionASTC3DFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceTextureCompressionASTC3DFeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDeviceTextureCompressionASTC3DFeaturesEXTBuilder {}

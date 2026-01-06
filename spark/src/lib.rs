@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.336
+//! Generated from vk.xml version 1.4.337
 
 #![allow(
     clippy::too_many_arguments,
@@ -1749,6 +1749,14 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_custom_border_color(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_ext_texture_compression_astc_3d(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_texture_compression_astc_3d(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -5746,6 +5754,7 @@ pub struct DeviceExtensions {
     pub ext_device_memory_report: bool,
     pub ext_robustness2: bool,
     pub ext_custom_border_color: bool,
+    pub ext_texture_compression_astc_3d: bool,
     pub google_user_type: bool,
     pub khr_pipeline_library: bool,
     pub nv_present_barrier: bool,
@@ -5908,7 +5917,6 @@ pub struct DeviceExtensions {
     pub ext_ray_tracing_invocation_reorder: bool,
     pub ext_depth_clamp_control: bool,
     pub khr_maintenance9: bool,
-    pub ohos_native_buffer: bool,
     pub huawei_hdr_vivid: bool,
     pub nv_cooperative_matrix2: bool,
     pub arm_pipeline_opacity_micromap: bool,
@@ -5927,6 +5935,7 @@ pub struct DeviceExtensions {
     pub ext_custom_resolve: bool,
     pub qcom_data_graph_model: bool,
     pub khr_maintenance10: bool,
+    pub ext_shader_long_vector: bool,
     pub sec_pipeline_cache_incremental_mode: bool,
     pub ext_shader_uniform_buffer_unsized_array: bool,
     pub nv_compute_occupancy_priority: bool,
@@ -6323,6 +6332,8 @@ impl DeviceExtensions {
             self.ext_robustness2 = true;
         } else if name == c"VK_EXT_custom_border_color" {
             self.ext_custom_border_color = true;
+        } else if name == c"VK_EXT_texture_compression_astc_3d" {
+            self.ext_texture_compression_astc_3d = true;
         } else if name == c"VK_GOOGLE_user_type" {
             self.google_user_type = true;
         } else if name == c"VK_KHR_pipeline_library" {
@@ -6647,8 +6658,6 @@ impl DeviceExtensions {
             self.ext_depth_clamp_control = true;
         } else if name == c"VK_KHR_maintenance9" {
             self.khr_maintenance9 = true;
-        } else if name == c"VK_OHOS_native_buffer" {
-            self.ohos_native_buffer = true;
         } else if name == c"VK_HUAWEI_hdr_vivid" {
             self.huawei_hdr_vivid = true;
         } else if name == c"VK_NV_cooperative_matrix2" {
@@ -6685,6 +6694,8 @@ impl DeviceExtensions {
             self.qcom_data_graph_model = true;
         } else if name == c"VK_KHR_maintenance10" {
             self.khr_maintenance10 = true;
+        } else if name == c"VK_EXT_shader_long_vector" {
+            self.ext_shader_long_vector = true;
         } else if name == c"VK_SEC_pipeline_cache_incremental_mode" {
             self.sec_pipeline_cache_incremental_mode = true;
         } else if name == c"VK_EXT_shader_uniform_buffer_unsized_array" {
@@ -6891,6 +6902,7 @@ impl DeviceExtensions {
             ext_device_memory_report: false,
             ext_robustness2: false,
             ext_custom_border_color: false,
+            ext_texture_compression_astc_3d: false,
             google_user_type: false,
             khr_pipeline_library: false,
             nv_present_barrier: false,
@@ -7053,7 +7065,6 @@ impl DeviceExtensions {
             ext_ray_tracing_invocation_reorder: false,
             ext_depth_clamp_control: false,
             khr_maintenance9: false,
-            ohos_native_buffer: false,
             huawei_hdr_vivid: false,
             nv_cooperative_matrix2: false,
             arm_pipeline_opacity_micromap: false,
@@ -7072,6 +7083,7 @@ impl DeviceExtensions {
             ext_custom_resolve: false,
             qcom_data_graph_model: false,
             khr_maintenance10: false,
+            ext_shader_long_vector: false,
             sec_pipeline_cache_incremental_mode: false,
             ext_shader_uniform_buffer_unsized_array: false,
             nv_compute_occupancy_priority: false,
@@ -8651,6 +8663,12 @@ impl DeviceExtensions {
     pub fn enable_ext_custom_border_color(&mut self) {
         self.ext_custom_border_color = true;
     }
+    pub fn supports_ext_texture_compression_astc_3d(&self) -> bool {
+        self.ext_texture_compression_astc_3d
+    }
+    pub fn enable_ext_texture_compression_astc_3d(&mut self) {
+        self.ext_texture_compression_astc_3d = true;
+    }
     pub fn supports_google_user_type(&self) -> bool {
         self.google_user_type
     }
@@ -9933,12 +9951,6 @@ impl DeviceExtensions {
     pub fn enable_khr_maintenance9(&mut self) {
         self.khr_maintenance9 = true;
     }
-    pub fn supports_ohos_native_buffer(&self) -> bool {
-        self.ohos_native_buffer
-    }
-    pub fn enable_ohos_native_buffer(&mut self) {
-        self.ohos_native_buffer = true;
-    }
     pub fn supports_huawei_hdr_vivid(&self) -> bool {
         self.huawei_hdr_vivid && self.supports_khr_swapchain() && self.supports_ext_hdr_metadata()
     }
@@ -10072,6 +10084,14 @@ impl DeviceExtensions {
     }
     pub fn enable_khr_maintenance10(&mut self) {
         self.khr_maintenance10 = true;
+    }
+    pub fn supports_ext_shader_long_vector(&self) -> bool {
+        self.ext_shader_long_vector && self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+    }
+    pub fn enable_ext_shader_long_vector(&mut self) {
+        self.ext_shader_long_vector = true;
+        // depends on minimum core version, caller must specify
+        debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 2, 0));
     }
     pub fn supports_sec_pipeline_cache_incremental_mode(&self) -> bool {
         self.sec_pipeline_cache_incremental_mode
@@ -10678,6 +10698,9 @@ impl DeviceExtensions {
         if self.ext_custom_border_color {
             v.push(c"VK_EXT_custom_border_color");
         }
+        if self.ext_texture_compression_astc_3d {
+            v.push(c"VK_EXT_texture_compression_astc_3d");
+        }
         if self.google_user_type {
             v.push(c"VK_GOOGLE_user_type");
         }
@@ -11164,9 +11187,6 @@ impl DeviceExtensions {
         if self.khr_maintenance9 {
             v.push(c"VK_KHR_maintenance9");
         }
-        if self.ohos_native_buffer {
-            v.push(c"VK_OHOS_native_buffer");
-        }
         if self.huawei_hdr_vivid {
             v.push(c"VK_HUAWEI_hdr_vivid");
         }
@@ -11220,6 +11240,9 @@ impl DeviceExtensions {
         }
         if self.khr_maintenance10 {
             v.push(c"VK_KHR_maintenance10");
+        }
+        if self.ext_shader_long_vector {
+            v.push(c"VK_EXT_shader_long_vector");
         }
         if self.sec_pipeline_cache_incremental_mode {
             v.push(c"VK_SEC_pipeline_cache_incremental_mode");
@@ -11820,9 +11843,6 @@ pub struct Device {
         Option<vk::FnGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM>,
     pub fp_get_native_buffer_properties_ohos: Option<vk::FnGetNativeBufferPropertiesOHOS>,
     pub fp_get_memory_native_buffer_ohos: Option<vk::FnGetMemoryNativeBufferOHOS>,
-    pub fp_get_swapchain_gralloc_usage_ohos: Option<vk::FnGetSwapchainGrallocUsageOHOS>,
-    pub fp_acquire_image_ohos: Option<vk::FnAcquireImageOHOS>,
-    pub fp_queue_signal_release_image_ohos: Option<vk::FnQueueSignalReleaseImageOHOS>,
     pub fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm:
         Option<vk::FnEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM>,
     pub fp_cmd_set_compute_occupancy_priority_nv: Option<vk::FnCmdSetComputeOccupancyPriorityNV>,
@@ -16061,27 +16081,6 @@ impl Device {
             fp_get_memory_native_buffer_ohos: if extensions.ohos_external_memory {
                 instance
                     .get_device_proc_addr(device, c"vkGetMemoryNativeBufferOHOS")
-                    .map(|f| mem::transmute(f))
-            } else {
-                None
-            },
-            fp_get_swapchain_gralloc_usage_ohos: if extensions.ohos_native_buffer {
-                instance
-                    .get_device_proc_addr(device, c"vkGetSwapchainGrallocUsageOHOS")
-                    .map(|f| mem::transmute(f))
-            } else {
-                None
-            },
-            fp_acquire_image_ohos: if extensions.ohos_native_buffer {
-                instance
-                    .get_device_proc_addr(device, c"vkAcquireImageOHOS")
-                    .map(|f| mem::transmute(f))
-            } else {
-                None
-            },
-            fp_queue_signal_release_image_ohos: if extensions.ohos_native_buffer {
-                instance
-                    .get_device_proc_addr(device, c"vkQueueSignalReleaseImageOHOS")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -24846,58 +24845,6 @@ impl Device {
         let err = (fp)(self.handle, p_info, p_buffer.as_mut_ptr());
         match err {
             vk::Result::SUCCESS => Ok(p_buffer.assume_init()),
-            _ => Err(err),
-        }
-    }
-    pub unsafe fn get_swapchain_gralloc_usage_ohos(
-        &self,
-        format: vk::Format,
-        image_usage: vk::ImageUsageFlags,
-    ) -> Result<u64> {
-        let fp = self
-            .fp_get_swapchain_gralloc_usage_ohos
-            .expect("vkGetSwapchainGrallocUsageOHOS is not loaded");
-        let mut gralloc_usage = MaybeUninit::<_>::uninit();
-        let err = (fp)(self.handle, format, image_usage, gralloc_usage.as_mut_ptr());
-        match err {
-            vk::Result::SUCCESS => Ok(gralloc_usage.assume_init()),
-            _ => Err(err),
-        }
-    }
-    pub unsafe fn acquire_image_ohos(
-        &self,
-        image: vk::Image,
-        native_fence_fd: i32,
-        semaphore: vk::Semaphore,
-        fence: vk::Fence,
-    ) -> Result<()> {
-        let fp = self.fp_acquire_image_ohos.expect("vkAcquireImageOHOS is not loaded");
-        let err = (fp)(self.handle, image, native_fence_fd, semaphore, fence);
-        match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        }
-    }
-    pub unsafe fn queue_signal_release_image_ohos(
-        &self,
-        queue: vk::Queue,
-        p_wait_semaphores: &[vk::Semaphore],
-        image: vk::Image,
-    ) -> Result<i32> {
-        let fp = self
-            .fp_queue_signal_release_image_ohos
-            .expect("vkQueueSignalReleaseImageOHOS is not loaded");
-        let wait_semaphore_count = p_wait_semaphores.len() as u32;
-        let mut p_native_fence_fd = MaybeUninit::<_>::uninit();
-        let err = (fp)(
-            queue,
-            wait_semaphore_count,
-            p_wait_semaphores.as_ptr(),
-            image,
-            p_native_fence_fd.as_mut_ptr(),
-        );
-        match err {
-            vk::Result::SUCCESS => Ok(p_native_fence_fd.assume_init()),
             _ => Err(err),
         }
     }
