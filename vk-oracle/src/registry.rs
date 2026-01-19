@@ -33,6 +33,7 @@ impl IsVulkanApi for vk::ExtensionChild {
         match self {
             vk::ExtensionChild::Require { api, .. } => api,
             vk::ExtensionChild::Remove { api, .. } => api,
+            vk::ExtensionChild::Deprecate { api, .. } => api,
             _ => unimplemented!(),
         }
         .as_deref()
