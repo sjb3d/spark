@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.337
+//! Generated from vk.xml version 1.4.338
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -11098,173 +11098,7 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentTimingFeaturesEXT 
 impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentTimingFeaturesEXTBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePresentTimingFeaturesEXT {}
 impl DeviceCreateInfoNext for PhysicalDevicePresentTimingFeaturesEXTBuilder {}
-
-#[repr(transparent)]
-#[derive(Default)]
-pub struct PresentTimingSurfaceCapabilitiesEXTBuilder {
-    inner: vk::PresentTimingSurfaceCapabilitiesEXT,
-}
-impl Builder<'_> for vk::PresentTimingSurfaceCapabilitiesEXT {
-    type Type = PresentTimingSurfaceCapabilitiesEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl PresentTimingSurfaceCapabilitiesEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::PresentTimingSurfaceCapabilitiesEXT {
-        &mut self.inner
-    }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn present_timing_supported(mut self, present_timing_supported: bool) -> Self {
-        self.inner.present_timing_supported = if present_timing_supported { vk::TRUE } else { vk::FALSE };
-        self
-    }
-    pub fn present_at_absolute_time_supported(mut self, present_at_absolute_time_supported: bool) -> Self {
-        self.inner.present_at_absolute_time_supported = if present_at_absolute_time_supported {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn present_at_relative_time_supported(mut self, present_at_relative_time_supported: bool) -> Self {
-        self.inner.present_at_relative_time_supported = if present_at_relative_time_supported {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn present_stage_queries(mut self, present_stage_queries: vk::PresentStageFlagsEXT) -> Self {
-        self.inner.present_stage_queries = present_stage_queries;
-        self
-    }
-}
-impl Deref for PresentTimingSurfaceCapabilitiesEXTBuilder {
-    type Target = vk::PresentTimingSurfaceCapabilitiesEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
 impl SurfaceCapabilities2KHRNext for vk::PresentTimingSurfaceCapabilitiesEXT {}
-impl SurfaceCapabilities2KHRNext for PresentTimingSurfaceCapabilitiesEXTBuilder {}
-
-#[repr(transparent)]
-#[derive(Default)]
-pub struct SwapchainTimingPropertiesEXTBuilder {
-    inner: vk::SwapchainTimingPropertiesEXT,
-}
-impl Builder<'_> for vk::SwapchainTimingPropertiesEXT {
-    type Type = SwapchainTimingPropertiesEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl SwapchainTimingPropertiesEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::SwapchainTimingPropertiesEXT {
-        &mut self.inner
-    }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn refresh_duration(mut self, refresh_duration: u64) -> Self {
-        self.inner.refresh_duration = refresh_duration;
-        self
-    }
-    pub fn refresh_interval(mut self, refresh_interval: u64) -> Self {
-        self.inner.refresh_interval = refresh_interval;
-        self
-    }
-}
-impl Deref for SwapchainTimingPropertiesEXTBuilder {
-    type Target = vk::SwapchainTimingPropertiesEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-
-#[repr(transparent)]
-#[derive(Default)]
-pub struct SwapchainTimeDomainPropertiesEXTBuilder<'a> {
-    inner: vk::SwapchainTimeDomainPropertiesEXT,
-    phantom: PhantomData<&'a ()>,
-}
-impl<'a> Builder<'a> for vk::SwapchainTimeDomainPropertiesEXT {
-    type Type = SwapchainTimeDomainPropertiesEXTBuilder<'a>;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl<'a> SwapchainTimeDomainPropertiesEXTBuilder<'a> {
-    pub fn get_mut(&mut self) -> &mut vk::SwapchainTimeDomainPropertiesEXT {
-        &mut self.inner
-    }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn p_time_domains(
-        mut self,
-        p_time_domains: Option<&'a mut [vk::TimeDomainKHR]>,
-        p_time_domain_ids: Option<&'a mut [u64]>,
-    ) -> Self {
-        self.inner.time_domain_count = p_time_domains
-            .as_ref()
-            .map(|s| s.len() as u32)
-            .or(p_time_domain_ids.as_ref().map(|s| s.len() as u32))
-            .unwrap_or(0);
-        if let Some(len) = p_time_domains.as_ref().map(|s| s.len()) {
-            assert_eq!(self.inner.time_domain_count, len as u32);
-        }
-        if let Some(len) = p_time_domain_ids.as_ref().map(|s| s.len()) {
-            assert_eq!(self.inner.time_domain_count, len as u32);
-        }
-        self.inner.p_time_domains = p_time_domains.map_or(ptr::null_mut(), |s| s.as_mut_ptr());
-        self.inner.p_time_domain_ids = p_time_domain_ids.map_or(ptr::null_mut(), |s| s.as_mut_ptr());
-        self
-    }
-}
-impl<'a> Deref for SwapchainTimeDomainPropertiesEXTBuilder<'a> {
-    type Target = vk::SwapchainTimeDomainPropertiesEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-
-#[repr(transparent)]
-#[derive(Default)]
-pub struct PresentStageTimeEXTBuilder {
-    inner: vk::PresentStageTimeEXT,
-}
-impl Builder<'_> for vk::PresentStageTimeEXT {
-    type Type = PresentStageTimeEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl PresentStageTimeEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::PresentStageTimeEXT {
-        &mut self.inner
-    }
-    pub fn stage(mut self, stage: vk::PresentStageFlagsEXT) -> Self {
-        self.inner.stage = stage;
-        self
-    }
-    pub fn time(mut self, time: u64) -> Self {
-        self.inner.time = time;
-        self
-    }
-}
-impl Deref for PresentStageTimeEXTBuilder {
-    type Target = vk::PresentStageTimeEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -11296,100 +11130,6 @@ impl PastPresentationTimingInfoEXTBuilder {
 }
 impl Deref for PastPresentationTimingInfoEXTBuilder {
     type Target = vk::PastPresentationTimingInfoEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-
-#[repr(transparent)]
-#[derive(Default)]
-pub struct PastPresentationTimingPropertiesEXTBuilder<'a> {
-    inner: vk::PastPresentationTimingPropertiesEXT,
-    phantom: PhantomData<&'a ()>,
-}
-impl<'a> Builder<'a> for vk::PastPresentationTimingPropertiesEXT {
-    type Type = PastPresentationTimingPropertiesEXTBuilder<'a>;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl<'a> PastPresentationTimingPropertiesEXTBuilder<'a> {
-    pub fn get_mut(&mut self) -> &mut vk::PastPresentationTimingPropertiesEXT {
-        &mut self.inner
-    }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn timing_properties_counter(mut self, timing_properties_counter: u64) -> Self {
-        self.inner.timing_properties_counter = timing_properties_counter;
-        self
-    }
-    pub fn time_domains_counter(mut self, time_domains_counter: u64) -> Self {
-        self.inner.time_domains_counter = time_domains_counter;
-        self
-    }
-    pub fn p_presentation_timings(mut self, p_presentation_timings: &'a mut [vk::PastPresentationTimingEXT]) -> Self {
-        self.inner.presentation_timing_count = p_presentation_timings.len() as u32;
-        self.inner.p_presentation_timings = p_presentation_timings.as_mut_ptr();
-        self
-    }
-}
-impl<'a> Deref for PastPresentationTimingPropertiesEXTBuilder<'a> {
-    type Target = vk::PastPresentationTimingPropertiesEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-
-#[repr(transparent)]
-#[derive(Default)]
-pub struct PastPresentationTimingEXTBuilder<'a> {
-    inner: vk::PastPresentationTimingEXT,
-    phantom: PhantomData<&'a ()>,
-}
-impl<'a> Builder<'a> for vk::PastPresentationTimingEXT {
-    type Type = PastPresentationTimingEXTBuilder<'a>;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl<'a> PastPresentationTimingEXTBuilder<'a> {
-    pub fn get_mut(&mut self) -> &mut vk::PastPresentationTimingEXT {
-        &mut self.inner
-    }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn present_id(mut self, present_id: u64) -> Self {
-        self.inner.present_id = present_id;
-        self
-    }
-    pub fn target_time(mut self, target_time: u64) -> Self {
-        self.inner.target_time = target_time;
-        self
-    }
-    pub fn p_present_stages(mut self, p_present_stages: &'a mut [vk::PresentStageTimeEXT]) -> Self {
-        self.inner.present_stage_count = p_present_stages.len() as u32;
-        self.inner.p_present_stages = p_present_stages.as_mut_ptr();
-        self
-    }
-    pub fn time_domain(mut self, time_domain: vk::TimeDomainKHR) -> Self {
-        self.inner.time_domain = time_domain;
-        self
-    }
-    pub fn time_domain_id(mut self, time_domain_id: u64) -> Self {
-        self.inner.time_domain_id = time_domain_id;
-        self
-    }
-    pub fn report_complete(mut self, report_complete: bool) -> Self {
-        self.inner.report_complete = if report_complete { vk::TRUE } else { vk::FALSE };
-        self
-    }
-}
-impl<'a> Deref for PastPresentationTimingEXTBuilder<'a> {
-    type Target = vk::PastPresentationTimingEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -40409,45 +40149,6 @@ impl Deref for DataGraphPipelineSessionBindPointRequirementsInfoARMBuilder {
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct DataGraphPipelineSessionBindPointRequirementARMBuilder {
-    inner: vk::DataGraphPipelineSessionBindPointRequirementARM,
-}
-impl Builder<'_> for vk::DataGraphPipelineSessionBindPointRequirementARM {
-    type Type = DataGraphPipelineSessionBindPointRequirementARMBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl DataGraphPipelineSessionBindPointRequirementARMBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineSessionBindPointRequirementARM {
-        &mut self.inner
-    }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn bind_point(mut self, bind_point: vk::DataGraphPipelineSessionBindPointARM) -> Self {
-        self.inner.bind_point = bind_point;
-        self
-    }
-    pub fn bind_point_type(mut self, bind_point_type: vk::DataGraphPipelineSessionBindPointTypeARM) -> Self {
-        self.inner.bind_point_type = bind_point_type;
-        self
-    }
-    pub fn num_objects(mut self, num_objects: u32) -> Self {
-        self.inner.num_objects = num_objects;
-        self
-    }
-}
-impl Deref for DataGraphPipelineSessionBindPointRequirementARMBuilder {
-    type Target = vk::DataGraphPipelineSessionBindPointRequirementARM;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-
-#[repr(transparent)]
-#[derive(Default)]
 pub struct DataGraphPipelineSessionMemoryRequirementsInfoARMBuilder {
     inner: vk::DataGraphPipelineSessionMemoryRequirementsInfoARM,
 }
@@ -40579,7 +40280,7 @@ impl<'a> DataGraphPipelinePropertyQueryResultARMBuilder<'a> {
     pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelinePropertyQueryResultARM {
         &mut self.inner
     }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -40738,41 +40439,6 @@ impl Deref for PhysicalDeviceDataGraphOperationSupportARMBuilder {
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct QueueFamilyDataGraphPropertiesARMBuilder {
-    inner: vk::QueueFamilyDataGraphPropertiesARM,
-}
-impl Builder<'_> for vk::QueueFamilyDataGraphPropertiesARM {
-    type Type = QueueFamilyDataGraphPropertiesARMBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl QueueFamilyDataGraphPropertiesARMBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::QueueFamilyDataGraphPropertiesARM {
-        &mut self.inner
-    }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn engine(mut self, engine: vk::PhysicalDeviceDataGraphProcessingEngineARM) -> Self {
-        self.inner.engine = engine;
-        self
-    }
-    pub fn operation(mut self, operation: vk::PhysicalDeviceDataGraphOperationSupportARM) -> Self {
-        self.inner.operation = operation;
-        self
-    }
-}
-impl Deref for QueueFamilyDataGraphPropertiesARMBuilder {
-    type Target = vk::QueueFamilyDataGraphPropertiesARM;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-
-#[repr(transparent)]
-#[derive(Default)]
 pub struct PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARMBuilder {
     inner: vk::PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM,
 }
@@ -40801,47 +40467,6 @@ impl PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARMBuilder {
 }
 impl Deref for PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARMBuilder {
     type Target = vk::PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-
-#[repr(transparent)]
-#[derive(Default)]
-pub struct QueueFamilyDataGraphProcessingEnginePropertiesARMBuilder {
-    inner: vk::QueueFamilyDataGraphProcessingEnginePropertiesARM,
-}
-impl Builder<'_> for vk::QueueFamilyDataGraphProcessingEnginePropertiesARM {
-    type Type = QueueFamilyDataGraphProcessingEnginePropertiesARMBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl QueueFamilyDataGraphProcessingEnginePropertiesARMBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::QueueFamilyDataGraphProcessingEnginePropertiesARM {
-        &mut self.inner
-    }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn foreign_semaphore_handle_types(
-        mut self,
-        foreign_semaphore_handle_types: vk::ExternalSemaphoreHandleTypeFlags,
-    ) -> Self {
-        self.inner.foreign_semaphore_handle_types = foreign_semaphore_handle_types;
-        self
-    }
-    pub fn foreign_memory_handle_types(
-        mut self,
-        foreign_memory_handle_types: vk::ExternalMemoryHandleTypeFlags,
-    ) -> Self {
-        self.inner.foreign_memory_handle_types = foreign_memory_handle_types;
-        self
-    }
-}
-impl Deref for QueueFamilyDataGraphProcessingEnginePropertiesARMBuilder {
-    type Target = vk::QueueFamilyDataGraphProcessingEnginePropertiesARM;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

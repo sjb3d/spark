@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.337
+//! Generated from vk.xml version 1.4.338
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -51834,7 +51834,7 @@ impl fmt::Debug for DataGraphPipelineSessionBindPointRequirementsInfoARM {
 #[derive(Copy, Clone)]
 pub struct DataGraphPipelineSessionBindPointRequirementARM {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub bind_point: DataGraphPipelineSessionBindPointARM,
     pub bind_point_type: DataGraphPipelineSessionBindPointTypeARM,
     pub num_objects: u32,
@@ -51845,7 +51845,7 @@ impl Default for DataGraphPipelineSessionBindPointRequirementARM {
     fn default() -> Self {
         Self {
             s_type: StructureType::DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_REQUIREMENT_ARM,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             bind_point: Default::default(),
             bind_point_type: Default::default(),
             num_objects: Default::default(),
@@ -51970,7 +51970,7 @@ impl fmt::Debug for DataGraphPipelineInfoARM {
 #[derive(Copy, Clone)]
 pub struct DataGraphPipelinePropertyQueryResultARM {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub property: DataGraphPipelinePropertyARM,
     pub is_text: Bool32,
     pub data_size: usize,
@@ -51982,7 +51982,7 @@ impl Default for DataGraphPipelinePropertyQueryResultARM {
     fn default() -> Self {
         Self {
             s_type: StructureType::DATA_GRAPH_PIPELINE_PROPERTY_QUERY_RESULT_ARM,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             property: Default::default(),
             is_text: Default::default(),
             data_size: Default::default(),
@@ -52099,7 +52099,7 @@ impl fmt::Debug for PhysicalDeviceDataGraphOperationSupportARM {
 #[derive(Copy, Clone)]
 pub struct QueueFamilyDataGraphPropertiesARM {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub engine: PhysicalDeviceDataGraphProcessingEngineARM,
     pub operation: PhysicalDeviceDataGraphOperationSupportARM,
 }
@@ -52109,7 +52109,7 @@ impl Default for QueueFamilyDataGraphPropertiesARM {
     fn default() -> Self {
         Self {
             s_type: StructureType::QUEUE_FAMILY_DATA_GRAPH_PROPERTIES_ARM,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             engine: Default::default(),
             operation: Default::default(),
         }
@@ -52161,7 +52161,7 @@ impl fmt::Debug for PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM {
 #[derive(Copy, Clone)]
 pub struct QueueFamilyDataGraphProcessingEnginePropertiesARM {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub foreign_semaphore_handle_types: ExternalSemaphoreHandleTypeFlags,
     pub foreign_memory_handle_types: ExternalMemoryHandleTypeFlags,
 }
@@ -52171,7 +52171,7 @@ impl Default for QueueFamilyDataGraphProcessingEnginePropertiesARM {
     fn default() -> Self {
         Self {
             s_type: StructureType::QUEUE_FAMILY_DATA_GRAPH_PROCESSING_ENGINE_PROPERTIES_ARM,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             foreign_semaphore_handle_types: Default::default(),
             foreign_memory_handle_types: Default::default(),
         }

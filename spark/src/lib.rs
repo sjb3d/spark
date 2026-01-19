@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.337
+//! Generated from vk.xml version 1.4.338
 
 #![allow(
     clippy::too_many_arguments,
@@ -24672,7 +24672,7 @@ impl Device {
         p_info: &vk::DataGraphPipelineSessionBindPointRequirementsInfoARM,
         p_bind_point_requirement_count: &mut u32,
         p_bind_point_requirements: *mut vk::DataGraphPipelineSessionBindPointRequirementARM,
-    ) -> Result<vk::Result> {
+    ) -> Result<EnumerateResult> {
         let fp = self
             .fp_get_data_graph_pipeline_session_bind_point_requirements_arm
             .expect("vkGetDataGraphPipelineSessionBindPointRequirementsARM is not loaded");
@@ -24683,9 +24683,18 @@ impl Device {
             p_bind_point_requirements,
         );
         match err {
-            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            vk::Result::SUCCESS => Ok(EnumerateResult::Success),
+            vk::Result::INCOMPLETE => Ok(EnumerateResult::Incomplete),
             _ => Err(err),
         }
+    }
+    pub unsafe fn get_data_graph_pipeline_session_bind_point_requirements_arm_to_vec(
+        &self,
+        p_info: &vk::DataGraphPipelineSessionBindPointRequirementsInfoARM,
+    ) -> Result<Vec<vk::DataGraphPipelineSessionBindPointRequirementARM>> {
+        enumerate_generic_to_vec(|len, ptr| {
+            self.get_data_graph_pipeline_session_bind_point_requirements_arm(p_info, len, ptr)
+        })
     }
     pub unsafe fn get_data_graph_pipeline_session_memory_requirements_arm(
         &self,
@@ -24790,7 +24799,7 @@ impl Device {
         queue_family_index: u32,
         p_queue_family_data_graph_property_count: &mut u32,
         p_queue_family_data_graph_properties: *mut vk::QueueFamilyDataGraphPropertiesARM,
-    ) -> Result<vk::Result> {
+    ) -> Result<EnumerateResult> {
         let fp = self
             .fp_get_physical_device_queue_family_data_graph_properties_arm
             .expect("vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM is not loaded");
@@ -24801,9 +24810,24 @@ impl Device {
             p_queue_family_data_graph_properties,
         );
         match err {
-            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            vk::Result::SUCCESS => Ok(EnumerateResult::Success),
+            vk::Result::INCOMPLETE => Ok(EnumerateResult::Incomplete),
             _ => Err(err),
         }
+    }
+    pub unsafe fn get_physical_device_queue_family_data_graph_properties_arm_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+    ) -> Result<Vec<vk::QueueFamilyDataGraphPropertiesARM>> {
+        enumerate_generic_to_vec(|len, ptr| {
+            self.get_physical_device_queue_family_data_graph_properties_arm(
+                physical_device,
+                queue_family_index,
+                len,
+                ptr,
+            )
+        })
     }
     pub unsafe fn get_physical_device_queue_family_data_graph_processing_engine_properties_arm(
         &self,

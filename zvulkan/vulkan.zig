@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.337
+// Generated from vk.xml version 1.4.338
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -15326,7 +15326,7 @@ pub const DataGraphPipelineSessionBindPointRequirementsInfoARM = extern struct {
 };
 pub const DataGraphPipelineSessionBindPointRequirementARM = extern struct {
     s_type: StructureType = .data_graph_pipeline_session_bind_point_requirement_arm,
-    p_next: ?*const anyopaque = null,
+    p_next: ?*anyopaque = null,
     bind_point: DataGraphPipelineSessionBindPointARM = @enumFromInt(0),
     bind_point_type: DataGraphPipelineSessionBindPointTypeARM = @enumFromInt(0),
     num_objects: u32 = 0,
@@ -15354,7 +15354,7 @@ pub const DataGraphPipelineInfoARM = extern struct {
 };
 pub const DataGraphPipelinePropertyQueryResultARM = extern struct {
     s_type: StructureType = .data_graph_pipeline_property_query_result_arm,
-    p_next: ?*const anyopaque = null,
+    p_next: ?*anyopaque = null,
     property: DataGraphPipelinePropertyARM = @enumFromInt(0),
     is_text: Bool32 = .false,
     data_size: usize = 0,
@@ -15382,7 +15382,7 @@ pub const PhysicalDeviceDataGraphOperationSupportARM = extern struct {
 };
 pub const QueueFamilyDataGraphPropertiesARM = extern struct {
     s_type: StructureType = .queue_family_data_graph_properties_arm,
-    p_next: ?*const anyopaque = null,
+    p_next: ?*anyopaque = null,
     engine: PhysicalDeviceDataGraphProcessingEngineARM = .{},
     operation: PhysicalDeviceDataGraphOperationSupportARM = .{},
 };
@@ -15394,7 +15394,7 @@ pub const PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM = extern str
 };
 pub const QueueFamilyDataGraphProcessingEnginePropertiesARM = extern struct {
     s_type: StructureType = .queue_family_data_graph_processing_engine_properties_arm,
-    p_next: ?*const anyopaque = null,
+    p_next: ?*anyopaque = null,
     foreign_semaphore_handle_types: ExternalSemaphoreHandleTypeFlags = .none,
     foreign_memory_handle_types: ExternalMemoryHandleTypeFlags = .none,
 };
@@ -35936,6 +35936,28 @@ pub const DeviceCommands = struct {
             else => return error.Unexpected,
         }
     }
+    pub const GetDataGraphPipelineSessionBindPointRequirementsARMOrAllocatorError = GetDataGraphPipelineSessionBindPointRequirementsARMError || Allocator.Error;
+    pub fn get_data_graph_pipeline_session_bind_point_requirements_arm_to_array(
+        self: DeviceCommands,
+        allocator: Allocator,
+        p_info: *const DataGraphPipelineSessionBindPointRequirementsInfoARM,
+    ) GetDataGraphPipelineSessionBindPointRequirementsARMOrAllocatorError![]DataGraphPipelineSessionBindPointRequirementARM {
+        const enumerator = struct {
+            self: *const DeviceCommands,
+            p_info: *const DataGraphPipelineSessionBindPointRequirementsInfoARM,
+            pub fn enumerate(enumerator: @This(), len: *u32, elements: ?[*]DataGraphPipelineSessionBindPointRequirementARM) !EnumerateResult {
+                return enumerator.self.get_data_graph_pipeline_session_bind_point_requirements_arm(
+                    enumerator.p_info,
+                    len,
+                    elements,
+                );
+            }
+        }{
+            .self = &self,
+            .p_info = p_info,
+        };
+        return enumerate_generic_to_array(GetDataGraphPipelineSessionBindPointRequirementsARMOrAllocatorError, DataGraphPipelineSessionBindPointRequirementARM, enumerator, allocator);
+    }
     pub fn get_data_graph_pipeline_session_memory_requirements_arm(
         self: DeviceCommands,
         p_info: *const DataGraphPipelineSessionMemoryRequirementsInfoARM,
@@ -36070,6 +36092,32 @@ pub const DeviceCommands = struct {
             .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,
         }
+    }
+    pub const GetPhysicalDeviceQueueFamilyDataGraphPropertiesARMOrAllocatorError = GetPhysicalDeviceQueueFamilyDataGraphPropertiesARMError || Allocator.Error;
+    pub fn get_physical_device_queue_family_data_graph_properties_arm_to_array(
+        self: DeviceCommands,
+        allocator: Allocator,
+        physical_device: PhysicalDevice,
+        queue_family_index: u32,
+    ) GetPhysicalDeviceQueueFamilyDataGraphPropertiesARMOrAllocatorError![]QueueFamilyDataGraphPropertiesARM {
+        const enumerator = struct {
+            self: *const DeviceCommands,
+            physical_device: PhysicalDevice,
+            queue_family_index: u32,
+            pub fn enumerate(enumerator: @This(), len: *u32, elements: ?[*]QueueFamilyDataGraphPropertiesARM) !EnumerateResult {
+                return enumerator.self.get_physical_device_queue_family_data_graph_properties_arm(
+                    enumerator.physical_device,
+                    enumerator.queue_family_index,
+                    len,
+                    elements,
+                );
+            }
+        }{
+            .self = &self,
+            .physical_device = physical_device,
+            .queue_family_index = queue_family_index,
+        };
+        return enumerate_generic_to_array(GetPhysicalDeviceQueueFamilyDataGraphPropertiesARMOrAllocatorError, QueueFamilyDataGraphPropertiesARM, enumerator, allocator);
     }
     pub fn get_physical_device_queue_family_data_graph_processing_engine_properties_arm(
         self: DeviceCommands,
