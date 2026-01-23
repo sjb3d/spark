@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.338
+// Generated from vk.xml version 1.4.339
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -18252,11 +18252,11 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn supports_khr_present_id(self: InstanceExtensions) bool {
-        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or (self.supports_khr_swapchain() and self.supports_khr_get_physical_device_properties2());
+        return self.supports_khr_swapchain() and (self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2());
     }
     pub fn enable_khr_present_id(self: *InstanceExtensions) void {
+        self.enable_khr_swapchain();
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
-            self.enable_khr_swapchain();
             self.enable_khr_get_physical_device_properties2();
         }
     }
@@ -23007,13 +23007,11 @@ pub const DeviceExtensions = packed struct {
     }
 
     pub fn supports_khr_present_id(self: DeviceExtensions) bool {
-        return self.khr_present_id and (self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_swapchain());
+        return self.khr_present_id and self.supports_khr_swapchain();
     }
     pub fn enable_khr_present_id(self: *DeviceExtensions) void {
         self.khr_present_id = true;
-        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
-            self.enable_khr_swapchain();
-        }
+        self.enable_khr_swapchain();
     }
 
     pub fn supports_ext_private_data(self: DeviceExtensions) bool {

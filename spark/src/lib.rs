@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.338
+//! Generated from vk.xml version 1.4.339
 
 #![allow(
     clippy::too_many_arguments,
@@ -1777,12 +1777,13 @@ impl InstanceExtensions {
         self.enable_khr_swapchain();
     }
     pub fn supports_khr_present_id(&self) -> bool {
-        self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
-            || (self.supports_khr_swapchain() && self.supports_khr_get_physical_device_properties2())
+        self.supports_khr_swapchain()
+            && (self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+                || self.supports_khr_get_physical_device_properties2())
     }
     pub fn enable_khr_present_id(&mut self) {
+        self.enable_khr_swapchain();
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
-            self.enable_khr_swapchain();
             self.enable_khr_get_physical_device_properties2();
         }
     }
@@ -8697,14 +8698,11 @@ impl DeviceExtensions {
         }
     }
     pub fn supports_khr_present_id(&self) -> bool {
-        self.khr_present_id
-            && (self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_swapchain())
+        self.khr_present_id && self.supports_khr_swapchain()
     }
     pub fn enable_khr_present_id(&mut self) {
         self.khr_present_id = true;
-        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
-            self.enable_khr_swapchain();
-        }
+        self.enable_khr_swapchain();
     }
     pub fn supports_ext_private_data(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 3, 0) || self.ext_private_data
