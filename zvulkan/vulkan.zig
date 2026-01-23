@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.339
+// Generated from vk.xml version 1.4.340
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -344,6 +344,7 @@ pub const DeviceCreateFlagBits = enum(u5) {
 pub const DeviceCreateFlags = BitField(DeviceCreateFlagBits);
 pub const DeviceQueueCreateFlagBits = enum(u5) {
     protected = 0,
+    internally_synchronized_khr = 2,
     _,
 };
 pub const DeviceQueueCreateFlags = BitField(DeviceQueueCreateFlagBits);
@@ -428,6 +429,7 @@ pub const BufferUsageFlagBits = enum(u5) {
     transform_feedback_counter_buffer_ext = 12,
     conditional_rendering_ext = 9,
     execution_graph_scratch_amdx = 25,
+    descriptor_heap_ext = 28,
     acceleration_structure_build_input_read_only_khr = 19,
     acceleration_structure_storage_khr = 20,
     shader_binding_table_khr = 10,
@@ -509,9 +511,9 @@ pub const ImageCreateFlagBits = enum(u5) {
     protected = 11,
     disjoint = 9,
     corner_sampled_nv = 13,
+    descriptor_heap_capture_replay_ext = 16,
     sample_locations_compatible_depth_ext = 12,
     subsampled_ext = 14,
-    descriptor_buffer_capture_replay_ext = 16,
     multisampled_render_to_single_sampled_ext = 18,
     @"2d_view_compatible_ext" = 17,
     fragment_density_map_offset_ext = 15,
@@ -830,7 +832,7 @@ pub const SubgroupFeatureFlagBits = enum(u5) {
     quad = 7,
     rotate = 9,
     rotate_clustered = 10,
-    partitioned_nv = 8,
+    partitioned_ext = 8,
     _,
 };
 pub const SubgroupFeatureFlags = BitField(SubgroupFeatureFlagBits);
@@ -984,6 +986,8 @@ pub const AccessFlagBits2 = enum(u6) {
     shader_sampled_read = 32,
     shader_storage_read = 33,
     shader_storage_write = 34,
+    sampler_heap_read_ext = 57,
+    resource_heap_read_ext = 58,
     shader_tile_attachment_read_qcom = 51,
     shader_tile_attachment_write_qcom = 52,
     transform_feedback_write_ext = 25,
@@ -1186,6 +1190,7 @@ pub const PipelineCreateFlagBits2 = enum(u6) {
     no_protected_access = 27,
     protected_access_only = 30,
     execution_graph_amdx = 32,
+    descriptor_heap_ext = 36,
     ray_tracing_allow_spheres_and_linear_swept_spheres_nv = 33,
     enable_legacy_dithering_ext = 34,
     defer_compile_nv = 5,
@@ -1231,6 +1236,7 @@ pub const BufferUsageFlagBits2 = enum(u6) {
     indirect_buffer = 8,
     shader_device_address = 17,
     execution_graph_scratch_amdx = 25,
+    descriptor_heap_ext = 28,
     conditional_rendering_ext = 9,
     shader_binding_table_khr = 10,
     transform_feedback_buffer_ext = 11,
@@ -1261,6 +1267,7 @@ pub const AddressCopyFlagsKHR = BitField(AddressCopyFlagBitsKHR);
 pub const TensorCreateFlagBitsARM = enum(u6) {
     mutable_format = 0,
     protected = 1,
+    descriptor_heap_capture_replay = 3,
     descriptor_buffer_capture_replay = 2,
     _,
 };
@@ -1288,6 +1295,23 @@ pub const DataGraphPipelineDispatchFlagBitsARM = enum(u6) {
     _,
 };
 pub const DataGraphPipelineDispatchFlagsARM = BitField(DataGraphPipelineDispatchFlagBitsARM);
+pub const SpirvResourceTypeFlagBitsEXT = enum(u5) {
+    sampler = 0,
+    sampled_image = 1,
+    read_only_image = 2,
+    read_write_image = 3,
+    combined_sampled_image = 4,
+    uniform_buffer = 5,
+    read_only_storage_buffer = 6,
+    read_write_storage_buffer = 7,
+    acceleration_structure = 8,
+    tensor_arm = 9,
+    _,
+};
+pub const SpirvResourceTypeFlagsEXT = BitField(SpirvResourceTypeFlagBitsEXT);
+pub const SpirvResourceTypeFlagMasksEXT = struct {
+    pub const all = SpirvResourceTypeFlagsEXT{ .bits = 0x7fffffff };
+};
 pub const CompositeAlphaFlagBitsKHR = enum(u5) {
     @"opaque" = 0,
     pre_multiplied = 1,
@@ -1802,6 +1826,7 @@ pub const PresentGravityFlagsKHR = BitField(PresentGravityFlagBitsKHR);
 pub const PresentGravityFlagsEXT = PresentGravityFlagsKHR;
 pub const ShaderCreateFlagBitsEXT = enum(u5) {
     link_stage = 0,
+    descriptor_heap = 10,
     allow_varying_subgroup_size = 1,
     require_full_subgroups = 2,
     no_task_shader = 3,
@@ -2514,6 +2539,8 @@ pub const IndirectCommandsTokenTypeEXT = enum(i32) {
     draw_indexed_count = 7,
     draw_count = 8,
     dispatch = 9,
+    push_data = 1000135000,
+    push_data_sequence_index = 1000135001,
     draw_mesh_tasks_nv = 1000202002,
     draw_mesh_tasks_count_nv = 1000202003,
     draw_mesh_tasks = 1000328000,
@@ -3051,6 +3078,21 @@ pub const StructureType = enum(i32) {
     execution_graph_pipeline_scratch_size_amdx = 1000134002,
     execution_graph_pipeline_create_info_amdx = 1000134003,
     pipeline_shader_stage_node_create_info_amdx = 1000134004,
+    texel_buffer_descriptor_info_ext = 1000135000,
+    image_descriptor_info_ext = 1000135001,
+    resource_descriptor_info_ext = 1000135002,
+    bind_heap_info_ext = 1000135003,
+    push_data_info_ext = 1000135004,
+    descriptor_set_and_binding_mapping_ext = 1000135005,
+    shader_descriptor_set_and_binding_mapping_info_ext = 1000135006,
+    opaque_capture_data_create_info_ext = 1000135007,
+    physical_device_descriptor_heap_properties_ext = 1000135008,
+    physical_device_descriptor_heap_features_ext = 1000135009,
+    command_buffer_inheritance_descriptor_heap_info_ext = 1000135010,
+    sampler_custom_border_color_index_create_info_ext = 1000135011,
+    indirect_commands_layout_push_data_token_nv = 1000135012,
+    subsampled_image_format_properties_ext = 1000135013,
+    physical_device_descriptor_heap_tensor_properties_arm = 1000135014,
     attachment_sample_count_info_amd = 1000044008,
     physical_device_shader_bfloat16_features_khr = 1000141000,
     sample_locations_info_ext = 1000143000,
@@ -3512,6 +3554,7 @@ pub const StructureType = enum(i32) {
     physical_device_shader_core_builtins_properties_arm = 1000497001,
     physical_device_pipeline_library_group_handles_features_ext = 1000498000,
     physical_device_dynamic_rendering_unused_attachments_features_ext = 1000499000,
+    physical_device_internally_synchronized_queues_features_khr = 1000504000,
     latency_sleep_mode_info_nv = 1000505000,
     latency_sleep_info_nv = 1000505001,
     set_latency_marker_info_nv = 1000505002,
@@ -3630,6 +3673,9 @@ pub const StructureType = enum(i32) {
     physical_device_image_alignment_control_properties_mesa = 1000575001,
     image_alignment_control_create_info_mesa = 1000575002,
     physical_device_shader_fma_features_khr = 1000579000,
+    push_constant_bank_info_nv = 1000580000,
+    physical_device_push_constant_bank_features_nv = 1000580001,
+    physical_device_push_constant_bank_properties_nv = 1000580002,
     physical_device_ray_tracing_invocation_reorder_features_ext = 1000581000,
     physical_device_ray_tracing_invocation_reorder_properties_ext = 1000581001,
     physical_device_depth_clamp_control_features_ext = 1000582000,
@@ -3684,6 +3730,7 @@ pub const StructureType = enum(i32) {
     physical_device_shader_uniform_buffer_unsized_array_features_ext = 1000642000,
     compute_occupancy_priority_parameters_nv = 1000645000,
     physical_device_compute_occupancy_priority_features_nv = 1000645001,
+    physical_device_shader_subgroup_partitioned_features_ext = 1000662000,
     _,
 };
 pub const SystemAllocationScope = enum(i32) {
@@ -3817,6 +3864,7 @@ pub const IndirectCommandsTokenTypeNV = enum(i32) {
     draw_indexed = 5,
     draw = 6,
     draw_tasks = 7,
+    push_data = 1000135000,
     draw_mesh_tasks = 1000328000,
     pipeline = 1000428003,
     dispatch = 1000428004,
@@ -4287,6 +4335,20 @@ pub const DataGraphModelCacheTypeQCOM = enum(i32) {
     generic_binary = 0,
     _,
 };
+pub const DescriptorMappingSourceEXT = enum(i32) {
+    heap_with_constant_offset = 0,
+    heap_with_push_index = 1,
+    heap_with_indirect_index = 2,
+    heap_with_indirect_index_array = 3,
+    resource_heap_data = 4,
+    push_data = 5,
+    push_address = 6,
+    indirect_address = 7,
+    heap_with_shader_record_index = 8,
+    shader_record_data = 9,
+    shader_record_address = 10,
+    _,
+};
 pub const ColorSpaceKHR = enum(i32) {
     srgb_nonlinear = 0,
     display_p3_nonlinear_ext = 1000104001,
@@ -4750,6 +4812,7 @@ pub const DeviceCreateInfo = extern struct {
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
             inline *PhysicalDeviceDeviceGeneratedCommandsFeaturesNV,
+            *PhysicalDevicePushConstantBankFeaturesNV,
             *PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV,
             *DevicePrivateDataCreateInfo,
             *PhysicalDevicePrivateDataFeatures,
@@ -4930,6 +4993,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderCoreBuiltinsFeaturesARM,
             *PhysicalDeviceFrameBoundaryFeaturesEXT,
             *PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT,
+            *PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR,
             *PhysicalDeviceSwapchainMaintenance1FeaturesKHR,
             *PhysicalDeviceDepthBiasControlFeaturesEXT,
             *PhysicalDeviceRayTracingInvocationReorderFeaturesEXT,
@@ -4995,6 +5059,8 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceComputeOccupancyPriorityFeaturesNV,
             *PhysicalDeviceShaderLongVectorFeaturesEXT,
             *PhysicalDeviceTextureCompressionASTC3DFeaturesEXT,
+            *PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT,
+            *PhysicalDeviceDescriptorHeapFeaturesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -5332,6 +5398,7 @@ pub const ImageCreateInfo = extern struct {
             *OpticalFlowImageFormatInfoNV,
             *ImageAlignmentControlCreateInfoMESA,
             *ExternalFormatOHOS,
+            *OpaqueCaptureDataCreateInfoEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -5621,6 +5688,7 @@ pub const PipelineShaderStageCreateInfo = extern struct {
             *PipelineShaderStageModuleIdentifierCreateInfoEXT,
             *PipelineRobustnessCreateInfo,
             *PipelineShaderStageNodeCreateInfoAMDX,
+            *ShaderDescriptorSetAndBindingMappingInfoEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -6027,11 +6095,13 @@ pub const SamplerCreateInfo = extern struct {
         switch (@TypeOf(next)) {
             inline *SamplerYcbcrConversionInfo,
             *SamplerReductionModeCreateInfo,
+            *DebugUtilsObjectNameInfoEXT,
             *SamplerCustomBorderColorCreateInfoEXT,
             *SamplerBorderColorComponentMappingCreateInfoEXT,
             *OpaqueCaptureDescriptorDataCreateInfoEXT,
             *SamplerCubicWeightsCreateInfoQCOM,
             *SamplerBlockMatchWindowCreateInfoQCOM,
+            *SamplerCustomBorderColorIndexCreateInfoEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -6089,6 +6159,7 @@ pub const CommandBufferInheritanceInfo = extern struct {
             *RenderingInputAttachmentIndexInfo,
             *RenderPassTileShadingCreateInfoQCOM,
             *ExternalFormatOHOS,
+            *CommandBufferInheritanceDescriptorHeapInfoEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -6884,6 +6955,24 @@ pub const PhysicalDeviceDeviceGeneratedCommandsFeaturesNV = extern struct {
     p_next: ?*anyopaque = null,
     device_generated_commands: Bool32 = .false,
 };
+pub const PushConstantBankInfoNV = extern struct {
+    s_type: StructureType = .push_constant_bank_info_nv,
+    p_next: ?*const anyopaque = null,
+    bank: u32 = 0,
+};
+pub const PhysicalDevicePushConstantBankFeaturesNV = extern struct {
+    s_type: StructureType = .physical_device_push_constant_bank_features_nv,
+    p_next: ?*anyopaque = null,
+    push_constant_bank: Bool32 = .false,
+};
+pub const PhysicalDevicePushConstantBankPropertiesNV = extern struct {
+    s_type: StructureType = .physical_device_push_constant_bank_properties_nv,
+    p_next: ?*anyopaque = null,
+    max_graphics_push_constant_banks: u32 = 0,
+    max_compute_push_constant_banks: u32 = 0,
+    max_graphics_push_data_banks: u32 = 0,
+    max_compute_push_data_banks: u32 = 0,
+};
 pub const PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV = extern struct {
     s_type: StructureType = .physical_device_device_generated_commands_compute_features_nv,
     p_next: ?*anyopaque = null,
@@ -7107,6 +7196,17 @@ pub const IndirectCommandsLayoutTokenNV = extern struct {
     index_type_count: u32 = 0,
     p_index_types: ?[*]const IndexType = null,
     p_index_type_values: ?[*]const u32 = null,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *IndirectCommandsLayoutPushDataTokenNV,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const IndirectCommandsLayoutCreateInfoNV = extern struct {
     s_type: StructureType = .indirect_commands_layout_create_info_nv,
@@ -7160,6 +7260,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
             inline *PhysicalDeviceDeviceGeneratedCommandsFeaturesNV,
+            *PhysicalDevicePushConstantBankFeaturesNV,
             *PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV,
             *PhysicalDevicePrivateDataFeatures,
             *PhysicalDeviceClusterAccelerationStructureFeaturesNV,
@@ -7333,6 +7434,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderCoreBuiltinsFeaturesARM,
             *PhysicalDeviceFrameBoundaryFeaturesEXT,
             *PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT,
+            *PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR,
             *PhysicalDeviceSwapchainMaintenance1FeaturesKHR,
             *PhysicalDeviceDepthBiasControlFeaturesEXT,
             *PhysicalDeviceRayTracingInvocationReorderFeaturesEXT,
@@ -7396,6 +7498,8 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceComputeOccupancyPriorityFeaturesNV,
             *PhysicalDeviceShaderLongVectorFeaturesEXT,
             *PhysicalDeviceTextureCompressionASTC3DFeaturesEXT,
+            *PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT,
+            *PhysicalDeviceDescriptorHeapFeaturesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7412,7 +7516,8 @@ pub const PhysicalDeviceProperties2 = extern struct {
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
-            inline *PhysicalDeviceDeviceGeneratedCommandsPropertiesNV,
+            inline *PhysicalDevicePushConstantBankPropertiesNV,
+            *PhysicalDeviceDeviceGeneratedCommandsPropertiesNV,
             *PhysicalDeviceClusterAccelerationStructurePropertiesNV,
             *PhysicalDeviceMultiDrawPropertiesEXT,
             *PhysicalDevicePushDescriptorProperties,
@@ -7524,6 +7629,8 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceDescriptorBufferTensorPropertiesARM,
             *PhysicalDevicePerformanceCountersByRegionPropertiesARM,
             *PhysicalDeviceShaderLongVectorPropertiesEXT,
+            *PhysicalDeviceDescriptorHeapPropertiesEXT,
+            *PhysicalDeviceDescriptorHeapTensorPropertiesARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7569,6 +7676,7 @@ pub const ImageFormatProperties2 = extern struct {
             *HostImageCopyDevicePerformanceQuery,
             *ImageCompressionPropertiesEXT,
             *NativeBufferUsageOHOS,
+            *SubsampledImageFormatPropertiesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -12207,6 +12315,17 @@ pub const IndirectCommandsLayoutTokenEXT = extern struct {
     type: IndirectCommandsTokenTypeEXT = @enumFromInt(0),
     data: IndirectCommandsTokenDataEXT = .{ .p_push_constant = null },
     offset: u32 = 0,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *PushConstantBankInfoNV,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const DrawIndirectCountIndirectCommandEXT = extern struct {
     buffer_address: DeviceAddress = 0,
@@ -13974,6 +14093,11 @@ pub const PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT = extern st
     p_next: ?*anyopaque = null,
     dynamic_rendering_unused_attachments: Bool32 = .false,
 };
+pub const PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_internally_synchronized_queues_features_khr,
+    p_next: ?*anyopaque = null,
+    internally_synchronized_queues: Bool32 = .false,
+};
 pub const SurfacePresentModeKHR = extern struct {
     s_type: StructureType = .surface_present_mode_khr,
     p_next: ?*anyopaque = null,
@@ -14193,6 +14317,7 @@ pub const ShaderCreateInfoEXT = extern struct {
             inline *ValidationFeaturesEXT,
             *PipelineShaderStageRequiredSubgroupSizeCreateInfo,
             *CustomResolveCreateInfoEXT,
+            *ShaderDescriptorSetAndBindingMappingInfoEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -14384,6 +14509,7 @@ pub const PushConstantsInfo = extern struct {
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
             inline *PipelineLayoutCreateInfo,
+            *PushConstantBankInfoNV,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -15040,6 +15166,7 @@ pub const TensorCreateInfoARM = extern struct {
         switch (@TypeOf(next)) {
             inline *OpaqueCaptureDescriptorDataCreateInfoEXT,
             *ExternalMemoryTensorCreateInfoARM,
+            *OpaqueCaptureDataCreateInfoEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -15538,6 +15665,250 @@ pub const PhysicalDeviceTextureCompressionASTC3DFeaturesEXT = extern struct {
     p_next: ?*anyopaque = null,
     texture_compression_astc_3d: Bool32 = .false,
 };
+pub const PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_shader_subgroup_partitioned_features_ext,
+    p_next: ?*anyopaque = null,
+    shader_subgroup_partitioned: Bool32 = .false,
+};
+pub const HostAddressRangeEXT = extern struct {
+    address: ?*anyopaque = null,
+    size: usize = 0,
+};
+pub const HostAddressRangeConstEXT = extern struct {
+    address: ?*const anyopaque = null,
+    size: usize = 0,
+};
+pub const DeviceAddressRangeEXT = extern struct {
+    address: DeviceAddress = 0,
+    size: DeviceSize = 0,
+};
+pub const TexelBufferDescriptorInfoEXT = extern struct {
+    s_type: StructureType = .texel_buffer_descriptor_info_ext,
+    p_next: ?*const anyopaque = null,
+    format: Format = @enumFromInt(0),
+    address_range: DeviceAddressRangeEXT = .{},
+};
+pub const ImageDescriptorInfoEXT = extern struct {
+    s_type: StructureType = .image_descriptor_info_ext,
+    p_next: ?*const anyopaque = null,
+    p_view: ?*const ImageViewCreateInfo = null,
+    layout: ImageLayout = @enumFromInt(0),
+};
+pub const ResourceDescriptorDataEXT = extern union {
+    p_image: ?*const ImageDescriptorInfoEXT,
+    p_texel_buffer: ?*const TexelBufferDescriptorInfoEXT,
+    p_address_range: ?*const DeviceAddressRangeEXT,
+    p_tensor_arm: ?*const TensorViewCreateInfoARM,
+};
+pub const ResourceDescriptorInfoEXT = extern struct {
+    s_type: StructureType = .resource_descriptor_info_ext,
+    p_next: ?*const anyopaque = null,
+    type: DescriptorType = @enumFromInt(0),
+    data: ResourceDescriptorDataEXT = .{ .p_image = null },
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *DebugUtilsObjectNameInfoEXT,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
+};
+pub const BindHeapInfoEXT = extern struct {
+    s_type: StructureType = .bind_heap_info_ext,
+    p_next: ?*const anyopaque = null,
+    heap_range: DeviceAddressRangeEXT = .{},
+    reserved_range_offset: DeviceSize = 0,
+    reserved_range_size: DeviceSize = 0,
+};
+pub const PushDataInfoEXT = extern struct {
+    s_type: StructureType = .push_data_info_ext,
+    p_next: ?*const anyopaque = null,
+    offset: u32 = 0,
+    data: HostAddressRangeConstEXT = .{},
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *PushConstantBankInfoNV,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
+};
+pub const DescriptorMappingSourceConstantOffsetEXT = extern struct {
+    heap_offset: u32 = 0,
+    heap_array_stride: u32 = 0,
+    p_embedded_sampler: ?*const SamplerCreateInfo = null,
+    sampler_heap_offset: u32 = 0,
+    sampler_heap_array_stride: u32 = 0,
+};
+pub const DescriptorMappingSourcePushIndexEXT = extern struct {
+    heap_offset: u32 = 0,
+    push_offset: u32 = 0,
+    heap_index_stride: u32 = 0,
+    heap_array_stride: u32 = 0,
+    p_embedded_sampler: ?*const SamplerCreateInfo = null,
+    use_combined_image_sampler_index: Bool32 = .false,
+    sampler_heap_offset: u32 = 0,
+    sampler_push_offset: u32 = 0,
+    sampler_heap_index_stride: u32 = 0,
+    sampler_heap_array_stride: u32 = 0,
+};
+pub const DescriptorMappingSourceIndirectIndexEXT = extern struct {
+    heap_offset: u32 = 0,
+    push_offset: u32 = 0,
+    address_offset: u32 = 0,
+    heap_index_stride: u32 = 0,
+    heap_array_stride: u32 = 0,
+    p_embedded_sampler: ?*const SamplerCreateInfo = null,
+    use_combined_image_sampler_index: Bool32 = .false,
+    sampler_heap_offset: u32 = 0,
+    sampler_push_offset: u32 = 0,
+    sampler_address_offset: u32 = 0,
+    sampler_heap_index_stride: u32 = 0,
+    sampler_heap_array_stride: u32 = 0,
+};
+pub const DescriptorMappingSourceIndirectIndexArrayEXT = extern struct {
+    heap_offset: u32 = 0,
+    push_offset: u32 = 0,
+    address_offset: u32 = 0,
+    heap_index_stride: u32 = 0,
+    p_embedded_sampler: ?*const SamplerCreateInfo = null,
+    use_combined_image_sampler_index: Bool32 = .false,
+    sampler_heap_offset: u32 = 0,
+    sampler_push_offset: u32 = 0,
+    sampler_address_offset: u32 = 0,
+    sampler_heap_index_stride: u32 = 0,
+};
+pub const DescriptorMappingSourceHeapDataEXT = extern struct {
+    heap_offset: u32 = 0,
+    push_offset: u32 = 0,
+};
+pub const DescriptorMappingSourceShaderRecordIndexEXT = extern struct {
+    heap_offset: u32 = 0,
+    shader_record_offset: u32 = 0,
+    heap_index_stride: u32 = 0,
+    heap_array_stride: u32 = 0,
+    p_embedded_sampler: ?*const SamplerCreateInfo = null,
+    use_combined_image_sampler_index: Bool32 = .false,
+    sampler_heap_offset: u32 = 0,
+    sampler_shader_record_offset: u32 = 0,
+    sampler_heap_index_stride: u32 = 0,
+    sampler_heap_array_stride: u32 = 0,
+};
+pub const DescriptorMappingSourceIndirectAddressEXT = extern struct {
+    push_offset: u32 = 0,
+    address_offset: u32 = 0,
+};
+pub const DescriptorMappingSourceDataEXT = extern union {
+    constant_offset: DescriptorMappingSourceConstantOffsetEXT,
+    push_index: DescriptorMappingSourcePushIndexEXT,
+    indirect_index: DescriptorMappingSourceIndirectIndexEXT,
+    indirect_index_array: DescriptorMappingSourceIndirectIndexArrayEXT,
+    heap_data: DescriptorMappingSourceHeapDataEXT,
+    push_data_offset: u32,
+    push_address_offset: u32,
+    indirect_address: DescriptorMappingSourceIndirectAddressEXT,
+    shader_record_index: DescriptorMappingSourceShaderRecordIndexEXT,
+    shader_record_data_offset: u32,
+    shader_record_address_offset: u32,
+};
+pub const DescriptorSetAndBindingMappingEXT = extern struct {
+    s_type: StructureType = .descriptor_set_and_binding_mapping_ext,
+    p_next: ?*const anyopaque = null,
+    descriptor_set: u32 = 0,
+    first_binding: u32 = 0,
+    binding_count: u32 = 0,
+    resource_mask: SpirvResourceTypeFlagsEXT = .none,
+    source: DescriptorMappingSourceEXT = @enumFromInt(0),
+    source_data: DescriptorMappingSourceDataEXT = .{ .constant_offset = .{} },
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *PushConstantBankInfoNV,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
+};
+pub const ShaderDescriptorSetAndBindingMappingInfoEXT = extern struct {
+    s_type: StructureType = .shader_descriptor_set_and_binding_mapping_info_ext,
+    p_next: ?*const anyopaque = null,
+    mapping_count: u32 = 0,
+    p_mappings: ?[*]const DescriptorSetAndBindingMappingEXT = null,
+};
+pub const SamplerCustomBorderColorIndexCreateInfoEXT = extern struct {
+    s_type: StructureType = .sampler_custom_border_color_index_create_info_ext,
+    p_next: ?*const anyopaque = null,
+    index: u32 = 0,
+};
+pub const OpaqueCaptureDataCreateInfoEXT = extern struct {
+    s_type: StructureType = .opaque_capture_data_create_info_ext,
+    p_next: ?*const anyopaque = null,
+    p_data: ?*const HostAddressRangeConstEXT = null,
+};
+pub const IndirectCommandsLayoutPushDataTokenNV = extern struct {
+    s_type: StructureType = .indirect_commands_layout_push_data_token_nv,
+    p_next: ?*const anyopaque = null,
+    push_data_offset: u32 = 0,
+    push_data_size: u32 = 0,
+};
+pub const SubsampledImageFormatPropertiesEXT = extern struct {
+    s_type: StructureType = .subsampled_image_format_properties_ext,
+    p_next: ?*const anyopaque = null,
+    subsampled_image_descriptor_count: u32 = 0,
+};
+pub const PhysicalDeviceDescriptorHeapFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_descriptor_heap_features_ext,
+    p_next: ?*anyopaque = null,
+    descriptor_heap: Bool32 = .false,
+    descriptor_heap_capture_replay: Bool32 = .false,
+};
+pub const PhysicalDeviceDescriptorHeapPropertiesEXT = extern struct {
+    s_type: StructureType = .physical_device_descriptor_heap_properties_ext,
+    p_next: ?*anyopaque = null,
+    sampler_heap_alignment: DeviceSize = 0,
+    resource_heap_alignment: DeviceSize = 0,
+    max_sampler_heap_size: DeviceSize = 0,
+    max_resource_heap_size: DeviceSize = 0,
+    min_sampler_heap_reserved_range: DeviceSize = 0,
+    min_sampler_heap_reserved_range_with_embedded: DeviceSize = 0,
+    min_resource_heap_reserved_range: DeviceSize = 0,
+    sampler_descriptor_size: DeviceSize = 0,
+    image_descriptor_size: DeviceSize = 0,
+    buffer_descriptor_size: DeviceSize = 0,
+    sampler_descriptor_alignment: DeviceSize = 0,
+    image_descriptor_alignment: DeviceSize = 0,
+    buffer_descriptor_alignment: DeviceSize = 0,
+    max_push_data_size: DeviceSize = 0,
+    image_capture_replay_opaque_data_size: usize = 0,
+    max_descriptor_heap_embedded_samplers: u32 = 0,
+    sampler_ycbcr_conversion_count: u32 = 0,
+    sparse_descriptor_heaps: Bool32 = .false,
+    protected_descriptor_heaps: Bool32 = .false,
+};
+pub const CommandBufferInheritanceDescriptorHeapInfoEXT = extern struct {
+    s_type: StructureType = .command_buffer_inheritance_descriptor_heap_info_ext,
+    p_next: ?*const anyopaque = null,
+    p_sampler_heap_bind_info: ?*const BindHeapInfoEXT = null,
+    p_resource_heap_bind_info: ?*const BindHeapInfoEXT = null,
+};
+pub const PhysicalDeviceDescriptorHeapTensorPropertiesARM = extern struct {
+    s_type: StructureType = .physical_device_descriptor_heap_tensor_properties_arm,
+    p_next: ?*anyopaque = null,
+    tensor_descriptor_size: DeviceSize = 0,
+    tensor_descriptor_alignment: DeviceSize = 0,
+    tensor_capture_replay_opaque_data_size: usize = 0,
+};
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpEnumeratePhysicalDevices = *const fn (Instance, [*c]u32, [*c]PhysicalDevice) callconv(.c) Result;
@@ -15924,6 +16295,7 @@ pub const FpCmdSetRayTracingPipelineStackSizeKHR = *const fn (CommandBuffer, u32
 pub const FpGetImageViewHandleNVX = *const fn (Device, [*c]const ImageViewHandleInfoNVX) callconv(.c) u32;
 pub const FpGetImageViewHandle64NVX = *const fn (Device, [*c]const ImageViewHandleInfoNVX) callconv(.c) u64;
 pub const FpGetImageViewAddressNVX = *const fn (Device, ImageView, [*c]ImageViewAddressPropertiesNVX) callconv(.c) Result;
+pub const FpGetDeviceCombinedImageSamplerIndexNVX = *const fn (Device, u64, u64) callconv(.c) u64;
 pub const FpGetPhysicalDeviceSurfacePresentModes2EXT = *const fn (PhysicalDevice, [*c]const PhysicalDeviceSurfaceInfo2KHR, [*c]u32, [*c]PresentModeKHR) callconv(.c) Result;
 pub const FpGetDeviceGroupSurfacePresentModes2EXT = *const fn (Device, [*c]const PhysicalDeviceSurfaceInfo2KHR, [*c]DeviceGroupPresentModeFlagsKHR) callconv(.c) Result;
 pub const FpAcquireFullScreenExclusiveModeEXT = *const fn (Device, SwapchainKHR) callconv(.c) Result;
@@ -16186,6 +16558,16 @@ pub const FpGetNativeBufferPropertiesOHOS = *const fn (Device, ?*const OH_Native
 pub const FpGetMemoryNativeBufferOHOS = *const fn (Device, [*c]const MemoryGetNativeBufferInfoOHOS, [*c]?*OH_NativeBuffer) callconv(.c) Result;
 pub const FpEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = *const fn (PhysicalDevice, u32, [*c]u32, [*c]PerformanceCounterARM, [*c]PerformanceCounterDescriptionARM) callconv(.c) Result;
 pub const FpCmdSetComputeOccupancyPriorityNV = *const fn (CommandBuffer, [*c]const ComputeOccupancyPriorityParametersNV) callconv(.c) void;
+pub const FpWriteSamplerDescriptorsEXT = *const fn (Device, u32, [*c]const SamplerCreateInfo, [*c]const HostAddressRangeEXT) callconv(.c) Result;
+pub const FpWriteResourceDescriptorsEXT = *const fn (Device, u32, [*c]const ResourceDescriptorInfoEXT, [*c]const HostAddressRangeEXT) callconv(.c) Result;
+pub const FpCmdBindSamplerHeapEXT = *const fn (CommandBuffer, [*c]const BindHeapInfoEXT) callconv(.c) void;
+pub const FpCmdBindResourceHeapEXT = *const fn (CommandBuffer, [*c]const BindHeapInfoEXT) callconv(.c) void;
+pub const FpCmdPushDataEXT = *const fn (CommandBuffer, [*c]const PushDataInfoEXT) callconv(.c) void;
+pub const FpRegisterCustomBorderColorEXT = *const fn (Device, [*c]const SamplerCustomBorderColorCreateInfoEXT, Bool32, [*c]u32) callconv(.c) Result;
+pub const FpUnregisterCustomBorderColorEXT = *const fn (Device, u32) callconv(.c) void;
+pub const FpGetImageOpaqueCaptureDataEXT = *const fn (Device, u32, [*c]const Image, [*c]HostAddressRangeEXT) callconv(.c) Result;
+pub const FpGetPhysicalDeviceDescriptorSizeEXT = *const fn (PhysicalDevice, DescriptorType) callconv(.c) DeviceSize;
+pub const FpGetTensorOpaqueCaptureDataARM = *const fn (Device, u32, [*c]const TensorARM, [*c]HostAddressRangeEXT) callconv(.c) Result;
 
 const ExtensionNames = struct {
     const khr_surface = "VK_KHR_surface";
@@ -16293,6 +16675,7 @@ const ExtensionNames = struct {
     const khr_storage_buffer_storage_class = "VK_KHR_storage_buffer_storage_class";
     const amd_gpu_shader_int16 = "VK_AMD_gpu_shader_int16";
     const amdx_shader_enqueue = "VK_AMDX_shader_enqueue";
+    const ext_descriptor_heap = "VK_EXT_descriptor_heap";
     const amd_mixed_attachment_samples = "VK_AMD_mixed_attachment_samples";
     const amd_shader_fragment_mask = "VK_AMD_shader_fragment_mask";
     const ext_inline_uniform_block = "VK_EXT_inline_uniform_block";
@@ -16541,6 +16924,7 @@ const ExtensionNames = struct {
     const arm_shader_core_builtins = "VK_ARM_shader_core_builtins";
     const ext_pipeline_library_group_handles = "VK_EXT_pipeline_library_group_handles";
     const ext_dynamic_rendering_unused_attachments = "VK_EXT_dynamic_rendering_unused_attachments";
+    const khr_internally_synchronized_queues = "VK_KHR_internally_synchronized_queues";
     const nv_low_latency2 = "VK_NV_low_latency2";
     const khr_cooperative_matrix = "VK_KHR_cooperative_matrix";
     const arm_data_graph = "VK_ARM_data_graph";
@@ -16582,6 +16966,7 @@ const ExtensionNames = struct {
     const khr_maintenance8 = "VK_KHR_maintenance8";
     const mesa_image_alignment_control = "VK_MESA_image_alignment_control";
     const khr_shader_fma = "VK_KHR_shader_fma";
+    const nv_push_constant_bank = "VK_NV_push_constant_bank";
     const ext_ray_tracing_invocation_reorder = "VK_EXT_ray_tracing_invocation_reorder";
     const ext_depth_clamp_control = "VK_EXT_depth_clamp_control";
     const khr_maintenance9 = "VK_KHR_maintenance9";
@@ -16608,6 +16993,7 @@ const ExtensionNames = struct {
     const sec_pipeline_cache_incremental_mode = "VK_SEC_pipeline_cache_incremental_mode";
     const ext_shader_uniform_buffer_unsized_array = "VK_EXT_shader_uniform_buffer_unsized_array";
     const nv_compute_occupancy_priority = "VK_NV_compute_occupancy_priority";
+    const ext_shader_subgroup_partitioned = "VK_EXT_shader_subgroup_partitioned";
 };
 
 pub const InstanceExtensions = packed struct {
@@ -17416,6 +17802,16 @@ pub const InstanceExtensions = packed struct {
             self.enable_ext_extended_dynamic_state();
         }
         self.enable_khr_maintenance5();
+    }
+
+    pub fn supports_ext_descriptor_heap(self: InstanceExtensions) bool {
+        return self.supports_khr_maintenance5() and (self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address());
+    }
+    pub fn enable_ext_descriptor_heap(self: *InstanceExtensions) void {
+        self.enable_khr_maintenance5();
+        if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
+            self.enable_khr_buffer_device_address();
+        }
     }
 
     pub fn supports_ext_inline_uniform_block(self: InstanceExtensions) bool {
@@ -18298,11 +18694,10 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn supports_qcom_tile_shading(self: InstanceExtensions) bool {
-        return self.supports_qcom_tile_properties() or self.supports_khr_get_physical_device_properties2();
+        return self.supports_qcom_tile_properties();
     }
     pub fn enable_qcom_tile_shading(self: *InstanceExtensions) void {
-        // ambiguous dependency, caller must enable one explicitly
-        assert(self.supports_qcom_tile_properties() or self.supports_khr_get_physical_device_properties2());
+        self.enable_qcom_tile_properties();
     }
 
     pub fn supports_khr_synchronization2(self: InstanceExtensions) bool {
@@ -19142,20 +19537,23 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn supports_khr_surface_maintenance1(self: InstanceExtensions) bool {
-        return self.khr_surface_maintenance1 and (self.supports_khr_surface() or self.supports_khr_get_surface_capabilities2());
+        return self.khr_surface_maintenance1 and self.supports_khr_surface() and self.supports_khr_get_surface_capabilities2();
     }
     pub fn enable_khr_surface_maintenance1(self: *InstanceExtensions) void {
         self.khr_surface_maintenance1 = true;
-        // ambiguous dependency, caller must enable one explicitly
-        assert(self.supports_khr_surface() or self.supports_khr_get_surface_capabilities2());
+        self.enable_khr_surface();
+        self.enable_khr_get_surface_capabilities2();
     }
 
     pub fn supports_khr_swapchain_maintenance1(self: InstanceExtensions) bool {
-        return self.supports_khr_swapchain() or self.supports_khr_surface_maintenance1() or self.supports_khr_get_physical_device_properties2();
+        return self.supports_khr_swapchain() and self.supports_khr_surface_maintenance1() and (self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2());
     }
     pub fn enable_khr_swapchain_maintenance1(self: *InstanceExtensions) void {
-        // ambiguous dependency, caller must enable one explicitly
-        assert(self.supports_khr_swapchain() or self.supports_khr_surface_maintenance1() or self.supports_khr_get_physical_device_properties2());
+        self.enable_khr_swapchain();
+        self.enable_khr_surface_maintenance1();
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
 
     pub fn supports_qcom_multiview_per_view_viewports(self: InstanceExtensions) bool {
@@ -19765,6 +20163,15 @@ pub const InstanceExtensions = packed struct {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+
+    pub fn supports_ext_shader_subgroup_partitioned(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_ext_shader_subgroup_partitioned(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
 };
 
 pub const DeviceExtensions = packed struct {
@@ -19849,6 +20256,7 @@ pub const DeviceExtensions = packed struct {
     khr_storage_buffer_storage_class: bool = false,
     amd_gpu_shader_int16: bool = false,
     amdx_shader_enqueue: bool = false,
+    ext_descriptor_heap: bool = false,
     amd_mixed_attachment_samples: bool = false,
     amd_shader_fragment_mask: bool = false,
     ext_inline_uniform_block: bool = false,
@@ -20084,6 +20492,7 @@ pub const DeviceExtensions = packed struct {
     arm_shader_core_builtins: bool = false,
     ext_pipeline_library_group_handles: bool = false,
     ext_dynamic_rendering_unused_attachments: bool = false,
+    khr_internally_synchronized_queues: bool = false,
     nv_low_latency2: bool = false,
     khr_cooperative_matrix: bool = false,
     arm_data_graph: bool = false,
@@ -20124,6 +20533,7 @@ pub const DeviceExtensions = packed struct {
     khr_maintenance8: bool = false,
     mesa_image_alignment_control: bool = false,
     khr_shader_fma: bool = false,
+    nv_push_constant_bank: bool = false,
     ext_ray_tracing_invocation_reorder: bool = false,
     ext_depth_clamp_control: bool = false,
     khr_maintenance9: bool = false,
@@ -20149,6 +20559,7 @@ pub const DeviceExtensions = packed struct {
     sec_pipeline_cache_incremental_mode: bool = false,
     ext_shader_uniform_buffer_unsized_array: bool = false,
     nv_compute_occupancy_priority: bool = false,
+    ext_shader_subgroup_partitioned: bool = false,
 
     pub fn enable_by_name(self: *DeviceExtensions, maybe_name: ?[*:0]const u8) void {
         const name = maybe_name orelse return;
@@ -20312,6 +20723,8 @@ pub const DeviceExtensions = packed struct {
             self.amd_gpu_shader_int16 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.amdx_shader_enqueue) == .eq) {
             self.amdx_shader_enqueue = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_descriptor_heap) == .eq) {
+            self.ext_descriptor_heap = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.amd_mixed_attachment_samples) == .eq) {
             self.amd_mixed_attachment_samples = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.amd_shader_fragment_mask) == .eq) {
@@ -20782,6 +21195,8 @@ pub const DeviceExtensions = packed struct {
             self.ext_pipeline_library_group_handles = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_dynamic_rendering_unused_attachments) == .eq) {
             self.ext_dynamic_rendering_unused_attachments = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_internally_synchronized_queues) == .eq) {
+            self.khr_internally_synchronized_queues = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_low_latency2) == .eq) {
             self.nv_low_latency2 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_cooperative_matrix) == .eq) {
@@ -20862,6 +21277,8 @@ pub const DeviceExtensions = packed struct {
             self.mesa_image_alignment_control = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_shader_fma) == .eq) {
             self.khr_shader_fma = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_push_constant_bank) == .eq) {
+            self.nv_push_constant_bank = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_ray_tracing_invocation_reorder) == .eq) {
             self.ext_ray_tracing_invocation_reorder = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_depth_clamp_control) == .eq) {
@@ -20912,6 +21329,8 @@ pub const DeviceExtensions = packed struct {
             self.ext_shader_uniform_buffer_unsized_array = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_compute_occupancy_priority) == .eq) {
             self.nv_compute_occupancy_priority = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_subgroup_partitioned) == .eq) {
+            self.ext_shader_subgroup_partitioned = true;
         }
     }
 
@@ -21007,6 +21426,7 @@ pub const DeviceExtensions = packed struct {
         if (self.khr_storage_buffer_storage_class) try names.append(allocator, ExtensionNames.khr_storage_buffer_storage_class);
         if (self.amd_gpu_shader_int16) try names.append(allocator, ExtensionNames.amd_gpu_shader_int16);
         if (self.amdx_shader_enqueue) try names.append(allocator, ExtensionNames.amdx_shader_enqueue);
+        if (self.ext_descriptor_heap) try names.append(allocator, ExtensionNames.ext_descriptor_heap);
         if (self.amd_mixed_attachment_samples) try names.append(allocator, ExtensionNames.amd_mixed_attachment_samples);
         if (self.amd_shader_fragment_mask) try names.append(allocator, ExtensionNames.amd_shader_fragment_mask);
         if (self.ext_inline_uniform_block) try names.append(allocator, ExtensionNames.ext_inline_uniform_block);
@@ -21242,6 +21662,7 @@ pub const DeviceExtensions = packed struct {
         if (self.arm_shader_core_builtins) try names.append(allocator, ExtensionNames.arm_shader_core_builtins);
         if (self.ext_pipeline_library_group_handles) try names.append(allocator, ExtensionNames.ext_pipeline_library_group_handles);
         if (self.ext_dynamic_rendering_unused_attachments) try names.append(allocator, ExtensionNames.ext_dynamic_rendering_unused_attachments);
+        if (self.khr_internally_synchronized_queues) try names.append(allocator, ExtensionNames.khr_internally_synchronized_queues);
         if (self.nv_low_latency2) try names.append(allocator, ExtensionNames.nv_low_latency2);
         if (self.khr_cooperative_matrix) try names.append(allocator, ExtensionNames.khr_cooperative_matrix);
         if (self.arm_data_graph) try names.append(allocator, ExtensionNames.arm_data_graph);
@@ -21282,6 +21703,7 @@ pub const DeviceExtensions = packed struct {
         if (self.khr_maintenance8) try names.append(allocator, ExtensionNames.khr_maintenance8);
         if (self.mesa_image_alignment_control) try names.append(allocator, ExtensionNames.mesa_image_alignment_control);
         if (self.khr_shader_fma) try names.append(allocator, ExtensionNames.khr_shader_fma);
+        if (self.nv_push_constant_bank) try names.append(allocator, ExtensionNames.nv_push_constant_bank);
         if (self.ext_ray_tracing_invocation_reorder) try names.append(allocator, ExtensionNames.ext_ray_tracing_invocation_reorder);
         if (self.ext_depth_clamp_control) try names.append(allocator, ExtensionNames.ext_depth_clamp_control);
         if (self.khr_maintenance9) try names.append(allocator, ExtensionNames.khr_maintenance9);
@@ -21307,6 +21729,7 @@ pub const DeviceExtensions = packed struct {
         if (self.sec_pipeline_cache_incremental_mode) try names.append(allocator, ExtensionNames.sec_pipeline_cache_incremental_mode);
         if (self.ext_shader_uniform_buffer_unsized_array) try names.append(allocator, ExtensionNames.ext_shader_uniform_buffer_unsized_array);
         if (self.nv_compute_occupancy_priority) try names.append(allocator, ExtensionNames.nv_compute_occupancy_priority);
+        if (self.ext_shader_subgroup_partitioned) try names.append(allocator, ExtensionNames.ext_shader_subgroup_partitioned);
         return names.toOwnedSlice(allocator);
     }
 
@@ -21977,6 +22400,17 @@ pub const DeviceExtensions = packed struct {
         }
         self.enable_khr_maintenance5();
         self.enable_khr_pipeline_library();
+    }
+
+    pub fn supports_ext_descriptor_heap(self: DeviceExtensions) bool {
+        return self.ext_descriptor_heap and self.supports_khr_maintenance5() and (self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address());
+    }
+    pub fn enable_ext_descriptor_heap(self: *DeviceExtensions) void {
+        self.ext_descriptor_heap = true;
+        self.enable_khr_maintenance5();
+        if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
+            self.enable_khr_buffer_device_address();
+        }
     }
 
     pub fn supports_amd_mixed_attachment_samples(self: DeviceExtensions) bool {
@@ -23054,10 +23488,11 @@ pub const DeviceExtensions = packed struct {
     }
 
     pub fn supports_qcom_tile_shading(self: DeviceExtensions) bool {
-        return self.qcom_tile_shading;
+        return self.qcom_tile_shading and self.supports_qcom_tile_properties();
     }
     pub fn enable_qcom_tile_shading(self: *DeviceExtensions) void {
         self.qcom_tile_shading = true;
+        self.enable_qcom_tile_properties();
     }
 
     pub fn supports_nv_low_latency(self: DeviceExtensions) bool {
@@ -23902,10 +24337,11 @@ pub const DeviceExtensions = packed struct {
     }
 
     pub fn supports_khr_swapchain_maintenance1(self: DeviceExtensions) bool {
-        return self.khr_swapchain_maintenance1;
+        return self.khr_swapchain_maintenance1 and self.supports_khr_swapchain();
     }
     pub fn enable_khr_swapchain_maintenance1(self: *DeviceExtensions) void {
         self.khr_swapchain_maintenance1 = true;
+        self.enable_khr_swapchain();
     }
 
     pub fn supports_qcom_multiview_per_view_viewports(self: DeviceExtensions) bool {
@@ -23979,6 +24415,15 @@ pub const DeviceExtensions = packed struct {
         if (self.core_version.to_int() < make_version(1, 3, 0).to_int()) {
             self.enable_khr_dynamic_rendering();
         }
+    }
+
+    pub fn supports_khr_internally_synchronized_queues(self: DeviceExtensions) bool {
+        return self.khr_internally_synchronized_queues and self.core_version.to_int() >= make_version(1, 1, 0).to_int();
+    }
+    pub fn enable_khr_internally_synchronized_queues(self: *DeviceExtensions) void {
+        self.khr_internally_synchronized_queues = true;
+        // depends on minimum core version, caller must specify
+        assert(self.core_version.to_int() >= make_version(1, 1, 0).to_int());
     }
 
     pub fn supports_nv_low_latency2(self: DeviceExtensions) bool {
@@ -24320,6 +24765,13 @@ pub const DeviceExtensions = packed struct {
         self.khr_shader_fma = true;
     }
 
+    pub fn supports_nv_push_constant_bank(self: DeviceExtensions) bool {
+        return self.nv_push_constant_bank;
+    }
+    pub fn enable_nv_push_constant_bank(self: *DeviceExtensions) void {
+        self.nv_push_constant_bank = true;
+    }
+
     pub fn supports_ext_ray_tracing_invocation_reorder(self: DeviceExtensions) bool {
         return self.ext_ray_tracing_invocation_reorder and self.supports_khr_ray_tracing_pipeline();
     }
@@ -24516,6 +24968,13 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_nv_compute_occupancy_priority(self: *DeviceExtensions) void {
         self.nv_compute_occupancy_priority = true;
+    }
+
+    pub fn supports_ext_shader_subgroup_partitioned(self: DeviceExtensions) bool {
+        return self.ext_shader_subgroup_partitioned;
+    }
+    pub fn enable_ext_shader_subgroup_partitioned(self: *DeviceExtensions) void {
+        self.ext_shader_subgroup_partitioned = true;
     }
 };
 
@@ -27019,6 +27478,7 @@ pub const DeviceCommands = struct {
     fp_get_image_view_handle_nvx: ?FpGetImageViewHandleNVX,
     fp_get_image_view_handle64_nvx: ?FpGetImageViewHandle64NVX,
     fp_get_image_view_address_nvx: ?FpGetImageViewAddressNVX,
+    fp_get_device_combined_image_sampler_index_nvx: ?FpGetDeviceCombinedImageSamplerIndexNVX,
     fp_get_physical_device_surface_present_modes2_ext: ?FpGetPhysicalDeviceSurfacePresentModes2EXT,
     fp_get_device_group_surface_present_modes2_ext: ?FpGetDeviceGroupSurfacePresentModes2EXT,
     fp_acquire_full_screen_exclusive_mode_ext: ?FpAcquireFullScreenExclusiveModeEXT,
@@ -27278,6 +27738,16 @@ pub const DeviceCommands = struct {
     fp_get_memory_native_buffer_ohos: ?FpGetMemoryNativeBufferOHOS,
     fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm: ?FpEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM,
     fp_cmd_set_compute_occupancy_priority_nv: ?FpCmdSetComputeOccupancyPriorityNV,
+    fp_write_sampler_descriptors_ext: ?FpWriteSamplerDescriptorsEXT,
+    fp_write_resource_descriptors_ext: ?FpWriteResourceDescriptorsEXT,
+    fp_cmd_bind_sampler_heap_ext: ?FpCmdBindSamplerHeapEXT,
+    fp_cmd_bind_resource_heap_ext: ?FpCmdBindResourceHeapEXT,
+    fp_cmd_push_data_ext: ?FpCmdPushDataEXT,
+    fp_register_custom_border_color_ext: ?FpRegisterCustomBorderColorEXT,
+    fp_unregister_custom_border_color_ext: ?FpUnregisterCustomBorderColorEXT,
+    fp_get_image_opaque_capture_data_ext: ?FpGetImageOpaqueCaptureDataEXT,
+    fp_get_physical_device_descriptor_size_ext: ?FpGetPhysicalDeviceDescriptorSizeEXT,
+    fp_get_tensor_opaque_capture_data_arm: ?FpGetTensorOpaqueCaptureDataARM,
 
     pub fn init(globals: GlobalCommands, instance: InstanceCommands, device: Device, create_info: *const DeviceCreateInfo) MissingFunctionError!DeviceCommands {
         var extensions: DeviceExtensions = .{
@@ -27594,6 +28064,7 @@ pub const DeviceCommands = struct {
             .fp_get_image_view_handle_nvx = if (extensions.nvx_image_view_handle) @ptrCast(try instance.get_device_proc_addr(device, "vkGetImageViewHandleNVX")) else null,
             .fp_get_image_view_handle64_nvx = if (extensions.nvx_image_view_handle) @ptrCast(try instance.get_device_proc_addr(device, "vkGetImageViewHandle64NVX")) else null,
             .fp_get_image_view_address_nvx = if (extensions.nvx_image_view_handle) @ptrCast(try instance.get_device_proc_addr(device, "vkGetImageViewAddressNVX")) else null,
+            .fp_get_device_combined_image_sampler_index_nvx = if (extensions.nvx_image_view_handle) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDeviceCombinedImageSamplerIndexNVX")) else null,
             .fp_get_physical_device_surface_present_modes2_ext = if (extensions.ext_full_screen_exclusive) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceSurfacePresentModes2EXT")) else null,
             .fp_get_device_group_surface_present_modes2_ext = if (extensions.ext_full_screen_exclusive and (extensions.core_version.to_int() >= make_version(1, 1, 0).to_int() or extensions.khr_device_group)) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDeviceGroupSurfacePresentModes2EXT")) else null,
             .fp_acquire_full_screen_exclusive_mode_ext = if (extensions.ext_full_screen_exclusive) @ptrCast(try instance.get_device_proc_addr(device, "vkAcquireFullScreenExclusiveModeEXT")) else null,
@@ -27853,6 +28324,16 @@ pub const DeviceCommands = struct {
             .fp_get_memory_native_buffer_ohos = if (extensions.ohos_external_memory) @ptrCast(try instance.get_device_proc_addr(device, "vkGetMemoryNativeBufferOHOS")) else null,
             .fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm = if (extensions.arm_performance_counters_by_region) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM")) else null,
             .fp_cmd_set_compute_occupancy_priority_nv = if (extensions.nv_compute_occupancy_priority) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetComputeOccupancyPriorityNV")) else null,
+            .fp_write_sampler_descriptors_ext = if (extensions.ext_descriptor_heap) @ptrCast(try instance.get_device_proc_addr(device, "vkWriteSamplerDescriptorsEXT")) else null,
+            .fp_write_resource_descriptors_ext = if (extensions.ext_descriptor_heap) @ptrCast(try instance.get_device_proc_addr(device, "vkWriteResourceDescriptorsEXT")) else null,
+            .fp_cmd_bind_sampler_heap_ext = if (extensions.ext_descriptor_heap) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBindSamplerHeapEXT")) else null,
+            .fp_cmd_bind_resource_heap_ext = if (extensions.ext_descriptor_heap) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBindResourceHeapEXT")) else null,
+            .fp_cmd_push_data_ext = if (extensions.ext_descriptor_heap) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdPushDataEXT")) else null,
+            .fp_register_custom_border_color_ext = if (extensions.ext_descriptor_heap and extensions.ext_custom_border_color) @ptrCast(try instance.get_device_proc_addr(device, "vkRegisterCustomBorderColorEXT")) else null,
+            .fp_unregister_custom_border_color_ext = if (extensions.ext_descriptor_heap and extensions.ext_custom_border_color) @ptrCast(try instance.get_device_proc_addr(device, "vkUnregisterCustomBorderColorEXT")) else null,
+            .fp_get_image_opaque_capture_data_ext = if (extensions.ext_descriptor_heap) @ptrCast(try instance.get_device_proc_addr(device, "vkGetImageOpaqueCaptureDataEXT")) else null,
+            .fp_get_physical_device_descriptor_size_ext = if (extensions.ext_descriptor_heap) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceDescriptorSizeEXT")) else null,
+            .fp_get_tensor_opaque_capture_data_arm = if (extensions.ext_descriptor_heap and extensions.arm_tensors) @ptrCast(try instance.get_device_proc_addr(device, "vkGetTensorOpaqueCaptureDataARM")) else null,
         };
     }
     pub fn destroy_device(
@@ -32452,6 +32933,13 @@ pub const DeviceCommands = struct {
             else => return error.Unexpected,
         }
     }
+    pub fn get_device_combined_image_sampler_index_nvx(
+        self: DeviceCommands,
+        image_view_index: u64,
+        sampler_index: u64,
+    ) u64 {
+        self.fp_get_device_combined_image_sampler_index_nvx.?(self.handle, image_view_index, sampler_index);
+    }
     pub const GetPhysicalDeviceSurfacePresentModes2EXTError = error{
         OutOfHostMemory,
         OutOfDeviceMemory,
@@ -36198,6 +36686,158 @@ pub const DeviceCommands = struct {
         p_parameters: *const ComputeOccupancyPriorityParametersNV,
     ) void {
         self.fp_cmd_set_compute_occupancy_priority_nv.?(command_buffer, p_parameters);
+    }
+    pub const WriteSamplerDescriptorsEXTError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn write_sampler_descriptors_ext(
+        self: DeviceCommands,
+        p_samplers: []const SamplerCreateInfo,
+        p_descriptors: []const HostAddressRangeEXT,
+    ) WriteSamplerDescriptorsEXTError!void {
+        const sampler_count: u32 = @intCast(p_samplers.len);
+        assert(sampler_count == p_descriptors.len);
+        switch (self.fp_write_sampler_descriptors_ext.?(self.handle, sampler_count, p_samplers.ptr, p_descriptors.ptr)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const WriteResourceDescriptorsEXTError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn write_resource_descriptors_ext(
+        self: DeviceCommands,
+        p_resources: []const ResourceDescriptorInfoEXT,
+        p_descriptors: []const HostAddressRangeEXT,
+    ) WriteResourceDescriptorsEXTError!void {
+        const resource_count: u32 = @intCast(p_resources.len);
+        assert(resource_count == p_descriptors.len);
+        switch (self.fp_write_resource_descriptors_ext.?(self.handle, resource_count, p_resources.ptr, p_descriptors.ptr)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn cmd_bind_sampler_heap_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_bind_info: *const BindHeapInfoEXT,
+    ) void {
+        self.fp_cmd_bind_sampler_heap_ext.?(command_buffer, p_bind_info);
+    }
+    pub fn cmd_bind_resource_heap_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_bind_info: *const BindHeapInfoEXT,
+    ) void {
+        self.fp_cmd_bind_resource_heap_ext.?(command_buffer, p_bind_info);
+    }
+    pub fn cmd_push_data_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_push_data_info: *const PushDataInfoEXT,
+    ) void {
+        self.fp_cmd_push_data_ext.?(command_buffer, p_push_data_info);
+    }
+    pub const RegisterCustomBorderColorEXTError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        TooManyObjects,
+        InvalidOpaqueCaptureAddress,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn register_custom_border_color_ext(
+        self: DeviceCommands,
+        p_border_color: *const SamplerCustomBorderColorCreateInfoEXT,
+        request_index: bool,
+    ) RegisterCustomBorderColorEXTError!u32 {
+        var p_index: u32 = undefined;
+        switch (self.fp_register_custom_border_color_ext.?(self.handle, p_border_color, Bool32.from_bool(request_index), &p_index)) {
+            .success => return p_index,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_too_many_objects => return error.TooManyObjects,
+            .error_invalid_opaque_capture_address => return error.InvalidOpaqueCaptureAddress,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn unregister_custom_border_color_ext(
+        self: DeviceCommands,
+        index: u32,
+    ) void {
+        self.fp_unregister_custom_border_color_ext.?(self.handle, index);
+    }
+    pub const GetImageOpaqueCaptureDataEXTError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_image_opaque_capture_data_ext(
+        self: DeviceCommands,
+        p_images: []const Image,
+        p_datas: []HostAddressRangeEXT,
+    ) GetImageOpaqueCaptureDataEXTError!void {
+        const image_count: u32 = @intCast(p_images.len);
+        assert(image_count == p_datas.len);
+        switch (self.fp_get_image_opaque_capture_data_ext.?(self.handle, image_count, p_images.ptr, p_datas.ptr)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn get_physical_device_descriptor_size_ext(
+        self: DeviceCommands,
+        physical_device: PhysicalDevice,
+        descriptor_type: DescriptorType,
+    ) DeviceSize {
+        self.fp_get_physical_device_descriptor_size_ext.?(physical_device, descriptor_type);
+    }
+    pub const GetTensorOpaqueCaptureDataARMError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_tensor_opaque_capture_data_arm(
+        self: DeviceCommands,
+        p_tensors: []const TensorARM,
+        p_datas: []HostAddressRangeEXT,
+    ) GetTensorOpaqueCaptureDataARMError!void {
+        const tensor_count: u32 = @intCast(p_tensors.len);
+        assert(tensor_count == p_datas.len);
+        switch (self.fp_get_tensor_opaque_capture_data_arm.?(self.handle, tensor_count, p_tensors.ptr, p_datas.ptr)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
     }
 };
 

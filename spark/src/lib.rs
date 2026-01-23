@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.339
+//! Generated from vk.xml version 1.4.340
 
 #![allow(
     clippy::too_many_arguments,
@@ -993,6 +993,16 @@ impl InstanceExtensions {
         }
         self.enable_khr_maintenance5();
     }
+    pub fn supports_ext_descriptor_heap(&self) -> bool {
+        self.supports_khr_maintenance5()
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_buffer_device_address())
+    }
+    pub fn enable_ext_descriptor_heap(&mut self) {
+        self.enable_khr_maintenance5();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_buffer_device_address();
+        }
+    }
     pub fn supports_ext_inline_uniform_block(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
@@ -1820,11 +1830,10 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_qcom_tile_shading(&self) -> bool {
-        self.supports_qcom_tile_properties() || self.supports_khr_get_physical_device_properties2()
+        self.supports_qcom_tile_properties()
     }
     pub fn enable_qcom_tile_shading(&mut self) {
-        // ambiguous dependency, caller must enable one explicitly
-        debug_assert!(self.supports_qcom_tile_properties() || self.supports_khr_get_physical_device_properties2());
+        self.enable_qcom_tile_properties();
     }
     pub fn supports_khr_synchronization2(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -2614,25 +2623,25 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_surface_maintenance1(&self) -> bool {
-        self.khr_surface_maintenance1 && (self.supports_khr_surface() || self.supports_khr_get_surface_capabilities2())
+        self.khr_surface_maintenance1 && self.supports_khr_surface() && self.supports_khr_get_surface_capabilities2()
     }
     pub fn enable_khr_surface_maintenance1(&mut self) {
         self.khr_surface_maintenance1 = true;
-        // ambiguous dependency, caller must enable one explicitly
-        debug_assert!(self.supports_khr_surface() || self.supports_khr_get_surface_capabilities2());
+        self.enable_khr_surface();
+        self.enable_khr_get_surface_capabilities2();
     }
     pub fn supports_khr_swapchain_maintenance1(&self) -> bool {
         self.supports_khr_swapchain()
-            || self.supports_khr_surface_maintenance1()
-            || self.supports_khr_get_physical_device_properties2()
+            && self.supports_khr_surface_maintenance1()
+            && (self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+                || self.supports_khr_get_physical_device_properties2())
     }
     pub fn enable_khr_swapchain_maintenance1(&mut self) {
-        // ambiguous dependency, caller must enable one explicitly
-        debug_assert!(
-            self.supports_khr_swapchain()
-                || self.supports_khr_surface_maintenance1()
-                || self.supports_khr_get_physical_device_properties2()
-        );
+        self.enable_khr_swapchain();
+        self.enable_khr_surface_maintenance1();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_qcom_multiview_per_view_viewports(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -3189,6 +3198,14 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_compute_occupancy_priority(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_ext_shader_subgroup_partitioned(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_shader_subgroup_partitioned(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -5640,6 +5657,7 @@ pub struct DeviceExtensions {
     pub khr_storage_buffer_storage_class: bool,
     pub amd_gpu_shader_int16: bool,
     pub amdx_shader_enqueue: bool,
+    pub ext_descriptor_heap: bool,
     pub amd_mixed_attachment_samples: bool,
     pub amd_shader_fragment_mask: bool,
     pub ext_inline_uniform_block: bool,
@@ -5875,6 +5893,7 @@ pub struct DeviceExtensions {
     pub arm_shader_core_builtins: bool,
     pub ext_pipeline_library_group_handles: bool,
     pub ext_dynamic_rendering_unused_attachments: bool,
+    pub khr_internally_synchronized_queues: bool,
     pub nv_low_latency2: bool,
     pub khr_cooperative_matrix: bool,
     pub arm_data_graph: bool,
@@ -5915,6 +5934,7 @@ pub struct DeviceExtensions {
     pub khr_maintenance8: bool,
     pub mesa_image_alignment_control: bool,
     pub khr_shader_fma: bool,
+    pub nv_push_constant_bank: bool,
     pub ext_ray_tracing_invocation_reorder: bool,
     pub ext_depth_clamp_control: bool,
     pub khr_maintenance9: bool,
@@ -5940,6 +5960,7 @@ pub struct DeviceExtensions {
     pub sec_pipeline_cache_incremental_mode: bool,
     pub ext_shader_uniform_buffer_unsized_array: bool,
     pub nv_compute_occupancy_priority: bool,
+    pub ext_shader_subgroup_partitioned: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -6103,6 +6124,8 @@ impl DeviceExtensions {
             self.amd_gpu_shader_int16 = true;
         } else if name == c"VK_AMDX_shader_enqueue" {
             self.amdx_shader_enqueue = true;
+        } else if name == c"VK_EXT_descriptor_heap" {
+            self.ext_descriptor_heap = true;
         } else if name == c"VK_AMD_mixed_attachment_samples" {
             self.amd_mixed_attachment_samples = true;
         } else if name == c"VK_AMD_shader_fragment_mask" {
@@ -6573,6 +6596,8 @@ impl DeviceExtensions {
             self.ext_pipeline_library_group_handles = true;
         } else if name == c"VK_EXT_dynamic_rendering_unused_attachments" {
             self.ext_dynamic_rendering_unused_attachments = true;
+        } else if name == c"VK_KHR_internally_synchronized_queues" {
+            self.khr_internally_synchronized_queues = true;
         } else if name == c"VK_NV_low_latency2" {
             self.nv_low_latency2 = true;
         } else if name == c"VK_KHR_cooperative_matrix" {
@@ -6653,6 +6678,8 @@ impl DeviceExtensions {
             self.mesa_image_alignment_control = true;
         } else if name == c"VK_KHR_shader_fma" {
             self.khr_shader_fma = true;
+        } else if name == c"VK_NV_push_constant_bank" {
+            self.nv_push_constant_bank = true;
         } else if name == c"VK_EXT_ray_tracing_invocation_reorder" {
             self.ext_ray_tracing_invocation_reorder = true;
         } else if name == c"VK_EXT_depth_clamp_control" {
@@ -6703,6 +6730,8 @@ impl DeviceExtensions {
             self.ext_shader_uniform_buffer_unsized_array = true;
         } else if name == c"VK_NV_compute_occupancy_priority" {
             self.nv_compute_occupancy_priority = true;
+        } else if name == c"VK_EXT_shader_subgroup_partitioned" {
+            self.ext_shader_subgroup_partitioned = true;
         }
     }
     pub fn new(core_version: vk::Version) -> Self {
@@ -6788,6 +6817,7 @@ impl DeviceExtensions {
             khr_storage_buffer_storage_class: false,
             amd_gpu_shader_int16: false,
             amdx_shader_enqueue: false,
+            ext_descriptor_heap: false,
             amd_mixed_attachment_samples: false,
             amd_shader_fragment_mask: false,
             ext_inline_uniform_block: false,
@@ -7023,6 +7053,7 @@ impl DeviceExtensions {
             arm_shader_core_builtins: false,
             ext_pipeline_library_group_handles: false,
             ext_dynamic_rendering_unused_attachments: false,
+            khr_internally_synchronized_queues: false,
             nv_low_latency2: false,
             khr_cooperative_matrix: false,
             arm_data_graph: false,
@@ -7063,6 +7094,7 @@ impl DeviceExtensions {
             khr_maintenance8: false,
             mesa_image_alignment_control: false,
             khr_shader_fma: false,
+            nv_push_constant_bank: false,
             ext_ray_tracing_invocation_reorder: false,
             ext_depth_clamp_control: false,
             khr_maintenance9: false,
@@ -7088,6 +7120,7 @@ impl DeviceExtensions {
             sec_pipeline_cache_incremental_mode: false,
             ext_shader_uniform_buffer_unsized_array: false,
             nv_compute_occupancy_priority: false,
+            ext_shader_subgroup_partitioned: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -7725,6 +7758,18 @@ impl DeviceExtensions {
         }
         self.enable_khr_maintenance5();
         self.enable_khr_pipeline_library();
+    }
+    pub fn supports_ext_descriptor_heap(&self) -> bool {
+        self.ext_descriptor_heap
+            && self.supports_khr_maintenance5()
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_buffer_device_address())
+    }
+    pub fn enable_ext_descriptor_heap(&mut self) {
+        self.ext_descriptor_heap = true;
+        self.enable_khr_maintenance5();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_buffer_device_address();
+        }
     }
     pub fn supports_amd_mixed_attachment_samples(&self) -> bool {
         self.amd_mixed_attachment_samples
@@ -8739,10 +8784,11 @@ impl DeviceExtensions {
         self.nv_cuda_kernel_launch = true;
     }
     pub fn supports_qcom_tile_shading(&self) -> bool {
-        self.qcom_tile_shading
+        self.qcom_tile_shading && self.supports_qcom_tile_properties()
     }
     pub fn enable_qcom_tile_shading(&mut self) {
         self.qcom_tile_shading = true;
+        self.enable_qcom_tile_properties();
     }
     pub fn supports_nv_low_latency(&self) -> bool {
         self.nv_low_latency
@@ -9539,10 +9585,11 @@ impl DeviceExtensions {
         self.sec_amigo_profiling = true;
     }
     pub fn supports_khr_swapchain_maintenance1(&self) -> bool {
-        self.khr_swapchain_maintenance1
+        self.khr_swapchain_maintenance1 && self.supports_khr_swapchain()
     }
     pub fn enable_khr_swapchain_maintenance1(&mut self) {
         self.khr_swapchain_maintenance1 = true;
+        self.enable_khr_swapchain();
     }
     pub fn supports_qcom_multiview_per_view_viewports(&self) -> bool {
         self.qcom_multiview_per_view_viewports
@@ -9611,6 +9658,14 @@ impl DeviceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             self.enable_khr_dynamic_rendering();
         }
+    }
+    pub fn supports_khr_internally_synchronized_queues(&self) -> bool {
+        self.khr_internally_synchronized_queues && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_khr_internally_synchronized_queues(&mut self) {
+        self.khr_internally_synchronized_queues = true;
+        // depends on minimum core version, caller must specify
+        debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
     pub fn supports_nv_low_latency2(&self) -> bool {
         self.nv_low_latency2
@@ -9930,6 +9985,12 @@ impl DeviceExtensions {
     pub fn enable_khr_shader_fma(&mut self) {
         self.khr_shader_fma = true;
     }
+    pub fn supports_nv_push_constant_bank(&self) -> bool {
+        self.nv_push_constant_bank
+    }
+    pub fn enable_nv_push_constant_bank(&mut self) {
+        self.nv_push_constant_bank = true;
+    }
     pub fn supports_ext_ray_tracing_invocation_reorder(&self) -> bool {
         self.ext_ray_tracing_invocation_reorder && self.supports_khr_ray_tracing_pipeline()
     }
@@ -10108,6 +10169,12 @@ impl DeviceExtensions {
     }
     pub fn enable_nv_compute_occupancy_priority(&mut self) {
         self.nv_compute_occupancy_priority = true;
+    }
+    pub fn supports_ext_shader_subgroup_partitioned(&self) -> bool {
+        self.ext_shader_subgroup_partitioned
+    }
+    pub fn enable_ext_shader_subgroup_partitioned(&mut self) {
+        self.ext_shader_subgroup_partitioned = true;
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -10350,6 +10417,9 @@ impl DeviceExtensions {
         }
         if self.amdx_shader_enqueue {
             v.push(c"VK_AMDX_shader_enqueue");
+        }
+        if self.ext_descriptor_heap {
+            v.push(c"VK_EXT_descriptor_heap");
         }
         if self.amd_mixed_attachment_samples {
             v.push(c"VK_AMD_mixed_attachment_samples");
@@ -11056,6 +11126,9 @@ impl DeviceExtensions {
         if self.ext_dynamic_rendering_unused_attachments {
             v.push(c"VK_EXT_dynamic_rendering_unused_attachments");
         }
+        if self.khr_internally_synchronized_queues {
+            v.push(c"VK_KHR_internally_synchronized_queues");
+        }
         if self.nv_low_latency2 {
             v.push(c"VK_NV_low_latency2");
         }
@@ -11176,6 +11249,9 @@ impl DeviceExtensions {
         if self.khr_shader_fma {
             v.push(c"VK_KHR_shader_fma");
         }
+        if self.nv_push_constant_bank {
+            v.push(c"VK_NV_push_constant_bank");
+        }
         if self.ext_ray_tracing_invocation_reorder {
             v.push(c"VK_EXT_ray_tracing_invocation_reorder");
         }
@@ -11250,6 +11326,9 @@ impl DeviceExtensions {
         }
         if self.nv_compute_occupancy_priority {
             v.push(c"VK_NV_compute_occupancy_priority");
+        }
+        if self.ext_shader_subgroup_partitioned {
+            v.push(c"VK_EXT_shader_subgroup_partitioned");
         }
         v
     }
@@ -11569,6 +11648,7 @@ pub struct Device {
     pub fp_get_image_view_handle_nvx: Option<vk::FnGetImageViewHandleNVX>,
     pub fp_get_image_view_handle64_nvx: Option<vk::FnGetImageViewHandle64NVX>,
     pub fp_get_image_view_address_nvx: Option<vk::FnGetImageViewAddressNVX>,
+    pub fp_get_device_combined_image_sampler_index_nvx: Option<vk::FnGetDeviceCombinedImageSamplerIndexNVX>,
     pub fp_get_physical_device_surface_present_modes2_ext: Option<vk::FnGetPhysicalDeviceSurfacePresentModes2EXT>,
     pub fp_get_device_group_surface_present_modes2_ext: Option<vk::FnGetDeviceGroupSurfacePresentModes2EXT>,
     pub fp_acquire_full_screen_exclusive_mode_ext: Option<vk::FnAcquireFullScreenExclusiveModeEXT>,
@@ -11844,6 +11924,16 @@ pub struct Device {
     pub fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm:
         Option<vk::FnEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM>,
     pub fp_cmd_set_compute_occupancy_priority_nv: Option<vk::FnCmdSetComputeOccupancyPriorityNV>,
+    pub fp_write_sampler_descriptors_ext: Option<vk::FnWriteSamplerDescriptorsEXT>,
+    pub fp_write_resource_descriptors_ext: Option<vk::FnWriteResourceDescriptorsEXT>,
+    pub fp_cmd_bind_sampler_heap_ext: Option<vk::FnCmdBindSamplerHeapEXT>,
+    pub fp_cmd_bind_resource_heap_ext: Option<vk::FnCmdBindResourceHeapEXT>,
+    pub fp_cmd_push_data_ext: Option<vk::FnCmdPushDataEXT>,
+    pub fp_register_custom_border_color_ext: Option<vk::FnRegisterCustomBorderColorEXT>,
+    pub fp_unregister_custom_border_color_ext: Option<vk::FnUnregisterCustomBorderColorEXT>,
+    pub fp_get_image_opaque_capture_data_ext: Option<vk::FnGetImageOpaqueCaptureDataEXT>,
+    pub fp_get_physical_device_descriptor_size_ext: Option<vk::FnGetPhysicalDeviceDescriptorSizeEXT>,
+    pub fp_get_tensor_opaque_capture_data_arm: Option<vk::FnGetTensorOpaqueCaptureDataARM>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -13924,6 +14014,13 @@ impl Device {
             fp_get_image_view_address_nvx: if extensions.nvx_image_view_handle {
                 instance
                     .get_device_proc_addr(device, c"vkGetImageViewAddressNVX")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_combined_image_sampler_index_nvx: if extensions.nvx_image_view_handle {
+                instance
+                    .get_device_proc_addr(device, c"vkGetDeviceCombinedImageSamplerIndexNVX")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -16098,6 +16195,79 @@ impl Device {
             fp_cmd_set_compute_occupancy_priority_nv: if extensions.nv_compute_occupancy_priority {
                 instance
                     .get_device_proc_addr(device, c"vkCmdSetComputeOccupancyPriorityNV")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_write_sampler_descriptors_ext: if extensions.ext_descriptor_heap {
+                instance
+                    .get_device_proc_addr(device, c"vkWriteSamplerDescriptorsEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_write_resource_descriptors_ext: if extensions.ext_descriptor_heap {
+                instance
+                    .get_device_proc_addr(device, c"vkWriteResourceDescriptorsEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_sampler_heap_ext: if extensions.ext_descriptor_heap {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdBindSamplerHeapEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_resource_heap_ext: if extensions.ext_descriptor_heap {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdBindResourceHeapEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_push_data_ext: if extensions.ext_descriptor_heap {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdPushDataEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_register_custom_border_color_ext: if extensions.ext_descriptor_heap && extensions.ext_custom_border_color
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkRegisterCustomBorderColorEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_unregister_custom_border_color_ext: if extensions.ext_descriptor_heap
+                && extensions.ext_custom_border_color
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkUnregisterCustomBorderColorEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_opaque_capture_data_ext: if extensions.ext_descriptor_heap {
+                instance
+                    .get_device_proc_addr(device, c"vkGetImageOpaqueCaptureDataEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_descriptor_size_ext: if extensions.ext_descriptor_heap {
+                globals
+                    .get_instance_proc_addr(instance.handle, c"vkGetPhysicalDeviceDescriptorSizeEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_tensor_opaque_capture_data_arm: if extensions.ext_descriptor_heap && extensions.arm_tensors {
+                instance
+                    .get_device_proc_addr(device, c"vkGetTensorOpaqueCaptureDataARM")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -20872,6 +21042,12 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn get_device_combined_image_sampler_index_nvx(&self, image_view_index: u64, sampler_index: u64) -> u64 {
+        let fp = self
+            .fp_get_device_combined_image_sampler_index_nvx
+            .expect("vkGetDeviceCombinedImageSamplerIndexNVX is not loaded");
+        (fp)(self.handle, image_view_index, sampler_index)
+    }
     pub unsafe fn get_physical_device_surface_present_modes2_ext(
         &self,
         physical_device: vk::PhysicalDevice,
@@ -24902,5 +25078,150 @@ impl Device {
             .fp_cmd_set_compute_occupancy_priority_nv
             .expect("vkCmdSetComputeOccupancyPriorityNV is not loaded");
         (fp)(command_buffer, p_parameters)
+    }
+    pub unsafe fn write_sampler_descriptors_ext(
+        &self,
+        p_samplers: &[vk::SamplerCreateInfo],
+        p_descriptors: &[vk::HostAddressRangeEXT],
+    ) -> Result<()> {
+        let fp = self
+            .fp_write_sampler_descriptors_ext
+            .expect("vkWriteSamplerDescriptorsEXT is not loaded");
+        let sampler_count = p_samplers.len() as u32;
+        assert_eq!(sampler_count, p_descriptors.len() as u32);
+        let err = (fp)(self.handle, sampler_count, p_samplers.as_ptr(), p_descriptors.as_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn write_resource_descriptors_ext(
+        &self,
+        p_resources: &[vk::ResourceDescriptorInfoEXT],
+        p_descriptors: &[vk::HostAddressRangeEXT],
+    ) -> Result<()> {
+        let fp = self
+            .fp_write_resource_descriptors_ext
+            .expect("vkWriteResourceDescriptorsEXT is not loaded");
+        let resource_count = p_resources.len() as u32;
+        assert_eq!(resource_count, p_descriptors.len() as u32);
+        let err = (fp)(
+            self.handle,
+            resource_count,
+            p_resources.as_ptr(),
+            p_descriptors.as_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_bind_sampler_heap_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_bind_info: &vk::BindHeapInfoEXT,
+    ) {
+        let fp = self
+            .fp_cmd_bind_sampler_heap_ext
+            .expect("vkCmdBindSamplerHeapEXT is not loaded");
+        (fp)(command_buffer, p_bind_info)
+    }
+    pub unsafe fn cmd_bind_resource_heap_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_bind_info: &vk::BindHeapInfoEXT,
+    ) {
+        let fp = self
+            .fp_cmd_bind_resource_heap_ext
+            .expect("vkCmdBindResourceHeapEXT is not loaded");
+        (fp)(command_buffer, p_bind_info)
+    }
+    pub unsafe fn cmd_push_data_ext(&self, command_buffer: vk::CommandBuffer, p_push_data_info: &vk::PushDataInfoEXT) {
+        let fp = self.fp_cmd_push_data_ext.expect("vkCmdPushDataEXT is not loaded");
+        (fp)(command_buffer, p_push_data_info)
+    }
+    pub unsafe fn register_custom_border_color_ext(
+        &self,
+        p_border_color: &vk::SamplerCustomBorderColorCreateInfoEXT,
+        request_index: bool,
+    ) -> Result<u32> {
+        let fp = self
+            .fp_register_custom_border_color_ext
+            .expect("vkRegisterCustomBorderColorEXT is not loaded");
+        let mut p_index = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            self.handle,
+            p_border_color,
+            if request_index { vk::TRUE } else { vk::FALSE },
+            p_index.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(p_index.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn unregister_custom_border_color_ext(&self, index: u32) {
+        let fp = self
+            .fp_unregister_custom_border_color_ext
+            .expect("vkUnregisterCustomBorderColorEXT is not loaded");
+        (fp)(self.handle, index)
+    }
+    pub unsafe fn get_image_opaque_capture_data_ext(
+        &self,
+        p_images: &[vk::Image],
+        p_datas: &mut [vk::HostAddressRangeEXT],
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_image_opaque_capture_data_ext
+            .expect("vkGetImageOpaqueCaptureDataEXT is not loaded");
+        let image_count = p_images.len() as u32;
+        assert_eq!(image_count, p_datas.len() as u32);
+        let err = (fp)(self.handle, image_count, p_images.as_ptr(), p_datas.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_image_opaque_capture_data_ext_single(
+        &self,
+        p_images: &vk::Image,
+    ) -> Result<vk::HostAddressRangeEXT> {
+        let mut p_datas = Default::default();
+        self.get_image_opaque_capture_data_ext(slice::from_ref(p_images), slice::from_mut(&mut p_datas))
+            .map(|_| p_datas)
+    }
+    pub unsafe fn get_physical_device_descriptor_size_ext(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        descriptor_type: vk::DescriptorType,
+    ) -> vk::DeviceSize {
+        let fp = self
+            .fp_get_physical_device_descriptor_size_ext
+            .expect("vkGetPhysicalDeviceDescriptorSizeEXT is not loaded");
+        (fp)(physical_device, descriptor_type)
+    }
+    pub unsafe fn get_tensor_opaque_capture_data_arm(
+        &self,
+        p_tensors: &[vk::TensorARM],
+        p_datas: &mut [vk::HostAddressRangeEXT],
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_tensor_opaque_capture_data_arm
+            .expect("vkGetTensorOpaqueCaptureDataARM is not loaded");
+        let tensor_count = p_tensors.len() as u32;
+        assert_eq!(tensor_count, p_datas.len() as u32);
+        let err = (fp)(self.handle, tensor_count, p_tensors.as_ptr(), p_datas.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_tensor_opaque_capture_data_arm_single(
+        &self,
+        p_tensors: &vk::TensorARM,
+    ) -> Result<vk::HostAddressRangeEXT> {
+        let mut p_datas = Default::default();
+        self.get_tensor_opaque_capture_data_arm(slice::from_ref(p_tensors), slice::from_mut(&mut p_datas))
+            .map(|_| p_datas)
     }
 }

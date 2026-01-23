@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.339
+//! Generated from vk.xml version 1.4.340
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -562,11 +562,16 @@ impl fmt::Display for DeviceCreateFlags {
 pub struct DeviceQueueCreateFlags(pub(crate) u32);
 impl DeviceQueueCreateFlags {
     pub const PROTECTED: Self = Self(0x1);
+    pub const INTERNALLY_SYNCHRONIZED_KHR: Self = Self(0x4);
 }
 impl_bitmask!(DeviceQueueCreateFlags);
 impl fmt::Display for DeviceQueueCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x1, "PROTECTED")], f)
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "PROTECTED"), (0x4, "INTERNALLY_SYNCHRONIZED_KHR")],
+            f,
+        )
     }
 }
 
@@ -758,6 +763,7 @@ impl BufferUsageFlags {
     pub const TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT: Self = Self(0x1000);
     pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x200);
     pub const EXECUTION_GRAPH_SCRATCH_AMDX: Self = Self(0x2000000);
+    pub const DESCRIPTOR_HEAP_EXT: Self = Self(0x10000000);
     pub const ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_KHR: Self = Self(0x80000);
     pub const ACCELERATION_STRUCTURE_STORAGE_KHR: Self = Self(0x100000);
     pub const SHADER_BINDING_TABLE_KHR: Self = Self(0x400);
@@ -791,6 +797,7 @@ impl fmt::Display for BufferUsageFlags {
                 (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
                 (0x2000000, "EXECUTION_GRAPH_SCRATCH_AMDX"),
+                (0x10000000, "DESCRIPTOR_HEAP_EXT"),
                 (0x80000, "ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_KHR"),
                 (0x100000, "ACCELERATION_STRUCTURE_STORAGE_KHR"),
                 (0x400, "SHADER_BINDING_TABLE_KHR"),
@@ -972,11 +979,12 @@ impl ImageCreateFlags {
     pub const N2D_ARRAY_COMPATIBLE_KHR: Self = Self::N2D_ARRAY_COMPATIBLE;
     pub const BLOCK_TEXEL_VIEW_COMPATIBLE_KHR: Self = Self::BLOCK_TEXEL_VIEW_COMPATIBLE;
     pub const EXTENDED_USAGE_KHR: Self = Self::EXTENDED_USAGE;
+    pub const DESCRIPTOR_HEAP_CAPTURE_REPLAY_EXT: Self = Self(0x10000);
     pub const SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT: Self = Self(0x1000);
     pub const DISJOINT_KHR: Self = Self::DISJOINT;
     pub const ALIAS_KHR: Self = Self::ALIAS;
     pub const SUBSAMPLED_EXT: Self = Self(0x4000);
-    pub const DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT: Self = Self(0x10000);
+    pub const DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT: Self = Self::DESCRIPTOR_HEAP_CAPTURE_REPLAY_EXT;
     pub const MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXT: Self = Self(0x40000);
     pub const N2D_VIEW_COMPATIBLE_EXT: Self = Self(0x20000);
     pub const FRAGMENT_DENSITY_MAP_OFFSET_QCOM: Self = Self::FRAGMENT_DENSITY_MAP_OFFSET_EXT;
@@ -1001,9 +1009,9 @@ impl fmt::Display for ImageCreateFlags {
                 (0x800, "PROTECTED"),
                 (0x200, "DISJOINT"),
                 (0x2000, "CORNER_SAMPLED_NV"),
+                (0x10000, "DESCRIPTOR_HEAP_CAPTURE_REPLAY_EXT"),
                 (0x1000, "SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT"),
                 (0x4000, "SUBSAMPLED_EXT"),
-                (0x10000, "DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT"),
                 (0x40000, "MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXT"),
                 (0x20000, "N2D_VIEW_COMPATIBLE_EXT"),
                 (0x8000, "FRAGMENT_DENSITY_MAP_OFFSET_EXT"),
@@ -1838,9 +1846,10 @@ impl SubgroupFeatureFlags {
     pub const QUAD: Self = Self(0x80);
     pub const ROTATE: Self = Self(0x200);
     pub const ROTATE_CLUSTERED: Self = Self(0x400);
-    pub const PARTITIONED_NV: Self = Self(0x100);
+    pub const PARTITIONED_NV: Self = Self::PARTITIONED_EXT;
     pub const ROTATE_KHR: Self = Self::ROTATE;
     pub const ROTATE_CLUSTERED_KHR: Self = Self::ROTATE_CLUSTERED;
+    pub const PARTITIONED_EXT: Self = Self(0x100);
 }
 impl_bitmask!(SubgroupFeatureFlags);
 impl fmt::Display for SubgroupFeatureFlags {
@@ -1858,7 +1867,7 @@ impl fmt::Display for SubgroupFeatureFlags {
                 (0x80, "QUAD"),
                 (0x200, "ROTATE"),
                 (0x400, "ROTATE_CLUSTERED"),
-                (0x100, "PARTITIONED_NV"),
+                (0x100, "PARTITIONED_EXT"),
             ],
             f,
         )
@@ -2260,6 +2269,8 @@ impl AccessFlags2 {
     pub const SHADER_SAMPLED_READ: Self = Self(0x100000000);
     pub const SHADER_STORAGE_READ: Self = Self(0x200000000);
     pub const SHADER_STORAGE_WRITE: Self = Self(0x400000000);
+    pub const SAMPLER_HEAP_READ_EXT: Self = Self(0x200000000000000);
+    pub const RESOURCE_HEAP_READ_EXT: Self = Self(0x400000000000000);
     pub const SHADER_TILE_ATTACHMENT_READ_QCOM: Self = Self(0x8000000000000);
     pub const SHADER_TILE_ATTACHMENT_WRITE_QCOM: Self = Self(0x10000000000000);
     pub const NONE_KHR: Self = Self::NONE;
@@ -2337,6 +2348,8 @@ impl fmt::Display for AccessFlags2 {
                 (0x100000000, "SHADER_SAMPLED_READ"),
                 (0x200000000, "SHADER_STORAGE_READ"),
                 (0x400000000, "SHADER_STORAGE_WRITE"),
+                (0x200000000000000, "SAMPLER_HEAP_READ_EXT"),
+                (0x400000000000000, "RESOURCE_HEAP_READ_EXT"),
                 (0x8000000000000, "SHADER_TILE_ATTACHMENT_READ_QCOM"),
                 (0x10000000000000, "SHADER_TILE_ATTACHMENT_WRITE_QCOM"),
                 (0x2000000, "TRANSFORM_FEEDBACK_WRITE_EXT"),
@@ -2833,6 +2846,7 @@ impl PipelineCreateFlags2 {
     pub const NO_PROTECTED_ACCESS: Self = Self(0x8000000);
     pub const PROTECTED_ACCESS_ONLY: Self = Self(0x40000000);
     pub const EXECUTION_GRAPH_AMDX: Self = Self(0x100000000);
+    pub const DESCRIPTOR_HEAP_EXT: Self = Self(0x1000000000);
     pub const RAY_TRACING_SKIP_BUILT_IN_PRIMITIVES_KHR: Self = Self::RAY_TRACING_SKIP_TRIANGLES_KHR;
     pub const RAY_TRACING_ALLOW_SPHERES_AND_LINEAR_SWEPT_SPHERES_NV: Self = Self(0x200000000);
     pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x400000000);
@@ -2889,6 +2903,7 @@ impl fmt::Display for PipelineCreateFlags2 {
                 (0x8000000, "NO_PROTECTED_ACCESS"),
                 (0x40000000, "PROTECTED_ACCESS_ONLY"),
                 (0x100000000, "EXECUTION_GRAPH_AMDX"),
+                (0x1000000000, "DESCRIPTOR_HEAP_EXT"),
                 (0x200000000, "RAY_TRACING_ALLOW_SPHERES_AND_LINEAR_SWEPT_SPHERES_NV"),
                 (0x400000000, "ENABLE_LEGACY_DITHERING_EXT"),
                 (0x20, "DEFER_COMPILE_NV"),
@@ -2940,6 +2955,7 @@ impl BufferUsageFlags2 {
     pub const INDIRECT_BUFFER: Self = Self(0x100);
     pub const SHADER_DEVICE_ADDRESS: Self = Self(0x20000);
     pub const EXECUTION_GRAPH_SCRATCH_AMDX: Self = Self(0x2000000);
+    pub const DESCRIPTOR_HEAP_EXT: Self = Self(0x10000000);
     pub const TRANSFER_SRC_KHR: Self = Self::TRANSFER_SRC;
     pub const TRANSFER_DST_KHR: Self = Self::TRANSFER_DST;
     pub const UNIFORM_TEXEL_BUFFER_KHR: Self = Self::UNIFORM_TEXEL_BUFFER;
@@ -2985,6 +3001,7 @@ impl fmt::Display for BufferUsageFlags2 {
                 (0x100, "INDIRECT_BUFFER"),
                 (0x20000, "SHADER_DEVICE_ADDRESS"),
                 (0x2000000, "EXECUTION_GRAPH_SCRATCH_AMDX"),
+                (0x10000000, "DESCRIPTOR_HEAP_EXT"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
                 (0x400, "SHADER_BINDING_TABLE_KHR"),
                 (0x800, "TRANSFORM_FEEDBACK_BUFFER_EXT"),
@@ -3033,6 +3050,7 @@ pub struct TensorCreateFlagsARM(pub(crate) u64);
 impl TensorCreateFlagsARM {
     pub const MUTABLE_FORMAT: Self = Self(0x1);
     pub const PROTECTED: Self = Self(0x2);
+    pub const DESCRIPTOR_HEAP_CAPTURE_REPLAY: Self = Self(0x8);
     pub const DESCRIPTOR_BUFFER_CAPTURE_REPLAY: Self = Self(0x4);
 }
 impl_bitmask!(TensorCreateFlagsARM);
@@ -3043,6 +3061,7 @@ impl fmt::Display for TensorCreateFlagsARM {
             &[
                 (0x1, "MUTABLE_FORMAT"),
                 (0x2, "PROTECTED"),
+                (0x8, "DESCRIPTOR_HEAP_CAPTURE_REPLAY"),
                 (0x4, "DESCRIPTOR_BUFFER_CAPTURE_REPLAY"),
             ],
             f,
@@ -3111,6 +3130,45 @@ impl_bitmask!(DataGraphPipelineDispatchFlagsARM);
 impl fmt::Display for DataGraphPipelineDispatchFlagsARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct SpirvResourceTypeFlagsEXT(pub(crate) u32);
+impl SpirvResourceTypeFlagsEXT {
+    pub const ALL: Self = Self(0x7fffffff);
+    pub const SAMPLER: Self = Self(0x1);
+    pub const SAMPLED_IMAGE: Self = Self(0x2);
+    pub const READ_ONLY_IMAGE: Self = Self(0x4);
+    pub const READ_WRITE_IMAGE: Self = Self(0x8);
+    pub const COMBINED_SAMPLED_IMAGE: Self = Self(0x10);
+    pub const UNIFORM_BUFFER: Self = Self(0x20);
+    pub const READ_ONLY_STORAGE_BUFFER: Self = Self(0x40);
+    pub const READ_WRITE_STORAGE_BUFFER: Self = Self(0x80);
+    pub const ACCELERATION_STRUCTURE: Self = Self(0x100);
+    pub const TENSOR_ARM: Self = Self(0x200);
+}
+impl_bitmask!(SpirvResourceTypeFlagsEXT);
+impl fmt::Display for SpirvResourceTypeFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x7fffffff, "ALL"),
+                (0x1, "SAMPLER"),
+                (0x2, "SAMPLED_IMAGE"),
+                (0x4, "READ_ONLY_IMAGE"),
+                (0x8, "READ_WRITE_IMAGE"),
+                (0x10, "COMBINED_SAMPLED_IMAGE"),
+                (0x20, "UNIFORM_BUFFER"),
+                (0x40, "READ_ONLY_STORAGE_BUFFER"),
+                (0x80, "READ_WRITE_STORAGE_BUFFER"),
+                (0x100, "ACCELERATION_STRUCTURE"),
+                (0x200, "TENSOR_ARM"),
+            ],
+            f,
+        )
     }
 }
 
@@ -4527,6 +4585,7 @@ pub type PresentGravityFlagsEXT = PresentGravityFlagsKHR;
 pub struct ShaderCreateFlagsEXT(pub(crate) u32);
 impl ShaderCreateFlagsEXT {
     pub const LINK_STAGE: Self = Self(0x1);
+    pub const DESCRIPTOR_HEAP: Self = Self(0x400);
     pub const ALLOW_VARYING_SUBGROUP_SIZE: Self = Self(0x2);
     pub const REQUIRE_FULL_SUBGROUPS: Self = Self(0x4);
     pub const NO_TASK_SHADER: Self = Self(0x8);
@@ -4543,6 +4602,7 @@ impl fmt::Display for ShaderCreateFlagsEXT {
             self.0 as _,
             &[
                 (0x1, "LINK_STAGE"),
+                (0x400, "DESCRIPTOR_HEAP"),
                 (0x2, "ALLOW_VARYING_SUBGROUP_SIZE"),
                 (0x4, "REQUIRE_FULL_SUBGROUPS"),
                 (0x8, "NO_TASK_SHADER"),
@@ -6445,6 +6505,8 @@ impl IndirectCommandsTokenTypeEXT {
     pub const DRAW_INDEXED_COUNT: Self = Self(7);
     pub const DRAW_COUNT: Self = Self(8);
     pub const DISPATCH: Self = Self(9);
+    pub const PUSH_DATA: Self = Self(1000135000);
+    pub const PUSH_DATA_SEQUENCE_INDEX: Self = Self(1000135001);
     pub const DRAW_MESH_TASKS_NV: Self = Self(1000202002);
     pub const DRAW_MESH_TASKS_COUNT_NV: Self = Self(1000202003);
     pub const DRAW_MESH_TASKS: Self = Self(1000328000);
@@ -6464,6 +6526,8 @@ impl fmt::Display for IndirectCommandsTokenTypeEXT {
             7 => Some(&"DRAW_INDEXED_COUNT"),
             8 => Some(&"DRAW_COUNT"),
             9 => Some(&"DISPATCH"),
+            1000135000 => Some(&"PUSH_DATA"),
+            1000135001 => Some(&"PUSH_DATA_SEQUENCE_INDEX"),
             1000202002 => Some(&"DRAW_MESH_TASKS_NV"),
             1000202003 => Some(&"DRAW_MESH_TASKS_COUNT_NV"),
             1000328000 => Some(&"DRAW_MESH_TASKS"),
@@ -7375,6 +7439,21 @@ impl StructureType {
     pub const EXECUTION_GRAPH_PIPELINE_SCRATCH_SIZE_AMDX: Self = Self(1000134002);
     pub const EXECUTION_GRAPH_PIPELINE_CREATE_INFO_AMDX: Self = Self(1000134003);
     pub const PIPELINE_SHADER_STAGE_NODE_CREATE_INFO_AMDX: Self = Self(1000134004);
+    pub const TEXEL_BUFFER_DESCRIPTOR_INFO_EXT: Self = Self(1000135000);
+    pub const IMAGE_DESCRIPTOR_INFO_EXT: Self = Self(1000135001);
+    pub const RESOURCE_DESCRIPTOR_INFO_EXT: Self = Self(1000135002);
+    pub const BIND_HEAP_INFO_EXT: Self = Self(1000135003);
+    pub const PUSH_DATA_INFO_EXT: Self = Self(1000135004);
+    pub const DESCRIPTOR_SET_AND_BINDING_MAPPING_EXT: Self = Self(1000135005);
+    pub const SHADER_DESCRIPTOR_SET_AND_BINDING_MAPPING_INFO_EXT: Self = Self(1000135006);
+    pub const OPAQUE_CAPTURE_DATA_CREATE_INFO_EXT: Self = Self(1000135007);
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_HEAP_PROPERTIES_EXT: Self = Self(1000135008);
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_HEAP_FEATURES_EXT: Self = Self(1000135009);
+    pub const COMMAND_BUFFER_INHERITANCE_DESCRIPTOR_HEAP_INFO_EXT: Self = Self(1000135010);
+    pub const SAMPLER_CUSTOM_BORDER_COLOR_INDEX_CREATE_INFO_EXT: Self = Self(1000135011);
+    pub const INDIRECT_COMMANDS_LAYOUT_PUSH_DATA_TOKEN_NV: Self = Self(1000135012);
+    pub const SUBSAMPLED_IMAGE_FORMAT_PROPERTIES_EXT: Self = Self(1000135013);
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_HEAP_TENSOR_PROPERTIES_ARM: Self = Self(1000135014);
     pub const ATTACHMENT_SAMPLE_COUNT_INFO_AMD: Self = Self(1000044008);
     pub const PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES_EXT: Self =
         Self::PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES;
@@ -8050,6 +8129,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM: Self = Self(1000497001);
     pub const PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT: Self = Self(1000498000);
     pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT: Self = Self(1000499000);
+    pub const PHYSICAL_DEVICE_INTERNALLY_SYNCHRONIZED_QUEUES_FEATURES_KHR: Self = Self(1000504000);
     pub const LATENCY_SLEEP_MODE_INFO_NV: Self = Self(1000505000);
     pub const LATENCY_SLEEP_INFO_NV: Self = Self(1000505001);
     pub const SET_LATENCY_MARKER_INFO_NV: Self = Self(1000505002);
@@ -8191,6 +8271,9 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA: Self = Self(1000575001);
     pub const IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA: Self = Self(1000575002);
     pub const PHYSICAL_DEVICE_SHADER_FMA_FEATURES_KHR: Self = Self(1000579000);
+    pub const PUSH_CONSTANT_BANK_INFO_NV: Self = Self(1000580000);
+    pub const PHYSICAL_DEVICE_PUSH_CONSTANT_BANK_FEATURES_NV: Self = Self(1000580001);
+    pub const PHYSICAL_DEVICE_PUSH_CONSTANT_BANK_PROPERTIES_NV: Self = Self(1000580002);
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_EXT: Self = Self(1000581000);
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_EXT: Self = Self(1000581001);
     pub const PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT: Self = Self(1000582000);
@@ -8246,6 +8329,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT: Self = Self(1000642000);
     pub const COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV: Self = Self(1000645000);
     pub const PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV: Self = Self(1000645001);
+    pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT: Self = Self(1000662000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8636,6 +8720,21 @@ impl fmt::Display for StructureType {
             1000134002 => Some(&"EXECUTION_GRAPH_PIPELINE_SCRATCH_SIZE_AMDX"),
             1000134003 => Some(&"EXECUTION_GRAPH_PIPELINE_CREATE_INFO_AMDX"),
             1000134004 => Some(&"PIPELINE_SHADER_STAGE_NODE_CREATE_INFO_AMDX"),
+            1000135000 => Some(&"TEXEL_BUFFER_DESCRIPTOR_INFO_EXT"),
+            1000135001 => Some(&"IMAGE_DESCRIPTOR_INFO_EXT"),
+            1000135002 => Some(&"RESOURCE_DESCRIPTOR_INFO_EXT"),
+            1000135003 => Some(&"BIND_HEAP_INFO_EXT"),
+            1000135004 => Some(&"PUSH_DATA_INFO_EXT"),
+            1000135005 => Some(&"DESCRIPTOR_SET_AND_BINDING_MAPPING_EXT"),
+            1000135006 => Some(&"SHADER_DESCRIPTOR_SET_AND_BINDING_MAPPING_INFO_EXT"),
+            1000135007 => Some(&"OPAQUE_CAPTURE_DATA_CREATE_INFO_EXT"),
+            1000135008 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_HEAP_PROPERTIES_EXT"),
+            1000135009 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_HEAP_FEATURES_EXT"),
+            1000135010 => Some(&"COMMAND_BUFFER_INHERITANCE_DESCRIPTOR_HEAP_INFO_EXT"),
+            1000135011 => Some(&"SAMPLER_CUSTOM_BORDER_COLOR_INDEX_CREATE_INFO_EXT"),
+            1000135012 => Some(&"INDIRECT_COMMANDS_LAYOUT_PUSH_DATA_TOKEN_NV"),
+            1000135013 => Some(&"SUBSAMPLED_IMAGE_FORMAT_PROPERTIES_EXT"),
+            1000135014 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_HEAP_TENSOR_PROPERTIES_ARM"),
             1000044008 => Some(&"ATTACHMENT_SAMPLE_COUNT_INFO_AMD"),
             1000141000 => Some(&"PHYSICAL_DEVICE_SHADER_BFLOAT16_FEATURES_KHR"),
             1000143000 => Some(&"SAMPLE_LOCATIONS_INFO_EXT"),
@@ -9097,6 +9196,7 @@ impl fmt::Display for StructureType {
             1000497001 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM"),
             1000498000 => Some(&"PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT"),
             1000499000 => Some(&"PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT"),
+            1000504000 => Some(&"PHYSICAL_DEVICE_INTERNALLY_SYNCHRONIZED_QUEUES_FEATURES_KHR"),
             1000505000 => Some(&"LATENCY_SLEEP_MODE_INFO_NV"),
             1000505001 => Some(&"LATENCY_SLEEP_INFO_NV"),
             1000505002 => Some(&"SET_LATENCY_MARKER_INFO_NV"),
@@ -9215,6 +9315,9 @@ impl fmt::Display for StructureType {
             1000575001 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA"),
             1000575002 => Some(&"IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA"),
             1000579000 => Some(&"PHYSICAL_DEVICE_SHADER_FMA_FEATURES_KHR"),
+            1000580000 => Some(&"PUSH_CONSTANT_BANK_INFO_NV"),
+            1000580001 => Some(&"PHYSICAL_DEVICE_PUSH_CONSTANT_BANK_FEATURES_NV"),
+            1000580002 => Some(&"PHYSICAL_DEVICE_PUSH_CONSTANT_BANK_PROPERTIES_NV"),
             1000581000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_EXT"),
             1000581001 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_EXT"),
             1000582000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT"),
@@ -9269,6 +9372,7 @@ impl fmt::Display for StructureType {
             1000642000 => Some(&"PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT"),
             1000645000 => Some(&"COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV"),
             1000645001 => Some(&"PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV"),
+            1000662000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -9673,6 +9777,7 @@ impl IndirectCommandsTokenTypeNV {
     pub const DRAW_INDEXED: Self = Self(5);
     pub const DRAW: Self = Self(6);
     pub const DRAW_TASKS: Self = Self(7);
+    pub const PUSH_DATA: Self = Self(1000135000);
     pub const DRAW_MESH_TASKS: Self = Self(1000328000);
     pub const PIPELINE: Self = Self(1000428003);
     pub const DISPATCH: Self = Self(1000428004);
@@ -9688,6 +9793,7 @@ impl fmt::Display for IndirectCommandsTokenTypeNV {
             5 => Some(&"DRAW_INDEXED"),
             6 => Some(&"DRAW"),
             7 => Some(&"DRAW_TASKS"),
+            1000135000 => Some(&"PUSH_DATA"),
             1000328000 => Some(&"DRAW_MESH_TASKS"),
             1000428003 => Some(&"PIPELINE"),
             1000428004 => Some(&"DISPATCH"),
@@ -11508,6 +11614,46 @@ impl fmt::Display for DataGraphModelCacheTypeQCOM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"GENERIC_BINARY"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DescriptorMappingSourceEXT(pub(crate) i32);
+impl DescriptorMappingSourceEXT {
+    pub const HEAP_WITH_CONSTANT_OFFSET: Self = Self(0);
+    pub const HEAP_WITH_PUSH_INDEX: Self = Self(1);
+    pub const HEAP_WITH_INDIRECT_INDEX: Self = Self(2);
+    pub const HEAP_WITH_INDIRECT_INDEX_ARRAY: Self = Self(3);
+    pub const RESOURCE_HEAP_DATA: Self = Self(4);
+    pub const PUSH_DATA: Self = Self(5);
+    pub const PUSH_ADDRESS: Self = Self(6);
+    pub const INDIRECT_ADDRESS: Self = Self(7);
+    pub const HEAP_WITH_SHADER_RECORD_INDEX: Self = Self(8);
+    pub const SHADER_RECORD_DATA: Self = Self(9);
+    pub const SHADER_RECORD_ADDRESS: Self = Self(10);
+}
+impl fmt::Display for DescriptorMappingSourceEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"HEAP_WITH_CONSTANT_OFFSET"),
+            1 => Some(&"HEAP_WITH_PUSH_INDEX"),
+            2 => Some(&"HEAP_WITH_INDIRECT_INDEX"),
+            3 => Some(&"HEAP_WITH_INDIRECT_INDEX_ARRAY"),
+            4 => Some(&"RESOURCE_HEAP_DATA"),
+            5 => Some(&"PUSH_DATA"),
+            6 => Some(&"PUSH_ADDRESS"),
+            7 => Some(&"INDIRECT_ADDRESS"),
+            8 => Some(&"HEAP_WITH_SHADER_RECORD_INDEX"),
+            9 => Some(&"SHADER_RECORD_DATA"),
+            10 => Some(&"SHADER_RECORD_ADDRESS"),
             _ => None,
         };
         if let Some(name) = name {
@@ -17756,6 +17902,102 @@ impl fmt::Debug for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("device_generated_commands", &self.device_generated_commands)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PushConstantBankInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub bank: u32,
+}
+unsafe impl Send for PushConstantBankInfoNV {}
+unsafe impl Sync for PushConstantBankInfoNV {}
+impl Default for PushConstantBankInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PUSH_CONSTANT_BANK_INFO_NV,
+            p_next: ptr::null(),
+            bank: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PushConstantBankInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PushConstantBankInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("bank", &self.bank)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePushConstantBankFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub push_constant_bank: Bool32,
+}
+unsafe impl Send for PhysicalDevicePushConstantBankFeaturesNV {}
+unsafe impl Sync for PhysicalDevicePushConstantBankFeaturesNV {}
+impl Default for PhysicalDevicePushConstantBankFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PUSH_CONSTANT_BANK_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            push_constant_bank: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePushConstantBankFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePushConstantBankFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("push_constant_bank", &self.push_constant_bank)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePushConstantBankPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_graphics_push_constant_banks: u32,
+    pub max_compute_push_constant_banks: u32,
+    pub max_graphics_push_data_banks: u32,
+    pub max_compute_push_data_banks: u32,
+}
+unsafe impl Send for PhysicalDevicePushConstantBankPropertiesNV {}
+unsafe impl Sync for PhysicalDevicePushConstantBankPropertiesNV {}
+impl Default for PhysicalDevicePushConstantBankPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PUSH_CONSTANT_BANK_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            max_graphics_push_constant_banks: Default::default(),
+            max_compute_push_constant_banks: Default::default(),
+            max_graphics_push_data_banks: Default::default(),
+            max_compute_push_data_banks: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePushConstantBankPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePushConstantBankPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_graphics_push_constant_banks",
+                &self.max_graphics_push_constant_banks,
+            )
+            .field("max_compute_push_constant_banks", &self.max_compute_push_constant_banks)
+            .field("max_graphics_push_data_banks", &self.max_graphics_push_data_banks)
+            .field("max_compute_push_data_banks", &self.max_compute_push_data_banks)
             .finish()
     }
 }
@@ -45947,6 +46189,34 @@ impl fmt::Debug for PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub internally_synchronized_queues: Bool32,
+}
+unsafe impl Send for PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR {}
+impl Default for PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_INTERNALLY_SYNCHRONIZED_QUEUES_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            internally_synchronized_queues: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("internally_synchronized_queues", &self.internally_synchronized_queues)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct SurfacePresentModeKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -52866,6 +53136,962 @@ impl fmt::Debug for PhysicalDeviceTextureCompressionASTC3DFeaturesEXT {
             .finish()
     }
 }
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_subgroup_partitioned: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT {}
+impl Default for PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_subgroup_partitioned: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_subgroup_partitioned", &self.shader_subgroup_partitioned)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct HostAddressRangeEXT {
+    pub address: *mut c_void,
+    pub size: usize,
+}
+unsafe impl Send for HostAddressRangeEXT {}
+unsafe impl Sync for HostAddressRangeEXT {}
+impl Default for HostAddressRangeEXT {
+    fn default() -> Self {
+        Self {
+            address: ptr::null_mut(),
+            size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for HostAddressRangeEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("HostAddressRangeEXT")
+            .field("address", &self.address)
+            .field("size", &self.size)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct HostAddressRangeConstEXT {
+    pub address: *const c_void,
+    pub size: usize,
+}
+unsafe impl Send for HostAddressRangeConstEXT {}
+unsafe impl Sync for HostAddressRangeConstEXT {}
+impl Default for HostAddressRangeConstEXT {
+    fn default() -> Self {
+        Self {
+            address: ptr::null(),
+            size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for HostAddressRangeConstEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("HostAddressRangeConstEXT")
+            .field("address", &self.address)
+            .field("size", &self.size)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct DeviceAddressRangeEXT {
+    pub address: DeviceAddress,
+    pub size: DeviceSize,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TexelBufferDescriptorInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub format: Format,
+    pub address_range: DeviceAddressRangeEXT,
+}
+unsafe impl Send for TexelBufferDescriptorInfoEXT {}
+unsafe impl Sync for TexelBufferDescriptorInfoEXT {}
+impl Default for TexelBufferDescriptorInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TEXEL_BUFFER_DESCRIPTOR_INFO_EXT,
+            p_next: ptr::null(),
+            format: Default::default(),
+            address_range: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TexelBufferDescriptorInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TexelBufferDescriptorInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("format", &self.format)
+            .field("address_range", &self.address_range)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageDescriptorInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_view: *const ImageViewCreateInfo,
+    pub layout: ImageLayout,
+}
+unsafe impl Send for ImageDescriptorInfoEXT {}
+unsafe impl Sync for ImageDescriptorInfoEXT {}
+impl Default for ImageDescriptorInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_DESCRIPTOR_INFO_EXT,
+            p_next: ptr::null(),
+            p_view: ptr::null(),
+            layout: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageDescriptorInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageDescriptorInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_view", &self.p_view)
+            .field("layout", &self.layout)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union ResourceDescriptorDataEXT {
+    pub p_image: *const ImageDescriptorInfoEXT,
+    pub p_texel_buffer: *const TexelBufferDescriptorInfoEXT,
+    pub p_address_range: *const DeviceAddressRangeEXT,
+    pub p_tensor_arm: *const TensorViewCreateInfoARM,
+}
+unsafe impl Send for ResourceDescriptorDataEXT {}
+unsafe impl Sync for ResourceDescriptorDataEXT {}
+impl Default for ResourceDescriptorDataEXT {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for ResourceDescriptorDataEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ResourceDescriptorDataEXT")
+            .field("p_image", unsafe { &self.p_image })
+            .field("p_texel_buffer", unsafe { &self.p_texel_buffer })
+            .field("p_address_range", unsafe { &self.p_address_range })
+            .field("p_tensor_arm", unsafe { &self.p_tensor_arm })
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ResourceDescriptorInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub ty: DescriptorType,
+    pub data: ResourceDescriptorDataEXT,
+}
+unsafe impl Send for ResourceDescriptorInfoEXT {}
+unsafe impl Sync for ResourceDescriptorInfoEXT {}
+impl Default for ResourceDescriptorInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RESOURCE_DESCRIPTOR_INFO_EXT,
+            p_next: ptr::null(),
+            ty: Default::default(),
+            data: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ResourceDescriptorInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ResourceDescriptorInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ty", &self.ty)
+            .field("data", &self.data)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BindHeapInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub heap_range: DeviceAddressRangeEXT,
+    pub reserved_range_offset: DeviceSize,
+    pub reserved_range_size: DeviceSize,
+}
+unsafe impl Send for BindHeapInfoEXT {}
+unsafe impl Sync for BindHeapInfoEXT {}
+impl Default for BindHeapInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BIND_HEAP_INFO_EXT,
+            p_next: ptr::null(),
+            heap_range: Default::default(),
+            reserved_range_offset: Default::default(),
+            reserved_range_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for BindHeapInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindHeapInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("heap_range", &self.heap_range)
+            .field("reserved_range_offset", &self.reserved_range_offset)
+            .field("reserved_range_size", &self.reserved_range_size)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PushDataInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub offset: u32,
+    pub data: HostAddressRangeConstEXT,
+}
+unsafe impl Send for PushDataInfoEXT {}
+unsafe impl Sync for PushDataInfoEXT {}
+impl Default for PushDataInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PUSH_DATA_INFO_EXT,
+            p_next: ptr::null(),
+            offset: Default::default(),
+            data: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PushDataInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PushDataInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("offset", &self.offset)
+            .field("data", &self.data)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorMappingSourceConstantOffsetEXT {
+    pub heap_offset: u32,
+    pub heap_array_stride: u32,
+    pub p_embedded_sampler: *const SamplerCreateInfo,
+    pub sampler_heap_offset: u32,
+    pub sampler_heap_array_stride: u32,
+}
+unsafe impl Send for DescriptorMappingSourceConstantOffsetEXT {}
+unsafe impl Sync for DescriptorMappingSourceConstantOffsetEXT {}
+impl Default for DescriptorMappingSourceConstantOffsetEXT {
+    fn default() -> Self {
+        Self {
+            heap_offset: Default::default(),
+            heap_array_stride: Default::default(),
+            p_embedded_sampler: ptr::null(),
+            sampler_heap_offset: Default::default(),
+            sampler_heap_array_stride: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorMappingSourceConstantOffsetEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorMappingSourceConstantOffsetEXT")
+            .field("heap_offset", &self.heap_offset)
+            .field("heap_array_stride", &self.heap_array_stride)
+            .field("p_embedded_sampler", &self.p_embedded_sampler)
+            .field("sampler_heap_offset", &self.sampler_heap_offset)
+            .field("sampler_heap_array_stride", &self.sampler_heap_array_stride)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorMappingSourcePushIndexEXT {
+    pub heap_offset: u32,
+    pub push_offset: u32,
+    pub heap_index_stride: u32,
+    pub heap_array_stride: u32,
+    pub p_embedded_sampler: *const SamplerCreateInfo,
+    pub use_combined_image_sampler_index: Bool32,
+    pub sampler_heap_offset: u32,
+    pub sampler_push_offset: u32,
+    pub sampler_heap_index_stride: u32,
+    pub sampler_heap_array_stride: u32,
+}
+unsafe impl Send for DescriptorMappingSourcePushIndexEXT {}
+unsafe impl Sync for DescriptorMappingSourcePushIndexEXT {}
+impl Default for DescriptorMappingSourcePushIndexEXT {
+    fn default() -> Self {
+        Self {
+            heap_offset: Default::default(),
+            push_offset: Default::default(),
+            heap_index_stride: Default::default(),
+            heap_array_stride: Default::default(),
+            p_embedded_sampler: ptr::null(),
+            use_combined_image_sampler_index: Default::default(),
+            sampler_heap_offset: Default::default(),
+            sampler_push_offset: Default::default(),
+            sampler_heap_index_stride: Default::default(),
+            sampler_heap_array_stride: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorMappingSourcePushIndexEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorMappingSourcePushIndexEXT")
+            .field("heap_offset", &self.heap_offset)
+            .field("push_offset", &self.push_offset)
+            .field("heap_index_stride", &self.heap_index_stride)
+            .field("heap_array_stride", &self.heap_array_stride)
+            .field("p_embedded_sampler", &self.p_embedded_sampler)
+            .field(
+                "use_combined_image_sampler_index",
+                &self.use_combined_image_sampler_index,
+            )
+            .field("sampler_heap_offset", &self.sampler_heap_offset)
+            .field("sampler_push_offset", &self.sampler_push_offset)
+            .field("sampler_heap_index_stride", &self.sampler_heap_index_stride)
+            .field("sampler_heap_array_stride", &self.sampler_heap_array_stride)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorMappingSourceIndirectIndexEXT {
+    pub heap_offset: u32,
+    pub push_offset: u32,
+    pub address_offset: u32,
+    pub heap_index_stride: u32,
+    pub heap_array_stride: u32,
+    pub p_embedded_sampler: *const SamplerCreateInfo,
+    pub use_combined_image_sampler_index: Bool32,
+    pub sampler_heap_offset: u32,
+    pub sampler_push_offset: u32,
+    pub sampler_address_offset: u32,
+    pub sampler_heap_index_stride: u32,
+    pub sampler_heap_array_stride: u32,
+}
+unsafe impl Send for DescriptorMappingSourceIndirectIndexEXT {}
+unsafe impl Sync for DescriptorMappingSourceIndirectIndexEXT {}
+impl Default for DescriptorMappingSourceIndirectIndexEXT {
+    fn default() -> Self {
+        Self {
+            heap_offset: Default::default(),
+            push_offset: Default::default(),
+            address_offset: Default::default(),
+            heap_index_stride: Default::default(),
+            heap_array_stride: Default::default(),
+            p_embedded_sampler: ptr::null(),
+            use_combined_image_sampler_index: Default::default(),
+            sampler_heap_offset: Default::default(),
+            sampler_push_offset: Default::default(),
+            sampler_address_offset: Default::default(),
+            sampler_heap_index_stride: Default::default(),
+            sampler_heap_array_stride: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorMappingSourceIndirectIndexEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorMappingSourceIndirectIndexEXT")
+            .field("heap_offset", &self.heap_offset)
+            .field("push_offset", &self.push_offset)
+            .field("address_offset", &self.address_offset)
+            .field("heap_index_stride", &self.heap_index_stride)
+            .field("heap_array_stride", &self.heap_array_stride)
+            .field("p_embedded_sampler", &self.p_embedded_sampler)
+            .field(
+                "use_combined_image_sampler_index",
+                &self.use_combined_image_sampler_index,
+            )
+            .field("sampler_heap_offset", &self.sampler_heap_offset)
+            .field("sampler_push_offset", &self.sampler_push_offset)
+            .field("sampler_address_offset", &self.sampler_address_offset)
+            .field("sampler_heap_index_stride", &self.sampler_heap_index_stride)
+            .field("sampler_heap_array_stride", &self.sampler_heap_array_stride)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorMappingSourceIndirectIndexArrayEXT {
+    pub heap_offset: u32,
+    pub push_offset: u32,
+    pub address_offset: u32,
+    pub heap_index_stride: u32,
+    pub p_embedded_sampler: *const SamplerCreateInfo,
+    pub use_combined_image_sampler_index: Bool32,
+    pub sampler_heap_offset: u32,
+    pub sampler_push_offset: u32,
+    pub sampler_address_offset: u32,
+    pub sampler_heap_index_stride: u32,
+}
+unsafe impl Send for DescriptorMappingSourceIndirectIndexArrayEXT {}
+unsafe impl Sync for DescriptorMappingSourceIndirectIndexArrayEXT {}
+impl Default for DescriptorMappingSourceIndirectIndexArrayEXT {
+    fn default() -> Self {
+        Self {
+            heap_offset: Default::default(),
+            push_offset: Default::default(),
+            address_offset: Default::default(),
+            heap_index_stride: Default::default(),
+            p_embedded_sampler: ptr::null(),
+            use_combined_image_sampler_index: Default::default(),
+            sampler_heap_offset: Default::default(),
+            sampler_push_offset: Default::default(),
+            sampler_address_offset: Default::default(),
+            sampler_heap_index_stride: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorMappingSourceIndirectIndexArrayEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorMappingSourceIndirectIndexArrayEXT")
+            .field("heap_offset", &self.heap_offset)
+            .field("push_offset", &self.push_offset)
+            .field("address_offset", &self.address_offset)
+            .field("heap_index_stride", &self.heap_index_stride)
+            .field("p_embedded_sampler", &self.p_embedded_sampler)
+            .field(
+                "use_combined_image_sampler_index",
+                &self.use_combined_image_sampler_index,
+            )
+            .field("sampler_heap_offset", &self.sampler_heap_offset)
+            .field("sampler_push_offset", &self.sampler_push_offset)
+            .field("sampler_address_offset", &self.sampler_address_offset)
+            .field("sampler_heap_index_stride", &self.sampler_heap_index_stride)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct DescriptorMappingSourceHeapDataEXT {
+    pub heap_offset: u32,
+    pub push_offset: u32,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorMappingSourceShaderRecordIndexEXT {
+    pub heap_offset: u32,
+    pub shader_record_offset: u32,
+    pub heap_index_stride: u32,
+    pub heap_array_stride: u32,
+    pub p_embedded_sampler: *const SamplerCreateInfo,
+    pub use_combined_image_sampler_index: Bool32,
+    pub sampler_heap_offset: u32,
+    pub sampler_shader_record_offset: u32,
+    pub sampler_heap_index_stride: u32,
+    pub sampler_heap_array_stride: u32,
+}
+unsafe impl Send for DescriptorMappingSourceShaderRecordIndexEXT {}
+unsafe impl Sync for DescriptorMappingSourceShaderRecordIndexEXT {}
+impl Default for DescriptorMappingSourceShaderRecordIndexEXT {
+    fn default() -> Self {
+        Self {
+            heap_offset: Default::default(),
+            shader_record_offset: Default::default(),
+            heap_index_stride: Default::default(),
+            heap_array_stride: Default::default(),
+            p_embedded_sampler: ptr::null(),
+            use_combined_image_sampler_index: Default::default(),
+            sampler_heap_offset: Default::default(),
+            sampler_shader_record_offset: Default::default(),
+            sampler_heap_index_stride: Default::default(),
+            sampler_heap_array_stride: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorMappingSourceShaderRecordIndexEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorMappingSourceShaderRecordIndexEXT")
+            .field("heap_offset", &self.heap_offset)
+            .field("shader_record_offset", &self.shader_record_offset)
+            .field("heap_index_stride", &self.heap_index_stride)
+            .field("heap_array_stride", &self.heap_array_stride)
+            .field("p_embedded_sampler", &self.p_embedded_sampler)
+            .field(
+                "use_combined_image_sampler_index",
+                &self.use_combined_image_sampler_index,
+            )
+            .field("sampler_heap_offset", &self.sampler_heap_offset)
+            .field("sampler_shader_record_offset", &self.sampler_shader_record_offset)
+            .field("sampler_heap_index_stride", &self.sampler_heap_index_stride)
+            .field("sampler_heap_array_stride", &self.sampler_heap_array_stride)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct DescriptorMappingSourceIndirectAddressEXT {
+    pub push_offset: u32,
+    pub address_offset: u32,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union DescriptorMappingSourceDataEXT {
+    pub constant_offset: DescriptorMappingSourceConstantOffsetEXT,
+    pub push_index: DescriptorMappingSourcePushIndexEXT,
+    pub indirect_index: DescriptorMappingSourceIndirectIndexEXT,
+    pub indirect_index_array: DescriptorMappingSourceIndirectIndexArrayEXT,
+    pub heap_data: DescriptorMappingSourceHeapDataEXT,
+    pub push_data_offset: u32,
+    pub push_address_offset: u32,
+    pub indirect_address: DescriptorMappingSourceIndirectAddressEXT,
+    pub shader_record_index: DescriptorMappingSourceShaderRecordIndexEXT,
+    pub shader_record_data_offset: u32,
+    pub shader_record_address_offset: u32,
+}
+impl Default for DescriptorMappingSourceDataEXT {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for DescriptorMappingSourceDataEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorMappingSourceDataEXT")
+            .field("constant_offset", unsafe { &self.constant_offset })
+            .field("push_index", unsafe { &self.push_index })
+            .field("indirect_index", unsafe { &self.indirect_index })
+            .field("indirect_index_array", unsafe { &self.indirect_index_array })
+            .field("heap_data", unsafe { &self.heap_data })
+            .field("push_data_offset", unsafe { &self.push_data_offset })
+            .field("push_address_offset", unsafe { &self.push_address_offset })
+            .field("indirect_address", unsafe { &self.indirect_address })
+            .field("shader_record_index", unsafe { &self.shader_record_index })
+            .field("shader_record_data_offset", unsafe { &self.shader_record_data_offset })
+            .field("shader_record_address_offset", unsafe {
+                &self.shader_record_address_offset
+            })
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorSetAndBindingMappingEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub descriptor_set: u32,
+    pub first_binding: u32,
+    pub binding_count: u32,
+    pub resource_mask: SpirvResourceTypeFlagsEXT,
+    pub source: DescriptorMappingSourceEXT,
+    pub source_data: DescriptorMappingSourceDataEXT,
+}
+unsafe impl Send for DescriptorSetAndBindingMappingEXT {}
+unsafe impl Sync for DescriptorSetAndBindingMappingEXT {}
+impl Default for DescriptorSetAndBindingMappingEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DESCRIPTOR_SET_AND_BINDING_MAPPING_EXT,
+            p_next: ptr::null(),
+            descriptor_set: Default::default(),
+            first_binding: Default::default(),
+            binding_count: Default::default(),
+            resource_mask: Default::default(),
+            source: Default::default(),
+            source_data: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorSetAndBindingMappingEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorSetAndBindingMappingEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("descriptor_set", &self.descriptor_set)
+            .field("first_binding", &self.first_binding)
+            .field("binding_count", &self.binding_count)
+            .field("resource_mask", &self.resource_mask)
+            .field("source", &self.source)
+            .field("source_data", &self.source_data)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ShaderDescriptorSetAndBindingMappingInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub mapping_count: u32,
+    pub p_mappings: *const DescriptorSetAndBindingMappingEXT,
+}
+unsafe impl Send for ShaderDescriptorSetAndBindingMappingInfoEXT {}
+unsafe impl Sync for ShaderDescriptorSetAndBindingMappingInfoEXT {}
+impl Default for ShaderDescriptorSetAndBindingMappingInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SHADER_DESCRIPTOR_SET_AND_BINDING_MAPPING_INFO_EXT,
+            p_next: ptr::null(),
+            mapping_count: Default::default(),
+            p_mappings: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for ShaderDescriptorSetAndBindingMappingInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ShaderDescriptorSetAndBindingMappingInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("mapping_count", &self.mapping_count)
+            .field("p_mappings", &self.p_mappings)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SamplerCustomBorderColorIndexCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub index: u32,
+}
+unsafe impl Send for SamplerCustomBorderColorIndexCreateInfoEXT {}
+unsafe impl Sync for SamplerCustomBorderColorIndexCreateInfoEXT {}
+impl Default for SamplerCustomBorderColorIndexCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SAMPLER_CUSTOM_BORDER_COLOR_INDEX_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            index: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SamplerCustomBorderColorIndexCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SamplerCustomBorderColorIndexCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("index", &self.index)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct OpaqueCaptureDataCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_data: *const HostAddressRangeConstEXT,
+}
+unsafe impl Send for OpaqueCaptureDataCreateInfoEXT {}
+unsafe impl Sync for OpaqueCaptureDataCreateInfoEXT {}
+impl Default for OpaqueCaptureDataCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::OPAQUE_CAPTURE_DATA_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            p_data: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for OpaqueCaptureDataCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("OpaqueCaptureDataCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_data", &self.p_data)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct IndirectCommandsLayoutPushDataTokenNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub push_data_offset: u32,
+    pub push_data_size: u32,
+}
+unsafe impl Send for IndirectCommandsLayoutPushDataTokenNV {}
+unsafe impl Sync for IndirectCommandsLayoutPushDataTokenNV {}
+impl Default for IndirectCommandsLayoutPushDataTokenNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::INDIRECT_COMMANDS_LAYOUT_PUSH_DATA_TOKEN_NV,
+            p_next: ptr::null(),
+            push_data_offset: Default::default(),
+            push_data_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for IndirectCommandsLayoutPushDataTokenNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectCommandsLayoutPushDataTokenNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("push_data_offset", &self.push_data_offset)
+            .field("push_data_size", &self.push_data_size)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SubsampledImageFormatPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub subsampled_image_descriptor_count: u32,
+}
+unsafe impl Send for SubsampledImageFormatPropertiesEXT {}
+unsafe impl Sync for SubsampledImageFormatPropertiesEXT {}
+impl Default for SubsampledImageFormatPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SUBSAMPLED_IMAGE_FORMAT_PROPERTIES_EXT,
+            p_next: ptr::null(),
+            subsampled_image_descriptor_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SubsampledImageFormatPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SubsampledImageFormatPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "subsampled_image_descriptor_count",
+                &self.subsampled_image_descriptor_count,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDescriptorHeapFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub descriptor_heap: Bool32,
+    pub descriptor_heap_capture_replay: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDescriptorHeapFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceDescriptorHeapFeaturesEXT {}
+impl Default for PhysicalDeviceDescriptorHeapFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_HEAP_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            descriptor_heap: Default::default(),
+            descriptor_heap_capture_replay: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDescriptorHeapFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDescriptorHeapFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("descriptor_heap", &self.descriptor_heap)
+            .field("descriptor_heap_capture_replay", &self.descriptor_heap_capture_replay)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDescriptorHeapPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub sampler_heap_alignment: DeviceSize,
+    pub resource_heap_alignment: DeviceSize,
+    pub max_sampler_heap_size: DeviceSize,
+    pub max_resource_heap_size: DeviceSize,
+    pub min_sampler_heap_reserved_range: DeviceSize,
+    pub min_sampler_heap_reserved_range_with_embedded: DeviceSize,
+    pub min_resource_heap_reserved_range: DeviceSize,
+    pub sampler_descriptor_size: DeviceSize,
+    pub image_descriptor_size: DeviceSize,
+    pub buffer_descriptor_size: DeviceSize,
+    pub sampler_descriptor_alignment: DeviceSize,
+    pub image_descriptor_alignment: DeviceSize,
+    pub buffer_descriptor_alignment: DeviceSize,
+    pub max_push_data_size: DeviceSize,
+    pub image_capture_replay_opaque_data_size: usize,
+    pub max_descriptor_heap_embedded_samplers: u32,
+    pub sampler_ycbcr_conversion_count: u32,
+    pub sparse_descriptor_heaps: Bool32,
+    pub protected_descriptor_heaps: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDescriptorHeapPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceDescriptorHeapPropertiesEXT {}
+impl Default for PhysicalDeviceDescriptorHeapPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_HEAP_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            sampler_heap_alignment: Default::default(),
+            resource_heap_alignment: Default::default(),
+            max_sampler_heap_size: Default::default(),
+            max_resource_heap_size: Default::default(),
+            min_sampler_heap_reserved_range: Default::default(),
+            min_sampler_heap_reserved_range_with_embedded: Default::default(),
+            min_resource_heap_reserved_range: Default::default(),
+            sampler_descriptor_size: Default::default(),
+            image_descriptor_size: Default::default(),
+            buffer_descriptor_size: Default::default(),
+            sampler_descriptor_alignment: Default::default(),
+            image_descriptor_alignment: Default::default(),
+            buffer_descriptor_alignment: Default::default(),
+            max_push_data_size: Default::default(),
+            image_capture_replay_opaque_data_size: Default::default(),
+            max_descriptor_heap_embedded_samplers: Default::default(),
+            sampler_ycbcr_conversion_count: Default::default(),
+            sparse_descriptor_heaps: Default::default(),
+            protected_descriptor_heaps: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDescriptorHeapPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDescriptorHeapPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("sampler_heap_alignment", &self.sampler_heap_alignment)
+            .field("resource_heap_alignment", &self.resource_heap_alignment)
+            .field("max_sampler_heap_size", &self.max_sampler_heap_size)
+            .field("max_resource_heap_size", &self.max_resource_heap_size)
+            .field("min_sampler_heap_reserved_range", &self.min_sampler_heap_reserved_range)
+            .field(
+                "min_sampler_heap_reserved_range_with_embedded",
+                &self.min_sampler_heap_reserved_range_with_embedded,
+            )
+            .field(
+                "min_resource_heap_reserved_range",
+                &self.min_resource_heap_reserved_range,
+            )
+            .field("sampler_descriptor_size", &self.sampler_descriptor_size)
+            .field("image_descriptor_size", &self.image_descriptor_size)
+            .field("buffer_descriptor_size", &self.buffer_descriptor_size)
+            .field("sampler_descriptor_alignment", &self.sampler_descriptor_alignment)
+            .field("image_descriptor_alignment", &self.image_descriptor_alignment)
+            .field("buffer_descriptor_alignment", &self.buffer_descriptor_alignment)
+            .field("max_push_data_size", &self.max_push_data_size)
+            .field(
+                "image_capture_replay_opaque_data_size",
+                &self.image_capture_replay_opaque_data_size,
+            )
+            .field(
+                "max_descriptor_heap_embedded_samplers",
+                &self.max_descriptor_heap_embedded_samplers,
+            )
+            .field("sampler_ycbcr_conversion_count", &self.sampler_ycbcr_conversion_count)
+            .field("sparse_descriptor_heaps", &self.sparse_descriptor_heaps)
+            .field("protected_descriptor_heaps", &self.protected_descriptor_heaps)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CommandBufferInheritanceDescriptorHeapInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_sampler_heap_bind_info: *const BindHeapInfoEXT,
+    pub p_resource_heap_bind_info: *const BindHeapInfoEXT,
+}
+unsafe impl Send for CommandBufferInheritanceDescriptorHeapInfoEXT {}
+unsafe impl Sync for CommandBufferInheritanceDescriptorHeapInfoEXT {}
+impl Default for CommandBufferInheritanceDescriptorHeapInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COMMAND_BUFFER_INHERITANCE_DESCRIPTOR_HEAP_INFO_EXT,
+            p_next: ptr::null(),
+            p_sampler_heap_bind_info: ptr::null(),
+            p_resource_heap_bind_info: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CommandBufferInheritanceDescriptorHeapInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CommandBufferInheritanceDescriptorHeapInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_sampler_heap_bind_info", &self.p_sampler_heap_bind_info)
+            .field("p_resource_heap_bind_info", &self.p_resource_heap_bind_info)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDescriptorHeapTensorPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub tensor_descriptor_size: DeviceSize,
+    pub tensor_descriptor_alignment: DeviceSize,
+    pub tensor_capture_replay_opaque_data_size: usize,
+}
+unsafe impl Send for PhysicalDeviceDescriptorHeapTensorPropertiesARM {}
+unsafe impl Sync for PhysicalDeviceDescriptorHeapTensorPropertiesARM {}
+impl Default for PhysicalDeviceDescriptorHeapTensorPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_HEAP_TENSOR_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            tensor_descriptor_size: Default::default(),
+            tensor_descriptor_alignment: Default::default(),
+            tensor_capture_replay_opaque_data_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDescriptorHeapTensorPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDescriptorHeapTensorPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tensor_descriptor_size", &self.tensor_descriptor_size)
+            .field("tensor_descriptor_alignment", &self.tensor_descriptor_alignment)
+            .field(
+                "tensor_capture_replay_opaque_data_size",
+                &self.tensor_capture_replay_opaque_data_size,
+            )
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -54733,6 +55959,8 @@ pub type FnGetImageViewAddressNVX = unsafe extern "system" fn(
     image_view: ImageView,
     p_properties: *mut ImageViewAddressPropertiesNVX,
 ) -> Result;
+pub type FnGetDeviceCombinedImageSamplerIndexNVX =
+    unsafe extern "system" fn(device: Device, image_view_index: u64, sampler_index: u64) -> u64;
 pub type FnGetPhysicalDeviceSurfacePresentModes2EXT = unsafe extern "system" fn(
     physical_device: PhysicalDevice,
     p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
@@ -55798,3 +57026,42 @@ pub type FnEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = un
 ) -> Result;
 pub type FnCmdSetComputeOccupancyPriorityNV =
     unsafe extern "system" fn(command_buffer: CommandBuffer, p_parameters: *const ComputeOccupancyPriorityParametersNV);
+pub type FnWriteSamplerDescriptorsEXT = unsafe extern "system" fn(
+    device: Device,
+    sampler_count: u32,
+    p_samplers: *const SamplerCreateInfo,
+    p_descriptors: *const HostAddressRangeEXT,
+) -> Result;
+pub type FnWriteResourceDescriptorsEXT = unsafe extern "system" fn(
+    device: Device,
+    resource_count: u32,
+    p_resources: *const ResourceDescriptorInfoEXT,
+    p_descriptors: *const HostAddressRangeEXT,
+) -> Result;
+pub type FnCmdBindSamplerHeapEXT =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_bind_info: *const BindHeapInfoEXT);
+pub type FnCmdBindResourceHeapEXT =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_bind_info: *const BindHeapInfoEXT);
+pub type FnCmdPushDataEXT =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_push_data_info: *const PushDataInfoEXT);
+pub type FnRegisterCustomBorderColorEXT = unsafe extern "system" fn(
+    device: Device,
+    p_border_color: *const SamplerCustomBorderColorCreateInfoEXT,
+    request_index: Bool32,
+    p_index: *mut u32,
+) -> Result;
+pub type FnUnregisterCustomBorderColorEXT = unsafe extern "system" fn(device: Device, index: u32);
+pub type FnGetImageOpaqueCaptureDataEXT = unsafe extern "system" fn(
+    device: Device,
+    image_count: u32,
+    p_images: *const Image,
+    p_datas: *mut HostAddressRangeEXT,
+) -> Result;
+pub type FnGetPhysicalDeviceDescriptorSizeEXT =
+    unsafe extern "system" fn(physical_device: PhysicalDevice, descriptor_type: DescriptorType) -> DeviceSize;
+pub type FnGetTensorOpaqueCaptureDataARM = unsafe extern "system" fn(
+    device: Device,
+    tensor_count: u32,
+    p_tensors: *const TensorARM,
+    p_datas: *mut HostAddressRangeEXT,
+) -> Result;

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.339
+//! Generated from vk.xml version 1.4.340
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -6786,6 +6786,81 @@ impl DeviceCreateInfoNext for PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBui
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct PushConstantBankInfoNVBuilder {
+    inner: vk::PushConstantBankInfoNV,
+}
+impl Builder<'_> for vk::PushConstantBankInfoNV {
+    type Type = PushConstantBankInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PushConstantBankInfoNVBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PushConstantBankInfoNV {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn bank(mut self, bank: u32) -> Self {
+        self.inner.bank = bank;
+        self
+    }
+}
+impl Deref for PushConstantBankInfoNVBuilder {
+    type Target = vk::PushConstantBankInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DescriptorSetAndBindingMappingEXTNext for vk::PushConstantBankInfoNV {}
+impl DescriptorSetAndBindingMappingEXTNext for PushConstantBankInfoNVBuilder {}
+impl PushDataInfoEXTNext for vk::PushConstantBankInfoNV {}
+impl PushDataInfoEXTNext for PushConstantBankInfoNVBuilder {}
+impl PushConstantsInfoNext for vk::PushConstantBankInfoNV {}
+impl PushConstantsInfoNext for PushConstantBankInfoNVBuilder {}
+impl IndirectCommandsLayoutTokenEXTNext for vk::PushConstantBankInfoNV {}
+impl IndirectCommandsLayoutTokenEXTNext for PushConstantBankInfoNVBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDevicePushConstantBankFeaturesNVBuilder {
+    inner: vk::PhysicalDevicePushConstantBankFeaturesNV,
+}
+impl Builder<'_> for vk::PhysicalDevicePushConstantBankFeaturesNV {
+    type Type = PhysicalDevicePushConstantBankFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDevicePushConstantBankFeaturesNVBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDevicePushConstantBankFeaturesNV {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn push_constant_bank(mut self, push_constant_bank: bool) -> Self {
+        self.inner.push_constant_bank = if push_constant_bank { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePushConstantBankFeaturesNVBuilder {
+    type Target = vk::PhysicalDevicePushConstantBankFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePushConstantBankFeaturesNV {}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePushConstantBankFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePushConstantBankFeaturesNV {}
+impl DeviceCreateInfoNext for PhysicalDevicePushConstantBankFeaturesNVBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePushConstantBankPropertiesNV {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNVBuilder {
     inner: vk::PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV,
 }
@@ -7869,7 +7944,14 @@ impl<'a> Builder<'a> for vk::IndirectCommandsLayoutTokenNV {
         Default::default()
     }
 }
+pub trait IndirectCommandsLayoutTokenNVNext {}
 impl<'a> IndirectCommandsLayoutTokenNVBuilder<'a> {
+    pub fn insert_next<T: IndirectCommandsLayoutTokenNVNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn get_mut(&mut self) -> &mut vk::IndirectCommandsLayoutTokenNV {
         &mut self.inner
     }
@@ -14119,6 +14201,10 @@ impl<'a> Deref for DebugUtilsObjectNameInfoEXTBuilder<'a> {
 }
 impl PipelineShaderStageCreateInfoNext for vk::DebugUtilsObjectNameInfoEXT {}
 impl PipelineShaderStageCreateInfoNext for DebugUtilsObjectNameInfoEXTBuilder<'_> {}
+impl ResourceDescriptorInfoEXTNext for vk::DebugUtilsObjectNameInfoEXT {}
+impl ResourceDescriptorInfoEXTNext for DebugUtilsObjectNameInfoEXTBuilder<'_> {}
+impl SamplerCreateInfoNext for vk::DebugUtilsObjectNameInfoEXT {}
+impl SamplerCreateInfoNext for DebugUtilsObjectNameInfoEXTBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -26282,16 +26368,24 @@ impl<'a> Deref for IndirectCommandsLayoutCreateInfoEXTBuilder<'a> {
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct IndirectCommandsLayoutTokenEXTBuilder {
+pub struct IndirectCommandsLayoutTokenEXTBuilder<'a> {
     inner: vk::IndirectCommandsLayoutTokenEXT,
+    phantom: PhantomData<&'a ()>,
 }
-impl Builder<'_> for vk::IndirectCommandsLayoutTokenEXT {
-    type Type = IndirectCommandsLayoutTokenEXTBuilder;
+impl<'a> Builder<'a> for vk::IndirectCommandsLayoutTokenEXT {
+    type Type = IndirectCommandsLayoutTokenEXTBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl IndirectCommandsLayoutTokenEXTBuilder {
+pub trait IndirectCommandsLayoutTokenEXTNext {}
+impl<'a> IndirectCommandsLayoutTokenEXTBuilder<'a> {
+    pub fn insert_next<T: IndirectCommandsLayoutTokenEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn get_mut(&mut self) -> &mut vk::IndirectCommandsLayoutTokenEXT {
         &mut self.inner
     }
@@ -26312,7 +26406,7 @@ impl IndirectCommandsLayoutTokenEXTBuilder {
         self
     }
 }
-impl Deref for IndirectCommandsLayoutTokenEXTBuilder {
+impl<'a> Deref for IndirectCommandsLayoutTokenEXTBuilder<'a> {
     type Target = vk::IndirectCommandsLayoutTokenEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -34028,6 +34122,45 @@ impl DeviceCreateInfoNext for PhysicalDeviceDynamicRenderingUnusedAttachmentsFea
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct PhysicalDeviceInternallySynchronizedQueuesFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR,
+}
+impl Builder<'_> for vk::PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR {
+    type Type = PhysicalDeviceInternallySynchronizedQueuesFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceInternallySynchronizedQueuesFeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn internally_synchronized_queues(mut self, internally_synchronized_queues: bool) -> Self {
+        self.inner.internally_synchronized_queues = if internally_synchronized_queues {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceInternallySynchronizedQueuesFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceInternallySynchronizedQueuesFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDeviceInternallySynchronizedQueuesFeaturesKHRBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct SurfacePresentModeKHRBuilder {
     inner: vk::SurfacePresentModeKHR,
 }
@@ -41071,3 +41204,1031 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceTextureCompressionASTC3DF
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceTextureCompressionASTC3DFeaturesEXTBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceTextureCompressionASTC3DFeaturesEXT {}
 impl DeviceCreateInfoNext for PhysicalDeviceTextureCompressionASTC3DFeaturesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceShaderSubgroupPartitionedFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT,
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT {
+    type Type = PhysicalDeviceShaderSubgroupPartitionedFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceShaderSubgroupPartitionedFeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_subgroup_partitioned(mut self, shader_subgroup_partitioned: bool) -> Self {
+        self.inner.shader_subgroup_partitioned = if shader_subgroup_partitioned {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderSubgroupPartitionedFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderSubgroupPartitionedFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderSubgroupPartitionedFeaturesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct HostAddressRangeEXTBuilder<'a> {
+    inner: vk::HostAddressRangeEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::HostAddressRangeEXT {
+    type Type = HostAddressRangeEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> HostAddressRangeEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::HostAddressRangeEXT {
+        &mut self.inner
+    }
+    pub fn address(mut self, address: &'a mut [u8]) -> Self {
+        self.inner.size = address.len();
+        self.inner.address = address.as_mut_ptr() as *mut _;
+        self
+    }
+}
+impl<'a> Deref for HostAddressRangeEXTBuilder<'a> {
+    type Target = vk::HostAddressRangeEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct HostAddressRangeConstEXTBuilder<'a> {
+    inner: vk::HostAddressRangeConstEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::HostAddressRangeConstEXT {
+    type Type = HostAddressRangeConstEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> HostAddressRangeConstEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::HostAddressRangeConstEXT {
+        &mut self.inner
+    }
+    pub fn address(mut self, address: &'a [u8]) -> Self {
+        self.inner.size = address.len();
+        self.inner.address = address.as_ptr() as *const _;
+        self
+    }
+}
+impl<'a> Deref for HostAddressRangeConstEXTBuilder<'a> {
+    type Target = vk::HostAddressRangeConstEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DeviceAddressRangeEXTBuilder {
+    inner: vk::DeviceAddressRangeEXT,
+}
+impl Builder<'_> for vk::DeviceAddressRangeEXT {
+    type Type = DeviceAddressRangeEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DeviceAddressRangeEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DeviceAddressRangeEXT {
+        &mut self.inner
+    }
+    pub fn address(mut self, address: vk::DeviceAddress) -> Self {
+        self.inner.address = address;
+        self
+    }
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
+        self.inner.size = size;
+        self
+    }
+}
+impl Deref for DeviceAddressRangeEXTBuilder {
+    type Target = vk::DeviceAddressRangeEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct TexelBufferDescriptorInfoEXTBuilder {
+    inner: vk::TexelBufferDescriptorInfoEXT,
+}
+impl Builder<'_> for vk::TexelBufferDescriptorInfoEXT {
+    type Type = TexelBufferDescriptorInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl TexelBufferDescriptorInfoEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::TexelBufferDescriptorInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn format(mut self, format: vk::Format) -> Self {
+        self.inner.format = format;
+        self
+    }
+    pub fn address_range(mut self, address_range: vk::DeviceAddressRangeEXT) -> Self {
+        self.inner.address_range = address_range;
+        self
+    }
+}
+impl Deref for TexelBufferDescriptorInfoEXTBuilder {
+    type Target = vk::TexelBufferDescriptorInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ImageDescriptorInfoEXTBuilder<'a> {
+    inner: vk::ImageDescriptorInfoEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::ImageDescriptorInfoEXT {
+    type Type = ImageDescriptorInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> ImageDescriptorInfoEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::ImageDescriptorInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_view(mut self, p_view: &'a vk::ImageViewCreateInfo) -> Self {
+        self.inner.p_view = p_view;
+        self
+    }
+    pub fn layout(mut self, layout: vk::ImageLayout) -> Self {
+        self.inner.layout = layout;
+        self
+    }
+}
+impl<'a> Deref for ImageDescriptorInfoEXTBuilder<'a> {
+    type Target = vk::ImageDescriptorInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ResourceDescriptorInfoEXTBuilder<'a> {
+    inner: vk::ResourceDescriptorInfoEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::ResourceDescriptorInfoEXT {
+    type Type = ResourceDescriptorInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait ResourceDescriptorInfoEXTNext {}
+impl<'a> ResourceDescriptorInfoEXTBuilder<'a> {
+    pub fn insert_next<T: ResourceDescriptorInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::ResourceDescriptorInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::DescriptorType) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn data(mut self, data: vk::ResourceDescriptorDataEXT) -> Self {
+        self.inner.data = data;
+        self
+    }
+}
+impl<'a> Deref for ResourceDescriptorInfoEXTBuilder<'a> {
+    type Target = vk::ResourceDescriptorInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct BindHeapInfoEXTBuilder {
+    inner: vk::BindHeapInfoEXT,
+}
+impl Builder<'_> for vk::BindHeapInfoEXT {
+    type Type = BindHeapInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl BindHeapInfoEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::BindHeapInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn heap_range(mut self, heap_range: vk::DeviceAddressRangeEXT) -> Self {
+        self.inner.heap_range = heap_range;
+        self
+    }
+    pub fn reserved_range_offset(mut self, reserved_range_offset: vk::DeviceSize) -> Self {
+        self.inner.reserved_range_offset = reserved_range_offset;
+        self
+    }
+    pub fn reserved_range_size(mut self, reserved_range_size: vk::DeviceSize) -> Self {
+        self.inner.reserved_range_size = reserved_range_size;
+        self
+    }
+}
+impl Deref for BindHeapInfoEXTBuilder {
+    type Target = vk::BindHeapInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PushDataInfoEXTBuilder<'a> {
+    inner: vk::PushDataInfoEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::PushDataInfoEXT {
+    type Type = PushDataInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait PushDataInfoEXTNext {}
+impl<'a> PushDataInfoEXTBuilder<'a> {
+    pub fn insert_next<T: PushDataInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::PushDataInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn offset(mut self, offset: u32) -> Self {
+        self.inner.offset = offset;
+        self
+    }
+    pub fn data(mut self, data: vk::HostAddressRangeConstEXT) -> Self {
+        self.inner.data = data;
+        self
+    }
+}
+impl<'a> Deref for PushDataInfoEXTBuilder<'a> {
+    type Target = vk::PushDataInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DescriptorMappingSourceConstantOffsetEXTBuilder<'a> {
+    inner: vk::DescriptorMappingSourceConstantOffsetEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DescriptorMappingSourceConstantOffsetEXT {
+    type Type = DescriptorMappingSourceConstantOffsetEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> DescriptorMappingSourceConstantOffsetEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::DescriptorMappingSourceConstantOffsetEXT {
+        &mut self.inner
+    }
+    pub fn heap_offset(mut self, heap_offset: u32) -> Self {
+        self.inner.heap_offset = heap_offset;
+        self
+    }
+    pub fn heap_array_stride(mut self, heap_array_stride: u32) -> Self {
+        self.inner.heap_array_stride = heap_array_stride;
+        self
+    }
+    pub fn p_embedded_sampler(mut self, p_embedded_sampler: Option<&'a vk::SamplerCreateInfo>) -> Self {
+        self.inner.p_embedded_sampler = p_embedded_sampler.map_or(ptr::null(), |r| r);
+        self
+    }
+    pub fn sampler_heap_offset(mut self, sampler_heap_offset: u32) -> Self {
+        self.inner.sampler_heap_offset = sampler_heap_offset;
+        self
+    }
+    pub fn sampler_heap_array_stride(mut self, sampler_heap_array_stride: u32) -> Self {
+        self.inner.sampler_heap_array_stride = sampler_heap_array_stride;
+        self
+    }
+}
+impl<'a> Deref for DescriptorMappingSourceConstantOffsetEXTBuilder<'a> {
+    type Target = vk::DescriptorMappingSourceConstantOffsetEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DescriptorMappingSourcePushIndexEXTBuilder<'a> {
+    inner: vk::DescriptorMappingSourcePushIndexEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DescriptorMappingSourcePushIndexEXT {
+    type Type = DescriptorMappingSourcePushIndexEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> DescriptorMappingSourcePushIndexEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::DescriptorMappingSourcePushIndexEXT {
+        &mut self.inner
+    }
+    pub fn heap_offset(mut self, heap_offset: u32) -> Self {
+        self.inner.heap_offset = heap_offset;
+        self
+    }
+    pub fn push_offset(mut self, push_offset: u32) -> Self {
+        self.inner.push_offset = push_offset;
+        self
+    }
+    pub fn heap_index_stride(mut self, heap_index_stride: u32) -> Self {
+        self.inner.heap_index_stride = heap_index_stride;
+        self
+    }
+    pub fn heap_array_stride(mut self, heap_array_stride: u32) -> Self {
+        self.inner.heap_array_stride = heap_array_stride;
+        self
+    }
+    pub fn p_embedded_sampler(mut self, p_embedded_sampler: Option<&'a vk::SamplerCreateInfo>) -> Self {
+        self.inner.p_embedded_sampler = p_embedded_sampler.map_or(ptr::null(), |r| r);
+        self
+    }
+    pub fn use_combined_image_sampler_index(mut self, use_combined_image_sampler_index: bool) -> Self {
+        self.inner.use_combined_image_sampler_index = if use_combined_image_sampler_index {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn sampler_heap_offset(mut self, sampler_heap_offset: u32) -> Self {
+        self.inner.sampler_heap_offset = sampler_heap_offset;
+        self
+    }
+    pub fn sampler_push_offset(mut self, sampler_push_offset: u32) -> Self {
+        self.inner.sampler_push_offset = sampler_push_offset;
+        self
+    }
+    pub fn sampler_heap_index_stride(mut self, sampler_heap_index_stride: u32) -> Self {
+        self.inner.sampler_heap_index_stride = sampler_heap_index_stride;
+        self
+    }
+    pub fn sampler_heap_array_stride(mut self, sampler_heap_array_stride: u32) -> Self {
+        self.inner.sampler_heap_array_stride = sampler_heap_array_stride;
+        self
+    }
+}
+impl<'a> Deref for DescriptorMappingSourcePushIndexEXTBuilder<'a> {
+    type Target = vk::DescriptorMappingSourcePushIndexEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DescriptorMappingSourceIndirectIndexEXTBuilder<'a> {
+    inner: vk::DescriptorMappingSourceIndirectIndexEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DescriptorMappingSourceIndirectIndexEXT {
+    type Type = DescriptorMappingSourceIndirectIndexEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> DescriptorMappingSourceIndirectIndexEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::DescriptorMappingSourceIndirectIndexEXT {
+        &mut self.inner
+    }
+    pub fn heap_offset(mut self, heap_offset: u32) -> Self {
+        self.inner.heap_offset = heap_offset;
+        self
+    }
+    pub fn push_offset(mut self, push_offset: u32) -> Self {
+        self.inner.push_offset = push_offset;
+        self
+    }
+    pub fn address_offset(mut self, address_offset: u32) -> Self {
+        self.inner.address_offset = address_offset;
+        self
+    }
+    pub fn heap_index_stride(mut self, heap_index_stride: u32) -> Self {
+        self.inner.heap_index_stride = heap_index_stride;
+        self
+    }
+    pub fn heap_array_stride(mut self, heap_array_stride: u32) -> Self {
+        self.inner.heap_array_stride = heap_array_stride;
+        self
+    }
+    pub fn p_embedded_sampler(mut self, p_embedded_sampler: Option<&'a vk::SamplerCreateInfo>) -> Self {
+        self.inner.p_embedded_sampler = p_embedded_sampler.map_or(ptr::null(), |r| r);
+        self
+    }
+    pub fn use_combined_image_sampler_index(mut self, use_combined_image_sampler_index: bool) -> Self {
+        self.inner.use_combined_image_sampler_index = if use_combined_image_sampler_index {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn sampler_heap_offset(mut self, sampler_heap_offset: u32) -> Self {
+        self.inner.sampler_heap_offset = sampler_heap_offset;
+        self
+    }
+    pub fn sampler_push_offset(mut self, sampler_push_offset: u32) -> Self {
+        self.inner.sampler_push_offset = sampler_push_offset;
+        self
+    }
+    pub fn sampler_address_offset(mut self, sampler_address_offset: u32) -> Self {
+        self.inner.sampler_address_offset = sampler_address_offset;
+        self
+    }
+    pub fn sampler_heap_index_stride(mut self, sampler_heap_index_stride: u32) -> Self {
+        self.inner.sampler_heap_index_stride = sampler_heap_index_stride;
+        self
+    }
+    pub fn sampler_heap_array_stride(mut self, sampler_heap_array_stride: u32) -> Self {
+        self.inner.sampler_heap_array_stride = sampler_heap_array_stride;
+        self
+    }
+}
+impl<'a> Deref for DescriptorMappingSourceIndirectIndexEXTBuilder<'a> {
+    type Target = vk::DescriptorMappingSourceIndirectIndexEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DescriptorMappingSourceIndirectIndexArrayEXTBuilder<'a> {
+    inner: vk::DescriptorMappingSourceIndirectIndexArrayEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DescriptorMappingSourceIndirectIndexArrayEXT {
+    type Type = DescriptorMappingSourceIndirectIndexArrayEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> DescriptorMappingSourceIndirectIndexArrayEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::DescriptorMappingSourceIndirectIndexArrayEXT {
+        &mut self.inner
+    }
+    pub fn heap_offset(mut self, heap_offset: u32) -> Self {
+        self.inner.heap_offset = heap_offset;
+        self
+    }
+    pub fn push_offset(mut self, push_offset: u32) -> Self {
+        self.inner.push_offset = push_offset;
+        self
+    }
+    pub fn address_offset(mut self, address_offset: u32) -> Self {
+        self.inner.address_offset = address_offset;
+        self
+    }
+    pub fn heap_index_stride(mut self, heap_index_stride: u32) -> Self {
+        self.inner.heap_index_stride = heap_index_stride;
+        self
+    }
+    pub fn p_embedded_sampler(mut self, p_embedded_sampler: Option<&'a vk::SamplerCreateInfo>) -> Self {
+        self.inner.p_embedded_sampler = p_embedded_sampler.map_or(ptr::null(), |r| r);
+        self
+    }
+    pub fn use_combined_image_sampler_index(mut self, use_combined_image_sampler_index: bool) -> Self {
+        self.inner.use_combined_image_sampler_index = if use_combined_image_sampler_index {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn sampler_heap_offset(mut self, sampler_heap_offset: u32) -> Self {
+        self.inner.sampler_heap_offset = sampler_heap_offset;
+        self
+    }
+    pub fn sampler_push_offset(mut self, sampler_push_offset: u32) -> Self {
+        self.inner.sampler_push_offset = sampler_push_offset;
+        self
+    }
+    pub fn sampler_address_offset(mut self, sampler_address_offset: u32) -> Self {
+        self.inner.sampler_address_offset = sampler_address_offset;
+        self
+    }
+    pub fn sampler_heap_index_stride(mut self, sampler_heap_index_stride: u32) -> Self {
+        self.inner.sampler_heap_index_stride = sampler_heap_index_stride;
+        self
+    }
+}
+impl<'a> Deref for DescriptorMappingSourceIndirectIndexArrayEXTBuilder<'a> {
+    type Target = vk::DescriptorMappingSourceIndirectIndexArrayEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DescriptorMappingSourceHeapDataEXTBuilder {
+    inner: vk::DescriptorMappingSourceHeapDataEXT,
+}
+impl Builder<'_> for vk::DescriptorMappingSourceHeapDataEXT {
+    type Type = DescriptorMappingSourceHeapDataEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DescriptorMappingSourceHeapDataEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DescriptorMappingSourceHeapDataEXT {
+        &mut self.inner
+    }
+    pub fn heap_offset(mut self, heap_offset: u32) -> Self {
+        self.inner.heap_offset = heap_offset;
+        self
+    }
+    pub fn push_offset(mut self, push_offset: u32) -> Self {
+        self.inner.push_offset = push_offset;
+        self
+    }
+}
+impl Deref for DescriptorMappingSourceHeapDataEXTBuilder {
+    type Target = vk::DescriptorMappingSourceHeapDataEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DescriptorMappingSourceShaderRecordIndexEXTBuilder<'a> {
+    inner: vk::DescriptorMappingSourceShaderRecordIndexEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DescriptorMappingSourceShaderRecordIndexEXT {
+    type Type = DescriptorMappingSourceShaderRecordIndexEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> DescriptorMappingSourceShaderRecordIndexEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::DescriptorMappingSourceShaderRecordIndexEXT {
+        &mut self.inner
+    }
+    pub fn heap_offset(mut self, heap_offset: u32) -> Self {
+        self.inner.heap_offset = heap_offset;
+        self
+    }
+    pub fn shader_record_offset(mut self, shader_record_offset: u32) -> Self {
+        self.inner.shader_record_offset = shader_record_offset;
+        self
+    }
+    pub fn heap_index_stride(mut self, heap_index_stride: u32) -> Self {
+        self.inner.heap_index_stride = heap_index_stride;
+        self
+    }
+    pub fn heap_array_stride(mut self, heap_array_stride: u32) -> Self {
+        self.inner.heap_array_stride = heap_array_stride;
+        self
+    }
+    pub fn p_embedded_sampler(mut self, p_embedded_sampler: Option<&'a vk::SamplerCreateInfo>) -> Self {
+        self.inner.p_embedded_sampler = p_embedded_sampler.map_or(ptr::null(), |r| r);
+        self
+    }
+    pub fn use_combined_image_sampler_index(mut self, use_combined_image_sampler_index: bool) -> Self {
+        self.inner.use_combined_image_sampler_index = if use_combined_image_sampler_index {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn sampler_heap_offset(mut self, sampler_heap_offset: u32) -> Self {
+        self.inner.sampler_heap_offset = sampler_heap_offset;
+        self
+    }
+    pub fn sampler_shader_record_offset(mut self, sampler_shader_record_offset: u32) -> Self {
+        self.inner.sampler_shader_record_offset = sampler_shader_record_offset;
+        self
+    }
+    pub fn sampler_heap_index_stride(mut self, sampler_heap_index_stride: u32) -> Self {
+        self.inner.sampler_heap_index_stride = sampler_heap_index_stride;
+        self
+    }
+    pub fn sampler_heap_array_stride(mut self, sampler_heap_array_stride: u32) -> Self {
+        self.inner.sampler_heap_array_stride = sampler_heap_array_stride;
+        self
+    }
+}
+impl<'a> Deref for DescriptorMappingSourceShaderRecordIndexEXTBuilder<'a> {
+    type Target = vk::DescriptorMappingSourceShaderRecordIndexEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DescriptorMappingSourceIndirectAddressEXTBuilder {
+    inner: vk::DescriptorMappingSourceIndirectAddressEXT,
+}
+impl Builder<'_> for vk::DescriptorMappingSourceIndirectAddressEXT {
+    type Type = DescriptorMappingSourceIndirectAddressEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DescriptorMappingSourceIndirectAddressEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DescriptorMappingSourceIndirectAddressEXT {
+        &mut self.inner
+    }
+    pub fn push_offset(mut self, push_offset: u32) -> Self {
+        self.inner.push_offset = push_offset;
+        self
+    }
+    pub fn address_offset(mut self, address_offset: u32) -> Self {
+        self.inner.address_offset = address_offset;
+        self
+    }
+}
+impl Deref for DescriptorMappingSourceIndirectAddressEXTBuilder {
+    type Target = vk::DescriptorMappingSourceIndirectAddressEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DescriptorSetAndBindingMappingEXTBuilder<'a> {
+    inner: vk::DescriptorSetAndBindingMappingEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DescriptorSetAndBindingMappingEXT {
+    type Type = DescriptorSetAndBindingMappingEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait DescriptorSetAndBindingMappingEXTNext {}
+impl<'a> DescriptorSetAndBindingMappingEXTBuilder<'a> {
+    pub fn insert_next<T: DescriptorSetAndBindingMappingEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::DescriptorSetAndBindingMappingEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn descriptor_set(mut self, descriptor_set: u32) -> Self {
+        self.inner.descriptor_set = descriptor_set;
+        self
+    }
+    pub fn first_binding(mut self, first_binding: u32) -> Self {
+        self.inner.first_binding = first_binding;
+        self
+    }
+    pub fn binding_count(mut self, binding_count: u32) -> Self {
+        self.inner.binding_count = binding_count;
+        self
+    }
+    pub fn resource_mask(mut self, resource_mask: vk::SpirvResourceTypeFlagsEXT) -> Self {
+        self.inner.resource_mask = resource_mask;
+        self
+    }
+    pub fn source(mut self, source: vk::DescriptorMappingSourceEXT) -> Self {
+        self.inner.source = source;
+        self
+    }
+    pub fn source_data(mut self, source_data: vk::DescriptorMappingSourceDataEXT) -> Self {
+        self.inner.source_data = source_data;
+        self
+    }
+}
+impl<'a> Deref for DescriptorSetAndBindingMappingEXTBuilder<'a> {
+    type Target = vk::DescriptorSetAndBindingMappingEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ShaderDescriptorSetAndBindingMappingInfoEXTBuilder<'a> {
+    inner: vk::ShaderDescriptorSetAndBindingMappingInfoEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::ShaderDescriptorSetAndBindingMappingInfoEXT {
+    type Type = ShaderDescriptorSetAndBindingMappingInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> ShaderDescriptorSetAndBindingMappingInfoEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::ShaderDescriptorSetAndBindingMappingInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_mappings(mut self, p_mappings: &'a [vk::DescriptorSetAndBindingMappingEXT]) -> Self {
+        self.inner.mapping_count = p_mappings.len() as u32;
+        self.inner.p_mappings = p_mappings.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for ShaderDescriptorSetAndBindingMappingInfoEXTBuilder<'a> {
+    type Target = vk::ShaderDescriptorSetAndBindingMappingInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PipelineShaderStageCreateInfoNext for vk::ShaderDescriptorSetAndBindingMappingInfoEXT {}
+impl PipelineShaderStageCreateInfoNext for ShaderDescriptorSetAndBindingMappingInfoEXTBuilder<'_> {}
+impl ShaderCreateInfoEXTNext for vk::ShaderDescriptorSetAndBindingMappingInfoEXT {}
+impl ShaderCreateInfoEXTNext for ShaderDescriptorSetAndBindingMappingInfoEXTBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct SamplerCustomBorderColorIndexCreateInfoEXTBuilder {
+    inner: vk::SamplerCustomBorderColorIndexCreateInfoEXT,
+}
+impl Builder<'_> for vk::SamplerCustomBorderColorIndexCreateInfoEXT {
+    type Type = SamplerCustomBorderColorIndexCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl SamplerCustomBorderColorIndexCreateInfoEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::SamplerCustomBorderColorIndexCreateInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn index(mut self, index: u32) -> Self {
+        self.inner.index = index;
+        self
+    }
+}
+impl Deref for SamplerCustomBorderColorIndexCreateInfoEXTBuilder {
+    type Target = vk::SamplerCustomBorderColorIndexCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SamplerCreateInfoNext for vk::SamplerCustomBorderColorIndexCreateInfoEXT {}
+impl SamplerCreateInfoNext for SamplerCustomBorderColorIndexCreateInfoEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct OpaqueCaptureDataCreateInfoEXTBuilder<'a> {
+    inner: vk::OpaqueCaptureDataCreateInfoEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::OpaqueCaptureDataCreateInfoEXT {
+    type Type = OpaqueCaptureDataCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> OpaqueCaptureDataCreateInfoEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::OpaqueCaptureDataCreateInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_data(mut self, p_data: Option<&'a vk::HostAddressRangeConstEXT>) -> Self {
+        self.inner.p_data = p_data.map_or(ptr::null(), |r| r);
+        self
+    }
+}
+impl<'a> Deref for OpaqueCaptureDataCreateInfoEXTBuilder<'a> {
+    type Target = vk::OpaqueCaptureDataCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageCreateInfoNext for vk::OpaqueCaptureDataCreateInfoEXT {}
+impl ImageCreateInfoNext for OpaqueCaptureDataCreateInfoEXTBuilder<'_> {}
+impl TensorCreateInfoARMNext for vk::OpaqueCaptureDataCreateInfoEXT {}
+impl TensorCreateInfoARMNext for OpaqueCaptureDataCreateInfoEXTBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct IndirectCommandsLayoutPushDataTokenNVBuilder {
+    inner: vk::IndirectCommandsLayoutPushDataTokenNV,
+}
+impl Builder<'_> for vk::IndirectCommandsLayoutPushDataTokenNV {
+    type Type = IndirectCommandsLayoutPushDataTokenNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl IndirectCommandsLayoutPushDataTokenNVBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::IndirectCommandsLayoutPushDataTokenNV {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn push_data_offset(mut self, push_data_offset: u32) -> Self {
+        self.inner.push_data_offset = push_data_offset;
+        self
+    }
+    pub fn push_data_size(mut self, push_data_size: u32) -> Self {
+        self.inner.push_data_size = push_data_size;
+        self
+    }
+}
+impl Deref for IndirectCommandsLayoutPushDataTokenNVBuilder {
+    type Target = vk::IndirectCommandsLayoutPushDataTokenNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl IndirectCommandsLayoutTokenNVNext for vk::IndirectCommandsLayoutPushDataTokenNV {}
+impl IndirectCommandsLayoutTokenNVNext for IndirectCommandsLayoutPushDataTokenNVBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct SubsampledImageFormatPropertiesEXTBuilder {
+    inner: vk::SubsampledImageFormatPropertiesEXT,
+}
+impl Builder<'_> for vk::SubsampledImageFormatPropertiesEXT {
+    type Type = SubsampledImageFormatPropertiesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl SubsampledImageFormatPropertiesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::SubsampledImageFormatPropertiesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn subsampled_image_descriptor_count(mut self, subsampled_image_descriptor_count: u32) -> Self {
+        self.inner.subsampled_image_descriptor_count = subsampled_image_descriptor_count;
+        self
+    }
+}
+impl Deref for SubsampledImageFormatPropertiesEXTBuilder {
+    type Target = vk::SubsampledImageFormatPropertiesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageFormatProperties2Next for vk::SubsampledImageFormatPropertiesEXT {}
+impl ImageFormatProperties2Next for SubsampledImageFormatPropertiesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceDescriptorHeapFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceDescriptorHeapFeaturesEXT,
+}
+impl Builder<'_> for vk::PhysicalDeviceDescriptorHeapFeaturesEXT {
+    type Type = PhysicalDeviceDescriptorHeapFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceDescriptorHeapFeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceDescriptorHeapFeaturesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn descriptor_heap(mut self, descriptor_heap: bool) -> Self {
+        self.inner.descriptor_heap = if descriptor_heap { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn descriptor_heap_capture_replay(mut self, descriptor_heap_capture_replay: bool) -> Self {
+        self.inner.descriptor_heap_capture_replay = if descriptor_heap_capture_replay {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDescriptorHeapFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceDescriptorHeapFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDescriptorHeapFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDescriptorHeapFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDescriptorHeapFeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDeviceDescriptorHeapFeaturesEXTBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDescriptorHeapPropertiesEXT {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct CommandBufferInheritanceDescriptorHeapInfoEXTBuilder<'a> {
+    inner: vk::CommandBufferInheritanceDescriptorHeapInfoEXT,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::CommandBufferInheritanceDescriptorHeapInfoEXT {
+    type Type = CommandBufferInheritanceDescriptorHeapInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> CommandBufferInheritanceDescriptorHeapInfoEXTBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::CommandBufferInheritanceDescriptorHeapInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_sampler_heap_bind_info(mut self, p_sampler_heap_bind_info: Option<&'a vk::BindHeapInfoEXT>) -> Self {
+        self.inner.p_sampler_heap_bind_info = p_sampler_heap_bind_info.map_or(ptr::null(), |r| r);
+        self
+    }
+    pub fn p_resource_heap_bind_info(mut self, p_resource_heap_bind_info: Option<&'a vk::BindHeapInfoEXT>) -> Self {
+        self.inner.p_resource_heap_bind_info = p_resource_heap_bind_info.map_or(ptr::null(), |r| r);
+        self
+    }
+}
+impl<'a> Deref for CommandBufferInheritanceDescriptorHeapInfoEXTBuilder<'a> {
+    type Target = vk::CommandBufferInheritanceDescriptorHeapInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl CommandBufferInheritanceInfoNext for vk::CommandBufferInheritanceDescriptorHeapInfoEXT {}
+impl CommandBufferInheritanceInfoNext for CommandBufferInheritanceDescriptorHeapInfoEXTBuilder<'_> {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDescriptorHeapTensorPropertiesARM {}
