@@ -105,6 +105,7 @@ impl HasSpecName for vk::Tag {
 impl HasSpecName for vk::Type {
     fn spec_name(&self) -> &str {
         self.name.as_deref().unwrap_or_else(|| match &self.spec {
+            vk::TypeSpec::Funcpointer(code) => &code.proto.name.as_str(),
             vk::TypeSpec::Code(code) => code
                 .markup
                 .iter()

@@ -133,6 +133,20 @@ impl CmdExt for vk::Command {
     }
 }
 
+trait TypeSpecExt {
+    fn function_pointer_code(&self) -> &str;
+}
+
+impl TypeSpecExt for vk::TypeSpec {
+    fn function_pointer_code(&self) -> &str {
+        match self {
+            vk::TypeSpec::Funcpointer(code) => code.code.as_str(),
+            vk::TypeSpec::Code(code) => code.code.as_str(),
+            _ => panic!("missing code for function pointer type"),
+        }
+    }
+}
+
 struct TypedEnumInfo<'a> {
     enum_type_name: &'a str,
     ext_name: Option<&'a str>,
@@ -980,10 +994,8 @@ impl<'a> OracleBuilder<'a> {
                     }
                     TypeInfoDetail::Handle => {}
                     TypeInfoDetail::FunctionPointer => {
-                        let vk::TypeSpec::Code(ref code) = type_info.ty.spec else {
-                            panic!("missing code for function pointer type");
-                        };
-                        let decl = parse_func_pointer_typedef(&code.code);
+                        let code = type_info.ty.spec.function_pointer_code();
+                        let decl = parse_func_pointer_typedef(code);
                         for decl in iter::once(&decl.proto).chain(&decl.parameters) {
                             if let CBaseType::Named(member_type_name) = decl.ty.base {
                                 if self.type_info_by_name.contains_key(member_type_name) {
@@ -1405,10 +1417,8 @@ impl<'a> OracleBuilder<'a> {
                     });
                 }
                 TypeInfoDetail::FunctionPointer => {
-                    let vk::TypeSpec::Code(code) = &type_info.ty.spec else {
-                        panic!("failed to find code for function pointer");
-                    };
-                    let decl = parse_func_pointer_typedef(&code.code);
+                    let code = type_info.ty.spec.function_pointer_code();
+                    let decl = parse_func_pointer_typedef(code);
 
                     let return_type = self.type_decl_from_parsed(&decl.proto.ty, &index_maps);
                     let parameters = decl
