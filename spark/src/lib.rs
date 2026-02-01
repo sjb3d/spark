@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.340
+//! Generated from vk.xml version 1.4.342
 
 #![allow(
     clippy::too_many_arguments,
@@ -1136,6 +1136,12 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+    pub fn supports_qcom_cooperative_matrix_conversion(&self) -> bool {
+        self.supports_khr_cooperative_matrix()
+    }
+    pub fn enable_qcom_cooperative_matrix_conversion(&mut self) {
+        self.enable_khr_cooperative_matrix();
     }
     pub fn supports_khr_8bit_storage(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -5690,6 +5696,7 @@ pub struct DeviceExtensions {
     pub khr_draw_indirect_count: bool,
     pub ext_filter_cubic: bool,
     pub qcom_render_pass_shader_resolve: bool,
+    pub qcom_cooperative_matrix_conversion: bool,
     pub ext_global_priority: bool,
     pub khr_shader_subgroup_extended_types: bool,
     pub khr_8bit_storage: bool,
@@ -6190,6 +6197,8 @@ impl DeviceExtensions {
             self.ext_filter_cubic = true;
         } else if name == c"VK_QCOM_render_pass_shader_resolve" {
             self.qcom_render_pass_shader_resolve = true;
+        } else if name == c"VK_QCOM_cooperative_matrix_conversion" {
+            self.qcom_cooperative_matrix_conversion = true;
         } else if name == c"VK_EXT_global_priority" {
             self.ext_global_priority = true;
         } else if name == c"VK_KHR_shader_subgroup_extended_types" {
@@ -6850,6 +6859,7 @@ impl DeviceExtensions {
             khr_draw_indirect_count: false,
             ext_filter_cubic: false,
             qcom_render_pass_shader_resolve: false,
+            qcom_cooperative_matrix_conversion: false,
             ext_global_priority: false,
             khr_shader_subgroup_extended_types: false,
             khr_8bit_storage: false,
@@ -8044,6 +8054,13 @@ impl DeviceExtensions {
     }
     pub fn enable_qcom_render_pass_shader_resolve(&mut self) {
         self.qcom_render_pass_shader_resolve = true;
+    }
+    pub fn supports_qcom_cooperative_matrix_conversion(&self) -> bool {
+        self.qcom_cooperative_matrix_conversion && self.supports_khr_cooperative_matrix()
+    }
+    pub fn enable_qcom_cooperative_matrix_conversion(&mut self) {
+        self.qcom_cooperative_matrix_conversion = true;
+        self.enable_khr_cooperative_matrix();
     }
     pub fn supports_ext_global_priority(&self) -> bool {
         self.ext_global_priority
@@ -10516,6 +10533,9 @@ impl DeviceExtensions {
         }
         if self.qcom_render_pass_shader_resolve {
             v.push(c"VK_QCOM_render_pass_shader_resolve");
+        }
+        if self.qcom_cooperative_matrix_conversion {
+            v.push(c"VK_QCOM_cooperative_matrix_conversion");
         }
         if self.ext_global_priority {
             v.push(c"VK_EXT_global_priority");

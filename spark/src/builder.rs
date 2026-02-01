@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.340
+//! Generated from vk.xml version 1.4.342
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -35263,6 +35263,45 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceCooperativeMatrixFeaturesKHRB
 impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrixFeaturesKHR {}
 impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrixFeaturesKHRBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCooperativeMatrixPropertiesKHR {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceCooperativeMatrixConversionFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM,
+}
+impl Builder<'_> for vk::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM {
+    type Type = PhysicalDeviceCooperativeMatrixConversionFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceCooperativeMatrixConversionFeaturesQCOMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cooperative_matrix_conversion(mut self, cooperative_matrix_conversion: bool) -> Self {
+        self.inner.cooperative_matrix_conversion = if cooperative_matrix_conversion {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCooperativeMatrixConversionFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCooperativeMatrixConversionFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM {}
+impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrixConversionFeaturesQCOMBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderEnqueuePropertiesAMDX {}
 
 #[repr(transparent)]

@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.340
+// Generated from vk.xml version 1.4.342
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -3157,6 +3157,7 @@ pub const StructureType = enum(i32) {
     pipeline_representative_fragment_test_state_create_info_nv = 1000166001,
     physical_device_image_view_image_format_info_ext = 1000170000,
     filter_cubic_image_view_image_format_properties_ext = 1000170001,
+    physical_device_cooperative_matrix_conversion_features_qcom = 1000172000,
     import_memory_host_pointer_info_ext = 1000178000,
     memory_host_pointer_properties_ext = 1000178001,
     physical_device_external_memory_host_properties_ext = 1000178002,
@@ -5005,6 +5006,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderObjectFeaturesEXT,
             *PhysicalDeviceShaderTileImageFeaturesEXT,
             *PhysicalDeviceCooperativeMatrixFeaturesKHR,
+            *PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM,
             *PhysicalDeviceShaderEnqueueFeaturesAMDX,
             *PhysicalDeviceAntiLagFeaturesAMD,
             *PhysicalDeviceTileMemoryHeapFeaturesQCOM,
@@ -7446,6 +7448,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderObjectFeaturesEXT,
             *PhysicalDeviceShaderTileImageFeaturesEXT,
             *PhysicalDeviceCooperativeMatrixFeaturesKHR,
+            *PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM,
             *PhysicalDeviceShaderEnqueueFeaturesAMDX,
             *PhysicalDeviceAntiLagFeaturesAMD,
             *PhysicalDeviceTileMemoryHeapFeaturesQCOM,
@@ -14364,6 +14367,11 @@ pub const PhysicalDeviceCooperativeMatrixPropertiesKHR = extern struct {
     p_next: ?*anyopaque = null,
     cooperative_matrix_supported_stages: ShaderStageFlags = .none,
 };
+pub const PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM = extern struct {
+    s_type: StructureType = .physical_device_cooperative_matrix_conversion_features_qcom,
+    p_next: ?*anyopaque = null,
+    cooperative_matrix_conversion: Bool32 = .false,
+};
 pub const PhysicalDeviceShaderEnqueuePropertiesAMDX = extern struct {
     s_type: StructureType = .physical_device_shader_enqueue_properties_amdx,
     p_next: ?*anyopaque = null,
@@ -16708,6 +16716,7 @@ const ExtensionNames = struct {
     const khr_draw_indirect_count = "VK_KHR_draw_indirect_count";
     const ext_filter_cubic = "VK_EXT_filter_cubic";
     const qcom_render_pass_shader_resolve = "VK_QCOM_render_pass_shader_resolve";
+    const qcom_cooperative_matrix_conversion = "VK_QCOM_cooperative_matrix_conversion";
     const ext_global_priority = "VK_EXT_global_priority";
     const khr_shader_subgroup_extended_types = "VK_KHR_shader_subgroup_extended_types";
     const khr_8bit_storage = "VK_KHR_8bit_storage";
@@ -17954,6 +17963,13 @@ pub const InstanceExtensions = packed struct {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+
+    pub fn supports_qcom_cooperative_matrix_conversion(self: InstanceExtensions) bool {
+        return self.supports_khr_cooperative_matrix();
+    }
+    pub fn enable_qcom_cooperative_matrix_conversion(self: *InstanceExtensions) void {
+        self.enable_khr_cooperative_matrix();
     }
 
     pub fn supports_khr_8bit_storage(self: InstanceExtensions) bool {
@@ -20289,6 +20305,7 @@ pub const DeviceExtensions = packed struct {
     khr_draw_indirect_count: bool = false,
     ext_filter_cubic: bool = false,
     qcom_render_pass_shader_resolve: bool = false,
+    qcom_cooperative_matrix_conversion: bool = false,
     ext_global_priority: bool = false,
     khr_shader_subgroup_extended_types: bool = false,
     khr_8bit_storage: bool = false,
@@ -20789,6 +20806,8 @@ pub const DeviceExtensions = packed struct {
             self.ext_filter_cubic = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_render_pass_shader_resolve) == .eq) {
             self.qcom_render_pass_shader_resolve = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_cooperative_matrix_conversion) == .eq) {
+            self.qcom_cooperative_matrix_conversion = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_global_priority) == .eq) {
             self.ext_global_priority = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_shader_subgroup_extended_types) == .eq) {
@@ -21459,6 +21478,7 @@ pub const DeviceExtensions = packed struct {
         if (self.khr_draw_indirect_count) try names.append(allocator, ExtensionNames.khr_draw_indirect_count);
         if (self.ext_filter_cubic) try names.append(allocator, ExtensionNames.ext_filter_cubic);
         if (self.qcom_render_pass_shader_resolve) try names.append(allocator, ExtensionNames.qcom_render_pass_shader_resolve);
+        if (self.qcom_cooperative_matrix_conversion) try names.append(allocator, ExtensionNames.qcom_cooperative_matrix_conversion);
         if (self.ext_global_priority) try names.append(allocator, ExtensionNames.ext_global_priority);
         if (self.khr_shader_subgroup_extended_types) try names.append(allocator, ExtensionNames.khr_shader_subgroup_extended_types);
         if (self.khr_8bit_storage) try names.append(allocator, ExtensionNames.khr_8bit_storage);
@@ -22693,6 +22713,14 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_qcom_render_pass_shader_resolve(self: *DeviceExtensions) void {
         self.qcom_render_pass_shader_resolve = true;
+    }
+
+    pub fn supports_qcom_cooperative_matrix_conversion(self: DeviceExtensions) bool {
+        return self.qcom_cooperative_matrix_conversion and self.supports_khr_cooperative_matrix();
+    }
+    pub fn enable_qcom_cooperative_matrix_conversion(self: *DeviceExtensions) void {
+        self.qcom_cooperative_matrix_conversion = true;
+        self.enable_khr_cooperative_matrix();
     }
 
     pub fn supports_ext_global_priority(self: DeviceExtensions) bool {
