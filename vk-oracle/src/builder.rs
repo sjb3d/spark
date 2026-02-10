@@ -1343,6 +1343,9 @@ impl<'a> OracleBuilder<'a> {
                 "OHNativeWindow" => TypeDecl::External(ExternalDecl::Opaque),
                 "OHBufferHandle" => TypeDecl::External(ExternalDecl::Opaque),
                 "OH_NativeBuffer" => TypeDecl::External(ExternalDecl::Opaque),
+                // ubm
+                "ubm_device" => TypeDecl::External(ExternalDecl::Opaque),
+                "ubm_surface" => TypeDecl::External(ExternalDecl::Opaque),
                 // Extra
                 "Version" => TypeDecl::BuiltIn(BuiltInDecl::U32),
                 _ => panic!("unknown external type: {name}"),
