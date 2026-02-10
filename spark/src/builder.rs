@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.342
+//! Generated from vk.xml version 1.4.343
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -5740,6 +5740,46 @@ impl<'a> WaylandSurfaceCreateInfoKHRBuilder<'a> {
 }
 impl<'a> Deref for WaylandSurfaceCreateInfoKHRBuilder<'a> {
     type Target = vk::WaylandSurfaceCreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct UbmSurfaceCreateInfoSECBuilder<'a> {
+    inner: vk::UbmSurfaceCreateInfoSEC,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::UbmSurfaceCreateInfoSEC {
+    type Type = UbmSurfaceCreateInfoSECBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> UbmSurfaceCreateInfoSECBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::UbmSurfaceCreateInfoSEC {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::UbmSurfaceCreateFlagsSEC) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn ubm_device(mut self, ubm_device: *mut vk::ubm_device) -> Self {
+        self.inner.ubm_device = ubm_device;
+        self
+    }
+    pub fn ubm_surface(mut self, ubm_surface: *mut vk::ubm_surface) -> Self {
+        self.inner.ubm_surface = ubm_surface;
+        self
+    }
+}
+impl<'a> Deref for UbmSurfaceCreateInfoSECBuilder<'a> {
+    type Target = vk::UbmSurfaceCreateInfoSEC;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

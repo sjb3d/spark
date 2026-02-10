@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.342
+//! Generated from vk.xml version 1.4.343
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -184,6 +184,8 @@ pub const COMPUTE_OCCUPANCY_PRIORITY_NORMAL_NV: f32 = 0.5_f32;
 pub const COMPUTE_OCCUPANCY_PRIORITY_HIGH_NV: f32 = 0.75_f32;
 #[allow(non_camel_case_types)]
 pub type wl_display = Never;
+#[allow(non_camel_case_types)]
+pub type ubm_device = Never;
 pub type Display = Never;
 #[allow(non_camel_case_types)]
 pub type VisualID = c_ulong;
@@ -235,6 +237,8 @@ pub type Window = c_ulong;
 pub type HINSTANCE = *mut c_void;
 #[allow(non_camel_case_types)]
 pub type HWND = *mut c_void;
+#[allow(non_camel_case_types)]
+pub type ubm_surface = Never;
 #[allow(non_camel_case_types)]
 pub type wl_surface = Never;
 pub type ANativeWindow = Never;
@@ -3346,6 +3350,17 @@ impl fmt::Display for WaylandSurfaceCreateFlagsKHR {
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct UbmSurfaceCreateFlagsSEC(pub(crate) u32);
+impl UbmSurfaceCreateFlagsSEC {}
+impl_bitmask!(UbmSurfaceCreateFlagsSEC);
+impl fmt::Display for UbmSurfaceCreateFlagsSEC {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct Win32SurfaceCreateFlagsKHR(pub(crate) u32);
 impl Win32SurfaceCreateFlagsKHR {}
 impl_bitmask!(Win32SurfaceCreateFlagsKHR);
@@ -5984,6 +5999,9 @@ impl Format {
     pub const A4R4G4B4_UNORM_PACK16_EXT: Self = Self::A4R4G4B4_UNORM_PACK16;
     pub const A4B4G4R4_UNORM_PACK16_EXT: Self = Self::A4B4G4R4_UNORM_PACK16;
     pub const R8_BOOL_ARM: Self = Self(1000460000);
+    pub const R16_SFLOAT_FPENCODING_BFLOAT16_ARM: Self = Self(1000460001);
+    pub const R8_SFLOAT_FPENCODING_FLOAT8E4M3_ARM: Self = Self(1000460002);
+    pub const R8_SFLOAT_FPENCODING_FLOAT8E5M2_ARM: Self = Self(1000460003);
     pub const R16G16_SFIXED5_NV: Self = Self(1000464000);
     pub const R16G16_S10_5_NV: Self = Self::R16G16_SFIXED5_NV;
     pub const A1B5G5R5_UNORM_PACK16_KHR: Self = Self::A1B5G5R5_UNORM_PACK16;
@@ -6286,6 +6304,9 @@ impl fmt::Display for Format {
             1000288028 => Some(&"ASTC_6X6X6_SRGB_BLOCK_EXT"),
             1000288029 => Some(&"ASTC_6X6X6_SFLOAT_BLOCK_EXT"),
             1000460000 => Some(&"R8_BOOL_ARM"),
+            1000460001 => Some(&"R16_SFLOAT_FPENCODING_BFLOAT16_ARM"),
+            1000460002 => Some(&"R8_SFLOAT_FPENCODING_FLOAT8E4M3_ARM"),
+            1000460003 => Some(&"R8_SFLOAT_FPENCODING_FLOAT8E5M2_ARM"),
             1000464000 => Some(&"R16G16_SFIXED5_NV"),
             1000609000 => Some(&"R10X6_UINT_PACK16_ARM"),
             1000609001 => Some(&"R10X6G10X6_UINT_2PACK16_ARM"),
@@ -8331,6 +8352,7 @@ impl StructureType {
     pub const COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV: Self = Self(1000645000);
     pub const PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV: Self = Self(1000645001);
     pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT: Self = Self(1000662000);
+    pub const UBM_SURFACE_CREATE_INFO_SEC: Self = Self(1000664000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9375,6 +9397,7 @@ impl fmt::Display for StructureType {
             1000645000 => Some(&"COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV"),
             1000645001 => Some(&"PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV"),
             1000662000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT"),
+            1000664000 => Some(&"UBM_SURFACE_CREATE_INFO_SEC"),
             _ => None,
         };
         if let Some(name) = name {
@@ -17020,6 +17043,40 @@ impl fmt::Debug for WaylandSurfaceCreateInfoKHR {
             .field("flags", &self.flags)
             .field("display", &self.display)
             .field("surface", &self.surface)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct UbmSurfaceCreateInfoSEC {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: UbmSurfaceCreateFlagsSEC,
+    pub ubm_device: *mut ubm_device,
+    pub ubm_surface: *mut ubm_surface,
+}
+unsafe impl Send for UbmSurfaceCreateInfoSEC {}
+unsafe impl Sync for UbmSurfaceCreateInfoSEC {}
+impl Default for UbmSurfaceCreateInfoSEC {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::UBM_SURFACE_CREATE_INFO_SEC,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            ubm_device: ptr::null_mut(),
+            ubm_surface: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for UbmSurfaceCreateInfoSEC {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("UbmSurfaceCreateInfoSEC")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("ubm_device", &self.ubm_device)
+            .field("ubm_surface", &self.ubm_surface)
             .finish()
     }
 }
@@ -54976,6 +55033,17 @@ pub type FnGetPhysicalDeviceWaylandPresentationSupportKHR = unsafe extern "syste
     physical_device: PhysicalDevice,
     queue_family_index: u32,
     display: *mut wl_display,
+) -> Bool32;
+pub type FnCreateUbmSurfaceSEC = unsafe extern "system" fn(
+    instance: Instance,
+    p_create_info: *const UbmSurfaceCreateInfoSEC,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceUbmPresentationSupportSEC = unsafe extern "system" fn(
+    physical_device: PhysicalDevice,
+    queue_family_index: u32,
+    ubm_device: *mut ubm_device,
 ) -> Bool32;
 pub type FnCreateWin32SurfaceKHR = unsafe extern "system" fn(
     instance: Instance,

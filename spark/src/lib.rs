@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.342
+//! Generated from vk.xml version 1.4.343
 
 #![allow(
     clippy::too_many_arguments,
@@ -280,6 +280,7 @@ pub struct InstanceExtensions {
     pub ext_layer_settings: bool,
     pub nv_display_stereo: bool,
     pub ohos_surface: bool,
+    pub sec_ubm_surface: bool,
 }
 impl InstanceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -363,6 +364,8 @@ impl InstanceExtensions {
             self.nv_display_stereo = true;
         } else if name == c"VK_OHOS_surface" {
             self.ohos_surface = true;
+        } else if name == c"VK_SEC_ubm_surface" {
+            self.sec_ubm_surface = true;
         }
     }
     pub fn new(core_version: vk::Version) -> Self {
@@ -408,6 +411,7 @@ impl InstanceExtensions {
             ext_layer_settings: false,
             nv_display_stereo: false,
             ohos_surface: false,
+            sec_ubm_surface: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -3216,6 +3220,13 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_sec_ubm_surface(&self) -> bool {
+        self.sec_ubm_surface && self.supports_khr_surface()
+    }
+    pub fn enable_sec_ubm_surface(&mut self) {
+        self.sec_ubm_surface = true;
+        self.enable_khr_surface();
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_surface {
@@ -3338,6 +3349,9 @@ impl InstanceExtensions {
         if self.ohos_surface {
             v.push(c"VK_OHOS_surface");
         }
+        if self.sec_ubm_surface {
+            v.push(c"VK_SEC_ubm_surface");
+        }
         v
     }
 }
@@ -3377,6 +3391,8 @@ pub struct Instance {
     pub fp_create_wayland_surface_khr: Option<vk::FnCreateWaylandSurfaceKHR>,
     pub fp_get_physical_device_wayland_presentation_support_khr:
         Option<vk::FnGetPhysicalDeviceWaylandPresentationSupportKHR>,
+    pub fp_create_ubm_surface_sec: Option<vk::FnCreateUbmSurfaceSEC>,
+    pub fp_get_physical_device_ubm_presentation_support_sec: Option<vk::FnGetPhysicalDeviceUbmPresentationSupportSEC>,
     pub fp_create_win32_surface_khr: Option<vk::FnCreateWin32SurfaceKHR>,
     pub fp_get_physical_device_win32_presentation_support_khr:
         Option<vk::FnGetPhysicalDeviceWin32PresentationSupportKHR>,
@@ -3650,6 +3666,20 @@ impl Instance {
             fp_get_physical_device_wayland_presentation_support_khr: if extensions.khr_wayland_surface {
                 globals
                     .get_instance_proc_addr(instance, c"vkGetPhysicalDeviceWaylandPresentationSupportKHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_ubm_surface_sec: if extensions.sec_ubm_surface {
+                globals
+                    .get_instance_proc_addr(instance, c"vkCreateUbmSurfaceSEC")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_ubm_presentation_support_sec: if extensions.sec_ubm_surface {
+                globals
+                    .get_instance_proc_addr(instance, c"vkGetPhysicalDeviceUbmPresentationSupportSEC")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -4621,6 +4651,37 @@ impl Instance {
             .fp_get_physical_device_wayland_presentation_support_khr
             .expect("vkGetPhysicalDeviceWaylandPresentationSupportKHR is not loaded");
         (fp)(physical_device, queue_family_index, display) != vk::FALSE
+    }
+    pub unsafe fn create_ubm_surface_sec(
+        &self,
+        p_create_info: &vk::UbmSurfaceCreateInfoSEC,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let fp = self
+            .fp_create_ubm_surface_sec
+            .expect("vkCreateUbmSurfaceSEC is not loaded");
+        let mut p_surface = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            self.handle,
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            p_surface.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(p_surface.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_physical_device_ubm_presentation_support_sec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+        ubm_device: &mut vk::ubm_device,
+    ) -> bool {
+        let fp = self
+            .fp_get_physical_device_ubm_presentation_support_sec
+            .expect("vkGetPhysicalDeviceUbmPresentationSupportSEC is not loaded");
+        (fp)(physical_device, queue_family_index, ubm_device) != vk::FALSE
     }
     pub unsafe fn create_win32_surface_khr(
         &self,

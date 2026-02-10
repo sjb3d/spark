@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.342
+// Generated from vk.xml version 1.4.343
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -203,6 +203,7 @@ pub const compute_occupancy_priority_low_nv: f32 = 0.25;
 pub const compute_occupancy_priority_normal_nv: f32 = 0.5;
 pub const compute_occupancy_priority_high_nv: f32 = 0.75;
 pub const wl_display = opaque {};
+pub const ubm_device = opaque {};
 pub const Display = opaque {};
 pub const VisualID = c_ulong;
 pub const xcb_connection_t = opaque {};
@@ -230,6 +231,7 @@ pub const xcb_window_t = u32;
 pub const Window = c_ulong;
 pub const HINSTANCE = ?*anyopaque;
 pub const HWND = ?*anyopaque;
+pub const ubm_surface = opaque {};
 pub const wl_surface = opaque {};
 pub const ANativeWindow = opaque {};
 pub const SampleMask = u32;
@@ -1372,6 +1374,10 @@ pub const WaylandSurfaceCreateFlagBitsKHR = enum(u5) {
     _,
 };
 pub const WaylandSurfaceCreateFlagsKHR = BitField(WaylandSurfaceCreateFlagBitsKHR);
+pub const UbmSurfaceCreateFlagBitsSEC = enum(u5) {
+    _,
+};
+pub const UbmSurfaceCreateFlagsSEC = BitField(UbmSurfaceCreateFlagBitsSEC);
 pub const Win32SurfaceCreateFlagBitsKHR = enum(u5) {
     _,
 };
@@ -2456,6 +2462,9 @@ pub const Format = enum(i32) {
     astc_6x6x6_srgb_block_ext = 1000288028,
     astc_6x6x6_sfloat_block_ext = 1000288029,
     r8_bool_arm = 1000460000,
+    r16_sfloat_fpencoding_bfloat16_arm = 1000460001,
+    r8_sfloat_fpencoding_float8e4m3_arm = 1000460002,
+    r8_sfloat_fpencoding_float8e5m2_arm = 1000460003,
     r16g16_sfixed5_nv = 1000464000,
     r10x6_uint_pack16_arm = 1000609000,
     r10x6g10x6_uint_2pack16_arm = 1000609001,
@@ -3732,6 +3741,7 @@ pub const StructureType = enum(i32) {
     compute_occupancy_priority_parameters_nv = 1000645000,
     physical_device_compute_occupancy_priority_features_nv = 1000645001,
     physical_device_shader_subgroup_partitioned_features_ext = 1000662000,
+    ubm_surface_create_info_sec = 1000664000,
     _,
 };
 pub const SystemAllocationScope = enum(i32) {
@@ -6724,6 +6734,13 @@ pub const WaylandSurfaceCreateInfoKHR = extern struct {
     flags: WaylandSurfaceCreateFlagsKHR = .none,
     display: ?*wl_display = null,
     surface: ?*wl_surface = null,
+};
+pub const UbmSurfaceCreateInfoSEC = extern struct {
+    s_type: StructureType = .ubm_surface_create_info_sec,
+    p_next: ?*const anyopaque = null,
+    flags: UbmSurfaceCreateFlagsSEC = .none,
+    ubm_device: ?*ubm_device = null,
+    ubm_surface: ?*ubm_surface = null,
 };
 pub const Win32SurfaceCreateInfoKHR = extern struct {
     s_type: StructureType = .win32_surface_create_info_khr,
@@ -16100,6 +16117,8 @@ pub const FpQueuePresentKHR = *const fn (Queue, [*c]const PresentInfoKHR) callco
 pub const FpCreateViSurfaceNN = *const fn (Instance, [*c]const ViSurfaceCreateInfoNN, [*c]const AllocationCallbacks, [*c]SurfaceKHR) callconv(.c) Result;
 pub const FpCreateWaylandSurfaceKHR = *const fn (Instance, [*c]const WaylandSurfaceCreateInfoKHR, [*c]const AllocationCallbacks, [*c]SurfaceKHR) callconv(.c) Result;
 pub const FpGetPhysicalDeviceWaylandPresentationSupportKHR = *const fn (PhysicalDevice, u32, ?*wl_display) callconv(.c) Bool32;
+pub const FpCreateUbmSurfaceSEC = *const fn (Instance, [*c]const UbmSurfaceCreateInfoSEC, [*c]const AllocationCallbacks, [*c]SurfaceKHR) callconv(.c) Result;
+pub const FpGetPhysicalDeviceUbmPresentationSupportSEC = *const fn (PhysicalDevice, u32, ?*ubm_device) callconv(.c) Bool32;
 pub const FpCreateWin32SurfaceKHR = *const fn (Instance, [*c]const Win32SurfaceCreateInfoKHR, [*c]const AllocationCallbacks, [*c]SurfaceKHR) callconv(.c) Result;
 pub const FpGetPhysicalDeviceWin32PresentationSupportKHR = *const fn (PhysicalDevice, u32) callconv(.c) Bool32;
 pub const FpCreateXlibSurfaceKHR = *const fn (Instance, [*c]const XlibSurfaceCreateInfoKHR, [*c]const AllocationCallbacks, [*c]SurfaceKHR) callconv(.c) Result;
@@ -17003,6 +17022,7 @@ const ExtensionNames = struct {
     const ext_shader_uniform_buffer_unsized_array = "VK_EXT_shader_uniform_buffer_unsized_array";
     const nv_compute_occupancy_priority = "VK_NV_compute_occupancy_priority";
     const ext_shader_subgroup_partitioned = "VK_EXT_shader_subgroup_partitioned";
+    const sec_ubm_surface = "VK_SEC_ubm_surface";
 };
 
 pub const InstanceExtensions = packed struct {
@@ -17047,6 +17067,7 @@ pub const InstanceExtensions = packed struct {
     ext_layer_settings: bool = false,
     nv_display_stereo: bool = false,
     ohos_surface: bool = false,
+    sec_ubm_surface: bool = false,
 
     pub fn enable_by_name(self: *InstanceExtensions, maybe_name: ?[*:0]const u8) void {
         const name = maybe_name orelse return;
@@ -17130,6 +17151,8 @@ pub const InstanceExtensions = packed struct {
             self.nv_display_stereo = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ohos_surface) == .eq) {
             self.ohos_surface = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.sec_ubm_surface) == .eq) {
+            self.sec_ubm_surface = true;
         }
     }
 
@@ -17185,6 +17208,7 @@ pub const InstanceExtensions = packed struct {
         if (self.ext_layer_settings) try names.append(allocator, ExtensionNames.ext_layer_settings);
         if (self.nv_display_stereo) try names.append(allocator, ExtensionNames.nv_display_stereo);
         if (self.ohos_surface) try names.append(allocator, ExtensionNames.ohos_surface);
+        if (self.sec_ubm_surface) try names.append(allocator, ExtensionNames.sec_ubm_surface);
         return names.toOwnedSlice(allocator);
     }
 
@@ -20187,6 +20211,14 @@ pub const InstanceExtensions = packed struct {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+
+    pub fn supports_sec_ubm_surface(self: InstanceExtensions) bool {
+        return self.sec_ubm_surface and self.supports_khr_surface();
+    }
+    pub fn enable_sec_ubm_surface(self: *InstanceExtensions) void {
+        self.sec_ubm_surface = true;
+        self.enable_khr_surface();
     }
 };
 
@@ -25217,6 +25249,8 @@ pub const InstanceCommands = struct {
     fp_create_vi_surface_nn: ?FpCreateViSurfaceNN,
     fp_create_wayland_surface_khr: ?FpCreateWaylandSurfaceKHR,
     fp_get_physical_device_wayland_presentation_support_khr: ?FpGetPhysicalDeviceWaylandPresentationSupportKHR,
+    fp_create_ubm_surface_sec: ?FpCreateUbmSurfaceSEC,
+    fp_get_physical_device_ubm_presentation_support_sec: ?FpGetPhysicalDeviceUbmPresentationSupportSEC,
     fp_create_win32_surface_khr: ?FpCreateWin32SurfaceKHR,
     fp_get_physical_device_win32_presentation_support_khr: ?FpGetPhysicalDeviceWin32PresentationSupportKHR,
     fp_create_xlib_surface_khr: ?FpCreateXlibSurfaceKHR,
@@ -25314,6 +25348,8 @@ pub const InstanceCommands = struct {
             .fp_create_vi_surface_nn = if (extensions.nn_vi_surface) @ptrCast(try globals.get_instance_proc_addr(instance, "vkCreateViSurfaceNN")) else null,
             .fp_create_wayland_surface_khr = if (extensions.khr_wayland_surface) @ptrCast(try globals.get_instance_proc_addr(instance, "vkCreateWaylandSurfaceKHR")) else null,
             .fp_get_physical_device_wayland_presentation_support_khr = if (extensions.khr_wayland_surface) @ptrCast(try globals.get_instance_proc_addr(instance, "vkGetPhysicalDeviceWaylandPresentationSupportKHR")) else null,
+            .fp_create_ubm_surface_sec = if (extensions.sec_ubm_surface) @ptrCast(try globals.get_instance_proc_addr(instance, "vkCreateUbmSurfaceSEC")) else null,
+            .fp_get_physical_device_ubm_presentation_support_sec = if (extensions.sec_ubm_surface) @ptrCast(try globals.get_instance_proc_addr(instance, "vkGetPhysicalDeviceUbmPresentationSupportSEC")) else null,
             .fp_create_win32_surface_khr = if (extensions.khr_win32_surface) @ptrCast(try globals.get_instance_proc_addr(instance, "vkCreateWin32SurfaceKHR")) else null,
             .fp_get_physical_device_win32_presentation_support_khr = if (extensions.khr_win32_surface) @ptrCast(try globals.get_instance_proc_addr(instance, "vkGetPhysicalDeviceWin32PresentationSupportKHR")) else null,
             .fp_create_xlib_surface_khr = if (extensions.khr_xlib_surface) @ptrCast(try globals.get_instance_proc_addr(instance, "vkCreateXlibSurfaceKHR")) else null,
@@ -26228,6 +26264,36 @@ pub const InstanceCommands = struct {
         display: *wl_display,
     ) bool {
         return self.fp_get_physical_device_wayland_presentation_support_khr.?(physical_device, queue_family_index, display).to_bool();
+    }
+    pub const CreateUbmSurfaceSECError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn create_ubm_surface_sec(
+        self: InstanceCommands,
+        p_create_info: *const UbmSurfaceCreateInfoSEC,
+        p_allocator: ?*const AllocationCallbacks,
+    ) CreateUbmSurfaceSECError!SurfaceKHR {
+        var p_surface: SurfaceKHR = undefined;
+        switch (self.fp_create_ubm_surface_sec.?(self.handle, p_create_info, p_allocator, &p_surface)) {
+            .success => return p_surface,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn get_physical_device_ubm_presentation_support_sec(
+        self: InstanceCommands,
+        physical_device: PhysicalDevice,
+        queue_family_index: u32,
+        ubm_device: *ubm_device,
+    ) bool {
+        return self.fp_get_physical_device_ubm_presentation_support_sec.?(physical_device, queue_family_index, ubm_device).to_bool();
     }
     pub const CreateWin32SurfaceKHRError = error{
         OutOfHostMemory,
