@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.343
+// Generated from vk.xml version 1.4.344
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -2815,12 +2815,12 @@ pub const StructureType = enum(i32) {
     physical_device_multiview_features = 1000053001,
     physical_device_multiview_properties = 1000053002,
     physical_device_shader_draw_parameters_features = 1000063000,
+    physical_device_driver_properties = 1000196000,
     physical_device_vulkan_1_1_features = 49,
     physical_device_vulkan_1_1_properties = 50,
     physical_device_vulkan_1_2_features = 51,
     physical_device_vulkan_1_2_properties = 52,
     image_format_list_create_info = 1000147000,
-    physical_device_driver_properties = 1000196000,
     physical_device_vulkan_memory_model_features = 1000211000,
     physical_device_host_query_reset_features = 1000261000,
     physical_device_timeline_semaphore_features = 1000207000,
@@ -3742,6 +3742,7 @@ pub const StructureType = enum(i32) {
     physical_device_compute_occupancy_priority_features_nv = 1000645001,
     physical_device_shader_subgroup_partitioned_features_ext = 1000662000,
     ubm_surface_create_info_sec = 1000664000,
+    physical_device_shader_mixed_float_dot_product_features_valve = 1000673000,
     _,
 };
 pub const SystemAllocationScope = enum(i32) {
@@ -5058,6 +5059,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDevicePresentMeteringFeaturesNV,
             *ExternalComputeQueueDeviceCreateInfoNV,
             *PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT,
+            *PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE,
             *PhysicalDeviceFormatPackFeaturesARM,
             *PhysicalDeviceTensorFeaturesARM,
             *PhysicalDeviceDescriptorBufferTensorFeaturesARM,
@@ -6739,8 +6741,8 @@ pub const UbmSurfaceCreateInfoSEC = extern struct {
     s_type: StructureType = .ubm_surface_create_info_sec,
     p_next: ?*const anyopaque = null,
     flags: UbmSurfaceCreateFlagsSEC = .none,
-    ubm_device: ?*ubm_device = null,
-    ubm_surface: ?*ubm_surface = null,
+    device: ?*ubm_device = null,
+    surface: ?*ubm_surface = null,
 };
 pub const Win32SurfaceCreateInfoKHR = extern struct {
     s_type: StructureType = .win32_surface_create_info_khr,
@@ -7505,6 +7507,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE,
             *PhysicalDevicePresentMeteringFeaturesNV,
             *PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT,
+            *PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE,
             *PhysicalDeviceFormatPackFeaturesARM,
             *PhysicalDeviceTensorFeaturesARM,
             *PhysicalDeviceDescriptorBufferTensorFeaturesARM,
@@ -15163,6 +15166,14 @@ pub const PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT = extern stru
     p_next: ?*anyopaque = null,
     shader_uniform_buffer_unsized_array: Bool32 = .false,
 };
+pub const PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE = extern struct {
+    s_type: StructureType = .physical_device_shader_mixed_float_dot_product_features_valve,
+    p_next: ?*anyopaque = null,
+    shader_mixed_float_dot_product_float16_acc_float32: Bool32 = .false,
+    shader_mixed_float_dot_product_float16_acc_float16: Bool32 = .false,
+    shader_mixed_float_dot_product_b_float16_acc: Bool32 = .false,
+    shader_mixed_float_dot_product_float8_acc_float32: Bool32 = .false,
+};
 pub const PhysicalDeviceFormatPackFeaturesARM = extern struct {
     s_type: StructureType = .physical_device_format_pack_features_arm,
     p_next: ?*anyopaque = null,
@@ -17023,6 +17034,7 @@ const ExtensionNames = struct {
     const nv_compute_occupancy_priority = "VK_NV_compute_occupancy_priority";
     const ext_shader_subgroup_partitioned = "VK_EXT_shader_subgroup_partitioned";
     const sec_ubm_surface = "VK_SEC_ubm_surface";
+    const valve_shader_mixed_float_dot_product = "VK_VALVE_shader_mixed_float_dot_product";
 };
 
 pub const InstanceExtensions = packed struct {
@@ -20220,6 +20232,18 @@ pub const InstanceExtensions = packed struct {
         self.sec_ubm_surface = true;
         self.enable_khr_surface();
     }
+
+    pub fn supports_valve_shader_mixed_float_dot_product(self: InstanceExtensions) bool {
+        return (self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2()) and (self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_shader_float16_int8());
+    }
+    pub fn enable_valve_shader_mixed_float_dot_product(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+        if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
+            self.enable_khr_shader_float16_int8();
+        }
+    }
 };
 
 pub const DeviceExtensions = packed struct {
@@ -20609,6 +20633,7 @@ pub const DeviceExtensions = packed struct {
     ext_shader_uniform_buffer_unsized_array: bool = false,
     nv_compute_occupancy_priority: bool = false,
     ext_shader_subgroup_partitioned: bool = false,
+    valve_shader_mixed_float_dot_product: bool = false,
 
     pub fn enable_by_name(self: *DeviceExtensions, maybe_name: ?[*:0]const u8) void {
         const name = maybe_name orelse return;
@@ -21382,6 +21407,8 @@ pub const DeviceExtensions = packed struct {
             self.nv_compute_occupancy_priority = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_subgroup_partitioned) == .eq) {
             self.ext_shader_subgroup_partitioned = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.valve_shader_mixed_float_dot_product) == .eq) {
+            self.valve_shader_mixed_float_dot_product = true;
         }
     }
 
@@ -21782,6 +21809,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_shader_uniform_buffer_unsized_array) try names.append(allocator, ExtensionNames.ext_shader_uniform_buffer_unsized_array);
         if (self.nv_compute_occupancy_priority) try names.append(allocator, ExtensionNames.nv_compute_occupancy_priority);
         if (self.ext_shader_subgroup_partitioned) try names.append(allocator, ExtensionNames.ext_shader_subgroup_partitioned);
+        if (self.valve_shader_mixed_float_dot_product) try names.append(allocator, ExtensionNames.valve_shader_mixed_float_dot_product);
         return names.toOwnedSlice(allocator);
     }
 
@@ -25036,6 +25064,16 @@ pub const DeviceExtensions = packed struct {
     pub fn enable_ext_shader_subgroup_partitioned(self: *DeviceExtensions) void {
         self.ext_shader_subgroup_partitioned = true;
     }
+
+    pub fn supports_valve_shader_mixed_float_dot_product(self: DeviceExtensions) bool {
+        return self.valve_shader_mixed_float_dot_product and (self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_shader_float16_int8());
+    }
+    pub fn enable_valve_shader_mixed_float_dot_product(self: *DeviceExtensions) void {
+        self.valve_shader_mixed_float_dot_product = true;
+        if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
+            self.enable_khr_shader_float16_int8();
+        }
+    }
 };
 
 pub const GlobalCommands = struct {
@@ -26291,9 +26329,9 @@ pub const InstanceCommands = struct {
         self: InstanceCommands,
         physical_device: PhysicalDevice,
         queue_family_index: u32,
-        ubm_device: *ubm_device,
+        device: *ubm_device,
     ) bool {
-        return self.fp_get_physical_device_ubm_presentation_support_sec.?(physical_device, queue_family_index, ubm_device).to_bool();
+        return self.fp_get_physical_device_ubm_presentation_support_sec.?(physical_device, queue_family_index, device).to_bool();
     }
     pub const CreateWin32SurfaceKHRError = error{
         OutOfHostMemory,

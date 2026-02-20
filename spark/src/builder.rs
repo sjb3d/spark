@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.343
+//! Generated from vk.xml version 1.4.344
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -487,6 +487,10 @@ impl<'a> DeviceCreateInfoBuilder<'a> {
     pub fn p_queue_create_infos(mut self, p_queue_create_infos: &'a [vk::DeviceQueueCreateInfo]) -> Self {
         self.inner.queue_create_info_count = p_queue_create_infos.len() as u32;
         self.inner.p_queue_create_infos = p_queue_create_infos.as_ptr();
+        self
+    }
+    pub fn enabled_layer_count(mut self, enabled_layer_count: u32) -> Self {
+        self.inner.enabled_layer_count = enabled_layer_count;
         self
     }
     pub fn pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a [*const c_char]) -> Self {
@@ -5769,12 +5773,12 @@ impl<'a> UbmSurfaceCreateInfoSECBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn ubm_device(mut self, ubm_device: *mut vk::ubm_device) -> Self {
-        self.inner.ubm_device = ubm_device;
+    pub fn device(mut self, device: *mut vk::ubm_device) -> Self {
+        self.inner.device = device;
         self
     }
-    pub fn ubm_surface(mut self, ubm_surface: *mut vk::ubm_surface) -> Self {
-        self.inner.ubm_surface = ubm_surface;
+    pub fn surface(mut self, surface: *mut vk::ubm_surface) -> Self {
+        self.inner.surface = surface;
         self
     }
 }
@@ -38937,6 +38941,84 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderUniformBufferUnsize
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXTBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT {}
 impl DeviceCreateInfoNext for PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVEBuilder {
+    inner: vk::PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE,
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE {
+    type Type = PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVEBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVEBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_mixed_float_dot_product_float16_acc_float32(
+        mut self,
+        shader_mixed_float_dot_product_float16_acc_float32: bool,
+    ) -> Self {
+        self.inner.shader_mixed_float_dot_product_float16_acc_float32 =
+            if shader_mixed_float_dot_product_float16_acc_float32 {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn shader_mixed_float_dot_product_float16_acc_float16(
+        mut self,
+        shader_mixed_float_dot_product_float16_acc_float16: bool,
+    ) -> Self {
+        self.inner.shader_mixed_float_dot_product_float16_acc_float16 =
+            if shader_mixed_float_dot_product_float16_acc_float16 {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn shader_mixed_float_dot_product_b_float16_acc(
+        mut self,
+        shader_mixed_float_dot_product_b_float16_acc: bool,
+    ) -> Self {
+        self.inner.shader_mixed_float_dot_product_b_float16_acc = if shader_mixed_float_dot_product_b_float16_acc {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_mixed_float_dot_product_float8_acc_float32(
+        mut self,
+        shader_mixed_float_dot_product_float8_acc_float32: bool,
+    ) -> Self {
+        self.inner.shader_mixed_float_dot_product_float8_acc_float32 =
+            if shader_mixed_float_dot_product_float8_acc_float32 {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVEBuilder {
+    type Target = vk::PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVEBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVEBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]

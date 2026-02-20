@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.343
+//! Generated from vk.xml version 1.4.344
 
 #![allow(
     clippy::too_many_arguments,
@@ -3227,6 +3227,19 @@ impl InstanceExtensions {
         self.sec_ubm_surface = true;
         self.enable_khr_surface();
     }
+    pub fn supports_valve_shader_mixed_float_dot_product(&self) -> bool {
+        (self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            || self.supports_khr_get_physical_device_properties2())
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_shader_float16_int8())
+    }
+    pub fn enable_valve_shader_mixed_float_dot_product(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_shader_float16_int8();
+        }
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_surface {
@@ -4676,12 +4689,12 @@ impl Instance {
         &self,
         physical_device: vk::PhysicalDevice,
         queue_family_index: u32,
-        ubm_device: &mut vk::ubm_device,
+        device: &mut vk::ubm_device,
     ) -> bool {
         let fp = self
             .fp_get_physical_device_ubm_presentation_support_sec
             .expect("vkGetPhysicalDeviceUbmPresentationSupportSEC is not loaded");
-        (fp)(physical_device, queue_family_index, ubm_device) != vk::FALSE
+        (fp)(physical_device, queue_family_index, device) != vk::FALSE
     }
     pub unsafe fn create_win32_surface_khr(
         &self,
@@ -6029,6 +6042,7 @@ pub struct DeviceExtensions {
     pub ext_shader_uniform_buffer_unsized_array: bool,
     pub nv_compute_occupancy_priority: bool,
     pub ext_shader_subgroup_partitioned: bool,
+    pub valve_shader_mixed_float_dot_product: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -6802,6 +6816,8 @@ impl DeviceExtensions {
             self.nv_compute_occupancy_priority = true;
         } else if name == c"VK_EXT_shader_subgroup_partitioned" {
             self.ext_shader_subgroup_partitioned = true;
+        } else if name == c"VK_VALVE_shader_mixed_float_dot_product" {
+            self.valve_shader_mixed_float_dot_product = true;
         }
     }
     pub fn new(core_version: vk::Version) -> Self {
@@ -7192,6 +7208,7 @@ impl DeviceExtensions {
             ext_shader_uniform_buffer_unsized_array: false,
             nv_compute_occupancy_priority: false,
             ext_shader_subgroup_partitioned: false,
+            valve_shader_mixed_float_dot_product: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -10254,6 +10271,16 @@ impl DeviceExtensions {
     pub fn enable_ext_shader_subgroup_partitioned(&mut self) {
         self.ext_shader_subgroup_partitioned = true;
     }
+    pub fn supports_valve_shader_mixed_float_dot_product(&self) -> bool {
+        self.valve_shader_mixed_float_dot_product
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_shader_float16_int8())
+    }
+    pub fn enable_valve_shader_mixed_float_dot_product(&mut self) {
+        self.valve_shader_mixed_float_dot_product = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_shader_float16_int8();
+        }
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -11410,6 +11437,9 @@ impl DeviceExtensions {
         }
         if self.ext_shader_subgroup_partitioned {
             v.push(c"VK_EXT_shader_subgroup_partitioned");
+        }
+        if self.valve_shader_mixed_float_dot_product {
+            v.push(c"VK_VALVE_shader_mixed_float_dot_product");
         }
         v
     }

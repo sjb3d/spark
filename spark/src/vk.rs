@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.343
+//! Generated from vk.xml version 1.4.344
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -7107,12 +7107,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES: Self = Self(1000063000);
     pub const PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES: Self =
         Self::PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES;
+    pub const PHYSICAL_DEVICE_DRIVER_PROPERTIES: Self = Self(1000196000);
     pub const PHYSICAL_DEVICE_VULKAN_1_1_FEATURES: Self = Self(49);
     pub const PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES: Self = Self(50);
     pub const PHYSICAL_DEVICE_VULKAN_1_2_FEATURES: Self = Self(51);
     pub const PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES: Self = Self(52);
     pub const IMAGE_FORMAT_LIST_CREATE_INFO: Self = Self(1000147000);
-    pub const PHYSICAL_DEVICE_DRIVER_PROPERTIES: Self = Self(1000196000);
     pub const PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES: Self = Self(1000211000);
     pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES: Self = Self(1000261000);
     pub const PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES: Self = Self(1000207000);
@@ -8353,6 +8353,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV: Self = Self(1000645001);
     pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT: Self = Self(1000662000);
     pub const UBM_SURFACE_CREATE_INFO_SEC: Self = Self(1000664000);
+    pub const PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE: Self = Self(1000673000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8471,12 +8472,12 @@ impl fmt::Display for StructureType {
             1000053001 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_FEATURES"),
             1000053002 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES"),
             1000063000 => Some(&"PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES"),
+            1000196000 => Some(&"PHYSICAL_DEVICE_DRIVER_PROPERTIES"),
             49 => Some(&"PHYSICAL_DEVICE_VULKAN_1_1_FEATURES"),
             50 => Some(&"PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES"),
             51 => Some(&"PHYSICAL_DEVICE_VULKAN_1_2_FEATURES"),
             52 => Some(&"PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES"),
             1000147000 => Some(&"IMAGE_FORMAT_LIST_CREATE_INFO"),
-            1000196000 => Some(&"PHYSICAL_DEVICE_DRIVER_PROPERTIES"),
             1000211000 => Some(&"PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES"),
             1000261000 => Some(&"PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES"),
             1000207000 => Some(&"PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES"),
@@ -9398,6 +9399,7 @@ impl fmt::Display for StructureType {
             1000645001 => Some(&"PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV"),
             1000662000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT"),
             1000664000 => Some(&"UBM_SURFACE_CREATE_INFO_SEC"),
+            1000673000 => Some(&"PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -17053,8 +17055,8 @@ pub struct UbmSurfaceCreateInfoSEC {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub flags: UbmSurfaceCreateFlagsSEC,
-    pub ubm_device: *mut ubm_device,
-    pub ubm_surface: *mut ubm_surface,
+    pub device: *mut ubm_device,
+    pub surface: *mut ubm_surface,
 }
 unsafe impl Send for UbmSurfaceCreateInfoSEC {}
 unsafe impl Sync for UbmSurfaceCreateInfoSEC {}
@@ -17064,8 +17066,8 @@ impl Default for UbmSurfaceCreateInfoSEC {
             s_type: StructureType::UBM_SURFACE_CREATE_INFO_SEC,
             p_next: ptr::null(),
             flags: Default::default(),
-            ubm_device: ptr::null_mut(),
-            ubm_surface: ptr::null_mut(),
+            device: ptr::null_mut(),
+            surface: ptr::null_mut(),
         }
     }
 }
@@ -17075,8 +17077,8 @@ impl fmt::Debug for UbmSurfaceCreateInfoSEC {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
-            .field("ubm_device", &self.ubm_device)
-            .field("ubm_surface", &self.ubm_surface)
+            .field("device", &self.device)
+            .field("surface", &self.surface)
             .finish()
     }
 }
@@ -50929,6 +50931,55 @@ impl fmt::Debug for PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_mixed_float_dot_product_float16_acc_float32: Bool32,
+    pub shader_mixed_float_dot_product_float16_acc_float16: Bool32,
+    pub shader_mixed_float_dot_product_b_float16_acc: Bool32,
+    pub shader_mixed_float_dot_product_float8_acc_float32: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE {}
+unsafe impl Sync for PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE {}
+impl Default for PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE,
+            p_next: ptr::null_mut(),
+            shader_mixed_float_dot_product_float16_acc_float32: Default::default(),
+            shader_mixed_float_dot_product_float16_acc_float16: Default::default(),
+            shader_mixed_float_dot_product_b_float16_acc: Default::default(),
+            shader_mixed_float_dot_product_float8_acc_float32: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "shader_mixed_float_dot_product_float16_acc_float32",
+                &self.shader_mixed_float_dot_product_float16_acc_float32,
+            )
+            .field(
+                "shader_mixed_float_dot_product_float16_acc_float16",
+                &self.shader_mixed_float_dot_product_float16_acc_float16,
+            )
+            .field(
+                "shader_mixed_float_dot_product_b_float16_acc",
+                &self.shader_mixed_float_dot_product_b_float16_acc,
+            )
+            .field(
+                "shader_mixed_float_dot_product_float8_acc_float32",
+                &self.shader_mixed_float_dot_product_float8_acc_float32,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceFormatPackFeaturesARM {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -55043,7 +55094,7 @@ pub type FnCreateUbmSurfaceSEC = unsafe extern "system" fn(
 pub type FnGetPhysicalDeviceUbmPresentationSupportSEC = unsafe extern "system" fn(
     physical_device: PhysicalDevice,
     queue_family_index: u32,
-    ubm_device: *mut ubm_device,
+    device: *mut ubm_device,
 ) -> Bool32;
 pub type FnCreateWin32SurfaceKHR = unsafe extern "system" fn(
     instance: Instance,
