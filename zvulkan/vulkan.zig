@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.344
+// Generated from vk.xml version 1.4.345
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -1218,6 +1218,7 @@ pub const PipelineCreateFlagBits2 = enum(u6) {
     ray_tracing_displacement_micromap_nv = 28,
     descriptor_buffer_ext = 29,
     disallow_opacity_micromap_arm = 37,
+    instrument_shaders_arm = 39,
     capture_data_khr = 31,
     indirect_bindable_ext = 38,
     per_layer_fragment_density_valve = 40,
@@ -1833,6 +1834,7 @@ pub const PresentGravityFlagsEXT = PresentGravityFlagsKHR;
 pub const ShaderCreateFlagBitsEXT = enum(u5) {
     link_stage = 0,
     descriptor_heap = 10,
+    instrument_shader_arm = 11,
     allow_varying_subgroup_size = 1,
     require_full_subgroups = 2,
     no_task_shader = 3,
@@ -1883,6 +1885,10 @@ pub const PerformanceCounterDescriptionFlagBitsARM = enum(u5) {
     _,
 };
 pub const PerformanceCounterDescriptionFlagsARM = BitField(PerformanceCounterDescriptionFlagBitsARM);
+pub const ShaderInstrumentationValuesFlagBitsARM = enum(u5) {
+    _,
+};
+pub const ShaderInstrumentationValuesFlagsARM = BitField(ShaderInstrumentationValuesFlagBitsARM);
 pub const AccessFlagBits3KHR = enum(u6) {
     _,
 };
@@ -1939,6 +1945,7 @@ pub const ShaderEXT = enum(u64) { null_handle = 0, _ };
 pub const TensorARM = enum(u64) { null_handle = 0, _ };
 pub const TensorViewARM = enum(u64) { null_handle = 0, _ };
 pub const DataGraphPipelineSessionARM = enum(u64) { null_handle = 0, _ };
+pub const ShaderInstrumentationARM = enum(u64) { null_handle = 0, _ };
 pub const DisplayKHR = enum(u64) { null_handle = 0, _ };
 pub const DisplayModeKHR = enum(u64) { null_handle = 0, _ };
 pub const SurfaceKHR = enum(u64) { null_handle = 0, _ };
@@ -3709,6 +3716,10 @@ pub const StructureType = enum(i32) {
     performance_counter_arm = 1000605002,
     performance_counter_description_arm = 1000605003,
     render_pass_performance_counters_by_region_begin_info_arm = 1000605004,
+    physical_device_shader_instrumentation_features_arm = 1000607000,
+    physical_device_shader_instrumentation_properties_arm = 1000607001,
+    shader_instrumentation_create_info_arm = 1000607002,
+    shader_instrumentation_metric_description_arm = 1000607003,
     physical_device_vertex_attribute_robustness_features_ext = 1000608000,
     physical_device_format_pack_features_arm = 1000609000,
     physical_device_fragment_density_map_layered_features_valve = 1000611000,
@@ -3859,6 +3870,7 @@ pub const ObjectType = enum(i32) {
     external_compute_queue_nv = 1000556000,
     indirect_commands_layout_ext = 1000572000,
     indirect_execution_set_ext = 1000572001,
+    shader_instrumentation_arm = 1000607000,
     _,
 };
 pub const RayTracingInvocationReorderModeEXT = enum(i32) {
@@ -5075,6 +5087,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceTextureCompressionASTC3DFeaturesEXT,
             *PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT,
             *PhysicalDeviceDescriptorHeapFeaturesEXT,
+            *PhysicalDeviceShaderInstrumentationFeaturesARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7523,6 +7536,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceTextureCompressionASTC3DFeaturesEXT,
             *PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT,
             *PhysicalDeviceDescriptorHeapFeaturesEXT,
+            *PhysicalDeviceShaderInstrumentationFeaturesARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7654,6 +7668,7 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceShaderLongVectorPropertiesEXT,
             *PhysicalDeviceDescriptorHeapPropertiesEXT,
             *PhysicalDeviceDescriptorHeapTensorPropertiesARM,
+            *PhysicalDeviceShaderInstrumentationPropertiesARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -15670,10 +15685,10 @@ pub const RenderPassPerformanceCountersByRegionBeginInfoARM = extern struct {
     s_type: StructureType = .render_pass_performance_counters_by_region_begin_info_arm,
     p_next: ?*anyopaque = null,
     counter_address_count: u32 = 0,
-    p_counter_addresses: ?*const DeviceAddress = null,
+    p_counter_addresses: ?[*]const DeviceAddress = null,
     serialize_regions: Bool32 = .false,
     counter_index_count: u32 = 0,
-    p_counter_indices: ?*u32 = null,
+    p_counter_indices: ?[*]u32 = null,
 };
 pub const ComputeOccupancyPriorityParametersNV = extern struct {
     s_type: StructureType = .compute_occupancy_priority_parameters_nv,
@@ -15944,6 +15959,33 @@ pub const PhysicalDeviceDescriptorHeapTensorPropertiesARM = extern struct {
     tensor_descriptor_size: DeviceSize = 0,
     tensor_descriptor_alignment: DeviceSize = 0,
     tensor_capture_replay_opaque_data_size: usize = 0,
+};
+pub const PhysicalDeviceShaderInstrumentationFeaturesARM = extern struct {
+    s_type: StructureType = .physical_device_shader_instrumentation_features_arm,
+    p_next: ?*anyopaque = null,
+    shader_instrumentation: Bool32 = .false,
+};
+pub const PhysicalDeviceShaderInstrumentationPropertiesARM = extern struct {
+    s_type: StructureType = .physical_device_shader_instrumentation_properties_arm,
+    p_next: ?*anyopaque = null,
+    num_metrics: u32 = 0,
+    per_basic_block_granularity: Bool32 = .false,
+};
+pub const ShaderInstrumentationCreateInfoARM = extern struct {
+    s_type: StructureType = .shader_instrumentation_create_info_arm,
+    p_next: ?*anyopaque = null,
+};
+pub const ShaderInstrumentationMetricDescriptionARM = extern struct {
+    s_type: StructureType = .shader_instrumentation_metric_description_arm,
+    p_next: ?*anyopaque = null,
+    name: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+};
+pub const ShaderInstrumentationMetricDataHeaderARM = extern struct {
+    result_index: u32 = 0,
+    result_sub_index: u32 = 0,
+    stages: ShaderStageFlags = .none,
+    basic_block_index: u32 = 0,
 };
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
@@ -16570,6 +16612,13 @@ pub const FpCmdEndPerTileExecutionQCOM = *const fn (CommandBuffer, [*c]const Per
 pub const FpCreateExternalComputeQueueNV = *const fn (Device, [*c]const ExternalComputeQueueCreateInfoNV, [*c]const AllocationCallbacks, [*c]ExternalComputeQueueNV) callconv(.c) Result;
 pub const FpDestroyExternalComputeQueueNV = *const fn (Device, ExternalComputeQueueNV, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpGetExternalComputeQueueDataNV = *const fn (ExternalComputeQueueNV, [*c]ExternalComputeQueueDataParamsNV, ?*anyopaque) callconv(.c) void;
+pub const FpEnumeratePhysicalDeviceShaderInstrumentationMetricsARM = *const fn (PhysicalDevice, [*c]u32, [*c]ShaderInstrumentationMetricDescriptionARM) callconv(.c) Result;
+pub const FpCreateShaderInstrumentationARM = *const fn (Device, [*c]const ShaderInstrumentationCreateInfoARM, [*c]const AllocationCallbacks, [*c]ShaderInstrumentationARM) callconv(.c) Result;
+pub const FpDestroyShaderInstrumentationARM = *const fn (Device, ShaderInstrumentationARM, [*c]const AllocationCallbacks) callconv(.c) void;
+pub const FpCmdBeginShaderInstrumentationARM = *const fn (CommandBuffer, ShaderInstrumentationARM) callconv(.c) void;
+pub const FpCmdEndShaderInstrumentationARM = *const fn (CommandBuffer) callconv(.c) void;
+pub const FpGetShaderInstrumentationValuesARM = *const fn (Device, ShaderInstrumentationARM, [*c]u32, ?*anyopaque, ShaderInstrumentationValuesFlagsARM) callconv(.c) Result;
+pub const FpClearShaderInstrumentationMetricsARM = *const fn (Device, ShaderInstrumentationARM) callconv(.c) void;
 pub const FpCreateTensorARM = *const fn (Device, [*c]const TensorCreateInfoARM, [*c]const AllocationCallbacks, [*c]TensorARM) callconv(.c) Result;
 pub const FpDestroyTensorARM = *const fn (Device, TensorARM, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpCreateTensorViewARM = *const fn (Device, [*c]const TensorViewCreateInfoARM, [*c]const AllocationCallbacks, [*c]TensorViewARM) callconv(.c) Result;
@@ -17016,6 +17065,7 @@ const ExtensionNames = struct {
     const ext_external_memory_metal = "VK_EXT_external_memory_metal";
     const khr_depth_clamp_zero_one = "VK_KHR_depth_clamp_zero_one";
     const arm_performance_counters_by_region = "VK_ARM_performance_counters_by_region";
+    const arm_shader_instrumentation = "VK_ARM_shader_instrumentation";
     const ext_vertex_attribute_robustness = "VK_EXT_vertex_attribute_robustness";
     const arm_format_pack = "VK_ARM_format_pack";
     const valve_fragment_density_map_layered = "VK_VALVE_fragment_density_map_layered";
@@ -20077,6 +20127,15 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_arm_shader_instrumentation(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_arm_shader_instrumentation(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_ext_vertex_attribute_robustness(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
@@ -20616,6 +20675,7 @@ pub const DeviceExtensions = packed struct {
     ext_external_memory_metal: bool = false,
     khr_depth_clamp_zero_one: bool = false,
     arm_performance_counters_by_region: bool = false,
+    arm_shader_instrumentation: bool = false,
     ext_vertex_attribute_robustness: bool = false,
     arm_format_pack: bool = false,
     valve_fragment_density_map_layered: bool = false,
@@ -21373,6 +21433,8 @@ pub const DeviceExtensions = packed struct {
             self.khr_depth_clamp_zero_one = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.arm_performance_counters_by_region) == .eq) {
             self.arm_performance_counters_by_region = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.arm_shader_instrumentation) == .eq) {
+            self.arm_shader_instrumentation = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_vertex_attribute_robustness) == .eq) {
             self.ext_vertex_attribute_robustness = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.arm_format_pack) == .eq) {
@@ -21792,6 +21854,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_external_memory_metal) try names.append(allocator, ExtensionNames.ext_external_memory_metal);
         if (self.khr_depth_clamp_zero_one) try names.append(allocator, ExtensionNames.khr_depth_clamp_zero_one);
         if (self.arm_performance_counters_by_region) try names.append(allocator, ExtensionNames.arm_performance_counters_by_region);
+        if (self.arm_shader_instrumentation) try names.append(allocator, ExtensionNames.arm_shader_instrumentation);
         if (self.ext_vertex_attribute_robustness) try names.append(allocator, ExtensionNames.ext_vertex_attribute_robustness);
         if (self.arm_format_pack) try names.append(allocator, ExtensionNames.arm_format_pack);
         if (self.valve_fragment_density_map_layered) try names.append(allocator, ExtensionNames.valve_fragment_density_map_layered);
@@ -24931,6 +24994,13 @@ pub const DeviceExtensions = packed struct {
         self.arm_performance_counters_by_region = true;
     }
 
+    pub fn supports_arm_shader_instrumentation(self: DeviceExtensions) bool {
+        return self.arm_shader_instrumentation;
+    }
+    pub fn enable_arm_shader_instrumentation(self: *DeviceExtensions) void {
+        self.arm_shader_instrumentation = true;
+    }
+
     pub fn supports_ext_vertex_attribute_robustness(self: DeviceExtensions) bool {
         return self.ext_vertex_attribute_robustness;
     }
@@ -27844,6 +27914,13 @@ pub const DeviceCommands = struct {
     fp_create_external_compute_queue_nv: ?FpCreateExternalComputeQueueNV,
     fp_destroy_external_compute_queue_nv: ?FpDestroyExternalComputeQueueNV,
     fp_get_external_compute_queue_data_nv: ?FpGetExternalComputeQueueDataNV,
+    fp_enumerate_physical_device_shader_instrumentation_metrics_arm: ?FpEnumeratePhysicalDeviceShaderInstrumentationMetricsARM,
+    fp_create_shader_instrumentation_arm: ?FpCreateShaderInstrumentationARM,
+    fp_destroy_shader_instrumentation_arm: ?FpDestroyShaderInstrumentationARM,
+    fp_cmd_begin_shader_instrumentation_arm: ?FpCmdBeginShaderInstrumentationARM,
+    fp_cmd_end_shader_instrumentation_arm: ?FpCmdEndShaderInstrumentationARM,
+    fp_get_shader_instrumentation_values_arm: ?FpGetShaderInstrumentationValuesARM,
+    fp_clear_shader_instrumentation_metrics_arm: ?FpClearShaderInstrumentationMetricsARM,
     fp_create_tensor_arm: ?FpCreateTensorARM,
     fp_destroy_tensor_arm: ?FpDestroyTensorARM,
     fp_create_tensor_view_arm: ?FpCreateTensorViewARM,
@@ -28430,6 +28507,13 @@ pub const DeviceCommands = struct {
             .fp_create_external_compute_queue_nv = if (extensions.nv_external_compute_queue) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateExternalComputeQueueNV")) else null,
             .fp_destroy_external_compute_queue_nv = if (extensions.nv_external_compute_queue) @ptrCast(try instance.get_device_proc_addr(device, "vkDestroyExternalComputeQueueNV")) else null,
             .fp_get_external_compute_queue_data_nv = if (extensions.nv_external_compute_queue) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetExternalComputeQueueDataNV")) else null,
+            .fp_enumerate_physical_device_shader_instrumentation_metrics_arm = if (extensions.arm_shader_instrumentation) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkEnumeratePhysicalDeviceShaderInstrumentationMetricsARM")) else null,
+            .fp_create_shader_instrumentation_arm = if (extensions.arm_shader_instrumentation) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateShaderInstrumentationARM")) else null,
+            .fp_destroy_shader_instrumentation_arm = if (extensions.arm_shader_instrumentation) @ptrCast(try instance.get_device_proc_addr(device, "vkDestroyShaderInstrumentationARM")) else null,
+            .fp_cmd_begin_shader_instrumentation_arm = if (extensions.arm_shader_instrumentation) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBeginShaderInstrumentationARM")) else null,
+            .fp_cmd_end_shader_instrumentation_arm = if (extensions.arm_shader_instrumentation) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdEndShaderInstrumentationARM")) else null,
+            .fp_get_shader_instrumentation_values_arm = if (extensions.arm_shader_instrumentation) @ptrCast(try instance.get_device_proc_addr(device, "vkGetShaderInstrumentationValuesARM")) else null,
+            .fp_clear_shader_instrumentation_metrics_arm = if (extensions.arm_shader_instrumentation) @ptrCast(try instance.get_device_proc_addr(device, "vkClearShaderInstrumentationMetricsARM")) else null,
             .fp_create_tensor_arm = if (extensions.arm_tensors) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateTensorARM")) else null,
             .fp_destroy_tensor_arm = if (extensions.arm_tensors) @ptrCast(try instance.get_device_proc_addr(device, "vkDestroyTensorARM")) else null,
             .fp_create_tensor_view_arm = if (extensions.arm_tensors) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateTensorViewARM")) else null,
@@ -36331,6 +36415,103 @@ pub const DeviceCommands = struct {
         p_data: *anyopaque,
     ) void {
         self.fp_get_external_compute_queue_data_nv.?(external_queue, params, p_data);
+    }
+    pub const EnumeratePhysicalDeviceShaderInstrumentationMetricsARMError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        InitializationFailed,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn enumerate_physical_device_shader_instrumentation_metrics_arm(
+        self: DeviceCommands,
+        physical_device: PhysicalDevice,
+        p_description_count: *u32,
+        p_descriptions: ?[*]ShaderInstrumentationMetricDescriptionARM,
+    ) EnumeratePhysicalDeviceShaderInstrumentationMetricsARMError!EnumerateResult {
+        switch (self.fp_enumerate_physical_device_shader_instrumentation_metrics_arm.?(physical_device, p_description_count, p_descriptions)) {
+            .success => return .success,
+            .incomplete => return .incomplete,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_initialization_failed => return error.InitializationFailed,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const CreateShaderInstrumentationARMError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn create_shader_instrumentation_arm(
+        self: DeviceCommands,
+        p_create_info: *const ShaderInstrumentationCreateInfoARM,
+        p_allocator: ?*const AllocationCallbacks,
+    ) CreateShaderInstrumentationARMError!ShaderInstrumentationARM {
+        var p_instrumentation: ShaderInstrumentationARM = undefined;
+        switch (self.fp_create_shader_instrumentation_arm.?(self.handle, p_create_info, p_allocator, &p_instrumentation)) {
+            .success => return p_instrumentation,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn destroy_shader_instrumentation_arm(
+        self: DeviceCommands,
+        instrumentation: ShaderInstrumentationARM,
+        p_allocator: ?*const AllocationCallbacks,
+    ) void {
+        self.fp_destroy_shader_instrumentation_arm.?(self.handle, instrumentation, p_allocator);
+    }
+    pub fn cmd_begin_shader_instrumentation_arm(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        instrumentation: ShaderInstrumentationARM,
+    ) void {
+        self.fp_cmd_begin_shader_instrumentation_arm.?(command_buffer, instrumentation);
+    }
+    pub fn cmd_end_shader_instrumentation_arm(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+    ) void {
+        self.fp_cmd_end_shader_instrumentation_arm.?(command_buffer);
+    }
+    pub const GetShaderInstrumentationValuesARMError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_shader_instrumentation_values_arm(
+        self: DeviceCommands,
+        instrumentation: ShaderInstrumentationARM,
+        p_metric_block_count: *u32,
+        p_metric_values: *anyopaque,
+        flags: ShaderInstrumentationValuesFlagsARM,
+    ) GetShaderInstrumentationValuesARMError!EnumerateResult {
+        switch (self.fp_get_shader_instrumentation_values_arm.?(self.handle, instrumentation, p_metric_block_count, p_metric_values, flags)) {
+            .success => return .success,
+            .incomplete => return .incomplete,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn clear_shader_instrumentation_metrics_arm(
+        self: DeviceCommands,
+        instrumentation: ShaderInstrumentationARM,
+    ) void {
+        self.fp_clear_shader_instrumentation_metrics_arm.?(self.handle, instrumentation);
     }
     pub const CreateTensorARMError = error{
         OutOfHostMemory,

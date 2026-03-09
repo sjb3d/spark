@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.344
+//! Generated from vk.xml version 1.4.345
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -2886,6 +2886,7 @@ impl PipelineCreateFlags2 {
     pub const RAY_TRACING_DISPLACEMENT_MICROMAP_NV: Self = Self(0x10000000);
     pub const DESCRIPTOR_BUFFER_EXT: Self = Self(0x20000000);
     pub const DISALLOW_OPACITY_MICROMAP_ARM: Self = Self(0x2000000000);
+    pub const INSTRUMENT_SHADERS_ARM: Self = Self(0x8000000000);
     pub const CAPTURE_DATA_KHR: Self = Self(0x80000000);
     pub const INDIRECT_BINDABLE_EXT: Self = Self(0x4000000000);
     pub const PER_LAYER_FRAGMENT_DENSITY_VALVE: Self = Self(0x10000000000);
@@ -2933,6 +2934,7 @@ impl fmt::Display for PipelineCreateFlags2 {
                 (0x10000000, "RAY_TRACING_DISPLACEMENT_MICROMAP_NV"),
                 (0x20000000, "DESCRIPTOR_BUFFER_EXT"),
                 (0x2000000000, "DISALLOW_OPACITY_MICROMAP_ARM"),
+                (0x8000000000, "INSTRUMENT_SHADERS_ARM"),
                 (0x80000000, "CAPTURE_DATA_KHR"),
                 (0x4000000000, "INDIRECT_BINDABLE_EXT"),
                 (0x10000000000, "PER_LAYER_FRAGMENT_DENSITY_VALVE"),
@@ -4601,6 +4603,7 @@ pub struct ShaderCreateFlagsEXT(pub(crate) u32);
 impl ShaderCreateFlagsEXT {
     pub const LINK_STAGE: Self = Self(0x1);
     pub const DESCRIPTOR_HEAP: Self = Self(0x400);
+    pub const INSTRUMENT_SHADER_ARM: Self = Self(0x800);
     pub const ALLOW_VARYING_SUBGROUP_SIZE: Self = Self(0x2);
     pub const REQUIRE_FULL_SUBGROUPS: Self = Self(0x4);
     pub const NO_TASK_SHADER: Self = Self(0x8);
@@ -4618,6 +4621,7 @@ impl fmt::Display for ShaderCreateFlagsEXT {
             &[
                 (0x1, "LINK_STAGE"),
                 (0x400, "DESCRIPTOR_HEAP"),
+                (0x800, "INSTRUMENT_SHADER_ARM"),
                 (0x2, "ALLOW_VARYING_SUBGROUP_SIZE"),
                 (0x4, "REQUIRE_FULL_SUBGROUPS"),
                 (0x8, "NO_TASK_SHADER"),
@@ -4740,6 +4744,17 @@ pub struct PerformanceCounterDescriptionFlagsARM(pub(crate) u32);
 impl PerformanceCounterDescriptionFlagsARM {}
 impl_bitmask!(PerformanceCounterDescriptionFlagsARM);
 impl fmt::Display for PerformanceCounterDescriptionFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ShaderInstrumentationValuesFlagsARM(pub(crate) u32);
+impl ShaderInstrumentationValuesFlagsARM {}
+impl_bitmask!(ShaderInstrumentationValuesFlagsARM);
+impl fmt::Display for ShaderInstrumentationValuesFlagsARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
     }
@@ -4990,6 +5005,11 @@ impl_handle!(TensorViewARM);
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]
 pub struct DataGraphPipelineSessionARM(u64);
 impl_handle!(DataGraphPipelineSessionARM);
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]
+pub struct ShaderInstrumentationARM(u64);
+impl_handle!(ShaderInstrumentationARM);
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]
@@ -8319,6 +8339,10 @@ impl StructureType {
     pub const PERFORMANCE_COUNTER_ARM: Self = Self(1000605002);
     pub const PERFORMANCE_COUNTER_DESCRIPTION_ARM: Self = Self(1000605003);
     pub const RENDER_PASS_PERFORMANCE_COUNTERS_BY_REGION_BEGIN_INFO_ARM: Self = Self(1000605004);
+    pub const PHYSICAL_DEVICE_SHADER_INSTRUMENTATION_FEATURES_ARM: Self = Self(1000607000);
+    pub const PHYSICAL_DEVICE_SHADER_INSTRUMENTATION_PROPERTIES_ARM: Self = Self(1000607001);
+    pub const SHADER_INSTRUMENTATION_CREATE_INFO_ARM: Self = Self(1000607002);
+    pub const SHADER_INSTRUMENTATION_METRIC_DESCRIPTION_ARM: Self = Self(1000607003);
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000608000);
     pub const PHYSICAL_DEVICE_FORMAT_PACK_FEATURES_ARM: Self = Self(1000609000);
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_LAYERED_FEATURES_VALVE: Self = Self(1000611000);
@@ -9366,6 +9390,10 @@ impl fmt::Display for StructureType {
             1000605002 => Some(&"PERFORMANCE_COUNTER_ARM"),
             1000605003 => Some(&"PERFORMANCE_COUNTER_DESCRIPTION_ARM"),
             1000605004 => Some(&"RENDER_PASS_PERFORMANCE_COUNTERS_BY_REGION_BEGIN_INFO_ARM"),
+            1000607000 => Some(&"PHYSICAL_DEVICE_SHADER_INSTRUMENTATION_FEATURES_ARM"),
+            1000607001 => Some(&"PHYSICAL_DEVICE_SHADER_INSTRUMENTATION_PROPERTIES_ARM"),
+            1000607002 => Some(&"SHADER_INSTRUMENTATION_CREATE_INFO_ARM"),
+            1000607003 => Some(&"SHADER_INSTRUMENTATION_METRIC_DESCRIPTION_ARM"),
             1000608000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT"),
             1000609000 => Some(&"PHYSICAL_DEVICE_FORMAT_PACK_FEATURES_ARM"),
             1000611000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_LAYERED_FEATURES_VALVE"),
@@ -9697,6 +9725,7 @@ impl ObjectType {
     pub const EXTERNAL_COMPUTE_QUEUE_NV: Self = Self(1000556000);
     pub const INDIRECT_COMMANDS_LAYOUT_EXT: Self = Self(1000572000);
     pub const INDIRECT_EXECUTION_SET_EXT: Self = Self(1000572001);
+    pub const SHADER_INSTRUMENTATION_ARM: Self = Self(1000607000);
 }
 impl fmt::Display for ObjectType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9757,6 +9786,7 @@ impl fmt::Display for ObjectType {
             1000556000 => Some(&"EXTERNAL_COMPUTE_QUEUE_NV"),
             1000572000 => Some(&"INDIRECT_COMMANDS_LAYOUT_EXT"),
             1000572001 => Some(&"INDIRECT_EXECUTION_SET_EXT"),
+            1000607000 => Some(&"SHADER_INSTRUMENTATION_ARM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -54230,6 +54260,130 @@ impl fmt::Debug for PhysicalDeviceDescriptorHeapTensorPropertiesARM {
             .finish()
     }
 }
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderInstrumentationFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_instrumentation: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderInstrumentationFeaturesARM {}
+unsafe impl Sync for PhysicalDeviceShaderInstrumentationFeaturesARM {}
+impl Default for PhysicalDeviceShaderInstrumentationFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_INSTRUMENTATION_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            shader_instrumentation: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderInstrumentationFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderInstrumentationFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_instrumentation", &self.shader_instrumentation)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderInstrumentationPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub num_metrics: u32,
+    pub per_basic_block_granularity: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderInstrumentationPropertiesARM {}
+unsafe impl Sync for PhysicalDeviceShaderInstrumentationPropertiesARM {}
+impl Default for PhysicalDeviceShaderInstrumentationPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_INSTRUMENTATION_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            num_metrics: Default::default(),
+            per_basic_block_granularity: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderInstrumentationPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderInstrumentationPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("num_metrics", &self.num_metrics)
+            .field("per_basic_block_granularity", &self.per_basic_block_granularity)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ShaderInstrumentationCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+}
+unsafe impl Send for ShaderInstrumentationCreateInfoARM {}
+unsafe impl Sync for ShaderInstrumentationCreateInfoARM {}
+impl Default for ShaderInstrumentationCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SHADER_INSTRUMENTATION_CREATE_INFO_ARM,
+            p_next: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for ShaderInstrumentationCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ShaderInstrumentationCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ShaderInstrumentationMetricDescriptionARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub name: [c_char; MAX_DESCRIPTION_SIZE],
+    pub description: [c_char; MAX_DESCRIPTION_SIZE],
+}
+unsafe impl Send for ShaderInstrumentationMetricDescriptionARM {}
+unsafe impl Sync for ShaderInstrumentationMetricDescriptionARM {}
+impl Default for ShaderInstrumentationMetricDescriptionARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SHADER_INSTRUMENTATION_METRIC_DESCRIPTION_ARM,
+            p_next: ptr::null_mut(),
+            name: [Default::default(); MAX_DESCRIPTION_SIZE],
+            description: [Default::default(); MAX_DESCRIPTION_SIZE],
+        }
+    }
+}
+impl fmt::Debug for ShaderInstrumentationMetricDescriptionARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ShaderInstrumentationMetricDescriptionARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("name", &self.name)
+            .field("description", &self.description)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct ShaderInstrumentationMetricDataHeaderARM {
+    pub result_index: u32,
+    pub result_sub_index: u32,
+    pub stages: ShaderStageFlags,
+    pub basic_block_index: u32,
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -57044,6 +57198,34 @@ pub type FnGetExternalComputeQueueDataNV = unsafe extern "system" fn(
     params: *mut ExternalComputeQueueDataParamsNV,
     p_data: *mut c_void,
 );
+pub type FnEnumeratePhysicalDeviceShaderInstrumentationMetricsARM = unsafe extern "system" fn(
+    physical_device: PhysicalDevice,
+    p_description_count: *mut u32,
+    p_descriptions: *mut ShaderInstrumentationMetricDescriptionARM,
+) -> Result;
+pub type FnCreateShaderInstrumentationARM = unsafe extern "system" fn(
+    device: Device,
+    p_create_info: *const ShaderInstrumentationCreateInfoARM,
+    p_allocator: *const AllocationCallbacks,
+    p_instrumentation: *mut ShaderInstrumentationARM,
+) -> Result;
+pub type FnDestroyShaderInstrumentationARM = unsafe extern "system" fn(
+    device: Device,
+    instrumentation: ShaderInstrumentationARM,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnCmdBeginShaderInstrumentationARM =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, instrumentation: ShaderInstrumentationARM);
+pub type FnCmdEndShaderInstrumentationARM = unsafe extern "system" fn(command_buffer: CommandBuffer);
+pub type FnGetShaderInstrumentationValuesARM = unsafe extern "system" fn(
+    device: Device,
+    instrumentation: ShaderInstrumentationARM,
+    p_metric_block_count: *mut u32,
+    p_metric_values: *mut c_void,
+    flags: ShaderInstrumentationValuesFlagsARM,
+) -> Result;
+pub type FnClearShaderInstrumentationMetricsARM =
+    unsafe extern "system" fn(device: Device, instrumentation: ShaderInstrumentationARM);
 pub type FnCreateTensorARM = unsafe extern "system" fn(
     device: Device,
     p_create_info: *const TensorCreateInfoARM,

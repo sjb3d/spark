@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.344
+//! Generated from vk.xml version 1.4.345
 
 #![allow(
     clippy::too_many_arguments,
@@ -3083,6 +3083,14 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_arm_shader_instrumentation(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_arm_shader_instrumentation(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_ext_vertex_attribute_robustness(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
@@ -6025,6 +6033,7 @@ pub struct DeviceExtensions {
     pub ext_external_memory_metal: bool,
     pub khr_depth_clamp_zero_one: bool,
     pub arm_performance_counters_by_region: bool,
+    pub arm_shader_instrumentation: bool,
     pub ext_vertex_attribute_robustness: bool,
     pub arm_format_pack: bool,
     pub valve_fragment_density_map_layered: bool,
@@ -6782,6 +6791,8 @@ impl DeviceExtensions {
             self.khr_depth_clamp_zero_one = true;
         } else if name == c"VK_ARM_performance_counters_by_region" {
             self.arm_performance_counters_by_region = true;
+        } else if name == c"VK_ARM_shader_instrumentation" {
+            self.arm_shader_instrumentation = true;
         } else if name == c"VK_EXT_vertex_attribute_robustness" {
             self.ext_vertex_attribute_robustness = true;
         } else if name == c"VK_ARM_format_pack" {
@@ -7191,6 +7202,7 @@ impl DeviceExtensions {
             ext_external_memory_metal: false,
             khr_depth_clamp_zero_one: false,
             arm_performance_counters_by_region: false,
+            arm_shader_instrumentation: false,
             ext_vertex_attribute_robustness: false,
             arm_format_pack: false,
             valve_fragment_density_map_layered: false,
@@ -10149,6 +10161,12 @@ impl DeviceExtensions {
     pub fn enable_arm_performance_counters_by_region(&mut self) {
         self.arm_performance_counters_by_region = true;
     }
+    pub fn supports_arm_shader_instrumentation(&self) -> bool {
+        self.arm_shader_instrumentation
+    }
+    pub fn enable_arm_shader_instrumentation(&mut self) {
+        self.arm_shader_instrumentation = true;
+    }
     pub fn supports_ext_vertex_attribute_robustness(&self) -> bool {
         self.ext_vertex_attribute_robustness
     }
@@ -11387,6 +11405,9 @@ impl DeviceExtensions {
         if self.arm_performance_counters_by_region {
             v.push(c"VK_ARM_performance_counters_by_region");
         }
+        if self.arm_shader_instrumentation {
+            v.push(c"VK_ARM_shader_instrumentation");
+        }
         if self.ext_vertex_attribute_robustness {
             v.push(c"VK_EXT_vertex_attribute_robustness");
         }
@@ -12002,6 +12023,14 @@ pub struct Device {
     pub fp_create_external_compute_queue_nv: Option<vk::FnCreateExternalComputeQueueNV>,
     pub fp_destroy_external_compute_queue_nv: Option<vk::FnDestroyExternalComputeQueueNV>,
     pub fp_get_external_compute_queue_data_nv: Option<vk::FnGetExternalComputeQueueDataNV>,
+    pub fp_enumerate_physical_device_shader_instrumentation_metrics_arm:
+        Option<vk::FnEnumeratePhysicalDeviceShaderInstrumentationMetricsARM>,
+    pub fp_create_shader_instrumentation_arm: Option<vk::FnCreateShaderInstrumentationARM>,
+    pub fp_destroy_shader_instrumentation_arm: Option<vk::FnDestroyShaderInstrumentationARM>,
+    pub fp_cmd_begin_shader_instrumentation_arm: Option<vk::FnCmdBeginShaderInstrumentationARM>,
+    pub fp_cmd_end_shader_instrumentation_arm: Option<vk::FnCmdEndShaderInstrumentationARM>,
+    pub fp_get_shader_instrumentation_values_arm: Option<vk::FnGetShaderInstrumentationValuesARM>,
+    pub fp_clear_shader_instrumentation_metrics_arm: Option<vk::FnClearShaderInstrumentationMetricsARM>,
     pub fp_create_tensor_arm: Option<vk::FnCreateTensorARM>,
     pub fp_destroy_tensor_arm: Option<vk::FnDestroyTensorARM>,
     pub fp_create_tensor_view_arm: Option<vk::FnCreateTensorViewARM>,
@@ -16110,6 +16139,58 @@ impl Device {
             fp_get_external_compute_queue_data_nv: if extensions.nv_external_compute_queue {
                 globals
                     .get_instance_proc_addr(instance.handle, c"vkGetExternalComputeQueueDataNV")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_enumerate_physical_device_shader_instrumentation_metrics_arm: if extensions.arm_shader_instrumentation {
+                globals
+                    .get_instance_proc_addr(
+                        instance.handle,
+                        c"vkEnumeratePhysicalDeviceShaderInstrumentationMetricsARM",
+                    )
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_shader_instrumentation_arm: if extensions.arm_shader_instrumentation {
+                instance
+                    .get_device_proc_addr(device, c"vkCreateShaderInstrumentationARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_shader_instrumentation_arm: if extensions.arm_shader_instrumentation {
+                instance
+                    .get_device_proc_addr(device, c"vkDestroyShaderInstrumentationARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_shader_instrumentation_arm: if extensions.arm_shader_instrumentation {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdBeginShaderInstrumentationARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_shader_instrumentation_arm: if extensions.arm_shader_instrumentation {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdEndShaderInstrumentationARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_shader_instrumentation_values_arm: if extensions.arm_shader_instrumentation {
+                instance
+                    .get_device_proc_addr(device, c"vkGetShaderInstrumentationValuesARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_clear_shader_instrumentation_metrics_arm: if extensions.arm_shader_instrumentation {
+                instance
+                    .get_device_proc_addr(device, c"vkClearShaderInstrumentationMetricsARM")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -24757,6 +24838,95 @@ impl Device {
             .fp_get_external_compute_queue_data_nv
             .expect("vkGetExternalComputeQueueDataNV is not loaded");
         (fp)(external_queue, params, p_data)
+    }
+    pub unsafe fn enumerate_physical_device_shader_instrumentation_metrics_arm(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_description_count: &mut u32,
+        p_descriptions: *mut vk::ShaderInstrumentationMetricDescriptionARM,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_enumerate_physical_device_shader_instrumentation_metrics_arm
+            .expect("vkEnumeratePhysicalDeviceShaderInstrumentationMetricsARM is not loaded");
+        let err = (fp)(physical_device, p_description_count, p_descriptions);
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn create_shader_instrumentation_arm(
+        &self,
+        p_create_info: &vk::ShaderInstrumentationCreateInfoARM,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::ShaderInstrumentationARM> {
+        let fp = self
+            .fp_create_shader_instrumentation_arm
+            .expect("vkCreateShaderInstrumentationARM is not loaded");
+        let mut p_instrumentation = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            self.handle,
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            p_instrumentation.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(p_instrumentation.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_shader_instrumentation_arm(
+        &self,
+        instrumentation: vk::ShaderInstrumentationARM,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_shader_instrumentation_arm
+            .expect("vkDestroyShaderInstrumentationARM is not loaded");
+        (fp)(self.handle, instrumentation, p_allocator.map_or(ptr::null(), |r| r))
+    }
+    pub unsafe fn cmd_begin_shader_instrumentation_arm(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        instrumentation: vk::ShaderInstrumentationARM,
+    ) {
+        let fp = self
+            .fp_cmd_begin_shader_instrumentation_arm
+            .expect("vkCmdBeginShaderInstrumentationARM is not loaded");
+        (fp)(command_buffer, instrumentation)
+    }
+    pub unsafe fn cmd_end_shader_instrumentation_arm(&self, command_buffer: vk::CommandBuffer) {
+        let fp = self
+            .fp_cmd_end_shader_instrumentation_arm
+            .expect("vkCmdEndShaderInstrumentationARM is not loaded");
+        (fp)(command_buffer)
+    }
+    pub unsafe fn get_shader_instrumentation_values_arm(
+        &self,
+        instrumentation: vk::ShaderInstrumentationARM,
+        p_metric_block_count: &mut u32,
+        p_metric_values: *mut c_void,
+        flags: vk::ShaderInstrumentationValuesFlagsARM,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_shader_instrumentation_values_arm
+            .expect("vkGetShaderInstrumentationValuesARM is not loaded");
+        let err = (fp)(
+            self.handle,
+            instrumentation,
+            p_metric_block_count,
+            p_metric_values,
+            flags,
+        );
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn clear_shader_instrumentation_metrics_arm(&self, instrumentation: vk::ShaderInstrumentationARM) {
+        let fp = self
+            .fp_clear_shader_instrumentation_metrics_arm
+            .expect("vkClearShaderInstrumentationMetricsARM is not loaded");
+        (fp)(self.handle, instrumentation)
     }
     pub unsafe fn create_tensor_arm(
         &self,

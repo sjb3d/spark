@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.344
+//! Generated from vk.xml version 1.4.345
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -41185,24 +41185,18 @@ impl<'a> RenderPassPerformanceCountersByRegionBeginInfoARMBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn counter_address_count(mut self, counter_address_count: u32) -> Self {
-        self.inner.counter_address_count = counter_address_count;
-        self
-    }
-    pub fn p_counter_addresses(mut self, p_counter_addresses: &'a vk::DeviceAddress) -> Self {
-        self.inner.p_counter_addresses = p_counter_addresses;
+    pub fn p_counter_addresses(mut self, p_counter_addresses: &'a [vk::DeviceAddress]) -> Self {
+        self.inner.counter_address_count = p_counter_addresses.len() as u32;
+        self.inner.p_counter_addresses = p_counter_addresses.as_ptr();
         self
     }
     pub fn serialize_regions(mut self, serialize_regions: bool) -> Self {
         self.inner.serialize_regions = if serialize_regions { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn counter_index_count(mut self, counter_index_count: u32) -> Self {
-        self.inner.counter_index_count = counter_index_count;
-        self
-    }
-    pub fn p_counter_indices(mut self, p_counter_indices: *mut u32) -> Self {
-        self.inner.p_counter_indices = p_counter_indices;
+    pub fn p_counter_indices(mut self, p_counter_indices: &'a mut [u32]) -> Self {
+        self.inner.counter_index_count = p_counter_indices.len() as u32;
+        self.inner.p_counter_indices = p_counter_indices.as_mut_ptr();
         self
     }
 }
@@ -42393,3 +42387,140 @@ impl<'a> Deref for CommandBufferInheritanceDescriptorHeapInfoEXTBuilder<'a> {
 impl CommandBufferInheritanceInfoNext for vk::CommandBufferInheritanceDescriptorHeapInfoEXT {}
 impl CommandBufferInheritanceInfoNext for CommandBufferInheritanceDescriptorHeapInfoEXTBuilder<'_> {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDescriptorHeapTensorPropertiesARM {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceShaderInstrumentationFeaturesARMBuilder {
+    inner: vk::PhysicalDeviceShaderInstrumentationFeaturesARM,
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderInstrumentationFeaturesARM {
+    type Type = PhysicalDeviceShaderInstrumentationFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceShaderInstrumentationFeaturesARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceShaderInstrumentationFeaturesARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_instrumentation(mut self, shader_instrumentation: bool) -> Self {
+        self.inner.shader_instrumentation = if shader_instrumentation { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderInstrumentationFeaturesARMBuilder {
+    type Target = vk::PhysicalDeviceShaderInstrumentationFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderInstrumentationFeaturesARM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderInstrumentationFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderInstrumentationFeaturesARM {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderInstrumentationFeaturesARMBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderInstrumentationPropertiesARM {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ShaderInstrumentationCreateInfoARMBuilder {
+    inner: vk::ShaderInstrumentationCreateInfoARM,
+}
+impl Builder<'_> for vk::ShaderInstrumentationCreateInfoARM {
+    type Type = ShaderInstrumentationCreateInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ShaderInstrumentationCreateInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ShaderInstrumentationCreateInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+}
+impl Deref for ShaderInstrumentationCreateInfoARMBuilder {
+    type Target = vk::ShaderInstrumentationCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ShaderInstrumentationMetricDescriptionARMBuilder {
+    inner: vk::ShaderInstrumentationMetricDescriptionARM,
+}
+impl Builder<'_> for vk::ShaderInstrumentationMetricDescriptionARM {
+    type Type = ShaderInstrumentationMetricDescriptionARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ShaderInstrumentationMetricDescriptionARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ShaderInstrumentationMetricDescriptionARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn name(mut self, name: [c_char; vk::MAX_DESCRIPTION_SIZE]) -> Self {
+        self.inner.name = name;
+        self
+    }
+    pub fn description(mut self, description: [c_char; vk::MAX_DESCRIPTION_SIZE]) -> Self {
+        self.inner.description = description;
+        self
+    }
+}
+impl Deref for ShaderInstrumentationMetricDescriptionARMBuilder {
+    type Target = vk::ShaderInstrumentationMetricDescriptionARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ShaderInstrumentationMetricDataHeaderARMBuilder {
+    inner: vk::ShaderInstrumentationMetricDataHeaderARM,
+}
+impl Builder<'_> for vk::ShaderInstrumentationMetricDataHeaderARM {
+    type Type = ShaderInstrumentationMetricDataHeaderARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ShaderInstrumentationMetricDataHeaderARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ShaderInstrumentationMetricDataHeaderARM {
+        &mut self.inner
+    }
+    pub fn result_index(mut self, result_index: u32) -> Self {
+        self.inner.result_index = result_index;
+        self
+    }
+    pub fn result_sub_index(mut self, result_sub_index: u32) -> Self {
+        self.inner.result_sub_index = result_sub_index;
+        self
+    }
+    pub fn stages(mut self, stages: vk::ShaderStageFlags) -> Self {
+        self.inner.stages = stages;
+        self
+    }
+    pub fn basic_block_index(mut self, basic_block_index: u32) -> Self {
+        self.inner.basic_block_index = basic_block_index;
+        self
+    }
+}
+impl Deref for ShaderInstrumentationMetricDataHeaderARMBuilder {
+    type Target = vk::ShaderInstrumentationMetricDataHeaderARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
