@@ -868,21 +868,32 @@ fn write_command_param_body(
         }
         ParameterTransform::FromSliceLength(transform) => {
             let ident = AsIdent(&param.name);
-            let mut is_first = true;
+            let mut has_value = false;
             for &param_index in &transform.required_param {
                 let slice_ident = AsIdent(&fp_type.parameters[param_index].name);
-                if is_first {
+                if has_value {
+                    writeln!(w, "assert({ident} == {slice_ident}.len);")?;
+                } else {
                     write!(w, "const {ident}: ")?;
                     write_type_decl(w, oracle, &param.ty, TypeContext::parameter(param.is_optional))?;
                     write!(w, " = @intCast({slice_ident}.len);")?;
-                    is_first = false;
-                } else {
-                    writeln!(w, "assert({ident} == {slice_ident}.len);")?;
+                    has_value = true;
                 }
+            }
+            if !has_value {
+                write!(w, "var {ident}: ?")?;
+                write_type_decl(w, oracle, &param.ty, TypeContext::parameter(param.is_optional))?;
+                write!(w, " = null;")?;
             }
             for &param_index in &transform.optional_param {
                 let slice_ident = AsIdent(&fp_type.parameters[param_index].name);
-                writeln!(w, "if ({slice_ident}) |s| {{ assert({ident} == s.len); }}")?;
+                if has_value {
+                    writeln!(w, "if ({slice_ident}) |s| {{ assert({ident} == s.len); }}")?;
+                } else {
+                    writeln!(w, "if ({slice_ident}) |s| {{")?;
+                    writeln!(w, "if ({ident}) |n| {{ assert(n == s.len); }} else {{ {ident} = @intCast(s.len); }}")?;
+                    writeln!(w, "}}")?;
+                }
             }
         }
         ParameterTransform::FromOutput => {
@@ -918,8 +929,12 @@ fn write_command_param_forward(w: &mut impl IoWrite, param: &ParameterDecl) -> R
                 write!(w, "{ident}.ptr")?;
             }
         }
-        ParameterTransform::FromSliceLength { .. } => {
-            write!(w, "{ident}")?;
+        ParameterTransform::FromSliceLength(transform) => {
+            if transform.required_param.is_empty() {
+                write!(w, "{ident} orelse 0")?;
+            } else {
+                write!(w, "{ident}")?;
+            }
         }
         ParameterTransform::FromOutput => {
             write!(w, "&{ident}")?;
