@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.345
+//! Generated from vk.xml version 1.4.346
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -3172,6 +3172,35 @@ impl fmt::Display for SpirvResourceTypeFlagsEXT {
                 (0x80, "READ_WRITE_STORAGE_BUFFER"),
                 (0x100, "ACCELERATION_STRUCTURE"),
                 (0x200, "TENSOR_ARM"),
+            ],
+            f,
+        )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct AddressCommandFlagsKHR(pub(crate) u32);
+impl AddressCommandFlagsKHR {
+    pub const PROTECTED: Self = Self(0x1);
+    pub const FULLY_BOUND: Self = Self(0x2);
+    pub const STORAGE_BUFFER_USAGE: Self = Self(0x4);
+    pub const UNKNOWN_STORAGE_BUFFER_USAGE: Self = Self(0x8);
+    pub const TRANSFORM_FEEDBACK_BUFFER_USAGE: Self = Self(0x10);
+    pub const UNKNOWN_TRANSFORM_FEEDBACK_BUFFER_USAGE: Self = Self(0x20);
+}
+impl_bitmask!(AddressCommandFlagsKHR);
+impl fmt::Display for AddressCommandFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "PROTECTED"),
+                (0x2, "FULLY_BOUND"),
+                (0x4, "STORAGE_BUFFER_USAGE"),
+                (0x8, "UNKNOWN_STORAGE_BUFFER_USAGE"),
+                (0x10, "TRANSFORM_FEEDBACK_BUFFER_USAGE"),
+                (0x20, "UNKNOWN_TRANSFORM_FEEDBACK_BUFFER_USAGE"),
             ],
             f,
         )
@@ -7871,6 +7900,22 @@ impl StructureType {
     pub const DESCRIPTOR_BUFFER_BINDING_INFO_EXT: Self = Self(1000316011);
     pub const DESCRIPTOR_BUFFER_BINDING_PUSH_DESCRIPTOR_BUFFER_HANDLE_EXT: Self = Self(1000316012);
     pub const ACCELERATION_STRUCTURE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT: Self = Self(1000316009);
+    pub const DEVICE_MEMORY_COPY_KHR: Self = Self(1000318000);
+    pub const COPY_DEVICE_MEMORY_INFO_KHR: Self = Self(1000318001);
+    pub const DEVICE_MEMORY_IMAGE_COPY_KHR: Self = Self(1000318002);
+    pub const COPY_DEVICE_MEMORY_IMAGE_INFO_KHR: Self = Self(1000318003);
+    pub const MEMORY_RANGE_BARRIERS_INFO_KHR: Self = Self(1000318004);
+    pub const MEMORY_RANGE_BARRIER_KHR: Self = Self(1000318005);
+    pub const PHYSICAL_DEVICE_DEVICE_ADDRESS_COMMANDS_FEATURES_KHR: Self = Self(1000318006);
+    pub const BIND_INDEX_BUFFER_3_INFO_KHR: Self = Self(1000318007);
+    pub const BIND_VERTEX_BUFFER_3_INFO_KHR: Self = Self(1000318008);
+    pub const DRAW_INDIRECT_2_INFO_KHR: Self = Self(1000318009);
+    pub const DRAW_INDIRECT_COUNT_2_INFO_KHR: Self = Self(1000318010);
+    pub const DISPATCH_INDIRECT_2_INFO_KHR: Self = Self(1000318011);
+    pub const CONDITIONAL_RENDERING_BEGIN_INFO_2_EXT: Self = Self(1000318012);
+    pub const BIND_TRANSFORM_FEEDBACK_BUFFER_2_INFO_EXT: Self = Self(1000318013);
+    pub const MEMORY_MARKER_INFO_AMD: Self = Self(1000318014);
+    pub const ACCELERATION_STRUCTURE_CREATE_INFO_2_KHR: Self = Self(1000318015);
     pub const PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT: Self = Self(1000320000);
     pub const PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT: Self = Self(1000320001);
     pub const GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT: Self = Self(1000320002);
@@ -9005,6 +9050,22 @@ impl fmt::Display for StructureType {
             1000316011 => Some(&"DESCRIPTOR_BUFFER_BINDING_INFO_EXT"),
             1000316012 => Some(&"DESCRIPTOR_BUFFER_BINDING_PUSH_DESCRIPTOR_BUFFER_HANDLE_EXT"),
             1000316009 => Some(&"ACCELERATION_STRUCTURE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT"),
+            1000318000 => Some(&"DEVICE_MEMORY_COPY_KHR"),
+            1000318001 => Some(&"COPY_DEVICE_MEMORY_INFO_KHR"),
+            1000318002 => Some(&"DEVICE_MEMORY_IMAGE_COPY_KHR"),
+            1000318003 => Some(&"COPY_DEVICE_MEMORY_IMAGE_INFO_KHR"),
+            1000318004 => Some(&"MEMORY_RANGE_BARRIERS_INFO_KHR"),
+            1000318005 => Some(&"MEMORY_RANGE_BARRIER_KHR"),
+            1000318006 => Some(&"PHYSICAL_DEVICE_DEVICE_ADDRESS_COMMANDS_FEATURES_KHR"),
+            1000318007 => Some(&"BIND_INDEX_BUFFER_3_INFO_KHR"),
+            1000318008 => Some(&"BIND_VERTEX_BUFFER_3_INFO_KHR"),
+            1000318009 => Some(&"DRAW_INDIRECT_2_INFO_KHR"),
+            1000318010 => Some(&"DRAW_INDIRECT_COUNT_2_INFO_KHR"),
+            1000318011 => Some(&"DISPATCH_INDIRECT_2_INFO_KHR"),
+            1000318012 => Some(&"CONDITIONAL_RENDERING_BEGIN_INFO_2_EXT"),
+            1000318013 => Some(&"BIND_TRANSFORM_FEEDBACK_BUFFER_2_INFO_EXT"),
+            1000318014 => Some(&"MEMORY_MARKER_INFO_AMD"),
+            1000318015 => Some(&"ACCELERATION_STRUCTURE_CREATE_INFO_2_KHR"),
             1000320000 => Some(&"PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT"),
             1000320001 => Some(&"PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT"),
             1000320002 => Some(&"GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT"),
@@ -53384,13 +53445,6 @@ impl fmt::Debug for HostAddressRangeConstEXT {
 }
 
 #[repr(C)]
-#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
-pub struct DeviceAddressRangeEXT {
-    pub address: DeviceAddress,
-    pub size: DeviceSize,
-}
-
-#[repr(C)]
 #[derive(Copy, Clone)]
 pub struct TexelBufferDescriptorInfoEXT {
     pub s_type: StructureType,
@@ -54383,6 +54437,585 @@ pub struct ShaderInstrumentationMetricDataHeaderARM {
     pub result_sub_index: u32,
     pub stages: ShaderStageFlags,
     pub basic_block_index: u32,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct DeviceAddressRangeKHR {
+    pub address: DeviceAddress,
+    pub size: DeviceSize,
+}
+pub type DeviceAddressRangeEXT = DeviceAddressRangeKHR;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceMemoryCopyKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_range: DeviceAddressRangeKHR,
+    pub src_flags: AddressCommandFlagsKHR,
+    pub dst_range: DeviceAddressRangeKHR,
+    pub dst_flags: AddressCommandFlagsKHR,
+}
+unsafe impl Send for DeviceMemoryCopyKHR {}
+unsafe impl Sync for DeviceMemoryCopyKHR {}
+impl Default for DeviceMemoryCopyKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_MEMORY_COPY_KHR,
+            p_next: ptr::null(),
+            src_range: Default::default(),
+            src_flags: Default::default(),
+            dst_range: Default::default(),
+            dst_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DeviceMemoryCopyKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceMemoryCopyKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_range", &self.src_range)
+            .field("src_flags", &self.src_flags)
+            .field("dst_range", &self.dst_range)
+            .field("dst_flags", &self.dst_flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyDeviceMemoryInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub region_count: u32,
+    pub p_regions: *const DeviceMemoryCopyKHR,
+}
+unsafe impl Send for CopyDeviceMemoryInfoKHR {}
+unsafe impl Sync for CopyDeviceMemoryInfoKHR {}
+impl Default for CopyDeviceMemoryInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_DEVICE_MEMORY_INFO_KHR,
+            p_next: ptr::null(),
+            region_count: Default::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CopyDeviceMemoryInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyDeviceMemoryInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceMemoryImageCopyKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub address_range: DeviceAddressRangeKHR,
+    pub address_flags: AddressCommandFlagsKHR,
+    pub address_row_length: u32,
+    pub address_image_height: u32,
+    pub image_subresource: ImageSubresourceLayers,
+    pub image_layout: ImageLayout,
+    pub image_offset: Offset3D,
+    pub image_extent: Extent3D,
+}
+unsafe impl Send for DeviceMemoryImageCopyKHR {}
+unsafe impl Sync for DeviceMemoryImageCopyKHR {}
+impl Default for DeviceMemoryImageCopyKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_MEMORY_IMAGE_COPY_KHR,
+            p_next: ptr::null(),
+            address_range: Default::default(),
+            address_flags: Default::default(),
+            address_row_length: Default::default(),
+            address_image_height: Default::default(),
+            image_subresource: Default::default(),
+            image_layout: Default::default(),
+            image_offset: Default::default(),
+            image_extent: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DeviceMemoryImageCopyKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceMemoryImageCopyKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("address_range", &self.address_range)
+            .field("address_flags", &self.address_flags)
+            .field("address_row_length", &self.address_row_length)
+            .field("address_image_height", &self.address_image_height)
+            .field("image_subresource", &self.image_subresource)
+            .field("image_layout", &self.image_layout)
+            .field("image_offset", &self.image_offset)
+            .field("image_extent", &self.image_extent)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyDeviceMemoryImageInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub image: Image,
+    pub region_count: u32,
+    pub p_regions: *const DeviceMemoryImageCopyKHR,
+}
+unsafe impl Send for CopyDeviceMemoryImageInfoKHR {}
+unsafe impl Sync for CopyDeviceMemoryImageInfoKHR {}
+impl Default for CopyDeviceMemoryImageInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_DEVICE_MEMORY_IMAGE_INFO_KHR,
+            p_next: ptr::null(),
+            image: Default::default(),
+            region_count: Default::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CopyDeviceMemoryImageInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyDeviceMemoryImageInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image", &self.image)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryRangeBarriersInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub memory_range_barrier_count: u32,
+    pub p_memory_range_barriers: *const MemoryRangeBarrierKHR,
+}
+unsafe impl Send for MemoryRangeBarriersInfoKHR {}
+unsafe impl Sync for MemoryRangeBarriersInfoKHR {}
+impl Default for MemoryRangeBarriersInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_RANGE_BARRIERS_INFO_KHR,
+            p_next: ptr::null(),
+            memory_range_barrier_count: Default::default(),
+            p_memory_range_barriers: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for MemoryRangeBarriersInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryRangeBarriersInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory_range_barrier_count", &self.memory_range_barrier_count)
+            .field("p_memory_range_barriers", &self.p_memory_range_barriers)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryRangeBarrierKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_stage_mask: PipelineStageFlags2,
+    pub src_access_mask: AccessFlags2,
+    pub dst_stage_mask: PipelineStageFlags2,
+    pub dst_access_mask: AccessFlags2,
+    pub src_queue_family_index: u32,
+    pub dst_queue_family_index: u32,
+    pub address_range: DeviceAddressRangeKHR,
+    pub address_flags: AddressCommandFlagsKHR,
+}
+unsafe impl Send for MemoryRangeBarrierKHR {}
+unsafe impl Sync for MemoryRangeBarrierKHR {}
+impl Default for MemoryRangeBarrierKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_RANGE_BARRIER_KHR,
+            p_next: ptr::null(),
+            src_stage_mask: Default::default(),
+            src_access_mask: Default::default(),
+            dst_stage_mask: Default::default(),
+            dst_access_mask: Default::default(),
+            src_queue_family_index: Default::default(),
+            dst_queue_family_index: Default::default(),
+            address_range: Default::default(),
+            address_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryRangeBarrierKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryRangeBarrierKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_stage_mask", &self.src_stage_mask)
+            .field("src_access_mask", &self.src_access_mask)
+            .field("dst_stage_mask", &self.dst_stage_mask)
+            .field("dst_access_mask", &self.dst_access_mask)
+            .field("src_queue_family_index", &self.src_queue_family_index)
+            .field("dst_queue_family_index", &self.dst_queue_family_index)
+            .field("address_range", &self.address_range)
+            .field("address_flags", &self.address_flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDeviceAddressCommandsFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub device_address_commands: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDeviceAddressCommandsFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceDeviceAddressCommandsFeaturesKHR {}
+impl Default for PhysicalDeviceDeviceAddressCommandsFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DEVICE_ADDRESS_COMMANDS_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            device_address_commands: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDeviceAddressCommandsFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDeviceAddressCommandsFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("device_address_commands", &self.device_address_commands)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ConditionalRenderingBeginInfo2EXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub address_range: DeviceAddressRangeKHR,
+    pub address_flags: AddressCommandFlagsKHR,
+    pub flags: ConditionalRenderingFlagsEXT,
+}
+unsafe impl Send for ConditionalRenderingBeginInfo2EXT {}
+unsafe impl Sync for ConditionalRenderingBeginInfo2EXT {}
+impl Default for ConditionalRenderingBeginInfo2EXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CONDITIONAL_RENDERING_BEGIN_INFO_2_EXT,
+            p_next: ptr::null(),
+            address_range: Default::default(),
+            address_flags: Default::default(),
+            flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ConditionalRenderingBeginInfo2EXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ConditionalRenderingBeginInfo2EXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("address_range", &self.address_range)
+            .field("address_flags", &self.address_flags)
+            .field("flags", &self.flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureCreateInfo2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub create_flags: AccelerationStructureCreateFlagsKHR,
+    pub address_range: DeviceAddressRangeKHR,
+    pub address_flags: AddressCommandFlagsKHR,
+    pub ty: AccelerationStructureTypeKHR,
+}
+unsafe impl Send for AccelerationStructureCreateInfo2KHR {}
+unsafe impl Sync for AccelerationStructureCreateInfo2KHR {}
+impl Default for AccelerationStructureCreateInfo2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_CREATE_INFO_2_KHR,
+            p_next: ptr::null(),
+            create_flags: Default::default(),
+            address_range: Default::default(),
+            address_flags: Default::default(),
+            ty: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureCreateInfo2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureCreateInfo2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("create_flags", &self.create_flags)
+            .field("address_range", &self.address_range)
+            .field("address_flags", &self.address_flags)
+            .field("ty", &self.ty)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BindIndexBuffer3InfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub address_range: DeviceAddressRangeKHR,
+    pub address_flags: AddressCommandFlagsKHR,
+    pub index_type: IndexType,
+}
+unsafe impl Send for BindIndexBuffer3InfoKHR {}
+unsafe impl Sync for BindIndexBuffer3InfoKHR {}
+impl Default for BindIndexBuffer3InfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BIND_INDEX_BUFFER_3_INFO_KHR,
+            p_next: ptr::null(),
+            address_range: Default::default(),
+            address_flags: Default::default(),
+            index_type: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for BindIndexBuffer3InfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindIndexBuffer3InfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("address_range", &self.address_range)
+            .field("address_flags", &self.address_flags)
+            .field("index_type", &self.index_type)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BindVertexBuffer3InfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub set_stride: Bool32,
+    pub address_range: StridedDeviceAddressRangeKHR,
+    pub address_flags: AddressCommandFlagsKHR,
+}
+unsafe impl Send for BindVertexBuffer3InfoKHR {}
+unsafe impl Sync for BindVertexBuffer3InfoKHR {}
+impl Default for BindVertexBuffer3InfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BIND_VERTEX_BUFFER_3_INFO_KHR,
+            p_next: ptr::null(),
+            set_stride: Default::default(),
+            address_range: Default::default(),
+            address_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for BindVertexBuffer3InfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindVertexBuffer3InfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("set_stride", &self.set_stride)
+            .field("address_range", &self.address_range)
+            .field("address_flags", &self.address_flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DrawIndirect2InfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub address_range: StridedDeviceAddressRangeKHR,
+    pub address_flags: AddressCommandFlagsKHR,
+    pub draw_count: u32,
+}
+unsafe impl Send for DrawIndirect2InfoKHR {}
+unsafe impl Sync for DrawIndirect2InfoKHR {}
+impl Default for DrawIndirect2InfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DRAW_INDIRECT_2_INFO_KHR,
+            p_next: ptr::null(),
+            address_range: Default::default(),
+            address_flags: Default::default(),
+            draw_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DrawIndirect2InfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DrawIndirect2InfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("address_range", &self.address_range)
+            .field("address_flags", &self.address_flags)
+            .field("draw_count", &self.draw_count)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DrawIndirectCount2InfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub address_range: StridedDeviceAddressRangeKHR,
+    pub address_flags: AddressCommandFlagsKHR,
+    pub count_address_range: DeviceAddressRangeKHR,
+    pub count_address_flags: AddressCommandFlagsKHR,
+    pub max_draw_count: u32,
+}
+unsafe impl Send for DrawIndirectCount2InfoKHR {}
+unsafe impl Sync for DrawIndirectCount2InfoKHR {}
+impl Default for DrawIndirectCount2InfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DRAW_INDIRECT_COUNT_2_INFO_KHR,
+            p_next: ptr::null(),
+            address_range: Default::default(),
+            address_flags: Default::default(),
+            count_address_range: Default::default(),
+            count_address_flags: Default::default(),
+            max_draw_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DrawIndirectCount2InfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DrawIndirectCount2InfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("address_range", &self.address_range)
+            .field("address_flags", &self.address_flags)
+            .field("count_address_range", &self.count_address_range)
+            .field("count_address_flags", &self.count_address_flags)
+            .field("max_draw_count", &self.max_draw_count)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DispatchIndirect2InfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub address_range: DeviceAddressRangeKHR,
+    pub address_flags: AddressCommandFlagsKHR,
+}
+unsafe impl Send for DispatchIndirect2InfoKHR {}
+unsafe impl Sync for DispatchIndirect2InfoKHR {}
+impl Default for DispatchIndirect2InfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DISPATCH_INDIRECT_2_INFO_KHR,
+            p_next: ptr::null(),
+            address_range: Default::default(),
+            address_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DispatchIndirect2InfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DispatchIndirect2InfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("address_range", &self.address_range)
+            .field("address_flags", &self.address_flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BindTransformFeedbackBuffer2InfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub address_range: DeviceAddressRangeKHR,
+    pub address_flags: AddressCommandFlagsKHR,
+}
+unsafe impl Send for BindTransformFeedbackBuffer2InfoEXT {}
+unsafe impl Sync for BindTransformFeedbackBuffer2InfoEXT {}
+impl Default for BindTransformFeedbackBuffer2InfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BIND_TRANSFORM_FEEDBACK_BUFFER_2_INFO_EXT,
+            p_next: ptr::null(),
+            address_range: Default::default(),
+            address_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for BindTransformFeedbackBuffer2InfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindTransformFeedbackBuffer2InfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("address_range", &self.address_range)
+            .field("address_flags", &self.address_flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryMarkerInfoAMD {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub stage: PipelineStageFlags2KHR,
+    pub dst_range: DeviceAddressRangeKHR,
+    pub dst_flags: AddressCommandFlagsKHR,
+    pub marker: u32,
+}
+unsafe impl Send for MemoryMarkerInfoAMD {}
+unsafe impl Sync for MemoryMarkerInfoAMD {}
+impl Default for MemoryMarkerInfoAMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_MARKER_INFO_AMD,
+            p_next: ptr::null(),
+            stage: Default::default(),
+            dst_range: Default::default(),
+            dst_flags: Default::default(),
+            marker: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryMarkerInfoAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryMarkerInfoAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stage", &self.stage)
+            .field("dst_range", &self.dst_range)
+            .field("dst_flags", &self.dst_flags)
+            .field("marker", &self.marker)
+            .finish()
+    }
 }
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
@@ -57395,4 +58028,92 @@ pub type FnGetTensorOpaqueCaptureDataARM = unsafe extern "system" fn(
     tensor_count: u32,
     p_tensors: *const TensorARM,
     p_datas: *mut HostAddressRangeEXT,
+) -> Result;
+pub type FnCmdCopyMemoryKHR =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_copy_memory_info: *const CopyDeviceMemoryInfoKHR);
+pub type FnCmdCopyMemoryToImageKHR =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_copy_memory_info: *const CopyDeviceMemoryImageInfoKHR);
+pub type FnCmdCopyImageToMemoryKHR =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_copy_memory_info: *const CopyDeviceMemoryImageInfoKHR);
+pub type FnCmdUpdateMemoryKHR = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    p_dst_range: *const DeviceAddressRangeKHR,
+    dst_flags: AddressCommandFlagsKHR,
+    data_size: DeviceSize,
+    p_data: *const c_void,
+);
+pub type FnCmdFillMemoryKHR = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    p_dst_range: *const DeviceAddressRangeKHR,
+    dst_flags: AddressCommandFlagsKHR,
+    data: u32,
+);
+pub type FnCmdCopyQueryPoolResultsToMemoryKHR = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    query_pool: QueryPool,
+    first_query: u32,
+    query_count: u32,
+    p_dst_range: *const StridedDeviceAddressRangeKHR,
+    dst_flags: AddressCommandFlagsKHR,
+    query_result_flags: QueryResultFlags,
+);
+pub type FnCmdBeginConditionalRendering2EXT = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    p_conditional_rendering_begin: *const ConditionalRenderingBeginInfo2EXT,
+);
+pub type FnCmdBindTransformFeedbackBuffers2EXT = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    first_binding: u32,
+    binding_count: u32,
+    p_binding_infos: *const BindTransformFeedbackBuffer2InfoEXT,
+);
+pub type FnCmdBeginTransformFeedback2EXT = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    first_counter_range: u32,
+    counter_range_count: u32,
+    p_counter_infos: *const BindTransformFeedbackBuffer2InfoEXT,
+);
+pub type FnCmdEndTransformFeedback2EXT = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    first_counter_range: u32,
+    counter_range_count: u32,
+    p_counter_infos: *const BindTransformFeedbackBuffer2InfoEXT,
+);
+pub type FnCmdDrawIndirectByteCount2EXT = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    instance_count: u32,
+    first_instance: u32,
+    p_counter_info: *const BindTransformFeedbackBuffer2InfoEXT,
+    counter_offset: u32,
+    vertex_stride: u32,
+);
+pub type FnCmdWriteMarkerToMemoryAMD =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_info: *const MemoryMarkerInfoAMD);
+pub type FnCmdBindIndexBuffer3KHR =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_info: *const BindIndexBuffer3InfoKHR);
+pub type FnCmdBindVertexBuffers3KHR = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    first_binding: u32,
+    binding_count: u32,
+    p_binding_infos: *const BindVertexBuffer3InfoKHR,
+);
+pub type FnCmdDrawIndirect2KHR =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_info: *const DrawIndirect2InfoKHR);
+pub type FnCmdDrawIndexedIndirect2KHR =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_info: *const DrawIndirect2InfoKHR);
+pub type FnCmdDrawIndirectCount2KHR =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_info: *const DrawIndirectCount2InfoKHR);
+pub type FnCmdDrawIndexedIndirectCount2KHR =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_info: *const DrawIndirectCount2InfoKHR);
+pub type FnCmdDrawMeshTasksIndirect2EXT =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_info: *const DrawIndirect2InfoKHR);
+pub type FnCmdDrawMeshTasksIndirectCount2EXT =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_info: *const DrawIndirectCount2InfoKHR);
+pub type FnCmdDispatchIndirect2KHR =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_info: *const DispatchIndirect2InfoKHR);
+pub type FnCreateAccelerationStructure2KHR = unsafe extern "system" fn(
+    device: Device,
+    p_create_info: *const AccelerationStructureCreateInfo2KHR,
+    p_allocator: *const AllocationCallbacks,
+    p_acceleration_structure: *mut AccelerationStructureKHR,
 ) -> Result;

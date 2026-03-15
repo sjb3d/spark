@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.345
+//! Generated from vk.xml version 1.4.346
 
 #![allow(
     clippy::too_many_arguments,
@@ -1872,6 +1872,27 @@ impl InstanceExtensions {
                 self.enable_ext_descriptor_indexing();
             }
             self.enable_khr_synchronization2();
+        }
+    }
+    pub fn supports_khr_device_address_commands(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+            || ((self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+                || ((self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+                    || self.supports_khr_get_physical_device_properties2())
+                    && self.supports_khr_buffer_device_address()))
+                && self.supports_khr_synchronization2()
+                && self.supports_ext_extended_dynamic_state())
+    }
+    pub fn enable_khr_device_address_commands(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+                if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+                    self.enable_khr_get_physical_device_properties2();
+                }
+                self.enable_khr_buffer_device_address();
+            }
+            self.enable_khr_synchronization2();
+            self.enable_ext_extended_dynamic_state();
         }
     }
     pub fn supports_ext_graphics_pipeline_library(&self) -> bool {
@@ -5878,6 +5899,7 @@ pub struct DeviceExtensions {
     pub ext_metal_objects: bool,
     pub khr_synchronization2: bool,
     pub ext_descriptor_buffer: bool,
+    pub khr_device_address_commands: bool,
     pub ext_graphics_pipeline_library: bool,
     pub amd_shader_early_and_late_fragment_tests: bool,
     pub khr_fragment_shader_barycentric: bool,
@@ -6481,6 +6503,8 @@ impl DeviceExtensions {
             self.khr_synchronization2 = true;
         } else if name == c"VK_EXT_descriptor_buffer" {
             self.ext_descriptor_buffer = true;
+        } else if name == c"VK_KHR_device_address_commands" {
+            self.khr_device_address_commands = true;
         } else if name == c"VK_EXT_graphics_pipeline_library" {
             self.ext_graphics_pipeline_library = true;
         } else if name == c"VK_AMD_shader_early_and_late_fragment_tests" {
@@ -7047,6 +7071,7 @@ impl DeviceExtensions {
             ext_metal_objects: false,
             khr_synchronization2: false,
             ext_descriptor_buffer: false,
+            khr_device_address_commands: false,
             ext_graphics_pipeline_library: false,
             amd_shader_early_and_late_fragment_tests: false,
             khr_fragment_shader_barycentric: false,
@@ -8932,6 +8957,24 @@ impl DeviceExtensions {
                 self.enable_ext_descriptor_indexing();
             }
             self.enable_khr_synchronization2();
+        }
+    }
+    pub fn supports_khr_device_address_commands(&self) -> bool {
+        self.khr_device_address_commands
+            && (self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+                || ((self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+                    || self.supports_khr_buffer_device_address())
+                    && self.supports_khr_synchronization2()
+                    && self.supports_ext_extended_dynamic_state()))
+    }
+    pub fn enable_khr_device_address_commands(&mut self) {
+        self.khr_device_address_commands = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+                self.enable_khr_buffer_device_address();
+            }
+            self.enable_khr_synchronization2();
+            self.enable_ext_extended_dynamic_state();
         }
     }
     pub fn supports_ext_graphics_pipeline_library(&self) -> bool {
@@ -10940,6 +10983,9 @@ impl DeviceExtensions {
         if self.ext_descriptor_buffer {
             v.push(c"VK_EXT_descriptor_buffer");
         }
+        if self.khr_device_address_commands {
+            v.push(c"VK_KHR_device_address_commands");
+        }
         if self.ext_graphics_pipeline_library {
             v.push(c"VK_EXT_graphics_pipeline_library");
         }
@@ -12074,6 +12120,28 @@ pub struct Device {
     pub fp_get_image_opaque_capture_data_ext: Option<vk::FnGetImageOpaqueCaptureDataEXT>,
     pub fp_get_physical_device_descriptor_size_ext: Option<vk::FnGetPhysicalDeviceDescriptorSizeEXT>,
     pub fp_get_tensor_opaque_capture_data_arm: Option<vk::FnGetTensorOpaqueCaptureDataARM>,
+    pub fp_cmd_copy_memory_khr: Option<vk::FnCmdCopyMemoryKHR>,
+    pub fp_cmd_copy_memory_to_image_khr: Option<vk::FnCmdCopyMemoryToImageKHR>,
+    pub fp_cmd_copy_image_to_memory_khr: Option<vk::FnCmdCopyImageToMemoryKHR>,
+    pub fp_cmd_update_memory_khr: Option<vk::FnCmdUpdateMemoryKHR>,
+    pub fp_cmd_fill_memory_khr: Option<vk::FnCmdFillMemoryKHR>,
+    pub fp_cmd_copy_query_pool_results_to_memory_khr: Option<vk::FnCmdCopyQueryPoolResultsToMemoryKHR>,
+    pub fp_cmd_begin_conditional_rendering2_ext: Option<vk::FnCmdBeginConditionalRendering2EXT>,
+    pub fp_cmd_bind_transform_feedback_buffers2_ext: Option<vk::FnCmdBindTransformFeedbackBuffers2EXT>,
+    pub fp_cmd_begin_transform_feedback2_ext: Option<vk::FnCmdBeginTransformFeedback2EXT>,
+    pub fp_cmd_end_transform_feedback2_ext: Option<vk::FnCmdEndTransformFeedback2EXT>,
+    pub fp_cmd_draw_indirect_byte_count2_ext: Option<vk::FnCmdDrawIndirectByteCount2EXT>,
+    pub fp_cmd_write_marker_to_memory_amd: Option<vk::FnCmdWriteMarkerToMemoryAMD>,
+    pub fp_cmd_bind_index_buffer3_khr: Option<vk::FnCmdBindIndexBuffer3KHR>,
+    pub fp_cmd_bind_vertex_buffers3_khr: Option<vk::FnCmdBindVertexBuffers3KHR>,
+    pub fp_cmd_draw_indirect2_khr: Option<vk::FnCmdDrawIndirect2KHR>,
+    pub fp_cmd_draw_indexed_indirect2_khr: Option<vk::FnCmdDrawIndexedIndirect2KHR>,
+    pub fp_cmd_draw_indirect_count2_khr: Option<vk::FnCmdDrawIndirectCount2KHR>,
+    pub fp_cmd_draw_indexed_indirect_count2_khr: Option<vk::FnCmdDrawIndexedIndirectCount2KHR>,
+    pub fp_cmd_draw_mesh_tasks_indirect2_ext: Option<vk::FnCmdDrawMeshTasksIndirect2EXT>,
+    pub fp_cmd_draw_mesh_tasks_indirect_count2_ext: Option<vk::FnCmdDrawMeshTasksIndirectCount2EXT>,
+    pub fp_cmd_dispatch_indirect2_khr: Option<vk::FnCmdDispatchIndirect2KHR>,
+    pub fp_create_acceleration_structure2_khr: Option<vk::FnCreateAccelerationStructure2KHR>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -16460,6 +16528,185 @@ impl Device {
             fp_get_tensor_opaque_capture_data_arm: if extensions.ext_descriptor_heap && extensions.arm_tensors {
                 instance
                     .get_device_proc_addr(device, c"vkGetTensorOpaqueCaptureDataARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_memory_khr: if extensions.khr_device_address_commands {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdCopyMemoryKHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_memory_to_image_khr: if extensions.khr_device_address_commands {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdCopyMemoryToImageKHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_image_to_memory_khr: if extensions.khr_device_address_commands {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdCopyImageToMemoryKHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_update_memory_khr: if extensions.khr_device_address_commands {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdUpdateMemoryKHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_fill_memory_khr: if extensions.khr_device_address_commands {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdFillMemoryKHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_query_pool_results_to_memory_khr: if extensions.khr_device_address_commands {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdCopyQueryPoolResultsToMemoryKHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_conditional_rendering2_ext: if extensions.khr_device_address_commands
+                && extensions.ext_conditional_rendering
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdBeginConditionalRendering2EXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_transform_feedback_buffers2_ext: if extensions.khr_device_address_commands
+                && extensions.ext_transform_feedback
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdBindTransformFeedbackBuffers2EXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_transform_feedback2_ext: if extensions.khr_device_address_commands
+                && extensions.ext_transform_feedback
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdBeginTransformFeedback2EXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_transform_feedback2_ext: if extensions.khr_device_address_commands
+                && extensions.ext_transform_feedback
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdEndTransformFeedback2EXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_indirect_byte_count2_ext: if extensions.khr_device_address_commands
+                && extensions.ext_transform_feedback
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdDrawIndirectByteCount2EXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_write_marker_to_memory_amd: if extensions.khr_device_address_commands && extensions.amd_buffer_marker
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdWriteMarkerToMemoryAMD")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_index_buffer3_khr: if extensions.khr_device_address_commands {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdBindIndexBuffer3KHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_vertex_buffers3_khr: if extensions.khr_device_address_commands {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdBindVertexBuffers3KHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_indirect2_khr: if extensions.khr_device_address_commands {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdDrawIndirect2KHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_indexed_indirect2_khr: if extensions.khr_device_address_commands {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdDrawIndexedIndirect2KHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_indirect_count2_khr: if extensions.khr_device_address_commands
+                && (extensions.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+                    || extensions.khr_draw_indirect_count)
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdDrawIndirectCount2KHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_indexed_indirect_count2_khr: if extensions.khr_device_address_commands
+                && (extensions.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+                    || extensions.khr_draw_indirect_count)
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdDrawIndexedIndirectCount2KHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_mesh_tasks_indirect2_ext: if extensions.khr_device_address_commands
+                && extensions.ext_mesh_shader
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdDrawMeshTasksIndirect2EXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_mesh_tasks_indirect_count2_ext: if extensions.khr_device_address_commands
+                && (extensions.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+                    || extensions.khr_draw_indirect_count)
+                && extensions.ext_mesh_shader
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdDrawMeshTasksIndirectCount2EXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_dispatch_indirect2_khr: if extensions.khr_device_address_commands {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdDispatchIndirect2KHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_acceleration_structure2_khr: if extensions.khr_device_address_commands
+                && extensions.khr_acceleration_structure
+            {
+                instance
+                    .get_device_proc_addr(device, c"vkCreateAccelerationStructure2KHR")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -25504,5 +25751,306 @@ impl Device {
         let mut p_datas = Default::default();
         self.get_tensor_opaque_capture_data_arm(slice::from_ref(p_tensors), slice::from_mut(&mut p_datas))
             .map(|_| p_datas)
+    }
+    pub unsafe fn cmd_copy_memory_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_copy_memory_info: Option<&vk::CopyDeviceMemoryInfoKHR>,
+    ) {
+        let fp = self.fp_cmd_copy_memory_khr.expect("vkCmdCopyMemoryKHR is not loaded");
+        (fp)(command_buffer, p_copy_memory_info.map_or(ptr::null(), |r| r))
+    }
+    pub unsafe fn cmd_copy_memory_to_image_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_copy_memory_info: Option<&vk::CopyDeviceMemoryImageInfoKHR>,
+    ) {
+        let fp = self
+            .fp_cmd_copy_memory_to_image_khr
+            .expect("vkCmdCopyMemoryToImageKHR is not loaded");
+        (fp)(command_buffer, p_copy_memory_info.map_or(ptr::null(), |r| r))
+    }
+    pub unsafe fn cmd_copy_image_to_memory_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_copy_memory_info: Option<&vk::CopyDeviceMemoryImageInfoKHR>,
+    ) {
+        let fp = self
+            .fp_cmd_copy_image_to_memory_khr
+            .expect("vkCmdCopyImageToMemoryKHR is not loaded");
+        (fp)(command_buffer, p_copy_memory_info.map_or(ptr::null(), |r| r))
+    }
+    pub unsafe fn cmd_update_memory_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_dst_range: &vk::DeviceAddressRangeKHR,
+        dst_flags: vk::AddressCommandFlagsKHR,
+        p_data: &[u8],
+    ) {
+        let fp = self
+            .fp_cmd_update_memory_khr
+            .expect("vkCmdUpdateMemoryKHR is not loaded");
+        let data_size = p_data.len() as vk::DeviceSize;
+        (fp)(
+            command_buffer,
+            p_dst_range,
+            dst_flags,
+            data_size,
+            p_data.as_ptr() as *const _,
+        )
+    }
+    pub unsafe fn cmd_fill_memory_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_dst_range: &vk::DeviceAddressRangeKHR,
+        dst_flags: vk::AddressCommandFlagsKHR,
+        data: u32,
+    ) {
+        let fp = self.fp_cmd_fill_memory_khr.expect("vkCmdFillMemoryKHR is not loaded");
+        (fp)(command_buffer, p_dst_range, dst_flags, data)
+    }
+    pub unsafe fn cmd_copy_query_pool_results_to_memory_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        query_pool: vk::QueryPool,
+        first_query: u32,
+        query_count: u32,
+        p_dst_range: &vk::StridedDeviceAddressRangeKHR,
+        dst_flags: vk::AddressCommandFlagsKHR,
+        query_result_flags: vk::QueryResultFlags,
+    ) {
+        let fp = self
+            .fp_cmd_copy_query_pool_results_to_memory_khr
+            .expect("vkCmdCopyQueryPoolResultsToMemoryKHR is not loaded");
+        (fp)(
+            command_buffer,
+            query_pool,
+            first_query,
+            query_count,
+            p_dst_range,
+            dst_flags,
+            query_result_flags,
+        )
+    }
+    pub unsafe fn cmd_begin_conditional_rendering2_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_conditional_rendering_begin: &vk::ConditionalRenderingBeginInfo2EXT,
+    ) {
+        let fp = self
+            .fp_cmd_begin_conditional_rendering2_ext
+            .expect("vkCmdBeginConditionalRendering2EXT is not loaded");
+        (fp)(command_buffer, p_conditional_rendering_begin)
+    }
+    pub unsafe fn cmd_bind_transform_feedback_buffers2_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_binding: u32,
+        p_binding_infos: Option<&[vk::BindTransformFeedbackBuffer2InfoEXT]>,
+    ) {
+        let fp = self
+            .fp_cmd_bind_transform_feedback_buffers2_ext
+            .expect("vkCmdBindTransformFeedbackBuffers2EXT is not loaded");
+        let mut binding_count = None;
+        if let Some(len) = p_binding_infos.map(|s| s.len() as u32) {
+            if let Some(n) = binding_count {
+                assert_eq!(n, len);
+            } else {
+                binding_count = Some(len);
+            }
+        }
+        (fp)(
+            command_buffer,
+            first_binding,
+            binding_count.unwrap_or(0),
+            p_binding_infos.map_or(ptr::null(), |r| r.as_ptr()),
+        )
+    }
+    pub unsafe fn cmd_begin_transform_feedback2_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_counter_range: u32,
+        p_counter_infos: Option<&[vk::BindTransformFeedbackBuffer2InfoEXT]>,
+    ) {
+        let fp = self
+            .fp_cmd_begin_transform_feedback2_ext
+            .expect("vkCmdBeginTransformFeedback2EXT is not loaded");
+        let mut counter_range_count = None;
+        if let Some(len) = p_counter_infos.map(|s| s.len() as u32) {
+            if let Some(n) = counter_range_count {
+                assert_eq!(n, len);
+            } else {
+                counter_range_count = Some(len);
+            }
+        }
+        (fp)(
+            command_buffer,
+            first_counter_range,
+            counter_range_count.unwrap_or(0),
+            p_counter_infos.map_or(ptr::null(), |r| r.as_ptr()),
+        )
+    }
+    pub unsafe fn cmd_end_transform_feedback2_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_counter_range: u32,
+        p_counter_infos: Option<&[vk::BindTransformFeedbackBuffer2InfoEXT]>,
+    ) {
+        let fp = self
+            .fp_cmd_end_transform_feedback2_ext
+            .expect("vkCmdEndTransformFeedback2EXT is not loaded");
+        let mut counter_range_count = None;
+        if let Some(len) = p_counter_infos.map(|s| s.len() as u32) {
+            if let Some(n) = counter_range_count {
+                assert_eq!(n, len);
+            } else {
+                counter_range_count = Some(len);
+            }
+        }
+        (fp)(
+            command_buffer,
+            first_counter_range,
+            counter_range_count.unwrap_or(0),
+            p_counter_infos.map_or(ptr::null(), |r| r.as_ptr()),
+        )
+    }
+    pub unsafe fn cmd_draw_indirect_byte_count2_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        instance_count: u32,
+        first_instance: u32,
+        p_counter_info: &vk::BindTransformFeedbackBuffer2InfoEXT,
+        counter_offset: u32,
+        vertex_stride: u32,
+    ) {
+        let fp = self
+            .fp_cmd_draw_indirect_byte_count2_ext
+            .expect("vkCmdDrawIndirectByteCount2EXT is not loaded");
+        (fp)(
+            command_buffer,
+            instance_count,
+            first_instance,
+            p_counter_info,
+            counter_offset,
+            vertex_stride,
+        )
+    }
+    pub unsafe fn cmd_write_marker_to_memory_amd(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::MemoryMarkerInfoAMD,
+    ) {
+        let fp = self
+            .fp_cmd_write_marker_to_memory_amd
+            .expect("vkCmdWriteMarkerToMemoryAMD is not loaded");
+        (fp)(command_buffer, p_info)
+    }
+    pub unsafe fn cmd_bind_index_buffer3_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::BindIndexBuffer3InfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_bind_index_buffer3_khr
+            .expect("vkCmdBindIndexBuffer3KHR is not loaded");
+        (fp)(command_buffer, p_info)
+    }
+    pub unsafe fn cmd_bind_vertex_buffers3_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_binding: u32,
+        p_binding_infos: &[vk::BindVertexBuffer3InfoKHR],
+    ) {
+        let fp = self
+            .fp_cmd_bind_vertex_buffers3_khr
+            .expect("vkCmdBindVertexBuffers3KHR is not loaded");
+        let binding_count = p_binding_infos.len() as u32;
+        (fp)(command_buffer, first_binding, binding_count, p_binding_infos.as_ptr())
+    }
+    pub unsafe fn cmd_draw_indirect2_khr(&self, command_buffer: vk::CommandBuffer, p_info: &vk::DrawIndirect2InfoKHR) {
+        let fp = self
+            .fp_cmd_draw_indirect2_khr
+            .expect("vkCmdDrawIndirect2KHR is not loaded");
+        (fp)(command_buffer, p_info)
+    }
+    pub unsafe fn cmd_draw_indexed_indirect2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::DrawIndirect2InfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_draw_indexed_indirect2_khr
+            .expect("vkCmdDrawIndexedIndirect2KHR is not loaded");
+        (fp)(command_buffer, p_info)
+    }
+    pub unsafe fn cmd_draw_indirect_count2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::DrawIndirectCount2InfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_draw_indirect_count2_khr
+            .expect("vkCmdDrawIndirectCount2KHR is not loaded");
+        (fp)(command_buffer, p_info)
+    }
+    pub unsafe fn cmd_draw_indexed_indirect_count2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::DrawIndirectCount2InfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_draw_indexed_indirect_count2_khr
+            .expect("vkCmdDrawIndexedIndirectCount2KHR is not loaded");
+        (fp)(command_buffer, p_info)
+    }
+    pub unsafe fn cmd_draw_mesh_tasks_indirect2_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::DrawIndirect2InfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_draw_mesh_tasks_indirect2_ext
+            .expect("vkCmdDrawMeshTasksIndirect2EXT is not loaded");
+        (fp)(command_buffer, p_info)
+    }
+    pub unsafe fn cmd_draw_mesh_tasks_indirect_count2_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::DrawIndirectCount2InfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_draw_mesh_tasks_indirect_count2_ext
+            .expect("vkCmdDrawMeshTasksIndirectCount2EXT is not loaded");
+        (fp)(command_buffer, p_info)
+    }
+    pub unsafe fn cmd_dispatch_indirect2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::DispatchIndirect2InfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_dispatch_indirect2_khr
+            .expect("vkCmdDispatchIndirect2KHR is not loaded");
+        (fp)(command_buffer, p_info)
+    }
+    pub unsafe fn create_acceleration_structure2_khr(
+        &self,
+        p_create_info: &vk::AccelerationStructureCreateInfo2KHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::AccelerationStructureKHR> {
+        let fp = self
+            .fp_create_acceleration_structure2_khr
+            .expect("vkCreateAccelerationStructure2KHR is not loaded");
+        let mut p_acceleration_structure = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            self.handle,
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            p_acceleration_structure.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(p_acceleration_structure.assume_init()),
+            _ => Err(err),
+        }
     }
 }

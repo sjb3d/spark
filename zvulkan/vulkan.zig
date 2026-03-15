@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.345
+// Generated from vk.xml version 1.4.346
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -1315,6 +1315,16 @@ pub const SpirvResourceTypeFlagsEXT = BitField(SpirvResourceTypeFlagBitsEXT);
 pub const SpirvResourceTypeFlagMasksEXT = struct {
     pub const all = SpirvResourceTypeFlagsEXT{ .bits = 0x7fffffff };
 };
+pub const AddressCommandFlagBitsKHR = enum(u5) {
+    protected = 0,
+    fully_bound = 1,
+    storage_buffer_usage = 2,
+    unknown_storage_buffer_usage = 3,
+    transform_feedback_buffer_usage = 4,
+    unknown_transform_feedback_buffer_usage = 5,
+    _,
+};
+pub const AddressCommandFlagsKHR = BitField(AddressCommandFlagBitsKHR);
 pub const CompositeAlphaFlagBitsKHR = enum(u5) {
     @"opaque" = 0,
     pre_multiplied = 1,
@@ -3331,6 +3341,22 @@ pub const StructureType = enum(i32) {
     descriptor_buffer_binding_info_ext = 1000316011,
     descriptor_buffer_binding_push_descriptor_buffer_handle_ext = 1000316012,
     acceleration_structure_capture_descriptor_data_info_ext = 1000316009,
+    device_memory_copy_khr = 1000318000,
+    copy_device_memory_info_khr = 1000318001,
+    device_memory_image_copy_khr = 1000318002,
+    copy_device_memory_image_info_khr = 1000318003,
+    memory_range_barriers_info_khr = 1000318004,
+    memory_range_barrier_khr = 1000318005,
+    physical_device_device_address_commands_features_khr = 1000318006,
+    bind_index_buffer_3_info_khr = 1000318007,
+    bind_vertex_buffer_3_info_khr = 1000318008,
+    draw_indirect_2_info_khr = 1000318009,
+    draw_indirect_count_2_info_khr = 1000318010,
+    dispatch_indirect_2_info_khr = 1000318011,
+    conditional_rendering_begin_info_2_ext = 1000318012,
+    bind_transform_feedback_buffer_2_info_ext = 1000318013,
+    memory_marker_info_amd = 1000318014,
+    acceleration_structure_create_info_2_khr = 1000318015,
     physical_device_graphics_pipeline_library_features_ext = 1000320000,
     physical_device_graphics_pipeline_library_properties_ext = 1000320001,
     graphics_pipeline_library_create_info_ext = 1000320002,
@@ -5088,6 +5114,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT,
             *PhysicalDeviceDescriptorHeapFeaturesEXT,
             *PhysicalDeviceShaderInstrumentationFeaturesARM,
+            *PhysicalDeviceDeviceAddressCommandsFeaturesKHR,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7537,6 +7564,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT,
             *PhysicalDeviceDescriptorHeapFeaturesEXT,
             *PhysicalDeviceShaderInstrumentationFeaturesARM,
+            *PhysicalDeviceDeviceAddressCommandsFeaturesKHR,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -12541,6 +12569,7 @@ pub const DependencyInfo = extern struct {
         switch (@TypeOf(next)) {
             inline *TensorMemoryBarrierARM,
             *TensorDependencyInfoARM,
+            *MemoryRangeBarriersInfoKHR,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -15729,10 +15758,6 @@ pub const HostAddressRangeConstEXT = extern struct {
     address: ?*const anyopaque = null,
     size: usize = 0,
 };
-pub const DeviceAddressRangeEXT = extern struct {
-    address: DeviceAddress = 0,
-    size: DeviceSize = 0,
-};
 pub const TexelBufferDescriptorInfoEXT = extern struct {
     s_type: StructureType = .texel_buffer_descriptor_info_ext,
     p_next: ?*const anyopaque = null,
@@ -15986,6 +16011,154 @@ pub const ShaderInstrumentationMetricDataHeaderARM = extern struct {
     result_sub_index: u32 = 0,
     stages: ShaderStageFlags = .none,
     basic_block_index: u32 = 0,
+};
+pub const DeviceAddressRangeKHR = extern struct {
+    address: DeviceAddress = 0,
+    size: DeviceSize = 0,
+};
+pub const DeviceAddressRangeEXT = DeviceAddressRangeKHR;
+pub const DeviceMemoryCopyKHR = extern struct {
+    s_type: StructureType = .device_memory_copy_khr,
+    p_next: ?*const anyopaque = null,
+    src_range: DeviceAddressRangeKHR = .{},
+    src_flags: AddressCommandFlagsKHR = .none,
+    dst_range: DeviceAddressRangeKHR = .{},
+    dst_flags: AddressCommandFlagsKHR = .none,
+};
+pub const CopyDeviceMemoryInfoKHR = extern struct {
+    s_type: StructureType = .copy_device_memory_info_khr,
+    p_next: ?*const anyopaque = null,
+    region_count: u32 = 0,
+    p_regions: ?[*]const DeviceMemoryCopyKHR = null,
+};
+pub const DeviceMemoryImageCopyKHR = extern struct {
+    s_type: StructureType = .device_memory_image_copy_khr,
+    p_next: ?*const anyopaque = null,
+    address_range: DeviceAddressRangeKHR = .{},
+    address_flags: AddressCommandFlagsKHR = .none,
+    address_row_length: u32 = 0,
+    address_image_height: u32 = 0,
+    image_subresource: ImageSubresourceLayers = .{},
+    image_layout: ImageLayout = @enumFromInt(0),
+    image_offset: Offset3D = .{},
+    image_extent: Extent3D = .{},
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *CopyCommandTransformInfoQCOM,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
+};
+pub const CopyDeviceMemoryImageInfoKHR = extern struct {
+    s_type: StructureType = .copy_device_memory_image_info_khr,
+    p_next: ?*const anyopaque = null,
+    image: Image = .null_handle,
+    region_count: u32 = 0,
+    p_regions: ?[*]const DeviceMemoryImageCopyKHR = null,
+};
+pub const MemoryRangeBarriersInfoKHR = extern struct {
+    s_type: StructureType = .memory_range_barriers_info_khr,
+    p_next: ?*const anyopaque = null,
+    memory_range_barrier_count: u32 = 0,
+    p_memory_range_barriers: ?[*]const MemoryRangeBarrierKHR = null,
+};
+pub const MemoryRangeBarrierKHR = extern struct {
+    s_type: StructureType = .memory_range_barrier_khr,
+    p_next: ?*const anyopaque = null,
+    src_stage_mask: PipelineStageFlags2 = .none,
+    src_access_mask: AccessFlags2 = .none,
+    dst_stage_mask: PipelineStageFlags2 = .none,
+    dst_access_mask: AccessFlags2 = .none,
+    src_queue_family_index: u32 = 0,
+    dst_queue_family_index: u32 = 0,
+    address_range: DeviceAddressRangeKHR = .{},
+    address_flags: AddressCommandFlagsKHR = .none,
+};
+pub const PhysicalDeviceDeviceAddressCommandsFeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_device_address_commands_features_khr,
+    p_next: ?*anyopaque = null,
+    device_address_commands: Bool32 = .false,
+};
+pub const ConditionalRenderingBeginInfo2EXT = extern struct {
+    s_type: StructureType = .conditional_rendering_begin_info_2_ext,
+    p_next: ?*const anyopaque = null,
+    address_range: DeviceAddressRangeKHR = .{},
+    address_flags: AddressCommandFlagsKHR = .none,
+    flags: ConditionalRenderingFlagsEXT = .none,
+};
+pub const AccelerationStructureCreateInfo2KHR = extern struct {
+    s_type: StructureType = .acceleration_structure_create_info_2_khr,
+    p_next: ?*const anyopaque = null,
+    create_flags: AccelerationStructureCreateFlagsKHR = .none,
+    address_range: DeviceAddressRangeKHR = .{},
+    address_flags: AddressCommandFlagsKHR = .none,
+    type: AccelerationStructureTypeKHR = @enumFromInt(0),
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *OpaqueCaptureDescriptorDataCreateInfoEXT,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
+};
+pub const BindIndexBuffer3InfoKHR = extern struct {
+    s_type: StructureType = .bind_index_buffer_3_info_khr,
+    p_next: ?*const anyopaque = null,
+    address_range: DeviceAddressRangeKHR = .{},
+    address_flags: AddressCommandFlagsKHR = .none,
+    index_type: IndexType = @enumFromInt(0),
+};
+pub const BindVertexBuffer3InfoKHR = extern struct {
+    s_type: StructureType = .bind_vertex_buffer_3_info_khr,
+    p_next: ?*const anyopaque = null,
+    set_stride: Bool32 = .false,
+    address_range: StridedDeviceAddressRangeKHR = .{},
+    address_flags: AddressCommandFlagsKHR = .none,
+};
+pub const DrawIndirect2InfoKHR = extern struct {
+    s_type: StructureType = .draw_indirect_2_info_khr,
+    p_next: ?*const anyopaque = null,
+    address_range: StridedDeviceAddressRangeKHR = .{},
+    address_flags: AddressCommandFlagsKHR = .none,
+    draw_count: u32 = 0,
+};
+pub const DrawIndirectCount2InfoKHR = extern struct {
+    s_type: StructureType = .draw_indirect_count_2_info_khr,
+    p_next: ?*const anyopaque = null,
+    address_range: StridedDeviceAddressRangeKHR = .{},
+    address_flags: AddressCommandFlagsKHR = .none,
+    count_address_range: DeviceAddressRangeKHR = .{},
+    count_address_flags: AddressCommandFlagsKHR = .none,
+    max_draw_count: u32 = 0,
+};
+pub const DispatchIndirect2InfoKHR = extern struct {
+    s_type: StructureType = .dispatch_indirect_2_info_khr,
+    p_next: ?*const anyopaque = null,
+    address_range: DeviceAddressRangeKHR = .{},
+    address_flags: AddressCommandFlagsKHR = .none,
+};
+pub const BindTransformFeedbackBuffer2InfoEXT = extern struct {
+    s_type: StructureType = .bind_transform_feedback_buffer_2_info_ext,
+    p_next: ?*const anyopaque = null,
+    address_range: DeviceAddressRangeKHR = .{},
+    address_flags: AddressCommandFlagsKHR = .none,
+};
+pub const MemoryMarkerInfoAMD = extern struct {
+    s_type: StructureType = .memory_marker_info_amd,
+    p_next: ?*const anyopaque = null,
+    stage: PipelineStageFlags2KHR = .none,
+    dst_range: DeviceAddressRangeKHR = .{},
+    dst_flags: AddressCommandFlagsKHR = .none,
+    marker: u32 = 0,
 };
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
@@ -16655,6 +16828,28 @@ pub const FpUnregisterCustomBorderColorEXT = *const fn (Device, u32) callconv(.c
 pub const FpGetImageOpaqueCaptureDataEXT = *const fn (Device, u32, [*c]const Image, [*c]HostAddressRangeEXT) callconv(.c) Result;
 pub const FpGetPhysicalDeviceDescriptorSizeEXT = *const fn (PhysicalDevice, DescriptorType) callconv(.c) DeviceSize;
 pub const FpGetTensorOpaqueCaptureDataARM = *const fn (Device, u32, [*c]const TensorARM, [*c]HostAddressRangeEXT) callconv(.c) Result;
+pub const FpCmdCopyMemoryKHR = *const fn (CommandBuffer, [*c]const CopyDeviceMemoryInfoKHR) callconv(.c) void;
+pub const FpCmdCopyMemoryToImageKHR = *const fn (CommandBuffer, [*c]const CopyDeviceMemoryImageInfoKHR) callconv(.c) void;
+pub const FpCmdCopyImageToMemoryKHR = *const fn (CommandBuffer, [*c]const CopyDeviceMemoryImageInfoKHR) callconv(.c) void;
+pub const FpCmdUpdateMemoryKHR = *const fn (CommandBuffer, [*c]const DeviceAddressRangeKHR, AddressCommandFlagsKHR, DeviceSize, ?*const anyopaque) callconv(.c) void;
+pub const FpCmdFillMemoryKHR = *const fn (CommandBuffer, [*c]const DeviceAddressRangeKHR, AddressCommandFlagsKHR, u32) callconv(.c) void;
+pub const FpCmdCopyQueryPoolResultsToMemoryKHR = *const fn (CommandBuffer, QueryPool, u32, u32, [*c]const StridedDeviceAddressRangeKHR, AddressCommandFlagsKHR, QueryResultFlags) callconv(.c) void;
+pub const FpCmdBeginConditionalRendering2EXT = *const fn (CommandBuffer, [*c]const ConditionalRenderingBeginInfo2EXT) callconv(.c) void;
+pub const FpCmdBindTransformFeedbackBuffers2EXT = *const fn (CommandBuffer, u32, u32, [*c]const BindTransformFeedbackBuffer2InfoEXT) callconv(.c) void;
+pub const FpCmdBeginTransformFeedback2EXT = *const fn (CommandBuffer, u32, u32, [*c]const BindTransformFeedbackBuffer2InfoEXT) callconv(.c) void;
+pub const FpCmdEndTransformFeedback2EXT = *const fn (CommandBuffer, u32, u32, [*c]const BindTransformFeedbackBuffer2InfoEXT) callconv(.c) void;
+pub const FpCmdDrawIndirectByteCount2EXT = *const fn (CommandBuffer, u32, u32, [*c]const BindTransformFeedbackBuffer2InfoEXT, u32, u32) callconv(.c) void;
+pub const FpCmdWriteMarkerToMemoryAMD = *const fn (CommandBuffer, [*c]const MemoryMarkerInfoAMD) callconv(.c) void;
+pub const FpCmdBindIndexBuffer3KHR = *const fn (CommandBuffer, [*c]const BindIndexBuffer3InfoKHR) callconv(.c) void;
+pub const FpCmdBindVertexBuffers3KHR = *const fn (CommandBuffer, u32, u32, [*c]const BindVertexBuffer3InfoKHR) callconv(.c) void;
+pub const FpCmdDrawIndirect2KHR = *const fn (CommandBuffer, [*c]const DrawIndirect2InfoKHR) callconv(.c) void;
+pub const FpCmdDrawIndexedIndirect2KHR = *const fn (CommandBuffer, [*c]const DrawIndirect2InfoKHR) callconv(.c) void;
+pub const FpCmdDrawIndirectCount2KHR = *const fn (CommandBuffer, [*c]const DrawIndirectCount2InfoKHR) callconv(.c) void;
+pub const FpCmdDrawIndexedIndirectCount2KHR = *const fn (CommandBuffer, [*c]const DrawIndirectCount2InfoKHR) callconv(.c) void;
+pub const FpCmdDrawMeshTasksIndirect2EXT = *const fn (CommandBuffer, [*c]const DrawIndirect2InfoKHR) callconv(.c) void;
+pub const FpCmdDrawMeshTasksIndirectCount2EXT = *const fn (CommandBuffer, [*c]const DrawIndirectCount2InfoKHR) callconv(.c) void;
+pub const FpCmdDispatchIndirect2KHR = *const fn (CommandBuffer, [*c]const DispatchIndirect2InfoKHR) callconv(.c) void;
+pub const FpCreateAccelerationStructure2KHR = *const fn (Device, [*c]const AccelerationStructureCreateInfo2KHR, [*c]const AllocationCallbacks, [*c]AccelerationStructureKHR) callconv(.c) Result;
 
 const ExtensionNames = struct {
     const khr_surface = "VK_KHR_surface";
@@ -16902,6 +17097,7 @@ const ExtensionNames = struct {
     const ext_metal_objects = "VK_EXT_metal_objects";
     const khr_synchronization2 = "VK_KHR_synchronization2";
     const ext_descriptor_buffer = "VK_EXT_descriptor_buffer";
+    const khr_device_address_commands = "VK_KHR_device_address_commands";
     const ext_graphics_pipeline_library = "VK_EXT_graphics_pipeline_library";
     const amd_shader_early_and_late_fragment_tests = "VK_AMD_shader_early_and_late_fragment_tests";
     const khr_fragment_shader_barycentric = "VK_KHR_fragment_shader_barycentric";
@@ -18827,6 +19023,22 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_khr_device_address_commands(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 3, 0).to_int() or ((self.core_version.to_int() >= make_version(1, 2, 0).to_int() or ((self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2()) and self.supports_khr_buffer_device_address())) and self.supports_khr_synchronization2() and self.supports_ext_extended_dynamic_state());
+    }
+    pub fn enable_khr_device_address_commands(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 3, 0).to_int()) {
+            if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
+                if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+                    self.enable_khr_get_physical_device_properties2();
+                }
+                self.enable_khr_buffer_device_address();
+            }
+            self.enable_khr_synchronization2();
+            self.enable_ext_extended_dynamic_state();
+        }
+    }
+
     pub fn supports_ext_graphics_pipeline_library(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
@@ -20520,6 +20732,7 @@ pub const DeviceExtensions = packed struct {
     ext_metal_objects: bool = false,
     khr_synchronization2: bool = false,
     ext_descriptor_buffer: bool = false,
+    khr_device_address_commands: bool = false,
     ext_graphics_pipeline_library: bool = false,
     amd_shader_early_and_late_fragment_tests: bool = false,
     khr_fragment_shader_barycentric: bool = false,
@@ -21123,6 +21336,8 @@ pub const DeviceExtensions = packed struct {
             self.khr_synchronization2 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_descriptor_buffer) == .eq) {
             self.ext_descriptor_buffer = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_device_address_commands) == .eq) {
+            self.khr_device_address_commands = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_graphics_pipeline_library) == .eq) {
             self.ext_graphics_pipeline_library = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.amd_shader_early_and_late_fragment_tests) == .eq) {
@@ -21699,6 +21914,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_metal_objects) try names.append(allocator, ExtensionNames.ext_metal_objects);
         if (self.khr_synchronization2) try names.append(allocator, ExtensionNames.khr_synchronization2);
         if (self.ext_descriptor_buffer) try names.append(allocator, ExtensionNames.ext_descriptor_buffer);
+        if (self.khr_device_address_commands) try names.append(allocator, ExtensionNames.khr_device_address_commands);
         if (self.ext_graphics_pipeline_library) try names.append(allocator, ExtensionNames.ext_graphics_pipeline_library);
         if (self.amd_shader_early_and_late_fragment_tests) try names.append(allocator, ExtensionNames.amd_shader_early_and_late_fragment_tests);
         if (self.khr_fragment_shader_barycentric) try names.append(allocator, ExtensionNames.khr_fragment_shader_barycentric);
@@ -23680,6 +23896,20 @@ pub const DeviceExtensions = packed struct {
                 self.enable_ext_descriptor_indexing();
             }
             self.enable_khr_synchronization2();
+        }
+    }
+
+    pub fn supports_khr_device_address_commands(self: DeviceExtensions) bool {
+        return self.khr_device_address_commands and (self.core_version.to_int() >= make_version(1, 3, 0).to_int() or ((self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address()) and self.supports_khr_synchronization2() and self.supports_ext_extended_dynamic_state()));
+    }
+    pub fn enable_khr_device_address_commands(self: *DeviceExtensions) void {
+        self.khr_device_address_commands = true;
+        if (self.core_version.to_int() < make_version(1, 3, 0).to_int()) {
+            if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
+                self.enable_khr_buffer_device_address();
+            }
+            self.enable_khr_synchronization2();
+            self.enable_ext_extended_dynamic_state();
         }
     }
 
@@ -27957,6 +28187,28 @@ pub const DeviceCommands = struct {
     fp_get_image_opaque_capture_data_ext: ?FpGetImageOpaqueCaptureDataEXT,
     fp_get_physical_device_descriptor_size_ext: ?FpGetPhysicalDeviceDescriptorSizeEXT,
     fp_get_tensor_opaque_capture_data_arm: ?FpGetTensorOpaqueCaptureDataARM,
+    fp_cmd_copy_memory_khr: ?FpCmdCopyMemoryKHR,
+    fp_cmd_copy_memory_to_image_khr: ?FpCmdCopyMemoryToImageKHR,
+    fp_cmd_copy_image_to_memory_khr: ?FpCmdCopyImageToMemoryKHR,
+    fp_cmd_update_memory_khr: ?FpCmdUpdateMemoryKHR,
+    fp_cmd_fill_memory_khr: ?FpCmdFillMemoryKHR,
+    fp_cmd_copy_query_pool_results_to_memory_khr: ?FpCmdCopyQueryPoolResultsToMemoryKHR,
+    fp_cmd_begin_conditional_rendering2_ext: ?FpCmdBeginConditionalRendering2EXT,
+    fp_cmd_bind_transform_feedback_buffers2_ext: ?FpCmdBindTransformFeedbackBuffers2EXT,
+    fp_cmd_begin_transform_feedback2_ext: ?FpCmdBeginTransformFeedback2EXT,
+    fp_cmd_end_transform_feedback2_ext: ?FpCmdEndTransformFeedback2EXT,
+    fp_cmd_draw_indirect_byte_count2_ext: ?FpCmdDrawIndirectByteCount2EXT,
+    fp_cmd_write_marker_to_memory_amd: ?FpCmdWriteMarkerToMemoryAMD,
+    fp_cmd_bind_index_buffer3_khr: ?FpCmdBindIndexBuffer3KHR,
+    fp_cmd_bind_vertex_buffers3_khr: ?FpCmdBindVertexBuffers3KHR,
+    fp_cmd_draw_indirect2_khr: ?FpCmdDrawIndirect2KHR,
+    fp_cmd_draw_indexed_indirect2_khr: ?FpCmdDrawIndexedIndirect2KHR,
+    fp_cmd_draw_indirect_count2_khr: ?FpCmdDrawIndirectCount2KHR,
+    fp_cmd_draw_indexed_indirect_count2_khr: ?FpCmdDrawIndexedIndirectCount2KHR,
+    fp_cmd_draw_mesh_tasks_indirect2_ext: ?FpCmdDrawMeshTasksIndirect2EXT,
+    fp_cmd_draw_mesh_tasks_indirect_count2_ext: ?FpCmdDrawMeshTasksIndirectCount2EXT,
+    fp_cmd_dispatch_indirect2_khr: ?FpCmdDispatchIndirect2KHR,
+    fp_create_acceleration_structure2_khr: ?FpCreateAccelerationStructure2KHR,
 
     pub fn init(globals: GlobalCommands, instance: InstanceCommands, device: Device, create_info: *const DeviceCreateInfo) MissingFunctionError!DeviceCommands {
         var extensions: DeviceExtensions = .{
@@ -28550,6 +28802,28 @@ pub const DeviceCommands = struct {
             .fp_get_image_opaque_capture_data_ext = if (extensions.ext_descriptor_heap) @ptrCast(try instance.get_device_proc_addr(device, "vkGetImageOpaqueCaptureDataEXT")) else null,
             .fp_get_physical_device_descriptor_size_ext = if (extensions.ext_descriptor_heap) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceDescriptorSizeEXT")) else null,
             .fp_get_tensor_opaque_capture_data_arm = if (extensions.ext_descriptor_heap and extensions.arm_tensors) @ptrCast(try instance.get_device_proc_addr(device, "vkGetTensorOpaqueCaptureDataARM")) else null,
+            .fp_cmd_copy_memory_khr = if (extensions.khr_device_address_commands) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCopyMemoryKHR")) else null,
+            .fp_cmd_copy_memory_to_image_khr = if (extensions.khr_device_address_commands) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCopyMemoryToImageKHR")) else null,
+            .fp_cmd_copy_image_to_memory_khr = if (extensions.khr_device_address_commands) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCopyImageToMemoryKHR")) else null,
+            .fp_cmd_update_memory_khr = if (extensions.khr_device_address_commands) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdUpdateMemoryKHR")) else null,
+            .fp_cmd_fill_memory_khr = if (extensions.khr_device_address_commands) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdFillMemoryKHR")) else null,
+            .fp_cmd_copy_query_pool_results_to_memory_khr = if (extensions.khr_device_address_commands) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCopyQueryPoolResultsToMemoryKHR")) else null,
+            .fp_cmd_begin_conditional_rendering2_ext = if (extensions.khr_device_address_commands and extensions.ext_conditional_rendering) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBeginConditionalRendering2EXT")) else null,
+            .fp_cmd_bind_transform_feedback_buffers2_ext = if (extensions.khr_device_address_commands and extensions.ext_transform_feedback) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBindTransformFeedbackBuffers2EXT")) else null,
+            .fp_cmd_begin_transform_feedback2_ext = if (extensions.khr_device_address_commands and extensions.ext_transform_feedback) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBeginTransformFeedback2EXT")) else null,
+            .fp_cmd_end_transform_feedback2_ext = if (extensions.khr_device_address_commands and extensions.ext_transform_feedback) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdEndTransformFeedback2EXT")) else null,
+            .fp_cmd_draw_indirect_byte_count2_ext = if (extensions.khr_device_address_commands and extensions.ext_transform_feedback) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawIndirectByteCount2EXT")) else null,
+            .fp_cmd_write_marker_to_memory_amd = if (extensions.khr_device_address_commands and extensions.amd_buffer_marker) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdWriteMarkerToMemoryAMD")) else null,
+            .fp_cmd_bind_index_buffer3_khr = if (extensions.khr_device_address_commands) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBindIndexBuffer3KHR")) else null,
+            .fp_cmd_bind_vertex_buffers3_khr = if (extensions.khr_device_address_commands) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBindVertexBuffers3KHR")) else null,
+            .fp_cmd_draw_indirect2_khr = if (extensions.khr_device_address_commands) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawIndirect2KHR")) else null,
+            .fp_cmd_draw_indexed_indirect2_khr = if (extensions.khr_device_address_commands) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawIndexedIndirect2KHR")) else null,
+            .fp_cmd_draw_indirect_count2_khr = if (extensions.khr_device_address_commands and (extensions.core_version.to_int() >= make_version(1, 2, 0).to_int() or extensions.khr_draw_indirect_count)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawIndirectCount2KHR")) else null,
+            .fp_cmd_draw_indexed_indirect_count2_khr = if (extensions.khr_device_address_commands and (extensions.core_version.to_int() >= make_version(1, 2, 0).to_int() or extensions.khr_draw_indirect_count)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawIndexedIndirectCount2KHR")) else null,
+            .fp_cmd_draw_mesh_tasks_indirect2_ext = if (extensions.khr_device_address_commands and extensions.ext_mesh_shader) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawMeshTasksIndirect2EXT")) else null,
+            .fp_cmd_draw_mesh_tasks_indirect_count2_ext = if (extensions.khr_device_address_commands and (extensions.core_version.to_int() >= make_version(1, 2, 0).to_int() or extensions.khr_draw_indirect_count) and extensions.ext_mesh_shader) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawMeshTasksIndirectCount2EXT")) else null,
+            .fp_cmd_dispatch_indirect2_khr = if (extensions.khr_device_address_commands) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDispatchIndirect2KHR")) else null,
+            .fp_create_acceleration_structure2_khr = if (extensions.khr_device_address_commands and extensions.khr_acceleration_structure) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateAccelerationStructure2KHR")) else null,
         };
     }
     pub fn destroy_device(
@@ -37149,6 +37423,218 @@ pub const DeviceCommands = struct {
             .error_out_of_device_memory => return error.OutOfDeviceMemory,
             .error_unknown => return error.Unknown,
             .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn cmd_copy_memory_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_copy_memory_info: ?*const CopyDeviceMemoryInfoKHR,
+    ) void {
+        self.fp_cmd_copy_memory_khr.?(command_buffer, p_copy_memory_info);
+    }
+    pub fn cmd_copy_memory_to_image_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_copy_memory_info: ?*const CopyDeviceMemoryImageInfoKHR,
+    ) void {
+        self.fp_cmd_copy_memory_to_image_khr.?(command_buffer, p_copy_memory_info);
+    }
+    pub fn cmd_copy_image_to_memory_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_copy_memory_info: ?*const CopyDeviceMemoryImageInfoKHR,
+    ) void {
+        self.fp_cmd_copy_image_to_memory_khr.?(command_buffer, p_copy_memory_info);
+    }
+    pub fn cmd_update_memory_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_dst_range: *const DeviceAddressRangeKHR,
+        dst_flags: AddressCommandFlagsKHR,
+        p_data: []const u8,
+    ) void {
+        const data_size: DeviceSize = @intCast(p_data.len);
+        self.fp_cmd_update_memory_khr.?(command_buffer, p_dst_range, dst_flags, data_size, p_data.ptr);
+    }
+    pub fn cmd_fill_memory_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_dst_range: *const DeviceAddressRangeKHR,
+        dst_flags: AddressCommandFlagsKHR,
+        data: u32,
+    ) void {
+        self.fp_cmd_fill_memory_khr.?(command_buffer, p_dst_range, dst_flags, data);
+    }
+    pub fn cmd_copy_query_pool_results_to_memory_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        query_pool: QueryPool,
+        first_query: u32,
+        query_count: u32,
+        p_dst_range: *const StridedDeviceAddressRangeKHR,
+        dst_flags: AddressCommandFlagsKHR,
+        query_result_flags: QueryResultFlags,
+    ) void {
+        self.fp_cmd_copy_query_pool_results_to_memory_khr.?(command_buffer, query_pool, first_query, query_count, p_dst_range, dst_flags, query_result_flags);
+    }
+    pub fn cmd_begin_conditional_rendering2_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_conditional_rendering_begin: *const ConditionalRenderingBeginInfo2EXT,
+    ) void {
+        self.fp_cmd_begin_conditional_rendering2_ext.?(command_buffer, p_conditional_rendering_begin);
+    }
+    pub fn cmd_bind_transform_feedback_buffers2_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        first_binding: u32,
+        p_binding_infos: ?[]const BindTransformFeedbackBuffer2InfoEXT,
+    ) void {
+        var binding_count: ?u32 = null;
+        if (p_binding_infos) |s| {
+            if (binding_count) |n| {
+                assert(n == s.len);
+            } else {
+                binding_count = @intCast(s.len);
+            }
+        }
+        self.fp_cmd_bind_transform_feedback_buffers2_ext.?(command_buffer, first_binding, binding_count orelse 0, if (p_binding_infos) |slice| slice.ptr orelse null);
+    }
+    pub fn cmd_begin_transform_feedback2_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        first_counter_range: u32,
+        p_counter_infos: ?[]const BindTransformFeedbackBuffer2InfoEXT,
+    ) void {
+        var counter_range_count: ?u32 = null;
+        if (p_counter_infos) |s| {
+            if (counter_range_count) |n| {
+                assert(n == s.len);
+            } else {
+                counter_range_count = @intCast(s.len);
+            }
+        }
+        self.fp_cmd_begin_transform_feedback2_ext.?(command_buffer, first_counter_range, counter_range_count orelse 0, if (p_counter_infos) |slice| slice.ptr orelse null);
+    }
+    pub fn cmd_end_transform_feedback2_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        first_counter_range: u32,
+        p_counter_infos: ?[]const BindTransformFeedbackBuffer2InfoEXT,
+    ) void {
+        var counter_range_count: ?u32 = null;
+        if (p_counter_infos) |s| {
+            if (counter_range_count) |n| {
+                assert(n == s.len);
+            } else {
+                counter_range_count = @intCast(s.len);
+            }
+        }
+        self.fp_cmd_end_transform_feedback2_ext.?(command_buffer, first_counter_range, counter_range_count orelse 0, if (p_counter_infos) |slice| slice.ptr orelse null);
+    }
+    pub fn cmd_draw_indirect_byte_count2_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        instance_count: u32,
+        first_instance: u32,
+        p_counter_info: *const BindTransformFeedbackBuffer2InfoEXT,
+        counter_offset: u32,
+        vertex_stride: u32,
+    ) void {
+        self.fp_cmd_draw_indirect_byte_count2_ext.?(command_buffer, instance_count, first_instance, p_counter_info, counter_offset, vertex_stride);
+    }
+    pub fn cmd_write_marker_to_memory_amd(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_info: *const MemoryMarkerInfoAMD,
+    ) void {
+        self.fp_cmd_write_marker_to_memory_amd.?(command_buffer, p_info);
+    }
+    pub fn cmd_bind_index_buffer3_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_info: *const BindIndexBuffer3InfoKHR,
+    ) void {
+        self.fp_cmd_bind_index_buffer3_khr.?(command_buffer, p_info);
+    }
+    pub fn cmd_bind_vertex_buffers3_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        first_binding: u32,
+        p_binding_infos: []const BindVertexBuffer3InfoKHR,
+    ) void {
+        const binding_count: u32 = @intCast(p_binding_infos.len);
+        self.fp_cmd_bind_vertex_buffers3_khr.?(command_buffer, first_binding, binding_count, p_binding_infos.ptr);
+    }
+    pub fn cmd_draw_indirect2_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_info: *const DrawIndirect2InfoKHR,
+    ) void {
+        self.fp_cmd_draw_indirect2_khr.?(command_buffer, p_info);
+    }
+    pub fn cmd_draw_indexed_indirect2_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_info: *const DrawIndirect2InfoKHR,
+    ) void {
+        self.fp_cmd_draw_indexed_indirect2_khr.?(command_buffer, p_info);
+    }
+    pub fn cmd_draw_indirect_count2_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_info: *const DrawIndirectCount2InfoKHR,
+    ) void {
+        self.fp_cmd_draw_indirect_count2_khr.?(command_buffer, p_info);
+    }
+    pub fn cmd_draw_indexed_indirect_count2_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_info: *const DrawIndirectCount2InfoKHR,
+    ) void {
+        self.fp_cmd_draw_indexed_indirect_count2_khr.?(command_buffer, p_info);
+    }
+    pub fn cmd_draw_mesh_tasks_indirect2_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_info: *const DrawIndirect2InfoKHR,
+    ) void {
+        self.fp_cmd_draw_mesh_tasks_indirect2_ext.?(command_buffer, p_info);
+    }
+    pub fn cmd_draw_mesh_tasks_indirect_count2_ext(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_info: *const DrawIndirectCount2InfoKHR,
+    ) void {
+        self.fp_cmd_draw_mesh_tasks_indirect_count2_ext.?(command_buffer, p_info);
+    }
+    pub fn cmd_dispatch_indirect2_khr(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        p_info: *const DispatchIndirect2InfoKHR,
+    ) void {
+        self.fp_cmd_dispatch_indirect2_khr.?(command_buffer, p_info);
+    }
+    pub const CreateAccelerationStructure2KHRError = error{
+        OutOfHostMemory,
+        InvalidOpaqueCaptureAddress,
+        ValidationFailed,
+        Unknown,
+        Unexpected,
+    };
+    pub fn create_acceleration_structure2_khr(
+        self: DeviceCommands,
+        p_create_info: *const AccelerationStructureCreateInfo2KHR,
+        p_allocator: ?*const AllocationCallbacks,
+    ) CreateAccelerationStructure2KHRError!AccelerationStructureKHR {
+        var p_acceleration_structure: AccelerationStructureKHR = undefined;
+        switch (self.fp_create_acceleration_structure2_khr.?(self.handle, p_create_info, p_allocator, &p_acceleration_structure)) {
+            .success => return p_acceleration_structure,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_invalid_opaque_capture_address => return error.InvalidOpaqueCaptureAddress,
+            .error_validation_failed => return error.ValidationFailed,
+            .error_unknown => return error.Unknown,
             else => return error.Unexpected,
         }
     }

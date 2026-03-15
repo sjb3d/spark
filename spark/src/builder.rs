@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.345
+//! Generated from vk.xml version 1.4.346
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -23602,6 +23602,8 @@ impl BufferImageCopy2Next for vk::CopyCommandTransformInfoQCOM {}
 impl BufferImageCopy2Next for CopyCommandTransformInfoQCOMBuilder {}
 impl ImageBlit2Next for vk::CopyCommandTransformInfoQCOM {}
 impl ImageBlit2Next for CopyCommandTransformInfoQCOMBuilder {}
+impl DeviceMemoryImageCopyKHRNext for vk::CopyCommandTransformInfoQCOM {}
+impl DeviceMemoryImageCopyKHRNext for CopyCommandTransformInfoQCOMBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -29018,6 +29020,8 @@ impl TensorCreateInfoARMNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
 impl TensorCreateInfoARMNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder<'_> {}
 impl TensorViewCreateInfoARMNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
 impl TensorViewCreateInfoARMNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder<'_> {}
+impl AccelerationStructureCreateInfo2KHRNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
+impl AccelerationStructureCreateInfo2KHRNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -33570,76 +33574,6 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFaultFeaturesEXT {}
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceFaultFeaturesEXTBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceFaultFeaturesEXT {}
 impl DeviceCreateInfoNext for PhysicalDeviceFaultFeaturesEXTBuilder {}
-
-#[repr(transparent)]
-#[derive(Default)]
-pub struct DeviceFaultAddressInfoEXTBuilder {
-    inner: vk::DeviceFaultAddressInfoEXT,
-}
-impl Builder<'_> for vk::DeviceFaultAddressInfoEXT {
-    type Type = DeviceFaultAddressInfoEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl DeviceFaultAddressInfoEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::DeviceFaultAddressInfoEXT {
-        &mut self.inner
-    }
-    pub fn address_type(mut self, address_type: vk::DeviceFaultAddressTypeEXT) -> Self {
-        self.inner.address_type = address_type;
-        self
-    }
-    pub fn reported_address(mut self, reported_address: vk::DeviceAddress) -> Self {
-        self.inner.reported_address = reported_address;
-        self
-    }
-    pub fn address_precision(mut self, address_precision: vk::DeviceSize) -> Self {
-        self.inner.address_precision = address_precision;
-        self
-    }
-}
-impl Deref for DeviceFaultAddressInfoEXTBuilder {
-    type Target = vk::DeviceFaultAddressInfoEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-
-#[repr(transparent)]
-#[derive(Default)]
-pub struct DeviceFaultVendorInfoEXTBuilder {
-    inner: vk::DeviceFaultVendorInfoEXT,
-}
-impl Builder<'_> for vk::DeviceFaultVendorInfoEXT {
-    type Type = DeviceFaultVendorInfoEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl DeviceFaultVendorInfoEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::DeviceFaultVendorInfoEXT {
-        &mut self.inner
-    }
-    pub fn description(mut self, description: [c_char; vk::MAX_DESCRIPTION_SIZE]) -> Self {
-        self.inner.description = description;
-        self
-    }
-    pub fn vendor_fault_code(mut self, vendor_fault_code: u64) -> Self {
-        self.inner.vendor_fault_code = vendor_fault_code;
-        self
-    }
-    pub fn vendor_fault_data(mut self, vendor_fault_data: u64) -> Self {
-        self.inner.vendor_fault_data = vendor_fault_data;
-        self
-    }
-}
-impl Deref for DeviceFaultVendorInfoEXTBuilder {
-    type Target = vk::DeviceFaultVendorInfoEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -41459,37 +41393,6 @@ impl<'a> Deref for HostAddressRangeConstEXTBuilder<'a> {
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct DeviceAddressRangeEXTBuilder {
-    inner: vk::DeviceAddressRangeEXT,
-}
-impl Builder<'_> for vk::DeviceAddressRangeEXT {
-    type Type = DeviceAddressRangeEXTBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-impl DeviceAddressRangeEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::DeviceAddressRangeEXT {
-        &mut self.inner
-    }
-    pub fn address(mut self, address: vk::DeviceAddress) -> Self {
-        self.inner.address = address;
-        self
-    }
-    pub fn size(mut self, size: vk::DeviceSize) -> Self {
-        self.inner.size = size;
-        self
-    }
-}
-impl Deref for DeviceAddressRangeEXTBuilder {
-    type Target = vk::DeviceAddressRangeEXT;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-
-#[repr(transparent)]
-#[derive(Default)]
 pub struct TexelBufferDescriptorInfoEXTBuilder {
     inner: vk::TexelBufferDescriptorInfoEXT,
 }
@@ -42520,6 +42423,713 @@ impl ShaderInstrumentationMetricDataHeaderARMBuilder {
 }
 impl Deref for ShaderInstrumentationMetricDataHeaderARMBuilder {
     type Target = vk::ShaderInstrumentationMetricDataHeaderARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DeviceAddressRangeKHRBuilder {
+    inner: vk::DeviceAddressRangeKHR,
+}
+impl Builder<'_> for vk::DeviceAddressRangeKHR {
+    type Type = DeviceAddressRangeKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DeviceAddressRangeKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DeviceAddressRangeKHR {
+        &mut self.inner
+    }
+    pub fn address(mut self, address: vk::DeviceAddress) -> Self {
+        self.inner.address = address;
+        self
+    }
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
+        self.inner.size = size;
+        self
+    }
+}
+impl Deref for DeviceAddressRangeKHRBuilder {
+    type Target = vk::DeviceAddressRangeKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DeviceMemoryCopyKHRBuilder {
+    inner: vk::DeviceMemoryCopyKHR,
+}
+impl Builder<'_> for vk::DeviceMemoryCopyKHR {
+    type Type = DeviceMemoryCopyKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DeviceMemoryCopyKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DeviceMemoryCopyKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_range(mut self, src_range: vk::DeviceAddressRangeKHR) -> Self {
+        self.inner.src_range = src_range;
+        self
+    }
+    pub fn src_flags(mut self, src_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.src_flags = src_flags;
+        self
+    }
+    pub fn dst_range(mut self, dst_range: vk::DeviceAddressRangeKHR) -> Self {
+        self.inner.dst_range = dst_range;
+        self
+    }
+    pub fn dst_flags(mut self, dst_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.dst_flags = dst_flags;
+        self
+    }
+}
+impl Deref for DeviceMemoryCopyKHRBuilder {
+    type Target = vk::DeviceMemoryCopyKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct CopyDeviceMemoryInfoKHRBuilder<'a> {
+    inner: vk::CopyDeviceMemoryInfoKHR,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::CopyDeviceMemoryInfoKHR {
+    type Type = CopyDeviceMemoryInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> CopyDeviceMemoryInfoKHRBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::CopyDeviceMemoryInfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::DeviceMemoryCopyKHR]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for CopyDeviceMemoryInfoKHRBuilder<'a> {
+    type Target = vk::CopyDeviceMemoryInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DeviceMemoryImageCopyKHRBuilder<'a> {
+    inner: vk::DeviceMemoryImageCopyKHR,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DeviceMemoryImageCopyKHR {
+    type Type = DeviceMemoryImageCopyKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait DeviceMemoryImageCopyKHRNext {}
+impl<'a> DeviceMemoryImageCopyKHRBuilder<'a> {
+    pub fn insert_next<T: DeviceMemoryImageCopyKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::DeviceMemoryImageCopyKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn address_range(mut self, address_range: vk::DeviceAddressRangeKHR) -> Self {
+        self.inner.address_range = address_range;
+        self
+    }
+    pub fn address_flags(mut self, address_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.address_flags = address_flags;
+        self
+    }
+    pub fn address_row_length(mut self, address_row_length: u32) -> Self {
+        self.inner.address_row_length = address_row_length;
+        self
+    }
+    pub fn address_image_height(mut self, address_image_height: u32) -> Self {
+        self.inner.address_image_height = address_image_height;
+        self
+    }
+    pub fn image_subresource(mut self, image_subresource: vk::ImageSubresourceLayers) -> Self {
+        self.inner.image_subresource = image_subresource;
+        self
+    }
+    pub fn image_layout(mut self, image_layout: vk::ImageLayout) -> Self {
+        self.inner.image_layout = image_layout;
+        self
+    }
+    pub fn image_offset(mut self, image_offset: vk::Offset3D) -> Self {
+        self.inner.image_offset = image_offset;
+        self
+    }
+    pub fn image_extent(mut self, image_extent: vk::Extent3D) -> Self {
+        self.inner.image_extent = image_extent;
+        self
+    }
+}
+impl<'a> Deref for DeviceMemoryImageCopyKHRBuilder<'a> {
+    type Target = vk::DeviceMemoryImageCopyKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct CopyDeviceMemoryImageInfoKHRBuilder<'a> {
+    inner: vk::CopyDeviceMemoryImageInfoKHR,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::CopyDeviceMemoryImageInfoKHR {
+    type Type = CopyDeviceMemoryImageInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> CopyDeviceMemoryImageInfoKHRBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::CopyDeviceMemoryImageInfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image(mut self, image: vk::Image) -> Self {
+        self.inner.image = image;
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::DeviceMemoryImageCopyKHR]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for CopyDeviceMemoryImageInfoKHRBuilder<'a> {
+    type Target = vk::CopyDeviceMemoryImageInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct MemoryRangeBarriersInfoKHRBuilder<'a> {
+    inner: vk::MemoryRangeBarriersInfoKHR,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::MemoryRangeBarriersInfoKHR {
+    type Type = MemoryRangeBarriersInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> MemoryRangeBarriersInfoKHRBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::MemoryRangeBarriersInfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_memory_range_barriers(mut self, p_memory_range_barriers: &'a [vk::MemoryRangeBarrierKHR]) -> Self {
+        self.inner.memory_range_barrier_count = p_memory_range_barriers.len() as u32;
+        self.inner.p_memory_range_barriers = p_memory_range_barriers.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for MemoryRangeBarriersInfoKHRBuilder<'a> {
+    type Target = vk::MemoryRangeBarriersInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DependencyInfoNext for vk::MemoryRangeBarriersInfoKHR {}
+impl DependencyInfoNext for MemoryRangeBarriersInfoKHRBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct MemoryRangeBarrierKHRBuilder {
+    inner: vk::MemoryRangeBarrierKHR,
+}
+impl Builder<'_> for vk::MemoryRangeBarrierKHR {
+    type Type = MemoryRangeBarrierKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl MemoryRangeBarrierKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::MemoryRangeBarrierKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_stage_mask(mut self, src_stage_mask: vk::PipelineStageFlags2) -> Self {
+        self.inner.src_stage_mask = src_stage_mask;
+        self
+    }
+    pub fn src_access_mask(mut self, src_access_mask: vk::AccessFlags2) -> Self {
+        self.inner.src_access_mask = src_access_mask;
+        self
+    }
+    pub fn dst_stage_mask(mut self, dst_stage_mask: vk::PipelineStageFlags2) -> Self {
+        self.inner.dst_stage_mask = dst_stage_mask;
+        self
+    }
+    pub fn dst_access_mask(mut self, dst_access_mask: vk::AccessFlags2) -> Self {
+        self.inner.dst_access_mask = dst_access_mask;
+        self
+    }
+    pub fn src_queue_family_index(mut self, src_queue_family_index: u32) -> Self {
+        self.inner.src_queue_family_index = src_queue_family_index;
+        self
+    }
+    pub fn dst_queue_family_index(mut self, dst_queue_family_index: u32) -> Self {
+        self.inner.dst_queue_family_index = dst_queue_family_index;
+        self
+    }
+    pub fn address_range(mut self, address_range: vk::DeviceAddressRangeKHR) -> Self {
+        self.inner.address_range = address_range;
+        self
+    }
+    pub fn address_flags(mut self, address_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.address_flags = address_flags;
+        self
+    }
+}
+impl Deref for MemoryRangeBarrierKHRBuilder {
+    type Target = vk::MemoryRangeBarrierKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceDeviceAddressCommandsFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceDeviceAddressCommandsFeaturesKHR,
+}
+impl Builder<'_> for vk::PhysicalDeviceDeviceAddressCommandsFeaturesKHR {
+    type Type = PhysicalDeviceDeviceAddressCommandsFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceDeviceAddressCommandsFeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceDeviceAddressCommandsFeaturesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn device_address_commands(mut self, device_address_commands: bool) -> Self {
+        self.inner.device_address_commands = if device_address_commands { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDeviceAddressCommandsFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceDeviceAddressCommandsFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDeviceAddressCommandsFeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDeviceAddressCommandsFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDeviceAddressCommandsFeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDeviceDeviceAddressCommandsFeaturesKHRBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ConditionalRenderingBeginInfo2EXTBuilder {
+    inner: vk::ConditionalRenderingBeginInfo2EXT,
+}
+impl Builder<'_> for vk::ConditionalRenderingBeginInfo2EXT {
+    type Type = ConditionalRenderingBeginInfo2EXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ConditionalRenderingBeginInfo2EXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ConditionalRenderingBeginInfo2EXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn address_range(mut self, address_range: vk::DeviceAddressRangeKHR) -> Self {
+        self.inner.address_range = address_range;
+        self
+    }
+    pub fn address_flags(mut self, address_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.address_flags = address_flags;
+        self
+    }
+    pub fn flags(mut self, flags: vk::ConditionalRenderingFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl Deref for ConditionalRenderingBeginInfo2EXTBuilder {
+    type Target = vk::ConditionalRenderingBeginInfo2EXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct AccelerationStructureCreateInfo2KHRBuilder<'a> {
+    inner: vk::AccelerationStructureCreateInfo2KHR,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::AccelerationStructureCreateInfo2KHR {
+    type Type = AccelerationStructureCreateInfo2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait AccelerationStructureCreateInfo2KHRNext {}
+impl<'a> AccelerationStructureCreateInfo2KHRBuilder<'a> {
+    pub fn insert_next<T: AccelerationStructureCreateInfo2KHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::AccelerationStructureCreateInfo2KHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn create_flags(mut self, create_flags: vk::AccelerationStructureCreateFlagsKHR) -> Self {
+        self.inner.create_flags = create_flags;
+        self
+    }
+    pub fn address_range(mut self, address_range: vk::DeviceAddressRangeKHR) -> Self {
+        self.inner.address_range = address_range;
+        self
+    }
+    pub fn address_flags(mut self, address_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.address_flags = address_flags;
+        self
+    }
+    pub fn ty(mut self, ty: vk::AccelerationStructureTypeKHR) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureCreateInfo2KHRBuilder<'a> {
+    type Target = vk::AccelerationStructureCreateInfo2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct BindIndexBuffer3InfoKHRBuilder {
+    inner: vk::BindIndexBuffer3InfoKHR,
+}
+impl Builder<'_> for vk::BindIndexBuffer3InfoKHR {
+    type Type = BindIndexBuffer3InfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl BindIndexBuffer3InfoKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::BindIndexBuffer3InfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn address_range(mut self, address_range: vk::DeviceAddressRangeKHR) -> Self {
+        self.inner.address_range = address_range;
+        self
+    }
+    pub fn address_flags(mut self, address_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.address_flags = address_flags;
+        self
+    }
+    pub fn index_type(mut self, index_type: vk::IndexType) -> Self {
+        self.inner.index_type = index_type;
+        self
+    }
+}
+impl Deref for BindIndexBuffer3InfoKHRBuilder {
+    type Target = vk::BindIndexBuffer3InfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct BindVertexBuffer3InfoKHRBuilder {
+    inner: vk::BindVertexBuffer3InfoKHR,
+}
+impl Builder<'_> for vk::BindVertexBuffer3InfoKHR {
+    type Type = BindVertexBuffer3InfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl BindVertexBuffer3InfoKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::BindVertexBuffer3InfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn set_stride(mut self, set_stride: bool) -> Self {
+        self.inner.set_stride = if set_stride { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn address_range(mut self, address_range: vk::StridedDeviceAddressRangeKHR) -> Self {
+        self.inner.address_range = address_range;
+        self
+    }
+    pub fn address_flags(mut self, address_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.address_flags = address_flags;
+        self
+    }
+}
+impl Deref for BindVertexBuffer3InfoKHRBuilder {
+    type Target = vk::BindVertexBuffer3InfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DrawIndirect2InfoKHRBuilder {
+    inner: vk::DrawIndirect2InfoKHR,
+}
+impl Builder<'_> for vk::DrawIndirect2InfoKHR {
+    type Type = DrawIndirect2InfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DrawIndirect2InfoKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DrawIndirect2InfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn address_range(mut self, address_range: vk::StridedDeviceAddressRangeKHR) -> Self {
+        self.inner.address_range = address_range;
+        self
+    }
+    pub fn address_flags(mut self, address_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.address_flags = address_flags;
+        self
+    }
+    pub fn draw_count(mut self, draw_count: u32) -> Self {
+        self.inner.draw_count = draw_count;
+        self
+    }
+}
+impl Deref for DrawIndirect2InfoKHRBuilder {
+    type Target = vk::DrawIndirect2InfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DrawIndirectCount2InfoKHRBuilder {
+    inner: vk::DrawIndirectCount2InfoKHR,
+}
+impl Builder<'_> for vk::DrawIndirectCount2InfoKHR {
+    type Type = DrawIndirectCount2InfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DrawIndirectCount2InfoKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DrawIndirectCount2InfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn address_range(mut self, address_range: vk::StridedDeviceAddressRangeKHR) -> Self {
+        self.inner.address_range = address_range;
+        self
+    }
+    pub fn address_flags(mut self, address_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.address_flags = address_flags;
+        self
+    }
+    pub fn count_address_range(mut self, count_address_range: vk::DeviceAddressRangeKHR) -> Self {
+        self.inner.count_address_range = count_address_range;
+        self
+    }
+    pub fn count_address_flags(mut self, count_address_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.count_address_flags = count_address_flags;
+        self
+    }
+    pub fn max_draw_count(mut self, max_draw_count: u32) -> Self {
+        self.inner.max_draw_count = max_draw_count;
+        self
+    }
+}
+impl Deref for DrawIndirectCount2InfoKHRBuilder {
+    type Target = vk::DrawIndirectCount2InfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DispatchIndirect2InfoKHRBuilder {
+    inner: vk::DispatchIndirect2InfoKHR,
+}
+impl Builder<'_> for vk::DispatchIndirect2InfoKHR {
+    type Type = DispatchIndirect2InfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DispatchIndirect2InfoKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DispatchIndirect2InfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn address_range(mut self, address_range: vk::DeviceAddressRangeKHR) -> Self {
+        self.inner.address_range = address_range;
+        self
+    }
+    pub fn address_flags(mut self, address_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.address_flags = address_flags;
+        self
+    }
+}
+impl Deref for DispatchIndirect2InfoKHRBuilder {
+    type Target = vk::DispatchIndirect2InfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct BindTransformFeedbackBuffer2InfoEXTBuilder {
+    inner: vk::BindTransformFeedbackBuffer2InfoEXT,
+}
+impl Builder<'_> for vk::BindTransformFeedbackBuffer2InfoEXT {
+    type Type = BindTransformFeedbackBuffer2InfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl BindTransformFeedbackBuffer2InfoEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::BindTransformFeedbackBuffer2InfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn address_range(mut self, address_range: vk::DeviceAddressRangeKHR) -> Self {
+        self.inner.address_range = address_range;
+        self
+    }
+    pub fn address_flags(mut self, address_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.address_flags = address_flags;
+        self
+    }
+}
+impl Deref for BindTransformFeedbackBuffer2InfoEXTBuilder {
+    type Target = vk::BindTransformFeedbackBuffer2InfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct MemoryMarkerInfoAMDBuilder {
+    inner: vk::MemoryMarkerInfoAMD,
+}
+impl Builder<'_> for vk::MemoryMarkerInfoAMD {
+    type Type = MemoryMarkerInfoAMDBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl MemoryMarkerInfoAMDBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::MemoryMarkerInfoAMD {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stage(mut self, stage: vk::PipelineStageFlags2KHR) -> Self {
+        self.inner.stage = stage;
+        self
+    }
+    pub fn dst_range(mut self, dst_range: vk::DeviceAddressRangeKHR) -> Self {
+        self.inner.dst_range = dst_range;
+        self
+    }
+    pub fn dst_flags(mut self, dst_flags: vk::AddressCommandFlagsKHR) -> Self {
+        self.inner.dst_flags = dst_flags;
+        self
+    }
+    pub fn marker(mut self, marker: u32) -> Self {
+        self.inner.marker = marker;
+        self
+    }
+}
+impl Deref for MemoryMarkerInfoAMDBuilder {
+    type Target = vk::MemoryMarkerInfoAMD;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
