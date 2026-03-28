@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.346
+// Generated from vk.xml version 1.4.347
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -1153,6 +1153,16 @@ pub const MemoryDecompressionMethodFlagBitsEXT = enum(u6) {
 pub const MemoryDecompressionMethodFlagsEXT = BitField(MemoryDecompressionMethodFlagBitsEXT);
 pub const MemoryDecompressionMethodFlagsNV = MemoryDecompressionMethodFlagsEXT;
 pub const RenderingFlagsKHR = RenderingFlags;
+pub const DeviceFaultFlagBitsKHR = enum(u5) {
+    device_lost = 0,
+    memory_address = 1,
+    instruction_address = 2,
+    vendor = 3,
+    watchdog_timeout = 4,
+    overflow = 5,
+    _,
+};
+pub const DeviceFaultFlagsKHR = BitField(DeviceFaultFlagBitsKHR);
 pub const BuildMicromapFlagBitsEXT = enum(u5) {
     prefer_fast_trace = 0,
     prefer_fast_build = 1,
@@ -3235,6 +3245,10 @@ pub const StructureType = enum(i32) {
     rendering_fragment_shading_rate_attachment_info_khr = 1000044006,
     physical_device_shader_core_properties_2_amd = 1000227000,
     physical_device_coherent_memory_features_amd = 1000229000,
+    physical_device_shader_constant_data_features_khr = 1000231000,
+    physical_device_shader_abort_features_khr = 1000233000,
+    device_fault_shader_abort_message_info_khr = 1000233001,
+    physical_device_shader_abort_properties_khr = 1000233002,
     physical_device_shader_image_atomic_int64_features_ext = 1000234000,
     physical_device_shader_quad_control_features_khr = 1000235000,
     physical_device_memory_budget_properties_ext = 1000237000,
@@ -3710,6 +3724,10 @@ pub const StructureType = enum(i32) {
     indirect_execution_set_shader_layout_info_ext = 1000572012,
     generated_commands_pipeline_info_ext = 1000572013,
     generated_commands_shader_info_ext = 1000572014,
+    physical_device_fault_features_khr = 1000573000,
+    physical_device_fault_properties_khr = 1000573001,
+    device_fault_info_khr = 1000573002,
+    device_fault_debug_info_khr = 1000573003,
     physical_device_maintenance_8_features_khr = 1000574000,
     memory_barrier_access_flags_3_khr = 1000574002,
     physical_device_image_alignment_control_features_mesa = 1000575000,
@@ -4234,15 +4252,16 @@ pub const OpacityMicromapSpecialIndexEXT = enum(i32) {
     cluster_geometry_disable_opacity_micromap_nv = -5,
     _,
 };
-pub const DeviceFaultVendorBinaryHeaderVersionEXT = enum(i32) {
-    one = 1,
-    _,
-};
 pub const IndirectExecutionSetInfoTypeEXT = enum(i32) {
     pipelines = 0,
     shader_objects = 1,
     _,
 };
+pub const DeviceFaultVendorBinaryHeaderVersionKHR = enum(i32) {
+    one = 1,
+    _,
+};
+pub const DeviceFaultVendorBinaryHeaderVersionEXT = DeviceFaultVendorBinaryHeaderVersionKHR;
 pub const DepthBiasRepresentationEXT = enum(i32) {
     least_representable_value_format = 0,
     least_representable_value_force_unorm = 1,
@@ -4612,7 +4631,7 @@ pub const OpticalFlowSessionBindingPointNV = enum(i32) {
     global_flow = 8,
     _,
 };
-pub const DeviceFaultAddressTypeEXT = enum(i32) {
+pub const DeviceFaultAddressTypeKHR = enum(i32) {
     none = 0,
     read_invalid = 1,
     write_invalid = 2,
@@ -4622,6 +4641,7 @@ pub const DeviceFaultAddressTypeEXT = enum(i32) {
     instruction_pointer_fault = 6,
     _,
 };
+pub const DeviceFaultAddressTypeEXT = DeviceFaultAddressTypeKHR;
 pub const LayerSettingTypeEXT = enum(i32) {
     bool32 = 0,
     int32 = 1,
@@ -4854,7 +4874,7 @@ pub const DeviceCreateInfo = extern struct {
     queue_create_info_count: u32 = 0,
     p_queue_create_infos: ?[*]const DeviceQueueCreateInfo = null,
     enabled_layer_count: u32 = 0,
-    pp_enabled_layer_names: ?[*]const ?[*:0]const u8 = null,
+    pp_enabled_layer_names: ?*const ?*const u8 = null,
     enabled_extension_count: u32 = 0,
     pp_enabled_extension_names: ?[*]const ?[*:0]const u8 = null,
     p_enabled_features: ?*const PhysicalDeviceFeatures = null,
@@ -5039,6 +5059,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceAddressBindingReportFeaturesEXT,
             *PhysicalDeviceOpticalFlowFeaturesNV,
             *PhysicalDeviceFaultFeaturesEXT,
+            *PhysicalDeviceFaultFeaturesKHR,
             *PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT,
             *PhysicalDeviceShaderCoreBuiltinsFeaturesARM,
             *PhysicalDeviceFrameBoundaryFeaturesEXT,
@@ -5115,6 +5136,8 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceDescriptorHeapFeaturesEXT,
             *PhysicalDeviceShaderInstrumentationFeaturesARM,
             *PhysicalDeviceDeviceAddressCommandsFeaturesKHR,
+            *PhysicalDeviceShaderConstantDataFeaturesKHR,
+            *PhysicalDeviceShaderAbortFeaturesKHR,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7491,6 +7514,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceAddressBindingReportFeaturesEXT,
             *PhysicalDeviceOpticalFlowFeaturesNV,
             *PhysicalDeviceFaultFeaturesEXT,
+            *PhysicalDeviceFaultFeaturesKHR,
             *PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT,
             *PhysicalDeviceShaderCoreBuiltinsFeaturesARM,
             *PhysicalDeviceFrameBoundaryFeaturesEXT,
@@ -7565,6 +7589,8 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceDescriptorHeapFeaturesEXT,
             *PhysicalDeviceShaderInstrumentationFeaturesARM,
             *PhysicalDeviceDeviceAddressCommandsFeaturesKHR,
+            *PhysicalDeviceShaderConstantDataFeaturesKHR,
+            *PhysicalDeviceShaderAbortFeaturesKHR,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7667,6 +7693,7 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDevicePipelineRobustnessProperties,
             *PhysicalDeviceImageProcessingPropertiesQCOM,
             *PhysicalDeviceOpticalFlowPropertiesNV,
+            *PhysicalDeviceFaultPropertiesKHR,
             *PhysicalDeviceShaderCoreBuiltinsPropertiesARM,
             *PhysicalDeviceRayTracingInvocationReorderPropertiesEXT,
             *PhysicalDeviceRayTracingInvocationReorderPropertiesNV,
@@ -7697,6 +7724,7 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceDescriptorHeapPropertiesEXT,
             *PhysicalDeviceDescriptorHeapTensorPropertiesARM,
             *PhysicalDeviceShaderInstrumentationPropertiesARM,
+            *PhysicalDeviceShaderAbortPropertiesKHR,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -14038,15 +14066,44 @@ pub const PhysicalDeviceFaultFeaturesEXT = extern struct {
     device_fault: Bool32 = .false,
     device_fault_vendor_binary: Bool32 = .false,
 };
-pub const DeviceFaultAddressInfoEXT = extern struct {
-    address_type: DeviceFaultAddressTypeEXT = @enumFromInt(0),
+pub const DeviceFaultAddressInfoKHR = extern struct {
+    address_type: DeviceFaultAddressTypeKHR = @enumFromInt(0),
     reported_address: DeviceAddress = 0,
     address_precision: DeviceSize = 0,
 };
-pub const DeviceFaultVendorInfoEXT = extern struct {
+pub const DeviceFaultAddressInfoEXT = DeviceFaultAddressInfoKHR;
+pub const DeviceFaultVendorInfoKHR = extern struct {
     description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
     vendor_fault_code: u64 = 0,
     vendor_fault_data: u64 = 0,
+};
+pub const DeviceFaultVendorInfoEXT = DeviceFaultVendorInfoKHR;
+pub const DeviceFaultInfoKHR = extern struct {
+    s_type: StructureType = .device_fault_info_khr,
+    p_next: ?*anyopaque = null,
+    flags: DeviceFaultFlagsKHR = .none,
+    group_id: u64 = 0,
+    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    fault_address_info: DeviceFaultAddressInfoKHR = .{},
+    instruction_address_info: DeviceFaultAddressInfoKHR = .{},
+    vendor_info: DeviceFaultVendorInfoKHR = .{},
+};
+pub const DeviceFaultDebugInfoKHR = extern struct {
+    s_type: StructureType = .device_fault_debug_info_khr,
+    p_next: ?*anyopaque = null,
+    vendor_binary_size: u32 = 0,
+    p_vendor_binary_data: ?*anyopaque = null,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *DeviceFaultShaderAbortMessageInfoKHR,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const DeviceFaultCountsEXT = extern struct {
     s_type: StructureType = .device_fault_counts_ext,
@@ -14059,13 +14116,13 @@ pub const DeviceFaultInfoEXT = extern struct {
     s_type: StructureType = .device_fault_info_ext,
     p_next: ?*anyopaque = null,
     description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
-    p_address_infos: ?*DeviceFaultAddressInfoEXT = null,
-    p_vendor_infos: ?*DeviceFaultVendorInfoEXT = null,
+    p_address_infos: ?*DeviceFaultAddressInfoKHR = null,
+    p_vendor_infos: ?*DeviceFaultVendorInfoKHR = null,
     p_vendor_binary_data: ?*anyopaque = null,
 };
-pub const DeviceFaultVendorBinaryHeaderVersionOneEXT = extern struct {
+pub const DeviceFaultVendorBinaryHeaderVersionOneKHR = extern struct {
     header_size: u32 = 0,
-    header_version: DeviceFaultVendorBinaryHeaderVersionEXT = @enumFromInt(0),
+    header_version: DeviceFaultVendorBinaryHeaderVersionKHR = @enumFromInt(0),
     vendor_id: u32 = 0,
     device_id: u32 = 0,
     driver_version: u32 = 0,
@@ -14075,6 +14132,20 @@ pub const DeviceFaultVendorBinaryHeaderVersionOneEXT = extern struct {
     engine_name_offset: u32 = 0,
     engine_version: u32 = 0,
     api_version: Version = Version.from_int(0),
+};
+pub const DeviceFaultVendorBinaryHeaderVersionOneEXT = DeviceFaultVendorBinaryHeaderVersionOneKHR;
+pub const PhysicalDeviceFaultFeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_fault_features_khr,
+    p_next: ?*anyopaque = null,
+    device_fault: Bool32 = .false,
+    device_fault_vendor_binary: Bool32 = .false,
+    device_fault_report_masked: Bool32 = .false,
+    device_fault_device_lost_on_masked: Bool32 = .false,
+};
+pub const PhysicalDeviceFaultPropertiesKHR = extern struct {
+    s_type: StructureType = .physical_device_fault_properties_khr,
+    p_next: ?*anyopaque = null,
+    max_device_fault_count: u32 = 0,
 };
 pub const PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT = extern struct {
     s_type: StructureType = .physical_device_pipeline_library_group_handles_features_ext,
@@ -16160,6 +16231,27 @@ pub const MemoryMarkerInfoAMD = extern struct {
     dst_flags: AddressCommandFlagsKHR = .none,
     marker: u32 = 0,
 };
+pub const PhysicalDeviceShaderConstantDataFeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_shader_constant_data_features_khr,
+    p_next: ?*anyopaque = null,
+    shader_constant_data: Bool32 = .false,
+};
+pub const PhysicalDeviceShaderAbortFeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_shader_abort_features_khr,
+    p_next: ?*anyopaque = null,
+    shader_abort: Bool32 = .false,
+};
+pub const PhysicalDeviceShaderAbortPropertiesKHR = extern struct {
+    s_type: StructureType = .physical_device_shader_abort_properties_khr,
+    p_next: ?*anyopaque = null,
+    max_shader_abort_message_size: u64 = 0,
+};
+pub const DeviceFaultShaderAbortMessageInfoKHR = extern struct {
+    s_type: StructureType = .device_fault_shader_abort_message_info_khr,
+    p_next: ?*anyopaque = null,
+    message_data_size: u64 = 0,
+    p_message_data: ?*anyopaque = null,
+};
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpEnumeratePhysicalDevices = *const fn (Instance, [*c]u32, [*c]PhysicalDevice) callconv(.c) Result;
@@ -16738,6 +16830,8 @@ pub const FpDestroyOpticalFlowSessionNV = *const fn (Device, OpticalFlowSessionN
 pub const FpBindOpticalFlowSessionImageNV = *const fn (Device, OpticalFlowSessionNV, OpticalFlowSessionBindingPointNV, ImageView, ImageLayout) callconv(.c) Result;
 pub const FpCmdOpticalFlowExecuteNV = *const fn (CommandBuffer, OpticalFlowSessionNV, [*c]const OpticalFlowExecuteInfoNV) callconv(.c) void;
 pub const FpGetDeviceFaultInfoEXT = *const fn (Device, [*c]DeviceFaultCountsEXT, [*c]DeviceFaultInfoEXT) callconv(.c) Result;
+pub const FpGetDeviceFaultReportsKHR = *const fn (Device, u64, [*c]u32, [*c]DeviceFaultInfoKHR) callconv(.c) Result;
+pub const FpGetDeviceFaultDebugInfoKHR = *const fn (Device, [*c]DeviceFaultDebugInfoKHR) callconv(.c) Result;
 pub const FpCmdSetDepthBias2EXT = *const fn (CommandBuffer, [*c]const DepthBiasInfoEXT) callconv(.c) void;
 pub const FpReleaseSwapchainImagesKHR = *const fn (Device, [*c]const ReleaseSwapchainImagesInfoKHR) callconv(.c) Result;
 pub const FpGetDeviceImageSubresourceLayout = *const fn (Device, [*c]const DeviceImageSubresourceInfo, [*c]SubresourceLayout2) callconv(.c) void;
@@ -17034,7 +17128,9 @@ const ExtensionNames = struct {
     const khr_fragment_shading_rate = "VK_KHR_fragment_shading_rate";
     const amd_shader_core_properties2 = "VK_AMD_shader_core_properties2";
     const amd_device_coherent_memory = "VK_AMD_device_coherent_memory";
+    const khr_shader_constant_data = "VK_KHR_shader_constant_data";
     const khr_dynamic_rendering_local_read = "VK_KHR_dynamic_rendering_local_read";
+    const khr_shader_abort = "VK_KHR_shader_abort";
     const ext_shader_image_atomic_int64 = "VK_EXT_shader_image_atomic_int64";
     const khr_shader_quad_control = "VK_KHR_shader_quad_control";
     const khr_spirv_1_4 = "VK_KHR_spirv_1_4";
@@ -17247,6 +17343,7 @@ const ExtensionNames = struct {
     const nv_cluster_acceleration_structure = "VK_NV_cluster_acceleration_structure";
     const nv_partitioned_acceleration_structure = "VK_NV_partitioned_acceleration_structure";
     const ext_device_generated_commands = "VK_EXT_device_generated_commands";
+    const khr_device_fault = "VK_KHR_device_fault";
     const khr_maintenance8 = "VK_KHR_maintenance8";
     const mesa_image_alignment_control = "VK_MESA_image_alignment_control";
     const khr_shader_fma = "VK_KHR_shader_fma";
@@ -18549,6 +18646,14 @@ pub const InstanceExtensions = packed struct {
         if (self.core_version.to_int() < make_version(1, 3, 0).to_int()) {
             self.enable_khr_dynamic_rendering();
         }
+    }
+
+    pub fn supports_khr_shader_abort(self: InstanceExtensions) bool {
+        return self.supports_khr_get_physical_device_properties2() and self.supports_khr_device_fault();
+    }
+    pub fn enable_khr_shader_abort(self: *InstanceExtensions) void {
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_khr_device_fault();
     }
 
     pub fn supports_ext_shader_image_atomic_int64(self: InstanceExtensions) bool {
@@ -20236,6 +20341,13 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_khr_device_fault(self: InstanceExtensions) bool {
+        return self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_khr_device_fault(self: *InstanceExtensions) void {
+        self.enable_khr_get_physical_device_properties2();
+    }
+
     pub fn supports_mesa_image_alignment_control(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
@@ -20674,7 +20786,9 @@ pub const DeviceExtensions = packed struct {
     khr_fragment_shading_rate: bool = false,
     amd_shader_core_properties2: bool = false,
     amd_device_coherent_memory: bool = false,
+    khr_shader_constant_data: bool = false,
     khr_dynamic_rendering_local_read: bool = false,
+    khr_shader_abort: bool = false,
     ext_shader_image_atomic_int64: bool = false,
     khr_shader_quad_control: bool = false,
     khr_spirv_1_4: bool = false,
@@ -20875,6 +20989,7 @@ pub const DeviceExtensions = packed struct {
     nv_cluster_acceleration_structure: bool = false,
     nv_partitioned_acceleration_structure: bool = false,
     ext_device_generated_commands: bool = false,
+    khr_device_fault: bool = false,
     khr_maintenance8: bool = false,
     mesa_image_alignment_control: bool = false,
     khr_shader_fma: bool = false,
@@ -21220,8 +21335,12 @@ pub const DeviceExtensions = packed struct {
             self.amd_shader_core_properties2 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.amd_device_coherent_memory) == .eq) {
             self.amd_device_coherent_memory = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_shader_constant_data) == .eq) {
+            self.khr_shader_constant_data = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_dynamic_rendering_local_read) == .eq) {
             self.khr_dynamic_rendering_local_read = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_shader_abort) == .eq) {
+            self.khr_shader_abort = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_image_atomic_int64) == .eq) {
             self.ext_shader_image_atomic_int64 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_shader_quad_control) == .eq) {
@@ -21622,6 +21741,8 @@ pub const DeviceExtensions = packed struct {
             self.nv_partitioned_acceleration_structure = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_device_generated_commands) == .eq) {
             self.ext_device_generated_commands = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_device_fault) == .eq) {
+            self.khr_device_fault = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance8) == .eq) {
             self.khr_maintenance8 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.mesa_image_alignment_control) == .eq) {
@@ -21856,7 +21977,9 @@ pub const DeviceExtensions = packed struct {
         if (self.khr_fragment_shading_rate) try names.append(allocator, ExtensionNames.khr_fragment_shading_rate);
         if (self.amd_shader_core_properties2) try names.append(allocator, ExtensionNames.amd_shader_core_properties2);
         if (self.amd_device_coherent_memory) try names.append(allocator, ExtensionNames.amd_device_coherent_memory);
+        if (self.khr_shader_constant_data) try names.append(allocator, ExtensionNames.khr_shader_constant_data);
         if (self.khr_dynamic_rendering_local_read) try names.append(allocator, ExtensionNames.khr_dynamic_rendering_local_read);
+        if (self.khr_shader_abort) try names.append(allocator, ExtensionNames.khr_shader_abort);
         if (self.ext_shader_image_atomic_int64) try names.append(allocator, ExtensionNames.ext_shader_image_atomic_int64);
         if (self.khr_shader_quad_control) try names.append(allocator, ExtensionNames.khr_shader_quad_control);
         if (self.khr_spirv_1_4) try names.append(allocator, ExtensionNames.khr_spirv_1_4);
@@ -22057,6 +22180,7 @@ pub const DeviceExtensions = packed struct {
         if (self.nv_cluster_acceleration_structure) try names.append(allocator, ExtensionNames.nv_cluster_acceleration_structure);
         if (self.nv_partitioned_acceleration_structure) try names.append(allocator, ExtensionNames.nv_partitioned_acceleration_structure);
         if (self.ext_device_generated_commands) try names.append(allocator, ExtensionNames.ext_device_generated_commands);
+        if (self.khr_device_fault) try names.append(allocator, ExtensionNames.khr_device_fault);
         if (self.khr_maintenance8) try names.append(allocator, ExtensionNames.khr_maintenance8);
         if (self.mesa_image_alignment_control) try names.append(allocator, ExtensionNames.mesa_image_alignment_control);
         if (self.khr_shader_fma) try names.append(allocator, ExtensionNames.khr_shader_fma);
@@ -23405,6 +23529,13 @@ pub const DeviceExtensions = packed struct {
         self.amd_device_coherent_memory = true;
     }
 
+    pub fn supports_khr_shader_constant_data(self: DeviceExtensions) bool {
+        return self.khr_shader_constant_data;
+    }
+    pub fn enable_khr_shader_constant_data(self: *DeviceExtensions) void {
+        self.khr_shader_constant_data = true;
+    }
+
     pub fn supports_khr_dynamic_rendering_local_read(self: DeviceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 4, 0).to_int() or (self.khr_dynamic_rendering_local_read and (self.core_version.to_int() >= make_version(1, 3, 0).to_int() or self.supports_khr_dynamic_rendering()));
     }
@@ -23415,6 +23546,15 @@ pub const DeviceExtensions = packed struct {
                 self.enable_khr_dynamic_rendering();
             }
         }
+    }
+
+    pub fn supports_khr_shader_abort(self: DeviceExtensions) bool {
+        return self.khr_shader_abort and self.supports_khr_device_fault() and self.supports_khr_shader_constant_data();
+    }
+    pub fn enable_khr_shader_abort(self: *DeviceExtensions) void {
+        self.khr_shader_abort = true;
+        self.enable_khr_device_fault();
+        self.enable_khr_shader_constant_data();
     }
 
     pub fn supports_ext_shader_image_atomic_int64(self: DeviceExtensions) bool {
@@ -25121,6 +25261,13 @@ pub const DeviceExtensions = packed struct {
             }
             self.enable_khr_maintenance5();
         }
+    }
+
+    pub fn supports_khr_device_fault(self: DeviceExtensions) bool {
+        return self.khr_device_fault;
+    }
+    pub fn enable_khr_device_fault(self: *DeviceExtensions) void {
+        self.khr_device_fault = true;
     }
 
     pub fn supports_khr_maintenance8(self: DeviceExtensions) bool {
@@ -28097,6 +28244,8 @@ pub const DeviceCommands = struct {
     fp_bind_optical_flow_session_image_nv: ?FpBindOpticalFlowSessionImageNV,
     fp_cmd_optical_flow_execute_nv: ?FpCmdOpticalFlowExecuteNV,
     fp_get_device_fault_info_ext: ?FpGetDeviceFaultInfoEXT,
+    fp_get_device_fault_reports_khr: ?FpGetDeviceFaultReportsKHR,
+    fp_get_device_fault_debug_info_khr: ?FpGetDeviceFaultDebugInfoKHR,
     fp_cmd_set_depth_bias2_ext: ?FpCmdSetDepthBias2EXT,
     fp_release_swapchain_images_khr: ?FpReleaseSwapchainImagesKHR,
     fp_get_device_image_subresource_layout: ?FpGetDeviceImageSubresourceLayout,
@@ -28712,6 +28861,8 @@ pub const DeviceCommands = struct {
             .fp_bind_optical_flow_session_image_nv = if (extensions.nv_optical_flow) @ptrCast(try instance.get_device_proc_addr(device, "vkBindOpticalFlowSessionImageNV")) else null,
             .fp_cmd_optical_flow_execute_nv = if (extensions.nv_optical_flow) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdOpticalFlowExecuteNV")) else null,
             .fp_get_device_fault_info_ext = if (extensions.ext_device_fault) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDeviceFaultInfoEXT")) else null,
+            .fp_get_device_fault_reports_khr = if (extensions.khr_device_fault) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDeviceFaultReportsKHR")) else null,
+            .fp_get_device_fault_debug_info_khr = if (extensions.khr_device_fault) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDeviceFaultDebugInfoKHR")) else null,
             .fp_cmd_set_depth_bias2_ext = if (extensions.ext_depth_bias_control) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetDepthBias2EXT")) else null,
             .fp_release_swapchain_images_khr = if (extensions.khr_swapchain_maintenance1) @ptrCast(try instance.get_device_proc_addr(device, "vkReleaseSwapchainImagesKHR")) else if (extensions.ext_swapchain_maintenance1) @ptrCast(try instance.get_device_proc_addr(device, "vkReleaseSwapchainImagesEXT")) else null,
             .fp_get_device_image_subresource_layout = if (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int()) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDeviceImageSubresourceLayout")) else if (extensions.khr_maintenance5) @ptrCast(try instance.get_device_proc_addr(device, "vkGetDeviceImageSubresourceLayoutKHR")) else null,
@@ -35980,6 +36131,54 @@ pub const DeviceCommands = struct {
             .success => return .success,
             .incomplete => return .incomplete,
             .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const GetDeviceFaultReportsKHRResult = enum {
+        success,
+        incomplete,
+        timeout,
+    };
+    pub const GetDeviceFaultReportsKHRError = error{
+        OutOfHostMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_device_fault_reports_khr(
+        self: DeviceCommands,
+        timeout: u64,
+        p_fault_counts: *u32,
+        p_fault_info: ?[*]DeviceFaultInfoKHR,
+    ) GetDeviceFaultReportsKHRError!GetDeviceFaultReportsKHRResult {
+        switch (self.fp_get_device_fault_reports_khr.?(self.handle, timeout, p_fault_counts, p_fault_info)) {
+            .success => return .success,
+            .incomplete => return .incomplete,
+            .timeout => return .timeout,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const GetDeviceFaultDebugInfoKHRError = error{
+        OutOfHostMemory,
+        NotEnoughSpaceKhr,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_device_fault_debug_info_khr(
+        self: DeviceCommands,
+        p_debug_info: *DeviceFaultDebugInfoKHR,
+    ) GetDeviceFaultDebugInfoKHRError!EnumerateResult {
+        switch (self.fp_get_device_fault_debug_info_khr.?(self.handle, p_debug_info)) {
+            .success => return .success,
+            .incomplete => return .incomplete,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_not_enough_space_khr => return error.NotEnoughSpaceKhr,
             .error_unknown => return error.Unknown,
             .error_validation_failed => return error.ValidationFailed,
             else => return error.Unexpected,

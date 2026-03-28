@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.346
+//! Generated from vk.xml version 1.4.347
 
 #![allow(
     clippy::too_many_arguments,
@@ -1419,6 +1419,13 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             self.enable_khr_dynamic_rendering();
         }
+    }
+    pub fn supports_khr_shader_abort(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() && self.supports_khr_device_fault()
+    }
+    pub fn enable_khr_shader_abort(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_khr_device_fault();
     }
     pub fn supports_ext_shader_image_atomic_int64(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -3009,6 +3016,12 @@ impl InstanceExtensions {
             }
             self.enable_khr_maintenance5();
         }
+    }
+    pub fn supports_khr_device_fault(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_device_fault(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_mesa_image_alignment_control(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -5841,7 +5854,9 @@ pub struct DeviceExtensions {
     pub khr_fragment_shading_rate: bool,
     pub amd_shader_core_properties2: bool,
     pub amd_device_coherent_memory: bool,
+    pub khr_shader_constant_data: bool,
     pub khr_dynamic_rendering_local_read: bool,
+    pub khr_shader_abort: bool,
     pub ext_shader_image_atomic_int64: bool,
     pub khr_shader_quad_control: bool,
     pub khr_spirv_1_4: bool,
@@ -6042,6 +6057,7 @@ pub struct DeviceExtensions {
     pub nv_cluster_acceleration_structure: bool,
     pub nv_partitioned_acceleration_structure: bool,
     pub ext_device_generated_commands: bool,
+    pub khr_device_fault: bool,
     pub khr_maintenance8: bool,
     pub mesa_image_alignment_control: bool,
     pub khr_shader_fma: bool,
@@ -6387,8 +6403,12 @@ impl DeviceExtensions {
             self.amd_shader_core_properties2 = true;
         } else if name == c"VK_AMD_device_coherent_memory" {
             self.amd_device_coherent_memory = true;
+        } else if name == c"VK_KHR_shader_constant_data" {
+            self.khr_shader_constant_data = true;
         } else if name == c"VK_KHR_dynamic_rendering_local_read" {
             self.khr_dynamic_rendering_local_read = true;
+        } else if name == c"VK_KHR_shader_abort" {
+            self.khr_shader_abort = true;
         } else if name == c"VK_EXT_shader_image_atomic_int64" {
             self.ext_shader_image_atomic_int64 = true;
         } else if name == c"VK_KHR_shader_quad_control" {
@@ -6789,6 +6809,8 @@ impl DeviceExtensions {
             self.nv_partitioned_acceleration_structure = true;
         } else if name == c"VK_EXT_device_generated_commands" {
             self.ext_device_generated_commands = true;
+        } else if name == c"VK_KHR_device_fault" {
+            self.khr_device_fault = true;
         } else if name == c"VK_KHR_maintenance8" {
             self.khr_maintenance8 = true;
         } else if name == c"VK_MESA_image_alignment_control" {
@@ -7013,7 +7035,9 @@ impl DeviceExtensions {
             khr_fragment_shading_rate: false,
             amd_shader_core_properties2: false,
             amd_device_coherent_memory: false,
+            khr_shader_constant_data: false,
             khr_dynamic_rendering_local_read: false,
+            khr_shader_abort: false,
             ext_shader_image_atomic_int64: false,
             khr_shader_quad_control: false,
             khr_spirv_1_4: false,
@@ -7214,6 +7238,7 @@ impl DeviceExtensions {
             nv_cluster_acceleration_structure: false,
             nv_partitioned_acceleration_structure: false,
             ext_device_generated_commands: false,
+            khr_device_fault: false,
             khr_maintenance8: false,
             mesa_image_alignment_control: false,
             khr_shader_fma: false,
@@ -8495,6 +8520,12 @@ impl DeviceExtensions {
     pub fn enable_amd_device_coherent_memory(&mut self) {
         self.amd_device_coherent_memory = true;
     }
+    pub fn supports_khr_shader_constant_data(&self) -> bool {
+        self.khr_shader_constant_data
+    }
+    pub fn enable_khr_shader_constant_data(&mut self) {
+        self.khr_shader_constant_data = true;
+    }
     pub fn supports_khr_dynamic_rendering_local_read(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
             || (self.khr_dynamic_rendering_local_read
@@ -8507,6 +8538,14 @@ impl DeviceExtensions {
                 self.enable_khr_dynamic_rendering();
             }
         }
+    }
+    pub fn supports_khr_shader_abort(&self) -> bool {
+        self.khr_shader_abort && self.supports_khr_device_fault() && self.supports_khr_shader_constant_data()
+    }
+    pub fn enable_khr_shader_abort(&mut self) {
+        self.khr_shader_abort = true;
+        self.enable_khr_device_fault();
+        self.enable_khr_shader_constant_data();
     }
     pub fn supports_ext_shader_image_atomic_int64(&self) -> bool {
         self.ext_shader_image_atomic_int64
@@ -10115,6 +10154,12 @@ impl DeviceExtensions {
             self.enable_khr_maintenance5();
         }
     }
+    pub fn supports_khr_device_fault(&self) -> bool {
+        self.khr_device_fault
+    }
+    pub fn enable_khr_device_fault(&mut self) {
+        self.khr_device_fault = true;
+    }
     pub fn supports_khr_maintenance8(&self) -> bool {
         self.khr_maintenance8 && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
@@ -10809,8 +10854,14 @@ impl DeviceExtensions {
         if self.amd_device_coherent_memory {
             v.push(c"VK_AMD_device_coherent_memory");
         }
+        if self.khr_shader_constant_data {
+            v.push(c"VK_KHR_shader_constant_data");
+        }
         if self.khr_dynamic_rendering_local_read {
             v.push(c"VK_KHR_dynamic_rendering_local_read");
+        }
+        if self.khr_shader_abort {
+            v.push(c"VK_KHR_shader_abort");
         }
         if self.ext_shader_image_atomic_int64 {
             v.push(c"VK_EXT_shader_image_atomic_int64");
@@ -11411,6 +11462,9 @@ impl DeviceExtensions {
         }
         if self.ext_device_generated_commands {
             v.push(c"VK_EXT_device_generated_commands");
+        }
+        if self.khr_device_fault {
+            v.push(c"VK_KHR_device_fault");
         }
         if self.khr_maintenance8 {
             v.push(c"VK_KHR_maintenance8");
@@ -12019,6 +12073,8 @@ pub struct Device {
     pub fp_bind_optical_flow_session_image_nv: Option<vk::FnBindOpticalFlowSessionImageNV>,
     pub fp_cmd_optical_flow_execute_nv: Option<vk::FnCmdOpticalFlowExecuteNV>,
     pub fp_get_device_fault_info_ext: Option<vk::FnGetDeviceFaultInfoEXT>,
+    pub fp_get_device_fault_reports_khr: Option<vk::FnGetDeviceFaultReportsKHR>,
+    pub fp_get_device_fault_debug_info_khr: Option<vk::FnGetDeviceFaultDebugInfoKHR>,
     pub fp_cmd_set_depth_bias2_ext: Option<vk::FnCmdSetDepthBias2EXT>,
     pub fp_release_swapchain_images_khr: Option<vk::FnReleaseSwapchainImagesKHR>,
     pub fp_get_device_image_subresource_layout: Option<vk::FnGetDeviceImageSubresourceLayout>,
@@ -15823,6 +15879,20 @@ impl Device {
             fp_get_device_fault_info_ext: if extensions.ext_device_fault {
                 instance
                     .get_device_proc_addr(device, c"vkGetDeviceFaultInfoEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_fault_reports_khr: if extensions.khr_device_fault {
+                instance
+                    .get_device_proc_addr(device, c"vkGetDeviceFaultReportsKHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_fault_debug_info_khr: if extensions.khr_device_fault {
+                instance
+                    .get_device_proc_addr(device, c"vkGetDeviceFaultDebugInfoKHR")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -24335,6 +24405,34 @@ impl Device {
             .fp_get_device_fault_info_ext
             .expect("vkGetDeviceFaultInfoEXT is not loaded");
         let err = (fp)(self.handle, p_fault_counts, p_fault_info.map_or(ptr::null_mut(), |r| r));
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_device_fault_reports_khr(
+        &self,
+        timeout: u64,
+        p_fault_counts: &mut u32,
+        p_fault_info: *mut vk::DeviceFaultInfoKHR,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_device_fault_reports_khr
+            .expect("vkGetDeviceFaultReportsKHR is not loaded");
+        let err = (fp)(self.handle, timeout, p_fault_counts, p_fault_info);
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE | vk::Result::TIMEOUT => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_device_fault_debug_info_khr(
+        &self,
+        p_debug_info: &mut vk::DeviceFaultDebugInfoKHR,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_device_fault_debug_info_khr
+            .expect("vkGetDeviceFaultDebugInfoKHR is not loaded");
+        let err = (fp)(self.handle, p_debug_info);
         match err {
             vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
             _ => Err(err),

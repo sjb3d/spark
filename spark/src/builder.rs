@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.346
+//! Generated from vk.xml version 1.4.347
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -493,9 +493,8 @@ impl<'a> DeviceCreateInfoBuilder<'a> {
         self.inner.enabled_layer_count = enabled_layer_count;
         self
     }
-    pub fn pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a [*const c_char]) -> Self {
-        self.inner.enabled_layer_count = pp_enabled_layer_names.len() as u32;
-        self.inner.pp_enabled_layer_names = pp_enabled_layer_names.as_ptr();
+    pub fn pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a *const c_char) -> Self {
+        self.inner.pp_enabled_layer_names = pp_enabled_layer_names;
         self
     }
     pub fn pp_enabled_extension_names(mut self, pp_enabled_extension_names: &'a [*const c_char]) -> Self {
@@ -33577,6 +33576,37 @@ impl DeviceCreateInfoNext for PhysicalDeviceFaultFeaturesEXTBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct DeviceFaultDebugInfoKHRBuilder<'a> {
+    inner: vk::DeviceFaultDebugInfoKHR,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DeviceFaultDebugInfoKHR {
+    type Type = DeviceFaultDebugInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait DeviceFaultDebugInfoKHRNext {}
+impl<'a> DeviceFaultDebugInfoKHRBuilder<'a> {
+    pub fn insert_next<T: DeviceFaultDebugInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::DeviceFaultDebugInfoKHR {
+        &mut self.inner
+    }
+}
+impl<'a> Deref for DeviceFaultDebugInfoKHRBuilder<'a> {
+    type Target = vk::DeviceFaultDebugInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct DeviceFaultCountsEXTBuilder {
     inner: vk::DeviceFaultCountsEXT,
 }
@@ -33616,24 +33646,24 @@ impl Deref for DeviceFaultCountsEXTBuilder {
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct DeviceFaultVendorBinaryHeaderVersionOneEXTBuilder {
-    inner: vk::DeviceFaultVendorBinaryHeaderVersionOneEXT,
+pub struct DeviceFaultVendorBinaryHeaderVersionOneKHRBuilder {
+    inner: vk::DeviceFaultVendorBinaryHeaderVersionOneKHR,
 }
-impl Builder<'_> for vk::DeviceFaultVendorBinaryHeaderVersionOneEXT {
-    type Type = DeviceFaultVendorBinaryHeaderVersionOneEXTBuilder;
+impl Builder<'_> for vk::DeviceFaultVendorBinaryHeaderVersionOneKHR {
+    type Type = DeviceFaultVendorBinaryHeaderVersionOneKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl DeviceFaultVendorBinaryHeaderVersionOneEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::DeviceFaultVendorBinaryHeaderVersionOneEXT {
+impl DeviceFaultVendorBinaryHeaderVersionOneKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DeviceFaultVendorBinaryHeaderVersionOneKHR {
         &mut self.inner
     }
     pub fn header_size(mut self, header_size: u32) -> Self {
         self.inner.header_size = header_size;
         self
     }
-    pub fn header_version(mut self, header_version: vk::DeviceFaultVendorBinaryHeaderVersionEXT) -> Self {
+    pub fn header_version(mut self, header_version: vk::DeviceFaultVendorBinaryHeaderVersionKHR) -> Self {
         self.inner.header_version = header_version;
         self
     }
@@ -33674,12 +33704,72 @@ impl DeviceFaultVendorBinaryHeaderVersionOneEXTBuilder {
         self
     }
 }
-impl Deref for DeviceFaultVendorBinaryHeaderVersionOneEXTBuilder {
-    type Target = vk::DeviceFaultVendorBinaryHeaderVersionOneEXT;
+impl Deref for DeviceFaultVendorBinaryHeaderVersionOneKHRBuilder {
+    type Target = vk::DeviceFaultVendorBinaryHeaderVersionOneKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceFaultFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceFaultFeaturesKHR,
+}
+impl Builder<'_> for vk::PhysicalDeviceFaultFeaturesKHR {
+    type Type = PhysicalDeviceFaultFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceFaultFeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceFaultFeaturesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn device_fault(mut self, device_fault: bool) -> Self {
+        self.inner.device_fault = if device_fault { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn device_fault_vendor_binary(mut self, device_fault_vendor_binary: bool) -> Self {
+        self.inner.device_fault_vendor_binary = if device_fault_vendor_binary {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn device_fault_report_masked(mut self, device_fault_report_masked: bool) -> Self {
+        self.inner.device_fault_report_masked = if device_fault_report_masked {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn device_fault_device_lost_on_masked(mut self, device_fault_device_lost_on_masked: bool) -> Self {
+        self.inner.device_fault_device_lost_on_masked = if device_fault_device_lost_on_masked {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceFaultFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceFaultFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFaultFeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFaultFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFaultFeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDeviceFaultFeaturesKHRBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFaultPropertiesKHR {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -43134,3 +43224,107 @@ impl Deref for MemoryMarkerInfoAMDBuilder {
         &self.inner
     }
 }
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceShaderConstantDataFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceShaderConstantDataFeaturesKHR,
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderConstantDataFeaturesKHR {
+    type Type = PhysicalDeviceShaderConstantDataFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceShaderConstantDataFeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceShaderConstantDataFeaturesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_constant_data(mut self, shader_constant_data: bool) -> Self {
+        self.inner.shader_constant_data = if shader_constant_data { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderConstantDataFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceShaderConstantDataFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderConstantDataFeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderConstantDataFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderConstantDataFeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderConstantDataFeaturesKHRBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceShaderAbortFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceShaderAbortFeaturesKHR,
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderAbortFeaturesKHR {
+    type Type = PhysicalDeviceShaderAbortFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceShaderAbortFeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceShaderAbortFeaturesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_abort(mut self, shader_abort: bool) -> Self {
+        self.inner.shader_abort = if shader_abort { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderAbortFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceShaderAbortFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderAbortFeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderAbortFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderAbortFeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderAbortFeaturesKHRBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceShaderAbortPropertiesKHRBuilder {
+    inner: vk::PhysicalDeviceShaderAbortPropertiesKHR,
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderAbortPropertiesKHR {
+    type Type = PhysicalDeviceShaderAbortPropertiesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceShaderAbortPropertiesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceShaderAbortPropertiesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn max_shader_abort_message_size(mut self, max_shader_abort_message_size: u64) -> Self {
+        self.inner.max_shader_abort_message_size = max_shader_abort_message_size;
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderAbortPropertiesKHRBuilder {
+    type Target = vk::PhysicalDeviceShaderAbortPropertiesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderAbortPropertiesKHR {}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceShaderAbortPropertiesKHRBuilder {}
+impl DeviceFaultDebugInfoKHRNext for vk::DeviceFaultShaderAbortMessageInfoKHR {}

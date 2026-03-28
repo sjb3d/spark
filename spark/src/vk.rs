@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.346
+//! Generated from vk.xml version 1.4.347
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -2752,6 +2752,35 @@ impl fmt::Display for MemoryDecompressionMethodFlagsEXT {
 }
 pub type MemoryDecompressionMethodFlagsNV = MemoryDecompressionMethodFlagsEXT;
 pub type RenderingFlagsKHR = RenderingFlags;
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DeviceFaultFlagsKHR(pub(crate) u32);
+impl DeviceFaultFlagsKHR {
+    pub const DEVICE_LOST: Self = Self(0x1);
+    pub const MEMORY_ADDRESS: Self = Self(0x2);
+    pub const INSTRUCTION_ADDRESS: Self = Self(0x4);
+    pub const VENDOR: Self = Self(0x8);
+    pub const WATCHDOG_TIMEOUT: Self = Self(0x10);
+    pub const OVERFLOW: Self = Self(0x20);
+}
+impl_bitmask!(DeviceFaultFlagsKHR);
+impl fmt::Display for DeviceFaultFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "DEVICE_LOST"),
+                (0x2, "MEMORY_ADDRESS"),
+                (0x4, "INSTRUCTION_ADDRESS"),
+                (0x8, "VENDOR"),
+                (0x10, "WATCHDOG_TIMEOUT"),
+                (0x20, "OVERFLOW"),
+            ],
+            f,
+        )
+    }
+}
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
@@ -7721,10 +7750,14 @@ impl StructureType {
     pub const RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR: Self = Self(1000044006);
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD: Self = Self(1000227000);
     pub const PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD: Self = Self(1000229000);
+    pub const PHYSICAL_DEVICE_SHADER_CONSTANT_DATA_FEATURES_KHR: Self = Self(1000231000);
     pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES_KHR: Self =
         Self::PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES;
     pub const RENDERING_ATTACHMENT_LOCATION_INFO_KHR: Self = Self::RENDERING_ATTACHMENT_LOCATION_INFO;
     pub const RENDERING_INPUT_ATTACHMENT_INDEX_INFO_KHR: Self = Self::RENDERING_INPUT_ATTACHMENT_INDEX_INFO;
+    pub const PHYSICAL_DEVICE_SHADER_ABORT_FEATURES_KHR: Self = Self(1000233000);
+    pub const DEVICE_FAULT_SHADER_ABORT_MESSAGE_INFO_KHR: Self = Self(1000233001);
+    pub const PHYSICAL_DEVICE_SHADER_ABORT_PROPERTIES_KHR: Self = Self(1000233002);
     pub const PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT: Self = Self(1000234000);
     pub const PHYSICAL_DEVICE_SHADER_QUAD_CONTROL_FEATURES_KHR: Self = Self(1000235000);
     pub const PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT: Self = Self(1000237000);
@@ -8352,6 +8385,10 @@ impl StructureType {
     pub const INDIRECT_EXECUTION_SET_SHADER_LAYOUT_INFO_EXT: Self = Self(1000572012);
     pub const GENERATED_COMMANDS_PIPELINE_INFO_EXT: Self = Self(1000572013);
     pub const GENERATED_COMMANDS_SHADER_INFO_EXT: Self = Self(1000572014);
+    pub const PHYSICAL_DEVICE_FAULT_FEATURES_KHR: Self = Self(1000573000);
+    pub const PHYSICAL_DEVICE_FAULT_PROPERTIES_KHR: Self = Self(1000573001);
+    pub const DEVICE_FAULT_INFO_KHR: Self = Self(1000573002);
+    pub const DEVICE_FAULT_DEBUG_INFO_KHR: Self = Self(1000573003);
     pub const PHYSICAL_DEVICE_MAINTENANCE_8_FEATURES_KHR: Self = Self(1000574000);
     pub const MEMORY_BARRIER_ACCESS_FLAGS_3_KHR: Self = Self(1000574002);
     pub const PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA: Self = Self(1000575000);
@@ -8944,6 +8981,10 @@ impl fmt::Display for StructureType {
             1000044006 => Some(&"RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR"),
             1000227000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD"),
             1000229000 => Some(&"PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD"),
+            1000231000 => Some(&"PHYSICAL_DEVICE_SHADER_CONSTANT_DATA_FEATURES_KHR"),
+            1000233000 => Some(&"PHYSICAL_DEVICE_SHADER_ABORT_FEATURES_KHR"),
+            1000233001 => Some(&"DEVICE_FAULT_SHADER_ABORT_MESSAGE_INFO_KHR"),
+            1000233002 => Some(&"PHYSICAL_DEVICE_SHADER_ABORT_PROPERTIES_KHR"),
             1000234000 => Some(&"PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT"),
             1000235000 => Some(&"PHYSICAL_DEVICE_SHADER_QUAD_CONTROL_FEATURES_KHR"),
             1000237000 => Some(&"PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT"),
@@ -9419,6 +9460,10 @@ impl fmt::Display for StructureType {
             1000572012 => Some(&"INDIRECT_EXECUTION_SET_SHADER_LAYOUT_INFO_EXT"),
             1000572013 => Some(&"GENERATED_COMMANDS_PIPELINE_INFO_EXT"),
             1000572014 => Some(&"GENERATED_COMMANDS_SHADER_INFO_EXT"),
+            1000573000 => Some(&"PHYSICAL_DEVICE_FAULT_FEATURES_KHR"),
+            1000573001 => Some(&"PHYSICAL_DEVICE_FAULT_PROPERTIES_KHR"),
+            1000573002 => Some(&"DEVICE_FAULT_INFO_KHR"),
+            1000573003 => Some(&"DEVICE_FAULT_DEBUG_INFO_KHR"),
             1000574000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_8_FEATURES_KHR"),
             1000574002 => Some(&"MEMORY_BARRIER_ACCESS_FLAGS_3_KHR"),
             1000575000 => Some(&"PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA"),
@@ -11127,26 +11172,6 @@ impl fmt::Display for OpacityMicromapSpecialIndexEXT {
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct DeviceFaultVendorBinaryHeaderVersionEXT(pub(crate) i32);
-impl DeviceFaultVendorBinaryHeaderVersionEXT {
-    pub const ONE: Self = Self(1);
-}
-impl fmt::Display for DeviceFaultVendorBinaryHeaderVersionEXT {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let name = match self.0 {
-            1 => Some(&"ONE"),
-            _ => None,
-        };
-        if let Some(name) = name {
-            f.write_str(name)
-        } else {
-            write!(f, "{}", self.0)
-        }
-    }
-}
-
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct IndirectExecutionSetInfoTypeEXT(pub(crate) i32);
 impl IndirectExecutionSetInfoTypeEXT {
     pub const PIPELINES: Self = Self(0);
@@ -11166,6 +11191,28 @@ impl fmt::Display for IndirectExecutionSetInfoTypeEXT {
         }
     }
 }
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DeviceFaultVendorBinaryHeaderVersionKHR(pub(crate) i32);
+impl DeviceFaultVendorBinaryHeaderVersionKHR {
+    pub const ONE: Self = Self(1);
+    pub const ONE_EXT: Self = Self::ONE;
+}
+impl fmt::Display for DeviceFaultVendorBinaryHeaderVersionKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            1 => Some(&"ONE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+pub type DeviceFaultVendorBinaryHeaderVersionEXT = DeviceFaultVendorBinaryHeaderVersionKHR;
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -12504,8 +12551,8 @@ impl fmt::Display for OpticalFlowSessionBindingPointNV {
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct DeviceFaultAddressTypeEXT(pub(crate) i32);
-impl DeviceFaultAddressTypeEXT {
+pub struct DeviceFaultAddressTypeKHR(pub(crate) i32);
+impl DeviceFaultAddressTypeKHR {
     pub const NONE: Self = Self(0);
     pub const READ_INVALID: Self = Self(1);
     pub const WRITE_INVALID: Self = Self(2);
@@ -12513,8 +12560,15 @@ impl DeviceFaultAddressTypeEXT {
     pub const INSTRUCTION_POINTER_UNKNOWN: Self = Self(4);
     pub const INSTRUCTION_POINTER_INVALID: Self = Self(5);
     pub const INSTRUCTION_POINTER_FAULT: Self = Self(6);
+    pub const NONE_EXT: Self = Self::NONE;
+    pub const READ_INVALID_EXT: Self = Self::READ_INVALID;
+    pub const WRITE_INVALID_EXT: Self = Self::WRITE_INVALID;
+    pub const EXECUTE_INVALID_EXT: Self = Self::EXECUTE_INVALID;
+    pub const INSTRUCTION_POINTER_UNKNOWN_EXT: Self = Self::INSTRUCTION_POINTER_UNKNOWN;
+    pub const INSTRUCTION_POINTER_INVALID_EXT: Self = Self::INSTRUCTION_POINTER_INVALID;
+    pub const INSTRUCTION_POINTER_FAULT_EXT: Self = Self::INSTRUCTION_POINTER_FAULT;
 }
-impl fmt::Display for DeviceFaultAddressTypeEXT {
+impl fmt::Display for DeviceFaultAddressTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"NONE"),
@@ -12533,6 +12587,7 @@ impl fmt::Display for DeviceFaultAddressTypeEXT {
         }
     }
 }
+pub type DeviceFaultAddressTypeEXT = DeviceFaultAddressTypeKHR;
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -45867,20 +45922,21 @@ impl fmt::Debug for PhysicalDeviceFaultFeaturesEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
-pub struct DeviceFaultAddressInfoEXT {
-    pub address_type: DeviceFaultAddressTypeEXT,
+pub struct DeviceFaultAddressInfoKHR {
+    pub address_type: DeviceFaultAddressTypeKHR,
     pub reported_address: DeviceAddress,
     pub address_precision: DeviceSize,
 }
+pub type DeviceFaultAddressInfoEXT = DeviceFaultAddressInfoKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
-pub struct DeviceFaultVendorInfoEXT {
+pub struct DeviceFaultVendorInfoKHR {
     pub description: [c_char; MAX_DESCRIPTION_SIZE],
     pub vendor_fault_code: u64,
     pub vendor_fault_data: u64,
 }
-impl Default for DeviceFaultVendorInfoEXT {
+impl Default for DeviceFaultVendorInfoKHR {
     fn default() -> Self {
         Self {
             description: [Default::default(); MAX_DESCRIPTION_SIZE],
@@ -45889,12 +45945,87 @@ impl Default for DeviceFaultVendorInfoEXT {
         }
     }
 }
-impl fmt::Debug for DeviceFaultVendorInfoEXT {
+impl fmt::Debug for DeviceFaultVendorInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("DeviceFaultVendorInfoEXT")
+        fmt.debug_struct("DeviceFaultVendorInfoKHR")
             .field("description", &self.description)
             .field("vendor_fault_code", &self.vendor_fault_code)
             .field("vendor_fault_data", &self.vendor_fault_data)
+            .finish()
+    }
+}
+pub type DeviceFaultVendorInfoEXT = DeviceFaultVendorInfoKHR;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceFaultInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub flags: DeviceFaultFlagsKHR,
+    pub group_id: u64,
+    pub description: [c_char; MAX_DESCRIPTION_SIZE],
+    pub fault_address_info: DeviceFaultAddressInfoKHR,
+    pub instruction_address_info: DeviceFaultAddressInfoKHR,
+    pub vendor_info: DeviceFaultVendorInfoKHR,
+}
+unsafe impl Send for DeviceFaultInfoKHR {}
+unsafe impl Sync for DeviceFaultInfoKHR {}
+impl Default for DeviceFaultInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_FAULT_INFO_KHR,
+            p_next: ptr::null_mut(),
+            flags: Default::default(),
+            group_id: Default::default(),
+            description: [Default::default(); MAX_DESCRIPTION_SIZE],
+            fault_address_info: Default::default(),
+            instruction_address_info: Default::default(),
+            vendor_info: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DeviceFaultInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceFaultInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("group_id", &self.group_id)
+            .field("description", &self.description)
+            .field("fault_address_info", &self.fault_address_info)
+            .field("instruction_address_info", &self.instruction_address_info)
+            .field("vendor_info", &self.vendor_info)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceFaultDebugInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub vendor_binary_size: u32,
+    pub p_vendor_binary_data: *mut c_void,
+}
+unsafe impl Send for DeviceFaultDebugInfoKHR {}
+unsafe impl Sync for DeviceFaultDebugInfoKHR {}
+impl Default for DeviceFaultDebugInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_FAULT_DEBUG_INFO_KHR,
+            p_next: ptr::null_mut(),
+            vendor_binary_size: Default::default(),
+            p_vendor_binary_data: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for DeviceFaultDebugInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceFaultDebugInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("vendor_binary_size", &self.vendor_binary_size)
+            .field("p_vendor_binary_data", &self.p_vendor_binary_data)
             .finish()
     }
 }
@@ -45939,8 +46070,8 @@ pub struct DeviceFaultInfoEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub description: [c_char; MAX_DESCRIPTION_SIZE],
-    pub p_address_infos: *mut DeviceFaultAddressInfoEXT,
-    pub p_vendor_infos: *mut DeviceFaultVendorInfoEXT,
+    pub p_address_infos: *mut DeviceFaultAddressInfoKHR,
+    pub p_vendor_infos: *mut DeviceFaultVendorInfoKHR,
     pub p_vendor_binary_data: *mut c_void,
 }
 unsafe impl Send for DeviceFaultInfoEXT {}
@@ -45972,9 +46103,9 @@ impl fmt::Debug for DeviceFaultInfoEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
-pub struct DeviceFaultVendorBinaryHeaderVersionOneEXT {
+pub struct DeviceFaultVendorBinaryHeaderVersionOneKHR {
     pub header_size: u32,
-    pub header_version: DeviceFaultVendorBinaryHeaderVersionEXT,
+    pub header_version: DeviceFaultVendorBinaryHeaderVersionKHR,
     pub vendor_id: u32,
     pub device_id: u32,
     pub driver_version: u32,
@@ -45985,7 +46116,7 @@ pub struct DeviceFaultVendorBinaryHeaderVersionOneEXT {
     pub engine_version: u32,
     pub api_version: Version,
 }
-impl Default for DeviceFaultVendorBinaryHeaderVersionOneEXT {
+impl Default for DeviceFaultVendorBinaryHeaderVersionOneKHR {
     fn default() -> Self {
         Self {
             header_size: Default::default(),
@@ -46002,9 +46133,9 @@ impl Default for DeviceFaultVendorBinaryHeaderVersionOneEXT {
         }
     }
 }
-impl fmt::Debug for DeviceFaultVendorBinaryHeaderVersionOneEXT {
+impl fmt::Debug for DeviceFaultVendorBinaryHeaderVersionOneKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("DeviceFaultVendorBinaryHeaderVersionOneEXT")
+        fmt.debug_struct("DeviceFaultVendorBinaryHeaderVersionOneKHR")
             .field("header_size", &self.header_size)
             .field("header_version", &self.header_version)
             .field("vendor_id", &self.vendor_id)
@@ -46016,6 +46147,75 @@ impl fmt::Debug for DeviceFaultVendorBinaryHeaderVersionOneEXT {
             .field("engine_name_offset", &self.engine_name_offset)
             .field("engine_version", &self.engine_version)
             .field("api_version", &self.api_version)
+            .finish()
+    }
+}
+pub type DeviceFaultVendorBinaryHeaderVersionOneEXT = DeviceFaultVendorBinaryHeaderVersionOneKHR;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFaultFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub device_fault: Bool32,
+    pub device_fault_vendor_binary: Bool32,
+    pub device_fault_report_masked: Bool32,
+    pub device_fault_device_lost_on_masked: Bool32,
+}
+unsafe impl Send for PhysicalDeviceFaultFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceFaultFeaturesKHR {}
+impl Default for PhysicalDeviceFaultFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FAULT_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            device_fault: Default::default(),
+            device_fault_vendor_binary: Default::default(),
+            device_fault_report_masked: Default::default(),
+            device_fault_device_lost_on_masked: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFaultFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFaultFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("device_fault", &self.device_fault)
+            .field("device_fault_vendor_binary", &self.device_fault_vendor_binary)
+            .field("device_fault_report_masked", &self.device_fault_report_masked)
+            .field(
+                "device_fault_device_lost_on_masked",
+                &self.device_fault_device_lost_on_masked,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFaultPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_device_fault_count: u32,
+}
+unsafe impl Send for PhysicalDeviceFaultPropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceFaultPropertiesKHR {}
+impl Default for PhysicalDeviceFaultPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FAULT_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            max_device_fault_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFaultPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFaultPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_device_fault_count", &self.max_device_fault_count)
             .finish()
     }
 }
@@ -55017,6 +55217,121 @@ impl fmt::Debug for MemoryMarkerInfoAMD {
             .finish()
     }
 }
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderConstantDataFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_constant_data: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderConstantDataFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceShaderConstantDataFeaturesKHR {}
+impl Default for PhysicalDeviceShaderConstantDataFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_CONSTANT_DATA_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_constant_data: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderConstantDataFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderConstantDataFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_constant_data", &self.shader_constant_data)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderAbortFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_abort: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderAbortFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceShaderAbortFeaturesKHR {}
+impl Default for PhysicalDeviceShaderAbortFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_ABORT_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_abort: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderAbortFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderAbortFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_abort", &self.shader_abort)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderAbortPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_shader_abort_message_size: u64,
+}
+unsafe impl Send for PhysicalDeviceShaderAbortPropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceShaderAbortPropertiesKHR {}
+impl Default for PhysicalDeviceShaderAbortPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_ABORT_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            max_shader_abort_message_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderAbortPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderAbortPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_shader_abort_message_size", &self.max_shader_abort_message_size)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceFaultShaderAbortMessageInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub message_data_size: u64,
+    pub p_message_data: *mut c_void,
+}
+unsafe impl Send for DeviceFaultShaderAbortMessageInfoKHR {}
+unsafe impl Sync for DeviceFaultShaderAbortMessageInfoKHR {}
+impl Default for DeviceFaultShaderAbortMessageInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_FAULT_SHADER_ABORT_MESSAGE_INFO_KHR,
+            p_next: ptr::null_mut(),
+            message_data_size: Default::default(),
+            p_message_data: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for DeviceFaultShaderAbortMessageInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceFaultShaderAbortMessageInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("message_data_size", &self.message_data_size)
+            .field("p_message_data", &self.p_message_data)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -57624,6 +57939,14 @@ pub type FnGetDeviceFaultInfoEXT = unsafe extern "system" fn(
     p_fault_counts: *mut DeviceFaultCountsEXT,
     p_fault_info: *mut DeviceFaultInfoEXT,
 ) -> Result;
+pub type FnGetDeviceFaultReportsKHR = unsafe extern "system" fn(
+    device: Device,
+    timeout: u64,
+    p_fault_counts: *mut u32,
+    p_fault_info: *mut DeviceFaultInfoKHR,
+) -> Result;
+pub type FnGetDeviceFaultDebugInfoKHR =
+    unsafe extern "system" fn(device: Device, p_debug_info: *mut DeviceFaultDebugInfoKHR) -> Result;
 pub type FnCmdSetDepthBias2EXT =
     unsafe extern "system" fn(command_buffer: CommandBuffer, p_depth_bias_info: *const DepthBiasInfoEXT);
 pub type FnReleaseSwapchainImagesKHR =
