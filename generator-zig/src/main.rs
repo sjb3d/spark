@@ -790,7 +790,7 @@ fn write_extensions(w: &mut impl IoWrite, oracle: &Oracle, category: ExtensionCa
         w,
         "\npub fn to_name_array(self: {struct_name}, allocator: Allocator) Allocator.Error![][*:0]const u8 {{"
     )?;
-    writeln!(w, "var names = std.ArrayListUnmanaged([*:0]const u8) {{ }};")?;
+    writeln!(w, "var names: std.ArrayList([*:0]const u8) = .empty;")?;
     for ext in oracle.extensions.iter().filter(|ext| ext.category == category) {
         let ident = AsIdent(&ext.short_name);
         writeln!(

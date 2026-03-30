@@ -43,25 +43,6 @@ pub const MissingFunctionError = error{
     MissingFunction,
 };
 
-pub const Loader = struct {
-    lib: std.DynLib,
-    fp_get_instance_proc_addr: FpGetInstanceProcAddr,
-
-    pub fn init() !Loader {
-        var lib = try std.DynLib.open("vulkan-1.dll");
-        const fp_get_instance_proc_addr = lib.lookup(FpGetInstanceProcAddr, "vkGetInstanceProcAddr") orelse return error.MissingFunction;
-
-        return Loader{
-            .lib = lib,
-            .fp_get_instance_proc_addr = fp_get_instance_proc_addr,
-        };
-    }
-
-    pub fn get_instance_proc_addr(self: Loader, p_name: [*:0]const u8) MissingFunctionError!FpVoidFunction {
-        return self.fp_get_instance_proc_addr(.null_handle, p_name) orelse return error.MissingFunction;
-    }
-};
-
 fn BitField(comptime Fields: type) type {
     const bit_count = 1 << @bitSizeOf(@typeInfo(Fields).@"enum".tag_type);
     const BitsInt = std.meta.Int(.unsigned, bit_count);
@@ -17522,7 +17503,7 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn to_name_array(self: InstanceExtensions, allocator: Allocator) Allocator.Error![][*:0]const u8 {
-        var names = std.ArrayListUnmanaged([*:0]const u8){};
+        var names: std.ArrayList([*:0]const u8) = .empty;
         if (self.khr_surface) try names.append(allocator, ExtensionNames.khr_surface);
         if (self.khr_display) try names.append(allocator, ExtensionNames.khr_display);
         if (self.khr_xlib_surface) try names.append(allocator, ExtensionNames.khr_xlib_surface);
@@ -21821,7 +21802,7 @@ pub const DeviceExtensions = packed struct {
     }
 
     pub fn to_name_array(self: DeviceExtensions, allocator: Allocator) Allocator.Error![][*:0]const u8 {
-        var names = std.ArrayListUnmanaged([*:0]const u8){};
+        var names: std.ArrayList([*:0]const u8) = .empty;
         if (self.khr_swapchain) try names.append(allocator, ExtensionNames.khr_swapchain);
         if (self.khr_display_swapchain) try names.append(allocator, ExtensionNames.khr_display_swapchain);
         if (self.nv_glsl_shader) try names.append(allocator, ExtensionNames.nv_glsl_shader);

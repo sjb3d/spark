@@ -41,25 +41,6 @@ pub const MissingFunctionError = error{
     MissingFunction,
 };
 
-pub const Loader = struct {
-    lib: std.DynLib,
-    fp_get_instance_proc_addr: FpGetInstanceProcAddr,
-
-    pub fn init() !Loader {
-        var lib = try std.DynLib.open("vulkan-1.dll");
-        const fp_get_instance_proc_addr = lib.lookup(FpGetInstanceProcAddr, "vkGetInstanceProcAddr") orelse return error.MissingFunction;
-
-        return Loader{
-            .lib = lib,
-            .fp_get_instance_proc_addr = fp_get_instance_proc_addr,
-        };
-    }
-
-    pub fn get_instance_proc_addr(self: Loader, p_name: [*:0]const u8) MissingFunctionError!FpVoidFunction {
-        return self.fp_get_instance_proc_addr(.null_handle, p_name) orelse return error.MissingFunction;
-    }
-};
-
 fn BitField(comptime Fields: type) type {
     const bit_count = 1 << @bitSizeOf(@typeInfo(Fields).@"enum".tag_type);
     const BitsInt = std.meta.Int(.unsigned, bit_count);
