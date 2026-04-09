@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.347
+//! Generated from vk.xml version 1.4.348
 
 #![allow(
     clippy::too_many_arguments,
@@ -1838,6 +1838,14 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_qcom_queue_perf_hint(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_qcom_queue_perf_hint(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_nv_cuda_kernel_launch(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
@@ -2786,6 +2794,12 @@ impl InstanceExtensions {
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 3, 0));
         self.enable_khr_maintenance5();
     }
+    pub fn supports_arm_data_graph_instruction_set_tosa(&self) -> bool {
+        self.supports_arm_data_graph()
+    }
+    pub fn enable_arm_data_graph_instruction_set_tosa(&mut self) {
+        self.enable_arm_data_graph();
+    }
     pub fn supports_qcom_multiview_per_view_render_areas(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
@@ -3280,6 +3294,14 @@ impl InstanceExtensions {
         }
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
             self.enable_khr_shader_float16_int8();
+        }
+    }
+    pub fn supports_ext_primitive_restart_index(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_primitive_restart_index(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
         }
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
@@ -5908,6 +5930,7 @@ pub struct DeviceExtensions {
     pub ext_pipeline_creation_cache_control: bool,
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
+    pub qcom_queue_perf_hint: bool,
     pub nv_cuda_kernel_launch: bool,
     pub qcom_tile_shading: bool,
     pub nv_low_latency: bool,
@@ -6023,6 +6046,7 @@ pub struct DeviceExtensions {
     pub nv_low_latency2: bool,
     pub khr_cooperative_matrix: bool,
     pub arm_data_graph: bool,
+    pub arm_data_graph_instruction_set_tosa: bool,
     pub qcom_multiview_per_view_render_areas: bool,
     pub khr_compute_shader_derivatives: bool,
     pub nv_per_stage_descriptor_set: bool,
@@ -6090,6 +6114,7 @@ pub struct DeviceExtensions {
     pub nv_compute_occupancy_priority: bool,
     pub ext_shader_subgroup_partitioned: bool,
     pub valve_shader_mixed_float_dot_product: bool,
+    pub ext_primitive_restart_index: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -6511,6 +6536,8 @@ impl DeviceExtensions {
             self.nv_device_diagnostics_config = true;
         } else if name == c"VK_QCOM_render_pass_store_ops" {
             self.qcom_render_pass_store_ops = true;
+        } else if name == c"VK_QCOM_queue_perf_hint" {
+            self.qcom_queue_perf_hint = true;
         } else if name == c"VK_NV_cuda_kernel_launch" {
             self.nv_cuda_kernel_launch = true;
         } else if name == c"VK_QCOM_tile_shading" {
@@ -6741,6 +6768,8 @@ impl DeviceExtensions {
             self.khr_cooperative_matrix = true;
         } else if name == c"VK_ARM_data_graph" {
             self.arm_data_graph = true;
+        } else if name == c"VK_ARM_data_graph_instruction_set_tosa" {
+            self.arm_data_graph_instruction_set_tosa = true;
         } else if name == c"VK_QCOM_multiview_per_view_render_areas" {
             self.qcom_multiview_per_view_render_areas = true;
         } else if name == c"VK_KHR_compute_shader_derivatives" {
@@ -6875,6 +6904,8 @@ impl DeviceExtensions {
             self.ext_shader_subgroup_partitioned = true;
         } else if name == c"VK_VALVE_shader_mixed_float_dot_product" {
             self.valve_shader_mixed_float_dot_product = true;
+        } else if name == c"VK_EXT_primitive_restart_index" {
+            self.ext_primitive_restart_index = true;
         }
     }
     pub fn new(core_version: vk::Version) -> Self {
@@ -7089,6 +7120,7 @@ impl DeviceExtensions {
             ext_pipeline_creation_cache_control: false,
             nv_device_diagnostics_config: false,
             qcom_render_pass_store_ops: false,
+            qcom_queue_perf_hint: false,
             nv_cuda_kernel_launch: false,
             qcom_tile_shading: false,
             nv_low_latency: false,
@@ -7204,6 +7236,7 @@ impl DeviceExtensions {
             nv_low_latency2: false,
             khr_cooperative_matrix: false,
             arm_data_graph: false,
+            arm_data_graph_instruction_set_tosa: false,
             qcom_multiview_per_view_render_areas: false,
             khr_compute_shader_derivatives: false,
             nv_per_stage_descriptor_set: false,
@@ -7271,6 +7304,7 @@ impl DeviceExtensions {
             nv_compute_occupancy_priority: false,
             ext_shader_subgroup_partitioned: false,
             valve_shader_mixed_float_dot_product: false,
+            ext_primitive_restart_index: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -8948,6 +8982,12 @@ impl DeviceExtensions {
     pub fn enable_qcom_render_pass_store_ops(&mut self) {
         self.qcom_render_pass_store_ops = true;
     }
+    pub fn supports_qcom_queue_perf_hint(&self) -> bool {
+        self.qcom_queue_perf_hint
+    }
+    pub fn enable_qcom_queue_perf_hint(&mut self) {
+        self.qcom_queue_perf_hint = true;
+    }
     pub fn supports_nv_cuda_kernel_launch(&self) -> bool {
         self.nv_cuda_kernel_launch
     }
@@ -9888,6 +9928,13 @@ impl DeviceExtensions {
         self.enable_khr_maintenance5();
         self.enable_khr_deferred_host_operations();
     }
+    pub fn supports_arm_data_graph_instruction_set_tosa(&self) -> bool {
+        self.arm_data_graph_instruction_set_tosa && self.supports_arm_data_graph()
+    }
+    pub fn enable_arm_data_graph_instruction_set_tosa(&mut self) {
+        self.arm_data_graph_instruction_set_tosa = true;
+        self.enable_arm_data_graph();
+    }
     pub fn supports_qcom_multiview_per_view_render_areas(&self) -> bool {
         self.qcom_multiview_per_view_render_areas
     }
@@ -10386,6 +10433,12 @@ impl DeviceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
             self.enable_khr_shader_float16_int8();
         }
+    }
+    pub fn supports_ext_primitive_restart_index(&self) -> bool {
+        self.ext_primitive_restart_index
+    }
+    pub fn enable_ext_primitive_restart_index(&mut self) {
+        self.ext_primitive_restart_index = true;
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -11016,6 +11069,9 @@ impl DeviceExtensions {
         if self.qcom_render_pass_store_ops {
             v.push(c"VK_QCOM_render_pass_store_ops");
         }
+        if self.qcom_queue_perf_hint {
+            v.push(c"VK_QCOM_queue_perf_hint");
+        }
         if self.nv_cuda_kernel_launch {
             v.push(c"VK_NV_cuda_kernel_launch");
         }
@@ -11361,6 +11417,9 @@ impl DeviceExtensions {
         if self.arm_data_graph {
             v.push(c"VK_ARM_data_graph");
         }
+        if self.arm_data_graph_instruction_set_tosa {
+            v.push(c"VK_ARM_data_graph_instruction_set_tosa");
+        }
         if self.qcom_multiview_per_view_render_areas {
             v.push(c"VK_QCOM_multiview_per_view_render_areas");
         }
@@ -11562,6 +11621,9 @@ impl DeviceExtensions {
         if self.valve_shader_mixed_float_dot_product {
             v.push(c"VK_VALVE_shader_mixed_float_dot_product");
         }
+        if self.ext_primitive_restart_index {
+            v.push(c"VK_EXT_primitive_restart_index");
+        }
         v
     }
 }
@@ -11656,6 +11718,7 @@ pub struct Device {
     pub fp_end_command_buffer: vk::FnEndCommandBuffer,
     pub fp_reset_command_buffer: vk::FnResetCommandBuffer,
     pub fp_cmd_bind_pipeline: vk::FnCmdBindPipeline,
+    pub fp_cmd_set_primitive_restart_index_ext: Option<vk::FnCmdSetPrimitiveRestartIndexEXT>,
     pub fp_cmd_set_attachment_feedback_loop_enable_ext: Option<vk::FnCmdSetAttachmentFeedbackLoopEnableEXT>,
     pub fp_cmd_set_viewport: vk::FnCmdSetViewport,
     pub fp_cmd_set_scissor: vk::FnCmdSetScissor,
@@ -12163,6 +12226,7 @@ pub struct Device {
         Option<vk::FnGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM>,
     pub fp_get_native_buffer_properties_ohos: Option<vk::FnGetNativeBufferPropertiesOHOS>,
     pub fp_get_memory_native_buffer_ohos: Option<vk::FnGetMemoryNativeBufferOHOS>,
+    pub fp_queue_set_perf_hint_qcom: Option<vk::FnQueueSetPerfHintQCOM>,
     pub fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm:
         Option<vk::FnEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM>,
     pub fp_cmd_set_compute_occupancy_priority_nv: Option<vk::FnCmdSetComputeOccupancyPriorityNV>,
@@ -12198,6 +12262,9 @@ pub struct Device {
     pub fp_cmd_draw_mesh_tasks_indirect_count2_ext: Option<vk::FnCmdDrawMeshTasksIndirectCount2EXT>,
     pub fp_cmd_dispatch_indirect2_khr: Option<vk::FnCmdDispatchIndirect2KHR>,
     pub fp_create_acceleration_structure2_khr: Option<vk::FnCreateAccelerationStructure2KHR>,
+    pub fp_get_physical_device_queue_family_data_graph_engine_operation_properties_arm:
+        Option<vk::FnGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM>,
+    pub fp_cmd_set_dispatch_parameters_arm: Option<vk::FnCmdSetDispatchParametersARM>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -12668,6 +12735,13 @@ impl Device {
                     .get_device_proc_addr(device, c"vkCmdBindPipeline")
                     .ok_or(LoadError::MissingSymbol(c"vkCmdBindPipeline"))?,
             ),
+            fp_cmd_set_primitive_restart_index_ext: if extensions.ext_primitive_restart_index {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdSetPrimitiveRestartIndexEXT")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_cmd_set_attachment_feedback_loop_enable_ext: if extensions.ext_attachment_feedback_loop_dynamic_state {
                 instance
                     .get_device_proc_addr(device, c"vkCmdSetAttachmentFeedbackLoopEnableEXT")
@@ -16510,6 +16584,13 @@ impl Device {
             } else {
                 None
             },
+            fp_queue_set_perf_hint_qcom: if extensions.qcom_queue_perf_hint {
+                instance
+                    .get_device_proc_addr(device, c"vkQueueSetPerfHintQCOM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_enumerate_physical_device_queue_family_performance_counters_by_region_arm: if extensions
                 .arm_performance_counters_by_region
             {
@@ -16777,6 +16858,25 @@ impl Device {
             {
                 instance
                     .get_device_proc_addr(device, c"vkCreateAccelerationStructure2KHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_queue_family_data_graph_engine_operation_properties_arm: if extensions
+                .arm_data_graph_instruction_set_tosa
+            {
+                globals
+                    .get_instance_proc_addr(
+                        instance.handle,
+                        c"vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM",
+                    )
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_dispatch_parameters_arm: if extensions.arm_scheduling_controls {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdSetDispatchParametersARM")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -17846,6 +17946,16 @@ impl Device {
     ) {
         let fp = self.fp_cmd_bind_pipeline;
         (fp)(command_buffer, pipeline_bind_point, pipeline)
+    }
+    pub unsafe fn cmd_set_primitive_restart_index_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        primitive_restart_index: u32,
+    ) {
+        let fp = self
+            .fp_cmd_set_primitive_restart_index_ext
+            .expect("vkCmdSetPrimitiveRestartIndexEXT is not loaded");
+        (fp)(command_buffer, primitive_restart_index)
     }
     pub unsafe fn cmd_set_attachment_feedback_loop_enable_ext(
         &self,
@@ -20972,13 +21082,12 @@ impl Device {
     pub unsafe fn get_acceleration_structure_memory_requirements_nv(
         &self,
         p_info: &vk::AccelerationStructureMemoryRequirementsInfoNV,
-    ) -> vk::MemoryRequirements2KHR {
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
         let fp = self
             .fp_get_acceleration_structure_memory_requirements_nv
             .expect("vkGetAccelerationStructureMemoryRequirementsNV is not loaded");
-        let mut p_memory_requirements = MaybeUninit::<_>::uninit();
-        (fp)(self.handle, p_info, p_memory_requirements.as_mut_ptr());
-        p_memory_requirements.assume_init()
+        (fp)(self.handle, p_info, p_memory_requirements)
     }
     pub unsafe fn bind_acceleration_structure_memory_nv(
         &self,
@@ -24246,7 +24355,7 @@ impl Device {
     }
     pub unsafe fn get_pipeline_properties_ext(
         &self,
-        p_pipeline_info: &vk::PipelineInfoEXT,
+        p_pipeline_info: &vk::PipelineInfoKHR,
     ) -> Result<vk::BaseOutStructure> {
         let fp = self
             .fp_get_pipeline_properties_ext
@@ -25672,6 +25781,20 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn queue_set_perf_hint_qcom(
+        &self,
+        queue: vk::Queue,
+        p_perf_hint_info: &vk::PerfHintInfoQCOM,
+    ) -> Result<()> {
+        let fp = self
+            .fp_queue_set_perf_hint_qcom
+            .expect("vkQueueSetPerfHintQCOM is not loaded");
+        let err = (fp)(queue, p_perf_hint_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
     pub unsafe fn enumerate_physical_device_queue_family_performance_counters_by_region_arm(
         &self,
         physical_device: vk::PhysicalDevice,
@@ -26150,5 +26273,36 @@ impl Device {
             vk::Result::SUCCESS => Ok(p_acceleration_structure.assume_init()),
             _ => Err(err),
         }
+    }
+    pub unsafe fn get_physical_device_queue_family_data_graph_engine_operation_properties_arm(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+        p_queue_family_data_graph_properties: &vk::QueueFamilyDataGraphPropertiesARM,
+    ) -> Result<vk::BaseOutStructure> {
+        let fp = self
+            .fp_get_physical_device_queue_family_data_graph_engine_operation_properties_arm
+            .expect("vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM is not loaded");
+        let mut p_properties = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            physical_device,
+            queue_family_index,
+            p_queue_family_data_graph_properties,
+            p_properties.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(p_properties.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_set_dispatch_parameters_arm(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_dispatch_parameters: &vk::DispatchParametersARM,
+    ) {
+        let fp = self
+            .fp_cmd_set_dispatch_parameters_arm
+            .expect("vkCmdSetDispatchParametersARM is not loaded");
+        (fp)(command_buffer, p_dispatch_parameters)
     }
 }

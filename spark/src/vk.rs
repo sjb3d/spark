@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.347
+//! Generated from vk.xml version 1.4.348
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -182,6 +182,7 @@ pub const DATA_GRAPH_MODEL_TOOLCHAIN_VERSION_LENGTH_QCOM: usize = 3;
 pub const COMPUTE_OCCUPANCY_PRIORITY_LOW_NV: f32 = 0.25_f32;
 pub const COMPUTE_OCCUPANCY_PRIORITY_NORMAL_NV: f32 = 0.5_f32;
 pub const COMPUTE_OCCUPANCY_PRIORITY_HIGH_NV: f32 = 0.75_f32;
+pub const MAX_DATA_GRAPH_TOSA_NAME_SIZE_ARM: usize = 128;
 #[allow(non_camel_case_types)]
 pub type wl_display = Never;
 #[allow(non_camel_case_types)]
@@ -4713,11 +4714,16 @@ impl fmt::Display for TileShadingRenderPassFlagsQCOM {
 pub struct PhysicalDeviceSchedulingControlsFlagsARM(pub(crate) u64);
 impl PhysicalDeviceSchedulingControlsFlagsARM {
     pub const SHADER_CORE_COUNT: Self = Self(0x1);
+    pub const DISPATCH_PARAMETERS: Self = Self(0x2);
 }
 impl_bitmask!(PhysicalDeviceSchedulingControlsFlagsARM);
 impl fmt::Display for PhysicalDeviceSchedulingControlsFlagsARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x1, "SHADER_CORE_COUNT")], f)
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "SHADER_CORE_COUNT"), (0x2, "DISPATCH_PARAMETERS")],
+            f,
+        )
     }
 }
 
@@ -4815,6 +4821,31 @@ impl_bitmask!(ShaderInstrumentationValuesFlagsARM);
 impl fmt::Display for ShaderInstrumentationValuesFlagsARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DataGraphTOSAQualityFlagsARM(pub(crate) u32);
+impl DataGraphTOSAQualityFlagsARM {
+    pub const ACCELERATED: Self = Self(0x1);
+    pub const CONFORMANT: Self = Self(0x2);
+    pub const EXPERIMENTAL: Self = Self(0x4);
+    pub const DEPRECATED: Self = Self(0x8);
+}
+impl_bitmask!(DataGraphTOSAQualityFlagsARM);
+impl fmt::Display for DataGraphTOSAQualityFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "ACCELERATED"),
+                (0x2, "CONFORMANT"),
+                (0x4, "EXPERIMENTAL"),
+                (0x8, "DEPRECATED"),
+            ],
+            f,
+        )
     }
 }
 
@@ -7888,6 +7919,9 @@ impl StructureType {
         Self::PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES;
     pub const PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV: Self = Self(1000300000);
     pub const DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV: Self = Self(1000300001);
+    pub const PERF_HINT_INFO_QCOM: Self = Self(1000302000);
+    pub const PHYSICAL_DEVICE_QUEUE_PERF_HINT_FEATURES_QCOM: Self = Self(1000302001);
+    pub const PHYSICAL_DEVICE_QUEUE_PERF_HINT_PROPERTIES_QCOM: Self = Self(1000302002);
     pub const CUDA_MODULE_CREATE_INFO_NV: Self = Self(1000307000);
     pub const CUDA_FUNCTION_CREATE_INFO_NV: Self = Self(1000307001);
     pub const CUDA_LAUNCH_INFO_NV: Self = Self(1000307002);
@@ -8086,6 +8120,8 @@ impl StructureType {
     pub const DEVICE_QUEUE_SHADER_CORE_CONTROL_CREATE_INFO_ARM: Self = Self(1000417000);
     pub const PHYSICAL_DEVICE_SCHEDULING_CONTROLS_FEATURES_ARM: Self = Self(1000417001);
     pub const PHYSICAL_DEVICE_SCHEDULING_CONTROLS_PROPERTIES_ARM: Self = Self(1000417002);
+    pub const DISPATCH_PARAMETERS_ARM: Self = Self(1000417003);
+    pub const PHYSICAL_DEVICE_SCHEDULING_CONTROLS_DISPATCH_PARAMETERS_PROPERTIES_ARM: Self = Self(1000417004);
     pub const PHYSICAL_DEVICE_IMAGE_SLICED_VIEW_OF_3D_FEATURES_EXT: Self = Self(1000418000);
     pub const IMAGE_VIEW_SLICED_CREATE_INFO_EXT: Self = Self(1000418001);
     pub const PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE: Self = Self(1000420000);
@@ -8282,6 +8318,7 @@ impl StructureType {
     pub const QUEUE_FAMILY_DATA_GRAPH_PROPERTIES_ARM: Self = Self(1000507018);
     pub const PHYSICAL_DEVICE_QUEUE_FAMILY_DATA_GRAPH_PROCESSING_ENGINE_INFO_ARM: Self = Self(1000507019);
     pub const DATA_GRAPH_PIPELINE_CONSTANT_TENSOR_SEMI_STRUCTURED_SPARSITY_INFO_ARM: Self = Self(1000507015);
+    pub const QUEUE_FAMILY_DATA_GRAPH_TOSA_PROPERTIES_ARM: Self = Self(1000508000);
     pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM: Self = Self(1000510000);
     pub const MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM: Self = Self(1000510001);
     pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_KHR: Self = Self(1000201000);
@@ -8460,6 +8497,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT: Self = Self(1000662000);
     pub const UBM_SURFACE_CREATE_INFO_SEC: Self = Self(1000664000);
     pub const PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE: Self = Self(1000673000);
+    pub const PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT: Self = Self(1000678000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9054,6 +9092,9 @@ impl fmt::Display for StructureType {
             1000294001 => Some(&"PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR"),
             1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
             1000300001 => Some(&"DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV"),
+            1000302000 => Some(&"PERF_HINT_INFO_QCOM"),
+            1000302001 => Some(&"PHYSICAL_DEVICE_QUEUE_PERF_HINT_FEATURES_QCOM"),
+            1000302002 => Some(&"PHYSICAL_DEVICE_QUEUE_PERF_HINT_PROPERTIES_QCOM"),
             1000307000 => Some(&"CUDA_MODULE_CREATE_INFO_NV"),
             1000307001 => Some(&"CUDA_FUNCTION_CREATE_INFO_NV"),
             1000307002 => Some(&"CUDA_LAUNCH_INFO_NV"),
@@ -9210,6 +9251,8 @@ impl fmt::Display for StructureType {
             1000417000 => Some(&"DEVICE_QUEUE_SHADER_CORE_CONTROL_CREATE_INFO_ARM"),
             1000417001 => Some(&"PHYSICAL_DEVICE_SCHEDULING_CONTROLS_FEATURES_ARM"),
             1000417002 => Some(&"PHYSICAL_DEVICE_SCHEDULING_CONTROLS_PROPERTIES_ARM"),
+            1000417003 => Some(&"DISPATCH_PARAMETERS_ARM"),
+            1000417004 => Some(&"PHYSICAL_DEVICE_SCHEDULING_CONTROLS_DISPATCH_PARAMETERS_PROPERTIES_ARM"),
             1000418000 => Some(&"PHYSICAL_DEVICE_IMAGE_SLICED_VIEW_OF_3D_FEATURES_EXT"),
             1000418001 => Some(&"IMAGE_VIEW_SLICED_CREATE_INFO_EXT"),
             1000420000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE"),
@@ -9380,6 +9423,7 @@ impl fmt::Display for StructureType {
             1000507018 => Some(&"QUEUE_FAMILY_DATA_GRAPH_PROPERTIES_ARM"),
             1000507019 => Some(&"PHYSICAL_DEVICE_QUEUE_FAMILY_DATA_GRAPH_PROCESSING_ENGINE_INFO_ARM"),
             1000507015 => Some(&"DATA_GRAPH_PIPELINE_CONSTANT_TENSOR_SEMI_STRUCTURED_SPARSITY_INFO_ARM"),
+            1000508000 => Some(&"QUEUE_FAMILY_DATA_GRAPH_TOSA_PROPERTIES_ARM"),
             1000510000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM"),
             1000510001 => Some(&"MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM"),
             1000201000 => Some(&"PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_KHR"),
@@ -9534,6 +9578,7 @@ impl fmt::Display for StructureType {
             1000662000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT"),
             1000664000 => Some(&"UBM_SURFACE_CREATE_INFO_SEC"),
             1000673000 => Some(&"PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE"),
+            1000678000 => Some(&"PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11791,6 +11836,32 @@ impl fmt::Display for DataGraphModelCacheTypeQCOM {
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PerfHintTypeQCOM(pub(crate) i32);
+impl PerfHintTypeQCOM {
+    pub const DEFAULT: Self = Self(0);
+    pub const FREQUENCY_MIN: Self = Self(1);
+    pub const FREQUENCY_MAX: Self = Self(2);
+    pub const FREQUENCY_SCALED: Self = Self(3);
+}
+impl fmt::Display for PerfHintTypeQCOM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DEFAULT"),
+            1 => Some(&"FREQUENCY_MIN"),
+            2 => Some(&"FREQUENCY_MAX"),
+            3 => Some(&"FREQUENCY_SCALED"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DescriptorMappingSourceEXT(pub(crate) i32);
 impl DescriptorMappingSourceEXT {
     pub const HEAP_WITH_CONSTANT_OFFSET: Self = Self(0);
@@ -11819,6 +11890,28 @@ impl fmt::Display for DescriptorMappingSourceEXT {
             8 => Some(&"HEAP_WITH_SHADER_RECORD_INDEX"),
             9 => Some(&"SHADER_RECORD_DATA"),
             10 => Some(&"SHADER_RECORD_ADDRESS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DataGraphTOSALevelARM(pub(crate) i32);
+impl DataGraphTOSALevelARM {
+    pub const NONE: Self = Self(0);
+    pub const N8K: Self = Self(1);
+}
+impl fmt::Display for DataGraphTOSALevelARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"NONE"),
+            1 => Some(&"N8K"),
             _ => None,
         };
         if let Some(name) = name {
@@ -29857,7 +29950,7 @@ pub struct AccelerationStructureInfoNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub ty: AccelerationStructureTypeNV,
-    pub flags: BuildAccelerationStructureFlagsNV,
+    pub flags: BuildAccelerationStructureFlagsKHR,
     pub instance_count: u32,
     pub geometry_count: u32,
     pub p_geometries: *const GeometryNV,
@@ -46320,7 +46413,7 @@ pub struct DecompressMemoryRegionNV {
     pub dst_address: DeviceAddress,
     pub compressed_size: DeviceSize,
     pub decompressed_size: DeviceSize,
-    pub decompression_method: MemoryDecompressionMethodFlagsNV,
+    pub decompression_method: MemoryDecompressionMethodFlagsEXT,
 }
 
 #[repr(C)]
@@ -49396,6 +49489,83 @@ impl fmt::Debug for PhysicalDeviceSchedulingControlsPropertiesARM {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceSchedulingControlsDispatchParametersPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub scheduling_controls_max_warps_count: u32,
+    pub scheduling_controls_max_queued_batches_count: u32,
+    pub scheduling_controls_max_work_group_batch_size: u32,
+}
+unsafe impl Send for PhysicalDeviceSchedulingControlsDispatchParametersPropertiesARM {}
+unsafe impl Sync for PhysicalDeviceSchedulingControlsDispatchParametersPropertiesARM {}
+impl Default for PhysicalDeviceSchedulingControlsDispatchParametersPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SCHEDULING_CONTROLS_DISPATCH_PARAMETERS_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            scheduling_controls_max_warps_count: Default::default(),
+            scheduling_controls_max_queued_batches_count: Default::default(),
+            scheduling_controls_max_work_group_batch_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceSchedulingControlsDispatchParametersPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceSchedulingControlsDispatchParametersPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "scheduling_controls_max_warps_count",
+                &self.scheduling_controls_max_warps_count,
+            )
+            .field(
+                "scheduling_controls_max_queued_batches_count",
+                &self.scheduling_controls_max_queued_batches_count,
+            )
+            .field(
+                "scheduling_controls_max_work_group_batch_size",
+                &self.scheduling_controls_max_work_group_batch_size,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DispatchParametersARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub work_group_batch_size: u32,
+    pub max_queued_work_group_batches: u32,
+    pub max_warps_per_shader_core: u32,
+}
+unsafe impl Send for DispatchParametersARM {}
+unsafe impl Sync for DispatchParametersARM {}
+impl Default for DispatchParametersARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DISPATCH_PARAMETERS_ARM,
+            p_next: ptr::null_mut(),
+            work_group_batch_size: Default::default(),
+            max_queued_work_group_batches: Default::default(),
+            max_warps_per_shader_core: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DispatchParametersARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DispatchParametersARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("work_group_batch_size", &self.work_group_batch_size)
+            .field("max_queued_work_group_batches", &self.max_queued_work_group_batches)
+            .field("max_warps_per_shader_core", &self.max_warps_per_shader_core)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceRelaxedLineRasterizationFeaturesIMG {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -51271,6 +51441,34 @@ impl fmt::Debug for PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDevicePrimitiveRestartIndexFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub primitive_restart_index: Bool32,
+}
+unsafe impl Send for PhysicalDevicePrimitiveRestartIndexFeaturesEXT {}
+unsafe impl Sync for PhysicalDevicePrimitiveRestartIndexFeaturesEXT {}
+impl Default for PhysicalDevicePrimitiveRestartIndexFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            primitive_restart_index: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePrimitiveRestartIndexFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePrimitiveRestartIndexFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("primitive_restart_index", &self.primitive_restart_index)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceFormatPackFeaturesARM {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -52398,7 +52596,7 @@ impl fmt::Debug for DataGraphPipelineCompilerControlCreateInfoARM {
 pub struct DataGraphPipelineCreateInfoARM {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub flags: PipelineCreateFlags2KHR,
+    pub flags: PipelineCreateFlags2,
     pub layout: PipelineLayout,
     pub resource_info_count: u32,
     pub p_resource_infos: *const DataGraphPipelineResourceInfoARM,
@@ -53249,6 +53447,93 @@ impl fmt::Debug for ExternalFormatOHOS {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("external_format", &self.external_format)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerfHintInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ty: PerfHintTypeQCOM,
+    pub scale: u32,
+}
+unsafe impl Send for PerfHintInfoQCOM {}
+unsafe impl Sync for PerfHintInfoQCOM {}
+impl Default for PerfHintInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PERF_HINT_INFO_QCOM,
+            p_next: ptr::null_mut(),
+            ty: Default::default(),
+            scale: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PerfHintInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerfHintInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ty", &self.ty)
+            .field("scale", &self.scale)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceQueuePerfHintFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub queue_perf_hint: Bool32,
+}
+unsafe impl Send for PhysicalDeviceQueuePerfHintFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceQueuePerfHintFeaturesQCOM {}
+impl Default for PhysicalDeviceQueuePerfHintFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_QUEUE_PERF_HINT_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            queue_perf_hint: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceQueuePerfHintFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceQueuePerfHintFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("queue_perf_hint", &self.queue_perf_hint)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceQueuePerfHintPropertiesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub supported_queues: QueueFlags,
+}
+unsafe impl Send for PhysicalDeviceQueuePerfHintPropertiesQCOM {}
+unsafe impl Sync for PhysicalDeviceQueuePerfHintPropertiesQCOM {}
+impl Default for PhysicalDeviceQueuePerfHintPropertiesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_QUEUE_PERF_HINT_PROPERTIES_QCOM,
+            p_next: ptr::null_mut(),
+            supported_queues: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceQueuePerfHintPropertiesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceQueuePerfHintPropertiesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("supported_queues", &self.supported_queues)
             .finish()
     }
 }
@@ -55332,6 +55617,69 @@ impl fmt::Debug for DeviceFaultShaderAbortMessageInfoKHR {
             .finish()
     }
 }
+
+#[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct DataGraphTOSANameQualityARM {
+    pub name: [c_char; MAX_DATA_GRAPH_TOSA_NAME_SIZE_ARM],
+    pub quality_flags: DataGraphTOSAQualityFlagsARM,
+}
+impl Default for DataGraphTOSANameQualityARM {
+    fn default() -> Self {
+        Self {
+            name: [Default::default(); MAX_DATA_GRAPH_TOSA_NAME_SIZE_ARM],
+            quality_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphTOSANameQualityARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphTOSANameQualityARM")
+            .field("name", &self.name)
+            .field("quality_flags", &self.quality_flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct QueueFamilyDataGraphTOSAPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub profile_count: u32,
+    pub p_profiles: *const DataGraphTOSANameQualityARM,
+    pub extension_count: u32,
+    pub p_extensions: *const DataGraphTOSANameQualityARM,
+    pub level: DataGraphTOSALevelARM,
+}
+unsafe impl Send for QueueFamilyDataGraphTOSAPropertiesARM {}
+unsafe impl Sync for QueueFamilyDataGraphTOSAPropertiesARM {}
+impl Default for QueueFamilyDataGraphTOSAPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::QUEUE_FAMILY_DATA_GRAPH_TOSA_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            profile_count: Default::default(),
+            p_profiles: ptr::null(),
+            extension_count: Default::default(),
+            p_extensions: ptr::null(),
+            level: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for QueueFamilyDataGraphTOSAPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("QueueFamilyDataGraphTOSAPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("profile_count", &self.profile_count)
+            .field("p_profiles", &self.p_profiles)
+            .field("extension_count", &self.extension_count)
+            .field("p_extensions", &self.p_extensions)
+            .field("level", &self.level)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -55751,6 +56099,8 @@ pub type FnCmdBindPipeline = unsafe extern "system" fn(
     pipeline_bind_point: PipelineBindPoint,
     pipeline: Pipeline,
 );
+pub type FnCmdSetPrimitiveRestartIndexEXT =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, primitive_restart_index: u32);
 pub type FnCmdSetAttachmentFeedbackLoopEnableEXT =
     unsafe extern "system" fn(command_buffer: CommandBuffer, aspect_mask: ImageAspectFlags);
 pub type FnCmdSetViewport = unsafe extern "system" fn(
@@ -57028,7 +57378,7 @@ pub type FnDestroyAccelerationStructureNV = unsafe extern "system" fn(
 pub type FnGetAccelerationStructureMemoryRequirementsNV = unsafe extern "system" fn(
     device: Device,
     p_info: *const AccelerationStructureMemoryRequirementsInfoNV,
-    p_memory_requirements: *mut MemoryRequirements2KHR,
+    p_memory_requirements: *mut MemoryRequirements2,
 );
 pub type FnBindAccelerationStructureMemoryNV = unsafe extern "system" fn(
     device: Device,
@@ -57890,7 +58240,7 @@ pub type FnGetImageSubresourceLayout2 = unsafe extern "system" fn(
 );
 pub type FnGetPipelinePropertiesEXT = unsafe extern "system" fn(
     device: Device,
-    p_pipeline_info: *const PipelineInfoEXT,
+    p_pipeline_info: *const PipelineInfoKHR,
     p_pipeline_properties: *mut BaseOutStructure,
 ) -> Result;
 pub type FnExportMetalObjectsEXT =
@@ -58304,6 +58654,8 @@ pub type FnGetMemoryNativeBufferOHOS = unsafe extern "system" fn(
     p_info: *const MemoryGetNativeBufferInfoOHOS,
     p_buffer: *mut *mut OH_NativeBuffer,
 ) -> Result;
+pub type FnQueueSetPerfHintQCOM =
+    unsafe extern "system" fn(queue: Queue, p_perf_hint_info: *const PerfHintInfoQCOM) -> Result;
 pub type FnEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = unsafe extern "system" fn(
     physical_device: PhysicalDevice,
     queue_family_index: u32,
@@ -58440,3 +58792,11 @@ pub type FnCreateAccelerationStructure2KHR = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_acceleration_structure: *mut AccelerationStructureKHR,
 ) -> Result;
+pub type FnGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM = unsafe extern "system" fn(
+    physical_device: PhysicalDevice,
+    queue_family_index: u32,
+    p_queue_family_data_graph_properties: *const QueueFamilyDataGraphPropertiesARM,
+    p_properties: *mut BaseOutStructure,
+) -> Result;
+pub type FnCmdSetDispatchParametersARM =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, p_dispatch_parameters: *const DispatchParametersARM);

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.347
+//! Generated from vk.xml version 1.4.348
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -17799,7 +17799,7 @@ impl<'a> AccelerationStructureInfoNVBuilder<'a> {
         self.inner.ty = ty;
         self
     }
-    pub fn flags(mut self, flags: vk::BuildAccelerationStructureFlagsNV) -> Self {
+    pub fn flags(mut self, flags: vk::BuildAccelerationStructureFlagsKHR) -> Self {
         self.inner.flags = flags;
         self
     }
@@ -27281,6 +27281,8 @@ impl BufferMemoryBarrier2Next for vk::MemoryBarrierAccessFlags3KHR {}
 impl BufferMemoryBarrier2Next for MemoryBarrierAccessFlags3KHRBuilder {}
 impl ImageMemoryBarrier2Next for vk::MemoryBarrierAccessFlags3KHR {}
 impl ImageMemoryBarrier2Next for MemoryBarrierAccessFlags3KHRBuilder {}
+impl MemoryRangeBarriersInfoKHRNext for vk::MemoryBarrierAccessFlags3KHR {}
+impl MemoryRangeBarriersInfoKHRNext for MemoryBarrierAccessFlags3KHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -33927,7 +33929,7 @@ impl DecompressMemoryRegionNVBuilder {
         self.inner.decompressed_size = decompressed_size;
         self
     }
-    pub fn decompression_method(mut self, decompression_method: vk::MemoryDecompressionMethodFlagsNV) -> Self {
+    pub fn decompression_method(mut self, decompression_method: vk::MemoryDecompressionMethodFlagsEXT) -> Self {
         self.inner.decompression_method = decompression_method;
         self
     }
@@ -37010,6 +37012,46 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceSchedulingControlsFeaturesARM
 impl DeviceCreateInfoNext for vk::PhysicalDeviceSchedulingControlsFeaturesARM {}
 impl DeviceCreateInfoNext for PhysicalDeviceSchedulingControlsFeaturesARMBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSchedulingControlsPropertiesARM {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSchedulingControlsDispatchParametersPropertiesARM {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DispatchParametersARMBuilder {
+    inner: vk::DispatchParametersARM,
+}
+impl Builder<'_> for vk::DispatchParametersARM {
+    type Type = DispatchParametersARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DispatchParametersARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DispatchParametersARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn work_group_batch_size(mut self, work_group_batch_size: u32) -> Self {
+        self.inner.work_group_batch_size = work_group_batch_size;
+        self
+    }
+    pub fn max_queued_work_group_batches(mut self, max_queued_work_group_batches: u32) -> Self {
+        self.inner.max_queued_work_group_batches = max_queued_work_group_batches;
+        self
+    }
+    pub fn max_warps_per_shader_core(mut self, max_warps_per_shader_core: u32) -> Self {
+        self.inner.max_warps_per_shader_core = max_warps_per_shader_core;
+        self
+    }
+}
+impl Deref for DispatchParametersARMBuilder {
+    type Target = vk::DispatchParametersARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -39046,6 +39088,41 @@ impl DeviceCreateInfoNext for PhysicalDeviceShaderMixedFloatDotProductFeaturesVA
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct PhysicalDevicePrimitiveRestartIndexFeaturesEXTBuilder {
+    inner: vk::PhysicalDevicePrimitiveRestartIndexFeaturesEXT,
+}
+impl Builder<'_> for vk::PhysicalDevicePrimitiveRestartIndexFeaturesEXT {
+    type Type = PhysicalDevicePrimitiveRestartIndexFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDevicePrimitiveRestartIndexFeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDevicePrimitiveRestartIndexFeaturesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn primitive_restart_index(mut self, primitive_restart_index: bool) -> Self {
+        self.inner.primitive_restart_index = if primitive_restart_index { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePrimitiveRestartIndexFeaturesEXTBuilder {
+    type Target = vk::PhysicalDevicePrimitiveRestartIndexFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePrimitiveRestartIndexFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePrimitiveRestartIndexFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePrimitiveRestartIndexFeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDevicePrimitiveRestartIndexFeaturesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct PhysicalDeviceFormatPackFeaturesARMBuilder {
     inner: vk::PhysicalDeviceFormatPackFeaturesARM,
 }
@@ -39416,12 +39493,9 @@ impl<'a> TensorDependencyInfoARMBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn tensor_memory_barrier_count(mut self, tensor_memory_barrier_count: u32) -> Self {
-        self.inner.tensor_memory_barrier_count = tensor_memory_barrier_count;
-        self
-    }
-    pub fn p_tensor_memory_barriers(mut self, p_tensor_memory_barriers: &'a vk::TensorMemoryBarrierARM) -> Self {
-        self.inner.p_tensor_memory_barriers = p_tensor_memory_barriers;
+    pub fn p_tensor_memory_barriers(mut self, p_tensor_memory_barriers: &'a [vk::TensorMemoryBarrierARM]) -> Self {
+        self.inner.tensor_memory_barrier_count = p_tensor_memory_barriers.len() as u32;
+        self.inner.p_tensor_memory_barriers = p_tensor_memory_barriers.as_ptr();
         self
     }
 }
@@ -40331,7 +40405,7 @@ impl<'a> DataGraphPipelineCreateInfoARMBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn flags(mut self, flags: vk::PipelineCreateFlags2KHR) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineCreateFlags2) -> Self {
         self.inner.flags = flags;
         self
     }
@@ -41148,6 +41222,77 @@ impl GraphicsPipelineCreateInfoNext for vk::ExternalFormatOHOS {}
 impl GraphicsPipelineCreateInfoNext for ExternalFormatOHOSBuilder {}
 impl CommandBufferInheritanceInfoNext for vk::ExternalFormatOHOS {}
 impl CommandBufferInheritanceInfoNext for ExternalFormatOHOSBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PerfHintInfoQCOMBuilder {
+    inner: vk::PerfHintInfoQCOM,
+}
+impl Builder<'_> for vk::PerfHintInfoQCOM {
+    type Type = PerfHintInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PerfHintInfoQCOMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PerfHintInfoQCOM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::PerfHintTypeQCOM) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn scale(mut self, scale: u32) -> Self {
+        self.inner.scale = scale;
+        self
+    }
+}
+impl Deref for PerfHintInfoQCOMBuilder {
+    type Target = vk::PerfHintInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceQueuePerfHintFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceQueuePerfHintFeaturesQCOM,
+}
+impl Builder<'_> for vk::PhysicalDeviceQueuePerfHintFeaturesQCOM {
+    type Type = PhysicalDeviceQueuePerfHintFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceQueuePerfHintFeaturesQCOMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceQueuePerfHintFeaturesQCOM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn queue_perf_hint(mut self, queue_perf_hint: bool) -> Self {
+        self.inner.queue_perf_hint = if queue_perf_hint { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceQueuePerfHintFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceQueuePerfHintFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceQueuePerfHintFeaturesQCOM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceQueuePerfHintFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceQueuePerfHintFeaturesQCOM {}
+impl DeviceCreateInfoNext for PhysicalDeviceQueuePerfHintFeaturesQCOMBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceQueuePerfHintPropertiesQCOM {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -42741,7 +42886,14 @@ impl<'a> Builder<'a> for vk::MemoryRangeBarriersInfoKHR {
         Default::default()
     }
 }
+pub trait MemoryRangeBarriersInfoKHRNext {}
 impl<'a> MemoryRangeBarriersInfoKHRBuilder<'a> {
+    pub fn insert_next<T: MemoryRangeBarriersInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn get_mut(&mut self) -> &mut vk::MemoryRangeBarriersInfoKHR {
         &mut self.inner
     }
