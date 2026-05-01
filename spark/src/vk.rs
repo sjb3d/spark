@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.349
+//! Generated from vk.xml version 1.4.350
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -327,11 +327,16 @@ impl fmt::Display for SamplerCreateFlags {
 pub struct PipelineLayoutCreateFlags(pub(crate) u32);
 impl PipelineLayoutCreateFlags {
     pub const INDEPENDENT_SETS_EXT: Self = Self(0x2);
+    pub const NO_TASK_SHADER_KHR: Self = Self(0x4);
 }
 impl_bitmask!(PipelineLayoutCreateFlags);
 impl fmt::Display for PipelineLayoutCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x2, "INDEPENDENT_SETS_EXT")], f)
+        display_bitmask(
+            self.0 as _,
+            &[(0x2, "INDEPENDENT_SETS_EXT"), (0x4, "NO_TASK_SHADER_KHR")],
+            f,
+        )
     }
 }
 
@@ -994,6 +999,7 @@ impl ImageCreateFlags {
     pub const N2D_VIEW_COMPATIBLE_EXT: Self = Self(0x20000);
     pub const FRAGMENT_DENSITY_MAP_OFFSET_QCOM: Self = Self::FRAGMENT_DENSITY_MAP_OFFSET_EXT;
     pub const FRAGMENT_DENSITY_MAP_OFFSET_EXT: Self = Self(0x8000);
+    pub const ALIAS_SINGLE_LAYER_DESCRIPTOR_KHR: Self = Self(0x400000);
 }
 impl_bitmask!(ImageCreateFlags);
 impl fmt::Display for ImageCreateFlags {
@@ -1020,6 +1026,7 @@ impl fmt::Display for ImageCreateFlags {
                 (0x40000, "MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXT"),
                 (0x20000, "N2D_VIEW_COMPATIBLE_EXT"),
                 (0x8000, "FRAGMENT_DENSITY_MAP_OFFSET_EXT"),
+                (0x400000, "ALIAS_SINGLE_LAYER_DESCRIPTOR_KHR"),
             ],
             f,
         )
@@ -4678,6 +4685,7 @@ impl ShaderCreateFlagsEXT {
     pub const FRAGMENT_DENSITY_MAP_ATTACHMENT: Self = Self(0x40);
     pub const INDIRECT_BINDABLE: Self = Self(0x80);
     pub const N64_BIT_INDEXING: Self = Self(0x8000);
+    pub const INDEPENDENT_SETS_KHR: Self = Self(0x40000);
 }
 impl_bitmask!(ShaderCreateFlagsEXT);
 impl fmt::Display for ShaderCreateFlagsEXT {
@@ -4696,6 +4704,7 @@ impl fmt::Display for ShaderCreateFlagsEXT {
                 (0x40, "FRAGMENT_DENSITY_MAP_ATTACHMENT"),
                 (0x80, "INDIRECT_BINDABLE"),
                 (0x8000, "N64_BIT_INDEXING"),
+                (0x40000, "INDEPENDENT_SETS_KHR"),
             ],
             f,
         )
@@ -8598,9 +8607,16 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT: Self = Self(1000642000);
     pub const COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV: Self = Self(1000645000);
     pub const PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV: Self = Self(1000645001);
+    pub const PHYSICAL_DEVICE_MAINTENANCE_11_FEATURES_KHR: Self = Self(1000657000);
+    pub const QUEUE_FAMILY_OPTIMAL_IMAGE_TRANSFER_GRANULARITY_PROPERTIES_KHR: Self = Self(1000657001);
     pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT: Self = Self(1000662000);
     pub const UBM_SURFACE_CREATE_INFO_SEC: Self = Self(1000664000);
     pub const PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE: Self = Self(1000673000);
+    pub const PHYSICAL_DEVICE_THROTTLE_HINT_FEATURES_SEC: Self = Self(1000674000);
+    pub const THROTTLE_HINT_SUBMIT_INFO_SEC: Self = Self(1000674001);
+    pub const DATA_GRAPH_PIPELINE_NEURAL_STATISTICS_CREATE_INFO_ARM: Self = Self(1000676000);
+    pub const DATA_GRAPH_PIPELINE_SESSION_NEURAL_STATISTICS_CREATE_INFO_ARM: Self = Self(1000676001);
+    pub const PHYSICAL_DEVICE_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_FEATURES_ARM: Self = Self(1000676002);
     pub const PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT: Self = Self(1000678000);
 }
 impl fmt::Display for StructureType {
@@ -9688,9 +9704,16 @@ impl fmt::Display for StructureType {
             1000642000 => Some(&"PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT"),
             1000645000 => Some(&"COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV"),
             1000645001 => Some(&"PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV"),
+            1000657000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_11_FEATURES_KHR"),
+            1000657001 => Some(&"QUEUE_FAMILY_OPTIMAL_IMAGE_TRANSFER_GRANULARITY_PROPERTIES_KHR"),
             1000662000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT"),
             1000664000 => Some(&"UBM_SURFACE_CREATE_INFO_SEC"),
             1000673000 => Some(&"PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE"),
+            1000674000 => Some(&"PHYSICAL_DEVICE_THROTTLE_HINT_FEATURES_SEC"),
+            1000674001 => Some(&"THROTTLE_HINT_SUBMIT_INFO_SEC"),
+            1000676000 => Some(&"DATA_GRAPH_PIPELINE_NEURAL_STATISTICS_CREATE_INFO_ARM"),
+            1000676001 => Some(&"DATA_GRAPH_PIPELINE_SESSION_NEURAL_STATISTICS_CREATE_INFO_ARM"),
+            1000676002 => Some(&"PHYSICAL_DEVICE_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_FEATURES_ARM"),
             1000678000 => Some(&"PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT"),
             _ => None,
         };
@@ -11823,12 +11846,16 @@ pub struct DataGraphPipelinePropertyARM(pub(crate) i32);
 impl DataGraphPipelinePropertyARM {
     pub const CREATION_LOG: Self = Self(0);
     pub const IDENTIFIER: Self = Self(1);
+    pub const NEURAL_ACCELERATOR_DEBUG_DATABASE: Self = Self(1000676000);
+    pub const NEURAL_ACCELERATOR_STATISTICS_INFO: Self = Self(1000676001);
 }
 impl fmt::Display for DataGraphPipelinePropertyARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"CREATION_LOG"),
             1 => Some(&"IDENTIFIER"),
+            1000676000 => Some(&"NEURAL_ACCELERATOR_DEBUG_DATABASE"),
+            1000676001 => Some(&"NEURAL_ACCELERATOR_STATISTICS_INFO"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11845,12 +11872,14 @@ pub struct DataGraphPipelineSessionBindPointARM(pub(crate) i32);
 impl DataGraphPipelineSessionBindPointARM {
     pub const TRANSIENT: Self = Self(0);
     pub const OPTICAL_FLOW_CACHE: Self = Self(1000631001);
+    pub const NEURAL_ACCELERATOR_STATISTICS: Self = Self(1000676000);
 }
 impl fmt::Display for DataGraphPipelineSessionBindPointARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"TRANSIENT"),
             1000631001 => Some(&"OPTICAL_FLOW_CACHE"),
+            1000676000 => Some(&"NEURAL_ACCELERATOR_STATISTICS"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12103,6 +12132,54 @@ impl fmt::Display for DataGraphPipelineNodeTypeARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             1000631000 => Some(&"OPTICAL_FLOW"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct NeuralAcceleratorStatisticsModeARM(pub(crate) i32);
+impl NeuralAcceleratorStatisticsModeARM {
+    pub const DISABLED: Self = Self(0);
+    pub const STATISTICS0: Self = Self(1);
+    pub const STATISTICS1: Self = Self(2);
+}
+impl fmt::Display for NeuralAcceleratorStatisticsModeARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DISABLED"),
+            1 => Some(&"STATISTICS0"),
+            2 => Some(&"STATISTICS1"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ThrottleHintTypeSEC(pub(crate) i32);
+impl ThrottleHintTypeSEC {
+    pub const DEFAULT: Self = Self(0);
+    pub const LOW: Self = Self(1);
+    pub const HIGH: Self = Self(2);
+}
+impl fmt::Display for ThrottleHintTypeSEC {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DEFAULT"),
+            1 => Some(&"LOW"),
+            2 => Some(&"HIGH"),
             _ => None,
         };
         if let Some(name) = name {
@@ -25767,6 +25844,34 @@ impl fmt::Debug for PhysicalDeviceMaintenance9PropertiesKHR {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance11FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub maintenance11: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMaintenance11FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance11FeaturesKHR {}
+impl Default for PhysicalDeviceMaintenance11FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_11_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            maintenance11: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance11FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance11FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("maintenance11", &self.maintenance11)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceMaintenance10PropertiesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -25859,6 +25964,37 @@ impl fmt::Debug for QueueFamilyOwnershipTransferPropertiesKHR {
             .field(
                 "optimal_image_transfer_to_queue_families",
                 &self.optimal_image_transfer_to_queue_families,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct QueueFamilyOptimalImageTransferGranularityPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub optimal_image_transfer_granularity: Extent3D,
+}
+unsafe impl Send for QueueFamilyOptimalImageTransferGranularityPropertiesKHR {}
+unsafe impl Sync for QueueFamilyOptimalImageTransferGranularityPropertiesKHR {}
+impl Default for QueueFamilyOptimalImageTransferGranularityPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::QUEUE_FAMILY_OPTIMAL_IMAGE_TRANSFER_GRANULARITY_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            optimal_image_transfer_granularity: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for QueueFamilyOptimalImageTransferGranularityPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("QueueFamilyOptimalImageTransferGranularityPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "optimal_image_transfer_granularity",
+                &self.optimal_image_transfer_granularity,
             )
             .finish()
     }
@@ -43697,6 +43833,93 @@ impl fmt::Debug for GraphicsPipelineLibraryCreateInfoEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub data_graph_neural_accelerator_statistics: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM {}
+unsafe impl Sync for PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM {}
+impl Default for PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            data_graph_neural_accelerator_statistics: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "data_graph_neural_accelerator_statistics",
+                &self.data_graph_neural_accelerator_statistics,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineNeuralStatisticsCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub allow_neural_statistics: Bool32,
+}
+unsafe impl Send for DataGraphPipelineNeuralStatisticsCreateInfoARM {}
+unsafe impl Sync for DataGraphPipelineNeuralStatisticsCreateInfoARM {}
+impl Default for DataGraphPipelineNeuralStatisticsCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_NEURAL_STATISTICS_CREATE_INFO_ARM,
+            p_next: ptr::null(),
+            allow_neural_statistics: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineNeuralStatisticsCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineNeuralStatisticsCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("allow_neural_statistics", &self.allow_neural_statistics)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineSessionNeuralStatisticsCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub mode: NeuralAcceleratorStatisticsModeARM,
+}
+unsafe impl Send for DataGraphPipelineSessionNeuralStatisticsCreateInfoARM {}
+unsafe impl Sync for DataGraphPipelineSessionNeuralStatisticsCreateInfoARM {}
+impl Default for DataGraphPipelineSessionNeuralStatisticsCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_SESSION_NEURAL_STATISTICS_CREATE_INFO_ARM,
+            p_next: ptr::null(),
+            mode: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineSessionNeuralStatisticsCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineSessionNeuralStatisticsCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("mode", &self.mode)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -51682,6 +51905,62 @@ impl fmt::Debug for PhysicalDeviceFormatPackFeaturesARM {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("format_pack", &self.format_pack)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceThrottleHintFeaturesSEC {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub throttle_hint: Bool32,
+}
+unsafe impl Send for PhysicalDeviceThrottleHintFeaturesSEC {}
+unsafe impl Sync for PhysicalDeviceThrottleHintFeaturesSEC {}
+impl Default for PhysicalDeviceThrottleHintFeaturesSEC {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_THROTTLE_HINT_FEATURES_SEC,
+            p_next: ptr::null_mut(),
+            throttle_hint: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceThrottleHintFeaturesSEC {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceThrottleHintFeaturesSEC")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("throttle_hint", &self.throttle_hint)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ThrottleHintSubmitInfoSEC {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub throttle_hint: ThrottleHintTypeSEC,
+}
+unsafe impl Send for ThrottleHintSubmitInfoSEC {}
+unsafe impl Sync for ThrottleHintSubmitInfoSEC {}
+impl Default for ThrottleHintSubmitInfoSEC {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::THROTTLE_HINT_SUBMIT_INFO_SEC,
+            p_next: ptr::null(),
+            throttle_hint: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ThrottleHintSubmitInfoSEC {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ThrottleHintSubmitInfoSEC")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("throttle_hint", &self.throttle_hint)
             .finish()
     }
 }

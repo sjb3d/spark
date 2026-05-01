@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.349
+//! Generated from vk.xml version 1.4.350
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -493,8 +493,9 @@ impl<'a> DeviceCreateInfoBuilder<'a> {
         self.inner.enabled_layer_count = enabled_layer_count;
         self
     }
-    pub fn pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a *const c_char) -> Self {
-        self.inner.pp_enabled_layer_names = pp_enabled_layer_names;
+    pub fn pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a [*const c_char]) -> Self {
+        self.inner.enabled_layer_count = pp_enabled_layer_names.len() as u32;
+        self.inner.pp_enabled_layer_names = pp_enabled_layer_names.as_ptr();
         self
     }
     pub fn pp_enabled_extension_names(mut self, pp_enabled_extension_names: &'a [*const c_char]) -> Self {
@@ -13906,6 +13907,41 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceMaintenance9FeaturesKHRBuilde
 impl DeviceCreateInfoNext for vk::PhysicalDeviceMaintenance9FeaturesKHR {}
 impl DeviceCreateInfoNext for PhysicalDeviceMaintenance9FeaturesKHRBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMaintenance9PropertiesKHR {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceMaintenance11FeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceMaintenance11FeaturesKHR,
+}
+impl Builder<'_> for vk::PhysicalDeviceMaintenance11FeaturesKHR {
+    type Type = PhysicalDeviceMaintenance11FeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceMaintenance11FeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceMaintenance11FeaturesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn maintenance11(mut self, maintenance11: bool) -> Self {
+        self.inner.maintenance11 = if maintenance11 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMaintenance11FeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceMaintenance11FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMaintenance11FeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMaintenance11FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMaintenance11FeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDeviceMaintenance11FeaturesKHRBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMaintenance10PropertiesKHR {}
 
 #[repr(transparent)]
@@ -13943,6 +13979,7 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceMaintenance10FeaturesKHRBuild
 impl DeviceCreateInfoNext for vk::PhysicalDeviceMaintenance10FeaturesKHR {}
 impl DeviceCreateInfoNext for PhysicalDeviceMaintenance10FeaturesKHRBuilder {}
 impl QueueFamilyProperties2Next for vk::QueueFamilyOwnershipTransferPropertiesKHR {}
+impl QueueFamilyProperties2Next for vk::QueueFamilyOptimalImageTransferGranularityPropertiesKHR {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -30916,6 +30953,111 @@ impl GraphicsPipelineCreateInfoNext for GraphicsPipelineLibraryCreateInfoEXTBuil
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARMBuilder {
+    inner: vk::PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM,
+}
+impl Builder<'_> for vk::PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM {
+    type Type = PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn data_graph_neural_accelerator_statistics(mut self, data_graph_neural_accelerator_statistics: bool) -> Self {
+        self.inner.data_graph_neural_accelerator_statistics = if data_graph_neural_accelerator_statistics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARMBuilder {
+    type Target = vk::PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM {}
+impl DeviceCreateInfoNext for PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineNeuralStatisticsCreateInfoARMBuilder {
+    inner: vk::DataGraphPipelineNeuralStatisticsCreateInfoARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineNeuralStatisticsCreateInfoARM {
+    type Type = DataGraphPipelineNeuralStatisticsCreateInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineNeuralStatisticsCreateInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineNeuralStatisticsCreateInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn allow_neural_statistics(mut self, allow_neural_statistics: bool) -> Self {
+        self.inner.allow_neural_statistics = if allow_neural_statistics { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for DataGraphPipelineNeuralStatisticsCreateInfoARMBuilder {
+    type Target = vk::DataGraphPipelineNeuralStatisticsCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DataGraphPipelineCreateInfoARMNext for vk::DataGraphPipelineNeuralStatisticsCreateInfoARM {}
+impl DataGraphPipelineCreateInfoARMNext for DataGraphPipelineNeuralStatisticsCreateInfoARMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineSessionNeuralStatisticsCreateInfoARMBuilder {
+    inner: vk::DataGraphPipelineSessionNeuralStatisticsCreateInfoARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineSessionNeuralStatisticsCreateInfoARM {
+    type Type = DataGraphPipelineSessionNeuralStatisticsCreateInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineSessionNeuralStatisticsCreateInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineSessionNeuralStatisticsCreateInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn mode(mut self, mode: vk::NeuralAcceleratorStatisticsModeARM) -> Self {
+        self.inner.mode = mode;
+        self
+    }
+}
+impl Deref for DataGraphPipelineSessionNeuralStatisticsCreateInfoARMBuilder {
+    type Target = vk::DataGraphPipelineSessionNeuralStatisticsCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DataGraphPipelineSessionCreateInfoARMNext for vk::DataGraphPipelineSessionNeuralStatisticsCreateInfoARM {}
+impl DataGraphPipelineSessionCreateInfoARMNext for DataGraphPipelineSessionNeuralStatisticsCreateInfoARMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct PhysicalDeviceDescriptorSetHostMappingFeaturesVALVEBuilder {
     inner: vk::PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE,
 }
@@ -35212,6 +35354,10 @@ impl<'a> ShaderCreateInfoEXTBuilder<'a> {
         self.inner.p_name = p_name.map_or(ptr::null(), |r| r.as_ptr());
         self
     }
+    pub fn set_layout_count(mut self, set_layout_count: u32) -> Self {
+        self.inner.set_layout_count = set_layout_count;
+        self
+    }
     pub fn p_set_layouts(mut self, p_set_layouts: &'a [vk::DescriptorSetLayout]) -> Self {
         self.inner.set_layout_count = p_set_layouts.len() as u32;
         self.inner.p_set_layouts = p_set_layouts.as_ptr();
@@ -39158,6 +39304,74 @@ impl DeviceCreateInfoNext for PhysicalDeviceFormatPackFeaturesARMBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct PhysicalDeviceThrottleHintFeaturesSECBuilder {
+    inner: vk::PhysicalDeviceThrottleHintFeaturesSEC,
+}
+impl Builder<'_> for vk::PhysicalDeviceThrottleHintFeaturesSEC {
+    type Type = PhysicalDeviceThrottleHintFeaturesSECBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceThrottleHintFeaturesSECBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceThrottleHintFeaturesSEC {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn throttle_hint(mut self, throttle_hint: bool) -> Self {
+        self.inner.throttle_hint = if throttle_hint { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceThrottleHintFeaturesSECBuilder {
+    type Target = vk::PhysicalDeviceThrottleHintFeaturesSEC;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceThrottleHintFeaturesSEC {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceThrottleHintFeaturesSECBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceThrottleHintFeaturesSEC {}
+impl DeviceCreateInfoNext for PhysicalDeviceThrottleHintFeaturesSECBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ThrottleHintSubmitInfoSECBuilder {
+    inner: vk::ThrottleHintSubmitInfoSEC,
+}
+impl Builder<'_> for vk::ThrottleHintSubmitInfoSEC {
+    type Type = ThrottleHintSubmitInfoSECBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ThrottleHintSubmitInfoSECBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ThrottleHintSubmitInfoSEC {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn throttle_hint(mut self, throttle_hint: vk::ThrottleHintTypeSEC) -> Self {
+        self.inner.throttle_hint = throttle_hint;
+        self
+    }
+}
+impl Deref for ThrottleHintSubmitInfoSECBuilder {
+    type Target = vk::ThrottleHintSubmitInfoSEC;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SubmitInfoNext for vk::ThrottleHintSubmitInfoSEC {}
+impl SubmitInfoNext for ThrottleHintSubmitInfoSECBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct TensorDescriptionARMBuilder<'a> {
     inner: vk::TensorDescriptionARM,
     phantom: PhantomData<&'a ()>,
@@ -40508,16 +40722,24 @@ impl DataGraphPipelineCreateInfoARMNext for DataGraphPipelineShaderModuleCreateI
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct DataGraphPipelineSessionCreateInfoARMBuilder {
+pub struct DataGraphPipelineSessionCreateInfoARMBuilder<'a> {
     inner: vk::DataGraphPipelineSessionCreateInfoARM,
+    phantom: PhantomData<&'a ()>,
 }
-impl Builder<'_> for vk::DataGraphPipelineSessionCreateInfoARM {
-    type Type = DataGraphPipelineSessionCreateInfoARMBuilder;
+impl<'a> Builder<'a> for vk::DataGraphPipelineSessionCreateInfoARM {
+    type Type = DataGraphPipelineSessionCreateInfoARMBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl DataGraphPipelineSessionCreateInfoARMBuilder {
+pub trait DataGraphPipelineSessionCreateInfoARMNext {}
+impl<'a> DataGraphPipelineSessionCreateInfoARMBuilder<'a> {
+    pub fn insert_next<T: DataGraphPipelineSessionCreateInfoARMNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineSessionCreateInfoARM {
         &mut self.inner
     }
@@ -40534,7 +40756,7 @@ impl DataGraphPipelineSessionCreateInfoARMBuilder {
         self
     }
 }
-impl Deref for DataGraphPipelineSessionCreateInfoARMBuilder {
+impl<'a> Deref for DataGraphPipelineSessionCreateInfoARMBuilder<'a> {
     type Target = vk::DataGraphPipelineSessionCreateInfoARM;
     fn deref(&self) -> &Self::Target {
         &self.inner

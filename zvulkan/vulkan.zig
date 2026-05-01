@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.349
+// Generated from vk.xml version 1.4.350
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -248,6 +248,7 @@ pub const SamplerCreateFlagBits = enum(u5) {
 pub const SamplerCreateFlags = BitField(SamplerCreateFlagBits);
 pub const PipelineLayoutCreateFlagBits = enum(u5) {
     independent_sets_ext = 1,
+    no_task_shader_khr = 2,
     _,
 };
 pub const PipelineLayoutCreateFlags = BitField(PipelineLayoutCreateFlagBits);
@@ -501,6 +502,7 @@ pub const ImageCreateFlagBits = enum(u5) {
     multisampled_render_to_single_sampled_ext = 18,
     @"2d_view_compatible_ext" = 17,
     fragment_density_map_offset_ext = 15,
+    alias_single_layer_descriptor_khr = 22,
     _,
 };
 pub const ImageCreateFlags = BitField(ImageCreateFlagBits);
@@ -1849,6 +1851,7 @@ pub const ShaderCreateFlagBitsEXT = enum(u5) {
     fragment_density_map_attachment = 6,
     indirect_bindable = 7,
     @"64_bit_indexing" = 15,
+    independent_sets_khr = 18,
     _,
 };
 pub const ShaderCreateFlagsEXT = BitField(ShaderCreateFlagBitsEXT);
@@ -3843,9 +3846,16 @@ pub const StructureType = enum(i32) {
     physical_device_shader_uniform_buffer_unsized_array_features_ext = 1000642000,
     compute_occupancy_priority_parameters_nv = 1000645000,
     physical_device_compute_occupancy_priority_features_nv = 1000645001,
+    physical_device_maintenance_11_features_khr = 1000657000,
+    queue_family_optimal_image_transfer_granularity_properties_khr = 1000657001,
     physical_device_shader_subgroup_partitioned_features_ext = 1000662000,
     ubm_surface_create_info_sec = 1000664000,
     physical_device_shader_mixed_float_dot_product_features_valve = 1000673000,
+    physical_device_throttle_hint_features_sec = 1000674000,
+    throttle_hint_submit_info_sec = 1000674001,
+    data_graph_pipeline_neural_statistics_create_info_arm = 1000676000,
+    data_graph_pipeline_session_neural_statistics_create_info_arm = 1000676001,
+    physical_device_data_graph_neural_accelerator_statistics_features_arm = 1000676002,
     physical_device_primitive_restart_index_features_ext = 1000678000,
     _,
 };
@@ -4427,11 +4437,14 @@ pub const TensorTilingARM = enum(i32) {
 pub const DataGraphPipelinePropertyARM = enum(i32) {
     creation_log = 0,
     identifier = 1,
+    neural_accelerator_debug_database = 1000676000,
+    neural_accelerator_statistics_info = 1000676001,
     _,
 };
 pub const DataGraphPipelineSessionBindPointARM = enum(i32) {
     transient = 0,
     optical_flow_cache = 1000631001,
+    neural_accelerator_statistics = 1000676000,
     _,
 };
 pub const DataGraphPipelineSessionBindPointTypeARM = enum(i32) {
@@ -4498,6 +4511,18 @@ pub const DataGraphPipelineNodeConnectionTypeARM = enum(i32) {
 };
 pub const DataGraphPipelineNodeTypeARM = enum(i32) {
     optical_flow = 1000631000,
+    _,
+};
+pub const NeuralAcceleratorStatisticsModeARM = enum(i32) {
+    disabled = 0,
+    statistics0 = 1,
+    statistics1 = 2,
+    _,
+};
+pub const ThrottleHintTypeSEC = enum(i32) {
+    default = 0,
+    low = 1,
+    high = 2,
     _,
 };
 pub const ColorSpaceKHR = enum(i32) {
@@ -4956,7 +4981,7 @@ pub const DeviceCreateInfo = extern struct {
     queue_create_info_count: u32 = 0,
     p_queue_create_infos: ?[*]const DeviceQueueCreateInfo = null,
     enabled_layer_count: u32 = 0,
-    pp_enabled_layer_names: ?*const ?*const u8 = null,
+    pp_enabled_layer_names: ?[*]const ?[*:0]const u8 = null,
     enabled_extension_count: u32 = 0,
     pp_enabled_extension_names: ?[*]const ?[*:0]const u8 = null,
     p_enabled_features: ?*const PhysicalDeviceFeatures = null,
@@ -4991,6 +5016,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceMaintenance7FeaturesKHR,
             *PhysicalDeviceMaintenance8FeaturesKHR,
             *PhysicalDeviceMaintenance9FeaturesKHR,
+            *PhysicalDeviceMaintenance11FeaturesKHR,
             *PhysicalDeviceMaintenance10FeaturesKHR,
             *PhysicalDeviceShaderDrawParametersFeatures,
             *PhysicalDeviceShaderFloat16Int8Features,
@@ -5122,6 +5148,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT,
             *PhysicalDevicePipelineBinaryFeaturesKHR,
             *DevicePipelineBinaryInternalCacheControlKHR,
+            *PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM,
             *PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE,
             *PhysicalDeviceNestedCommandBufferFeaturesEXT,
             *PhysicalDeviceShaderModuleIdentifierFeaturesEXT,
@@ -5203,6 +5230,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE,
             *PhysicalDevicePrimitiveRestartIndexFeaturesEXT,
             *PhysicalDeviceFormatPackFeaturesARM,
+            *PhysicalDeviceThrottleHintFeaturesSEC,
             *PhysicalDeviceTensorFeaturesARM,
             *PhysicalDeviceDescriptorBufferTensorFeaturesARM,
             *PhysicalDeviceShaderFloat8FeaturesEXT,
@@ -6773,6 +6801,7 @@ pub const SubmitInfo = extern struct {
             *AmigoProfilingSubmitInfoSEC,
             *FrameBoundaryEXT,
             *LatencySubmissionPresentIdNV,
+            *ThrottleHintSubmitInfoSEC,
             *FrameBoundaryTensorsARM,
             => {
                 next.p_next = @constCast(self.p_next);
@@ -7454,6 +7483,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceMaintenance7FeaturesKHR,
             *PhysicalDeviceMaintenance8FeaturesKHR,
             *PhysicalDeviceMaintenance9FeaturesKHR,
+            *PhysicalDeviceMaintenance11FeaturesKHR,
             *PhysicalDeviceMaintenance10FeaturesKHR,
             *PhysicalDeviceShaderDrawParametersFeatures,
             *PhysicalDeviceShaderFloat16Int8Features,
@@ -7581,6 +7611,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceLinearColorAttachmentFeaturesNV,
             *PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT,
             *PhysicalDevicePipelineBinaryFeaturesKHR,
+            *PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM,
             *PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE,
             *PhysicalDeviceNestedCommandBufferFeaturesEXT,
             *PhysicalDeviceShaderModuleIdentifierFeaturesEXT,
@@ -7660,6 +7691,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE,
             *PhysicalDevicePrimitiveRestartIndexFeaturesEXT,
             *PhysicalDeviceFormatPackFeaturesARM,
+            *PhysicalDeviceThrottleHintFeaturesSEC,
             *PhysicalDeviceTensorFeaturesARM,
             *PhysicalDeviceDescriptorBufferTensorFeaturesARM,
             *PhysicalDeviceShaderFloat8FeaturesEXT,
@@ -7907,6 +7939,7 @@ pub const QueueFamilyProperties2 = extern struct {
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
             inline *QueueFamilyOwnershipTransferPropertiesKHR,
+            *QueueFamilyOptimalImageTransferGranularityPropertiesKHR,
             *QueueFamilyGlobalPriorityProperties,
             *QueueFamilyCheckpointPropertiesNV,
             *QueueFamilyCheckpointProperties2NV,
@@ -9377,6 +9410,11 @@ pub const PhysicalDeviceMaintenance9PropertiesKHR = extern struct {
     image_2d_view_of_3d_sparse: Bool32 = .false,
     default_vertex_attribute_value: DefaultVertexAttributeValueKHR = @enumFromInt(0),
 };
+pub const PhysicalDeviceMaintenance11FeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_maintenance_11_features_khr,
+    p_next: ?*anyopaque = null,
+    maintenance11: Bool32 = .false,
+};
 pub const PhysicalDeviceMaintenance10PropertiesKHR = extern struct {
     s_type: StructureType = .physical_device_maintenance_10_properties_khr,
     p_next: ?*anyopaque = null,
@@ -9393,6 +9431,11 @@ pub const QueueFamilyOwnershipTransferPropertiesKHR = extern struct {
     s_type: StructureType = .queue_family_ownership_transfer_properties_khr,
     p_next: ?*anyopaque = null,
     optimal_image_transfer_to_queue_families: u32 = 0,
+};
+pub const QueueFamilyOptimalImageTransferGranularityPropertiesKHR = extern struct {
+    s_type: StructureType = .queue_family_optimal_image_transfer_granularity_properties_khr,
+    p_next: ?*anyopaque = null,
+    optimal_image_transfer_granularity: Extent3D = .{},
 };
 pub const RenderingAreaInfo = extern struct {
     s_type: StructureType = .rendering_area_info,
@@ -13613,6 +13656,21 @@ pub const GraphicsPipelineLibraryCreateInfoEXT = extern struct {
     p_next: ?*const anyopaque = null,
     flags: GraphicsPipelineLibraryFlagsEXT = .none,
 };
+pub const PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM = extern struct {
+    s_type: StructureType = .physical_device_data_graph_neural_accelerator_statistics_features_arm,
+    p_next: ?*anyopaque = null,
+    data_graph_neural_accelerator_statistics: Bool32 = .false,
+};
+pub const DataGraphPipelineNeuralStatisticsCreateInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_neural_statistics_create_info_arm,
+    p_next: ?*const anyopaque = null,
+    allow_neural_statistics: Bool32 = .false,
+};
+pub const DataGraphPipelineSessionNeuralStatisticsCreateInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_session_neural_statistics_create_info_arm,
+    p_next: ?*const anyopaque = null,
+    mode: NeuralAcceleratorStatisticsModeARM = @enumFromInt(0),
+};
 pub const PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE = extern struct {
     s_type: StructureType = .physical_device_descriptor_set_host_mapping_features_valve,
     p_next: ?*anyopaque = null,
@@ -15405,6 +15463,16 @@ pub const PhysicalDeviceFormatPackFeaturesARM = extern struct {
     p_next: ?*anyopaque = null,
     format_pack: Bool32 = .false,
 };
+pub const PhysicalDeviceThrottleHintFeaturesSEC = extern struct {
+    s_type: StructureType = .physical_device_throttle_hint_features_sec,
+    p_next: ?*anyopaque = null,
+    throttle_hint: Bool32 = .false,
+};
+pub const ThrottleHintSubmitInfoSEC = extern struct {
+    s_type: StructureType = .throttle_hint_submit_info_sec,
+    p_next: ?*const anyopaque = null,
+    throttle_hint: ThrottleHintTypeSEC = @enumFromInt(0),
+};
 pub const TensorDescriptionARM = extern struct {
     s_type: StructureType = .tensor_description_arm,
     p_next: ?*const anyopaque = null,
@@ -15686,6 +15754,7 @@ pub const DataGraphPipelineCreateInfoARM = extern struct {
         switch (@TypeOf(next)) {
             inline *ShaderModuleCreateInfo,
             *PipelineCreationFeedbackCreateInfo,
+            *DataGraphPipelineNeuralStatisticsCreateInfoARM,
             *DataGraphPipelineCompilerControlCreateInfoARM,
             *DataGraphPipelineShaderModuleCreateInfoARM,
             *DataGraphPipelineIdentifierCreateInfoARM,
@@ -15715,6 +15784,17 @@ pub const DataGraphPipelineSessionCreateInfoARM = extern struct {
     p_next: ?*const anyopaque = null,
     flags: DataGraphPipelineSessionCreateFlagsARM = .none,
     data_graph_pipeline: Pipeline = .null_handle,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *DataGraphPipelineSessionNeuralStatisticsCreateInfoARM,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const DataGraphPipelineSessionBindPointRequirementsInfoARM = extern struct {
     s_type: StructureType = .data_graph_pipeline_session_bind_point_requirements_info_arm,
@@ -17613,9 +17693,12 @@ const ExtensionNames = struct {
     const sec_pipeline_cache_incremental_mode = "VK_SEC_pipeline_cache_incremental_mode";
     const ext_shader_uniform_buffer_unsized_array = "VK_EXT_shader_uniform_buffer_unsized_array";
     const nv_compute_occupancy_priority = "VK_NV_compute_occupancy_priority";
+    const khr_maintenance11 = "VK_KHR_maintenance11";
     const ext_shader_subgroup_partitioned = "VK_EXT_shader_subgroup_partitioned";
     const sec_ubm_surface = "VK_SEC_ubm_surface";
     const valve_shader_mixed_float_dot_product = "VK_VALVE_shader_mixed_float_dot_product";
+    const sec_throttle_hint = "VK_SEC_throttle_hint";
+    const arm_data_graph_neural_accelerator_statistics = "VK_ARM_data_graph_neural_accelerator_statistics";
     const ext_primitive_restart_index = "VK_EXT_primitive_restart_index";
 };
 
@@ -18878,6 +18961,15 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_khr_shader_constant_data(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_khr_shader_constant_data(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_khr_dynamic_rendering_local_read(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 3, 0).to_int() or self.supports_khr_dynamic_rendering();
     }
@@ -18888,11 +18980,11 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn supports_khr_shader_abort(self: InstanceExtensions) bool {
-        return self.supports_khr_get_physical_device_properties2() and self.supports_khr_device_fault();
+        return self.supports_khr_device_fault() and self.supports_khr_shader_constant_data();
     }
     pub fn enable_khr_shader_abort(self: *InstanceExtensions) void {
-        self.enable_khr_get_physical_device_properties2();
         self.enable_khr_device_fault();
+        self.enable_khr_shader_constant_data();
     }
 
     pub fn supports_ext_shader_image_atomic_int64(self: InstanceExtensions) bool {
@@ -20597,10 +20689,12 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn supports_khr_device_fault(self: InstanceExtensions) bool {
-        return self.supports_khr_get_physical_device_properties2();
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
     pub fn enable_khr_device_fault(self: *InstanceExtensions) void {
-        self.enable_khr_get_physical_device_properties2();
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
 
     pub fn supports_mesa_image_alignment_control(self: InstanceExtensions) bool {
@@ -20856,6 +20950,15 @@ pub const InstanceExtensions = packed struct {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
     pub fn enable_nv_compute_occupancy_priority(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_khr_maintenance11(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_khr_maintenance11(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -21294,8 +21397,11 @@ pub const DeviceExtensions = packed struct {
     sec_pipeline_cache_incremental_mode: bool = false,
     ext_shader_uniform_buffer_unsized_array: bool = false,
     nv_compute_occupancy_priority: bool = false,
+    khr_maintenance11: bool = false,
     ext_shader_subgroup_partitioned: bool = false,
     valve_shader_mixed_float_dot_product: bool = false,
+    sec_throttle_hint: bool = false,
+    arm_data_graph_neural_accelerator_statistics: bool = false,
     ext_primitive_restart_index: bool = false,
 
     pub fn enable_by_name(self: *DeviceExtensions, maybe_name: ?[*:0]const u8) void {
@@ -22084,10 +22190,16 @@ pub const DeviceExtensions = packed struct {
             self.ext_shader_uniform_buffer_unsized_array = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_compute_occupancy_priority) == .eq) {
             self.nv_compute_occupancy_priority = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance11) == .eq) {
+            self.khr_maintenance11 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_subgroup_partitioned) == .eq) {
             self.ext_shader_subgroup_partitioned = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.valve_shader_mixed_float_dot_product) == .eq) {
             self.valve_shader_mixed_float_dot_product = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.sec_throttle_hint) == .eq) {
+            self.sec_throttle_hint = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.arm_data_graph_neural_accelerator_statistics) == .eq) {
+            self.arm_data_graph_neural_accelerator_statistics = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_primitive_restart_index) == .eq) {
             self.ext_primitive_restart_index = true;
         }
@@ -22497,8 +22609,11 @@ pub const DeviceExtensions = packed struct {
         if (self.sec_pipeline_cache_incremental_mode) try names.append(allocator, ExtensionNames.sec_pipeline_cache_incremental_mode);
         if (self.ext_shader_uniform_buffer_unsized_array) try names.append(allocator, ExtensionNames.ext_shader_uniform_buffer_unsized_array);
         if (self.nv_compute_occupancy_priority) try names.append(allocator, ExtensionNames.nv_compute_occupancy_priority);
+        if (self.khr_maintenance11) try names.append(allocator, ExtensionNames.khr_maintenance11);
         if (self.ext_shader_subgroup_partitioned) try names.append(allocator, ExtensionNames.ext_shader_subgroup_partitioned);
         if (self.valve_shader_mixed_float_dot_product) try names.append(allocator, ExtensionNames.valve_shader_mixed_float_dot_product);
+        if (self.sec_throttle_hint) try names.append(allocator, ExtensionNames.sec_throttle_hint);
+        if (self.arm_data_graph_neural_accelerator_statistics) try names.append(allocator, ExtensionNames.arm_data_graph_neural_accelerator_statistics);
         if (self.ext_primitive_restart_index) try names.append(allocator, ExtensionNames.ext_primitive_restart_index);
         return names.toOwnedSlice(allocator);
     }
@@ -25815,6 +25930,13 @@ pub const DeviceExtensions = packed struct {
         self.nv_compute_occupancy_priority = true;
     }
 
+    pub fn supports_khr_maintenance11(self: DeviceExtensions) bool {
+        return self.khr_maintenance11;
+    }
+    pub fn enable_khr_maintenance11(self: *DeviceExtensions) void {
+        self.khr_maintenance11 = true;
+    }
+
     pub fn supports_ext_shader_subgroup_partitioned(self: DeviceExtensions) bool {
         return self.ext_shader_subgroup_partitioned;
     }
@@ -25830,6 +25952,20 @@ pub const DeviceExtensions = packed struct {
         if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
             self.enable_khr_shader_float16_int8();
         }
+    }
+
+    pub fn supports_sec_throttle_hint(self: DeviceExtensions) bool {
+        return self.sec_throttle_hint;
+    }
+    pub fn enable_sec_throttle_hint(self: *DeviceExtensions) void {
+        self.sec_throttle_hint = true;
+    }
+
+    pub fn supports_arm_data_graph_neural_accelerator_statistics(self: DeviceExtensions) bool {
+        return self.arm_data_graph_neural_accelerator_statistics;
+    }
+    pub fn enable_arm_data_graph_neural_accelerator_statistics(self: *DeviceExtensions) void {
+        self.arm_data_graph_neural_accelerator_statistics = true;
     }
 
     pub fn supports_ext_primitive_restart_index(self: DeviceExtensions) bool {

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.349
+//! Generated from vk.xml version 1.4.350
 
 #![allow(
     clippy::too_many_arguments,
@@ -1412,6 +1412,14 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_khr_shader_constant_data(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_shader_constant_data(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_khr_dynamic_rendering_local_read(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 3, 0) || self.supports_khr_dynamic_rendering()
     }
@@ -1421,11 +1429,11 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_shader_abort(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2() && self.supports_khr_device_fault()
+        self.supports_khr_device_fault() && self.supports_khr_shader_constant_data()
     }
     pub fn enable_khr_shader_abort(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
         self.enable_khr_device_fault();
+        self.enable_khr_shader_constant_data();
     }
     pub fn supports_ext_shader_image_atomic_int64(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -3032,10 +3040,12 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_device_fault(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_device_fault(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_mesa_image_alignment_control(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -3270,6 +3280,14 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_compute_occupancy_priority(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_khr_maintenance11(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_maintenance11(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -6119,8 +6137,11 @@ pub struct DeviceExtensions {
     pub sec_pipeline_cache_incremental_mode: bool,
     pub ext_shader_uniform_buffer_unsized_array: bool,
     pub nv_compute_occupancy_priority: bool,
+    pub khr_maintenance11: bool,
     pub ext_shader_subgroup_partitioned: bool,
     pub valve_shader_mixed_float_dot_product: bool,
+    pub sec_throttle_hint: bool,
+    pub arm_data_graph_neural_accelerator_statistics: bool,
     pub ext_primitive_restart_index: bool,
 }
 impl DeviceExtensions {
@@ -6909,10 +6930,16 @@ impl DeviceExtensions {
             self.ext_shader_uniform_buffer_unsized_array = true;
         } else if name == c"VK_NV_compute_occupancy_priority" {
             self.nv_compute_occupancy_priority = true;
+        } else if name == c"VK_KHR_maintenance11" {
+            self.khr_maintenance11 = true;
         } else if name == c"VK_EXT_shader_subgroup_partitioned" {
             self.ext_shader_subgroup_partitioned = true;
         } else if name == c"VK_VALVE_shader_mixed_float_dot_product" {
             self.valve_shader_mixed_float_dot_product = true;
+        } else if name == c"VK_SEC_throttle_hint" {
+            self.sec_throttle_hint = true;
+        } else if name == c"VK_ARM_data_graph_neural_accelerator_statistics" {
+            self.arm_data_graph_neural_accelerator_statistics = true;
         } else if name == c"VK_EXT_primitive_restart_index" {
             self.ext_primitive_restart_index = true;
         }
@@ -7312,8 +7339,11 @@ impl DeviceExtensions {
             sec_pipeline_cache_incremental_mode: false,
             ext_shader_uniform_buffer_unsized_array: false,
             nv_compute_occupancy_priority: false,
+            khr_maintenance11: false,
             ext_shader_subgroup_partitioned: false,
             valve_shader_mixed_float_dot_product: false,
+            sec_throttle_hint: false,
+            arm_data_graph_neural_accelerator_statistics: false,
             ext_primitive_restart_index: false,
         }
     }
@@ -10435,6 +10465,12 @@ impl DeviceExtensions {
     pub fn enable_nv_compute_occupancy_priority(&mut self) {
         self.nv_compute_occupancy_priority = true;
     }
+    pub fn supports_khr_maintenance11(&self) -> bool {
+        self.khr_maintenance11
+    }
+    pub fn enable_khr_maintenance11(&mut self) {
+        self.khr_maintenance11 = true;
+    }
     pub fn supports_ext_shader_subgroup_partitioned(&self) -> bool {
         self.ext_shader_subgroup_partitioned
     }
@@ -10450,6 +10486,18 @@ impl DeviceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
             self.enable_khr_shader_float16_int8();
         }
+    }
+    pub fn supports_sec_throttle_hint(&self) -> bool {
+        self.sec_throttle_hint
+    }
+    pub fn enable_sec_throttle_hint(&mut self) {
+        self.sec_throttle_hint = true;
+    }
+    pub fn supports_arm_data_graph_neural_accelerator_statistics(&self) -> bool {
+        self.arm_data_graph_neural_accelerator_statistics
+    }
+    pub fn enable_arm_data_graph_neural_accelerator_statistics(&mut self) {
+        self.arm_data_graph_neural_accelerator_statistics = true;
     }
     pub fn supports_ext_primitive_restart_index(&self) -> bool {
         self.ext_primitive_restart_index
@@ -11635,11 +11683,20 @@ impl DeviceExtensions {
         if self.nv_compute_occupancy_priority {
             v.push(c"VK_NV_compute_occupancy_priority");
         }
+        if self.khr_maintenance11 {
+            v.push(c"VK_KHR_maintenance11");
+        }
         if self.ext_shader_subgroup_partitioned {
             v.push(c"VK_EXT_shader_subgroup_partitioned");
         }
         if self.valve_shader_mixed_float_dot_product {
             v.push(c"VK_VALVE_shader_mixed_float_dot_product");
+        }
+        if self.sec_throttle_hint {
+            v.push(c"VK_SEC_throttle_hint");
+        }
+        if self.arm_data_graph_neural_accelerator_statistics {
+            v.push(c"VK_ARM_data_graph_neural_accelerator_statistics");
         }
         if self.ext_primitive_restart_index {
             v.push(c"VK_EXT_primitive_restart_index");
