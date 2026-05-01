@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.348
+//! Generated from vk.xml version 1.4.349
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -2631,6 +2631,9 @@ impl FormatFeatureFlags2 {
     pub const DEPTH_COPY_ON_TRANSFER_QUEUE_KHR: Self = Self(0x20000000000000);
     pub const STENCIL_COPY_ON_COMPUTE_QUEUE_KHR: Self = Self(0x40000000000000);
     pub const STENCIL_COPY_ON_TRANSFER_QUEUE_KHR: Self = Self(0x80000000000000);
+    pub const DATA_GRAPH_OPTICAL_FLOW_IMAGE_ARM: Self = Self(0x100000000000000);
+    pub const DATA_GRAPH_OPTICAL_FLOW_VECTOR_ARM: Self = Self(0x200000000000000);
+    pub const DATA_GRAPH_OPTICAL_FLOW_COST_ARM: Self = Self(0x400000000000000);
 }
 impl_bitmask!(FormatFeatureFlags2);
 impl fmt::Display for FormatFeatureFlags2 {
@@ -2692,6 +2695,9 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x20000000000000, "DEPTH_COPY_ON_TRANSFER_QUEUE_KHR"),
                 (0x40000000000000, "STENCIL_COPY_ON_COMPUTE_QUEUE_KHR"),
                 (0x80000000000000, "STENCIL_COPY_ON_TRANSFER_QUEUE_KHR"),
+                (0x100000000000000, "DATA_GRAPH_OPTICAL_FLOW_IMAGE_ARM"),
+                (0x200000000000000, "DATA_GRAPH_OPTICAL_FLOW_VECTOR_ARM"),
+                (0x400000000000000, "DATA_GRAPH_OPTICAL_FLOW_COST_ARM"),
             ],
             f,
         )
@@ -3150,11 +3156,12 @@ impl fmt::Display for TensorViewCreateFlagsARM {
 pub struct DataGraphPipelineSessionCreateFlagsARM(pub(crate) u64);
 impl DataGraphPipelineSessionCreateFlagsARM {
     pub const PROTECTED: Self = Self(0x1);
+    pub const OPTICAL_FLOW_CACHE: Self = Self(0x2);
 }
 impl_bitmask!(DataGraphPipelineSessionCreateFlagsARM);
 impl fmt::Display for DataGraphPipelineSessionCreateFlagsARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x1, "PROTECTED")], f)
+        display_bitmask(self.0 as _, &[(0x1, "PROTECTED"), (0x2, "OPTICAL_FLOW_CACHE")], f)
     }
 }
 
@@ -4843,6 +4850,94 @@ impl fmt::Display for DataGraphTOSAQualityFlagsARM {
                 (0x2, "CONFORMANT"),
                 (0x4, "EXPERIMENTAL"),
                 (0x8, "DEPRECATED"),
+            ],
+            f,
+        )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DataGraphOpticalFlowGridSizeFlagsARM(pub(crate) u32);
+impl DataGraphOpticalFlowGridSizeFlagsARM {
+    pub const UNKNOWN: Self = Self(0x0);
+    pub const N1X1: Self = Self(0x1);
+    pub const N2X2: Self = Self(0x2);
+    pub const N4X4: Self = Self(0x4);
+    pub const N8X8: Self = Self(0x8);
+}
+impl_bitmask!(DataGraphOpticalFlowGridSizeFlagsARM);
+impl fmt::Display for DataGraphOpticalFlowGridSizeFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "N1X1"), (0x2, "N2X2"), (0x4, "N4X4"), (0x8, "N8X8")],
+            f,
+        )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DataGraphOpticalFlowImageUsageFlagsARM(pub(crate) u32);
+impl DataGraphOpticalFlowImageUsageFlagsARM {
+    pub const UNKNOWN: Self = Self(0x0);
+    pub const INPUT: Self = Self(0x1);
+    pub const OUTPUT: Self = Self(0x2);
+    pub const HINT: Self = Self(0x4);
+    pub const COST: Self = Self(0x8);
+}
+impl_bitmask!(DataGraphOpticalFlowImageUsageFlagsARM);
+impl fmt::Display for DataGraphOpticalFlowImageUsageFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "INPUT"), (0x2, "OUTPUT"), (0x4, "HINT"), (0x8, "COST")],
+            f,
+        )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DataGraphOpticalFlowCreateFlagsARM(pub(crate) u32);
+impl DataGraphOpticalFlowCreateFlagsARM {
+    pub const ENABLE_HINT: Self = Self(0x1);
+    pub const ENABLE_COST: Self = Self(0x2);
+    pub const RESERVED_30: Self = Self(0x40000000);
+}
+impl_bitmask!(DataGraphOpticalFlowCreateFlagsARM);
+impl fmt::Display for DataGraphOpticalFlowCreateFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "ENABLE_HINT"), (0x2, "ENABLE_COST"), (0x40000000, "RESERVED_30")],
+            f,
+        )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DataGraphOpticalFlowExecuteFlagsARM(pub(crate) u32);
+impl DataGraphOpticalFlowExecuteFlagsARM {
+    pub const DISABLE_TEMPORAL_HINTS: Self = Self(0x1);
+    pub const INPUT_UNCHANGED: Self = Self(0x2);
+    pub const REFERENCE_UNCHANGED: Self = Self(0x4);
+    pub const INPUT_IS_PREVIOUS_REFERENCE: Self = Self(0x8);
+    pub const REFERENCE_IS_PREVIOUS_INPUT: Self = Self(0x10);
+}
+impl_bitmask!(DataGraphOpticalFlowExecuteFlagsARM);
+impl fmt::Display for DataGraphOpticalFlowExecuteFlagsARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "DISABLE_TEMPORAL_HINTS"),
+                (0x2, "INPUT_UNCHANGED"),
+                (0x4, "REFERENCE_UNCHANGED"),
+                (0x8, "INPUT_IS_PREVIOUS_REFERENCE"),
+                (0x10, "REFERENCE_IS_PREVIOUS_INPUT"),
             ],
             f,
         )
@@ -8488,6 +8583,15 @@ impl StructureType {
     pub const RENDERING_ATTACHMENT_FLAGS_INFO_KHR: Self = Self(1000630002);
     pub const RENDERING_END_INFO_KHR: Self = Self(1000619003);
     pub const RESOLVE_IMAGE_MODE_INFO_KHR: Self = Self(1000630004);
+    pub const PHYSICAL_DEVICE_DATA_GRAPH_OPTICAL_FLOW_FEATURES_ARM: Self = Self(1000631000);
+    pub const QUEUE_FAMILY_DATA_GRAPH_OPTICAL_FLOW_PROPERTIES_ARM: Self = Self(1000631001);
+    pub const DATA_GRAPH_OPTICAL_FLOW_IMAGE_FORMAT_INFO_ARM: Self = Self(1000631003);
+    pub const DATA_GRAPH_OPTICAL_FLOW_IMAGE_FORMAT_PROPERTIES_ARM: Self = Self(1000631004);
+    pub const DATA_GRAPH_PIPELINE_OPTICAL_FLOW_DISPATCH_INFO_ARM: Self = Self(1000631005);
+    pub const DATA_GRAPH_PIPELINE_OPTICAL_FLOW_CREATE_INFO_ARM: Self = Self(1000631002);
+    pub const DATA_GRAPH_PIPELINE_RESOURCE_INFO_IMAGE_LAYOUT_ARM: Self = Self(1000631006);
+    pub const DATA_GRAPH_PIPELINE_SINGLE_NODE_CREATE_INFO_ARM: Self = Self(1000631007);
+    pub const DATA_GRAPH_PIPELINE_SINGLE_NODE_CONNECTION_ARM: Self = Self(1000631008);
     pub const PHYSICAL_DEVICE_SHADER_LONG_VECTOR_FEATURES_EXT: Self = Self(1000635000);
     pub const PHYSICAL_DEVICE_SHADER_LONG_VECTOR_PROPERTIES_EXT: Self = Self(1000635001);
     pub const PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC: Self = Self(1000637000);
@@ -9569,6 +9673,15 @@ impl fmt::Display for StructureType {
             1000630002 => Some(&"RENDERING_ATTACHMENT_FLAGS_INFO_KHR"),
             1000619003 => Some(&"RENDERING_END_INFO_KHR"),
             1000630004 => Some(&"RESOLVE_IMAGE_MODE_INFO_KHR"),
+            1000631000 => Some(&"PHYSICAL_DEVICE_DATA_GRAPH_OPTICAL_FLOW_FEATURES_ARM"),
+            1000631001 => Some(&"QUEUE_FAMILY_DATA_GRAPH_OPTICAL_FLOW_PROPERTIES_ARM"),
+            1000631003 => Some(&"DATA_GRAPH_OPTICAL_FLOW_IMAGE_FORMAT_INFO_ARM"),
+            1000631004 => Some(&"DATA_GRAPH_OPTICAL_FLOW_IMAGE_FORMAT_PROPERTIES_ARM"),
+            1000631005 => Some(&"DATA_GRAPH_PIPELINE_OPTICAL_FLOW_DISPATCH_INFO_ARM"),
+            1000631002 => Some(&"DATA_GRAPH_PIPELINE_OPTICAL_FLOW_CREATE_INFO_ARM"),
+            1000631006 => Some(&"DATA_GRAPH_PIPELINE_RESOURCE_INFO_IMAGE_LAYOUT_ARM"),
+            1000631007 => Some(&"DATA_GRAPH_PIPELINE_SINGLE_NODE_CREATE_INFO_ARM"),
+            1000631008 => Some(&"DATA_GRAPH_PIPELINE_SINGLE_NODE_CONNECTION_ARM"),
             1000635000 => Some(&"PHYSICAL_DEVICE_SHADER_LONG_VECTOR_FEATURES_EXT"),
             1000635001 => Some(&"PHYSICAL_DEVICE_SHADER_LONG_VECTOR_PROPERTIES_EXT"),
             1000637000 => Some(&"PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC"),
@@ -11731,11 +11844,13 @@ impl fmt::Display for DataGraphPipelinePropertyARM {
 pub struct DataGraphPipelineSessionBindPointARM(pub(crate) i32);
 impl DataGraphPipelineSessionBindPointARM {
     pub const TRANSIENT: Self = Self(0);
+    pub const OPTICAL_FLOW_CACHE: Self = Self(1000631001);
 }
 impl fmt::Display for DataGraphPipelineSessionBindPointARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"TRANSIENT"),
+            1000631001 => Some(&"OPTICAL_FLOW_CACHE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11797,6 +11912,7 @@ impl PhysicalDeviceDataGraphOperationTypeARM {
     pub const SPIRV_EXTENDED_INSTRUCTION_SET: Self = Self(0);
     pub const NEURAL_MODEL_QCOM: Self = Self(1000629000);
     pub const BUILTIN_MODEL_QCOM: Self = Self(1000629001);
+    pub const OPTICAL_FLOW: Self = Self(1000631000);
 }
 impl fmt::Display for PhysicalDeviceDataGraphOperationTypeARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -11804,6 +11920,7 @@ impl fmt::Display for PhysicalDeviceDataGraphOperationTypeARM {
             0 => Some(&"SPIRV_EXTENDED_INSTRUCTION_SET"),
             1000629000 => Some(&"NEURAL_MODEL_QCOM"),
             1000629001 => Some(&"BUILTIN_MODEL_QCOM"),
+            1000631000 => Some(&"OPTICAL_FLOW"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11912,6 +12029,80 @@ impl fmt::Display for DataGraphTOSALevelARM {
         let name = match self.0 {
             0 => Some(&"NONE"),
             1 => Some(&"N8K"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DataGraphOpticalFlowPerformanceLevelARM(pub(crate) i32);
+impl DataGraphOpticalFlowPerformanceLevelARM {
+    pub const UNKNOWN: Self = Self(0);
+    pub const SLOW: Self = Self(1);
+    pub const MEDIUM: Self = Self(2);
+    pub const FAST: Self = Self(3);
+}
+impl fmt::Display for DataGraphOpticalFlowPerformanceLevelARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"UNKNOWN"),
+            1 => Some(&"SLOW"),
+            2 => Some(&"MEDIUM"),
+            3 => Some(&"FAST"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DataGraphPipelineNodeConnectionTypeARM(pub(crate) i32);
+impl DataGraphPipelineNodeConnectionTypeARM {
+    pub const OPTICAL_FLOW_INPUT: Self = Self(1000631000);
+    pub const OPTICAL_FLOW_REFERENCE: Self = Self(1000631001);
+    pub const OPTICAL_FLOW_HINT: Self = Self(1000631002);
+    pub const OPTICAL_FLOW_FLOW_VECTOR: Self = Self(1000631003);
+    pub const OPTICAL_FLOW_COST: Self = Self(1000631004);
+}
+impl fmt::Display for DataGraphPipelineNodeConnectionTypeARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            1000631000 => Some(&"OPTICAL_FLOW_INPUT"),
+            1000631001 => Some(&"OPTICAL_FLOW_REFERENCE"),
+            1000631002 => Some(&"OPTICAL_FLOW_HINT"),
+            1000631003 => Some(&"OPTICAL_FLOW_FLOW_VECTOR"),
+            1000631004 => Some(&"OPTICAL_FLOW_COST"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DataGraphPipelineNodeTypeARM(pub(crate) i32);
+impl DataGraphPipelineNodeTypeARM {
+    pub const OPTICAL_FLOW: Self = Self(1000631000);
+}
+impl fmt::Display for DataGraphPipelineNodeTypeARM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            1000631000 => Some(&"OPTICAL_FLOW"),
             _ => None,
         };
         if let Some(name) = name {
@@ -52565,6 +52756,34 @@ impl fmt::Debug for DataGraphPipelineResourceInfoARM {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct DataGraphPipelineResourceInfoImageLayoutARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub layout: ImageLayout,
+}
+unsafe impl Send for DataGraphPipelineResourceInfoImageLayoutARM {}
+unsafe impl Sync for DataGraphPipelineResourceInfoImageLayoutARM {}
+impl Default for DataGraphPipelineResourceInfoImageLayoutARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_RESOURCE_INFO_IMAGE_LAYOUT_ARM,
+            p_next: ptr::null(),
+            layout: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineResourceInfoImageLayoutARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineResourceInfoImageLayoutARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("layout", &self.layout)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct DataGraphPipelineCompilerControlCreateInfoARM {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -55677,6 +55896,290 @@ impl fmt::Debug for QueueFamilyDataGraphTOSAPropertiesARM {
             .field("extension_count", &self.extension_count)
             .field("p_extensions", &self.p_extensions)
             .field("level", &self.level)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineSingleNodeConnectionARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub set: u32,
+    pub binding: u32,
+    pub connection: DataGraphPipelineNodeConnectionTypeARM,
+}
+unsafe impl Send for DataGraphPipelineSingleNodeConnectionARM {}
+unsafe impl Sync for DataGraphPipelineSingleNodeConnectionARM {}
+impl Default for DataGraphPipelineSingleNodeConnectionARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_SINGLE_NODE_CONNECTION_ARM,
+            p_next: ptr::null_mut(),
+            set: Default::default(),
+            binding: Default::default(),
+            connection: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineSingleNodeConnectionARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineSingleNodeConnectionARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("set", &self.set)
+            .field("binding", &self.binding)
+            .field("connection", &self.connection)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDataGraphOpticalFlowFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub data_graph_optical_flow: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDataGraphOpticalFlowFeaturesARM {}
+unsafe impl Sync for PhysicalDeviceDataGraphOpticalFlowFeaturesARM {}
+impl Default for PhysicalDeviceDataGraphOpticalFlowFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DATA_GRAPH_OPTICAL_FLOW_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            data_graph_optical_flow: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDataGraphOpticalFlowFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDataGraphOpticalFlowFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("data_graph_optical_flow", &self.data_graph_optical_flow)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct QueueFamilyDataGraphOpticalFlowPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub supported_output_grid_sizes: DataGraphOpticalFlowGridSizeFlagsARM,
+    pub supported_hint_grid_sizes: DataGraphOpticalFlowGridSizeFlagsARM,
+    pub hint_supported: Bool32,
+    pub cost_supported: Bool32,
+    pub min_width: u32,
+    pub min_height: u32,
+    pub max_width: u32,
+    pub max_height: u32,
+}
+unsafe impl Send for QueueFamilyDataGraphOpticalFlowPropertiesARM {}
+unsafe impl Sync for QueueFamilyDataGraphOpticalFlowPropertiesARM {}
+impl Default for QueueFamilyDataGraphOpticalFlowPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::QUEUE_FAMILY_DATA_GRAPH_OPTICAL_FLOW_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            supported_output_grid_sizes: Default::default(),
+            supported_hint_grid_sizes: Default::default(),
+            hint_supported: Default::default(),
+            cost_supported: Default::default(),
+            min_width: Default::default(),
+            min_height: Default::default(),
+            max_width: Default::default(),
+            max_height: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for QueueFamilyDataGraphOpticalFlowPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("QueueFamilyDataGraphOpticalFlowPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("supported_output_grid_sizes", &self.supported_output_grid_sizes)
+            .field("supported_hint_grid_sizes", &self.supported_hint_grid_sizes)
+            .field("hint_supported", &self.hint_supported)
+            .field("cost_supported", &self.cost_supported)
+            .field("min_width", &self.min_width)
+            .field("min_height", &self.min_height)
+            .field("max_width", &self.max_width)
+            .field("max_height", &self.max_height)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphOpticalFlowImageFormatInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub usage: DataGraphOpticalFlowImageUsageFlagsARM,
+}
+unsafe impl Send for DataGraphOpticalFlowImageFormatInfoARM {}
+unsafe impl Sync for DataGraphOpticalFlowImageFormatInfoARM {}
+impl Default for DataGraphOpticalFlowImageFormatInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_OPTICAL_FLOW_IMAGE_FORMAT_INFO_ARM,
+            p_next: ptr::null(),
+            usage: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphOpticalFlowImageFormatInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphOpticalFlowImageFormatInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("usage", &self.usage)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphOpticalFlowImageFormatPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub format: Format,
+}
+unsafe impl Send for DataGraphOpticalFlowImageFormatPropertiesARM {}
+unsafe impl Sync for DataGraphOpticalFlowImageFormatPropertiesARM {}
+impl Default for DataGraphOpticalFlowImageFormatPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_OPTICAL_FLOW_IMAGE_FORMAT_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            format: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphOpticalFlowImageFormatPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphOpticalFlowImageFormatPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("format", &self.format)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineSingleNodeCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub node_type: DataGraphPipelineNodeTypeARM,
+    pub connection_count: u32,
+    pub p_connections: *const DataGraphPipelineSingleNodeConnectionARM,
+}
+unsafe impl Send for DataGraphPipelineSingleNodeCreateInfoARM {}
+unsafe impl Sync for DataGraphPipelineSingleNodeCreateInfoARM {}
+impl Default for DataGraphPipelineSingleNodeCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_SINGLE_NODE_CREATE_INFO_ARM,
+            p_next: ptr::null_mut(),
+            node_type: Default::default(),
+            connection_count: Default::default(),
+            p_connections: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineSingleNodeCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineSingleNodeCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("node_type", &self.node_type)
+            .field("connection_count", &self.connection_count)
+            .field("p_connections", &self.p_connections)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineOpticalFlowCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub width: u32,
+    pub height: u32,
+    pub image_format: Format,
+    pub flow_vector_format: Format,
+    pub cost_format: Format,
+    pub output_grid_size: DataGraphOpticalFlowGridSizeFlagsARM,
+    pub hint_grid_size: DataGraphOpticalFlowGridSizeFlagsARM,
+    pub performance_level: DataGraphOpticalFlowPerformanceLevelARM,
+    pub flags: DataGraphOpticalFlowCreateFlagsARM,
+}
+unsafe impl Send for DataGraphPipelineOpticalFlowCreateInfoARM {}
+unsafe impl Sync for DataGraphPipelineOpticalFlowCreateInfoARM {}
+impl Default for DataGraphPipelineOpticalFlowCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_OPTICAL_FLOW_CREATE_INFO_ARM,
+            p_next: ptr::null_mut(),
+            width: Default::default(),
+            height: Default::default(),
+            image_format: Default::default(),
+            flow_vector_format: Default::default(),
+            cost_format: Default::default(),
+            output_grid_size: Default::default(),
+            hint_grid_size: Default::default(),
+            performance_level: Default::default(),
+            flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineOpticalFlowCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineOpticalFlowCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("width", &self.width)
+            .field("height", &self.height)
+            .field("image_format", &self.image_format)
+            .field("flow_vector_format", &self.flow_vector_format)
+            .field("cost_format", &self.cost_format)
+            .field("output_grid_size", &self.output_grid_size)
+            .field("hint_grid_size", &self.hint_grid_size)
+            .field("performance_level", &self.performance_level)
+            .field("flags", &self.flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DataGraphPipelineOpticalFlowDispatchInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub flags: DataGraphOpticalFlowExecuteFlagsARM,
+    pub mean_flow_l1_norm_hint: u32,
+}
+unsafe impl Send for DataGraphPipelineOpticalFlowDispatchInfoARM {}
+unsafe impl Sync for DataGraphPipelineOpticalFlowDispatchInfoARM {}
+impl Default for DataGraphPipelineOpticalFlowDispatchInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DATA_GRAPH_PIPELINE_OPTICAL_FLOW_DISPATCH_INFO_ARM,
+            p_next: ptr::null_mut(),
+            flags: Default::default(),
+            mean_flow_l1_norm_hint: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DataGraphPipelineOpticalFlowDispatchInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DataGraphPipelineOpticalFlowDispatchInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("mean_flow_l1_norm_hint", &self.mean_flow_l1_norm_hint)
             .finish()
     }
 }
@@ -58800,3 +59303,11 @@ pub type FnGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM = u
 ) -> Result;
 pub type FnCmdSetDispatchParametersARM =
     unsafe extern "system" fn(command_buffer: CommandBuffer, p_dispatch_parameters: *const DispatchParametersARM);
+pub type FnGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM = unsafe extern "system" fn(
+    physical_device: PhysicalDevice,
+    queue_family_index: u32,
+    p_queue_family_data_graph_properties: *const QueueFamilyDataGraphPropertiesARM,
+    p_optical_flow_image_format_info: *const DataGraphOpticalFlowImageFormatInfoARM,
+    p_format_count: *mut u32,
+    p_image_format_properties: *mut DataGraphOpticalFlowImageFormatPropertiesARM,
+) -> Result;

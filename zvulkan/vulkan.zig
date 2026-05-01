@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.348
+// Generated from vk.xml version 1.4.349
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -1111,6 +1111,9 @@ pub const FormatFeatureFlagBits2 = enum(u6) {
     depth_copy_on_transfer_queue_khr = 53,
     stencil_copy_on_compute_queue_khr = 54,
     stencil_copy_on_transfer_queue_khr = 55,
+    data_graph_optical_flow_image_arm = 56,
+    data_graph_optical_flow_vector_arm = 57,
+    data_graph_optical_flow_cost_arm = 58,
     _,
 };
 pub const FormatFeatureFlags2 = BitField(FormatFeatureFlagBits2);
@@ -1283,6 +1286,7 @@ pub const TensorViewCreateFlagBitsARM = enum(u6) {
 pub const TensorViewCreateFlagsARM = BitField(TensorViewCreateFlagBitsARM);
 pub const DataGraphPipelineSessionCreateFlagBitsARM = enum(u6) {
     protected = 0,
+    optical_flow_cache = 1,
     _,
 };
 pub const DataGraphPipelineSessionCreateFlagsARM = BitField(DataGraphPipelineSessionCreateFlagBitsARM);
@@ -1900,6 +1904,44 @@ pub const DataGraphTOSAQualityFlagBitsARM = enum(u5) {
     _,
 };
 pub const DataGraphTOSAQualityFlagsARM = BitField(DataGraphTOSAQualityFlagBitsARM);
+pub const DataGraphOpticalFlowGridSizeFlagBitsARM = enum(u5) {
+    @"1x1" = 0,
+    @"2x2" = 1,
+    @"4x4" = 2,
+    @"8x8" = 3,
+    _,
+};
+pub const DataGraphOpticalFlowGridSizeFlagsARM = BitField(DataGraphOpticalFlowGridSizeFlagBitsARM);
+pub const DataGraphOpticalFlowGridSizeFlagMasksARM = struct {
+    pub const unknown = DataGraphOpticalFlowGridSizeFlagsARM{ .bits = 0x0 };
+};
+pub const DataGraphOpticalFlowImageUsageFlagBitsARM = enum(u5) {
+    input = 0,
+    output = 1,
+    hint = 2,
+    cost = 3,
+    _,
+};
+pub const DataGraphOpticalFlowImageUsageFlagsARM = BitField(DataGraphOpticalFlowImageUsageFlagBitsARM);
+pub const DataGraphOpticalFlowImageUsageFlagMasksARM = struct {
+    pub const unknown = DataGraphOpticalFlowImageUsageFlagsARM{ .bits = 0x0 };
+};
+pub const DataGraphOpticalFlowCreateFlagBitsARM = enum(u5) {
+    enable_hint = 0,
+    enable_cost = 1,
+    reserved_30 = 30,
+    _,
+};
+pub const DataGraphOpticalFlowCreateFlagsARM = BitField(DataGraphOpticalFlowCreateFlagBitsARM);
+pub const DataGraphOpticalFlowExecuteFlagBitsARM = enum(u5) {
+    disable_temporal_hints = 0,
+    input_unchanged = 1,
+    reference_unchanged = 2,
+    input_is_previous_reference = 3,
+    reference_is_previous_input = 4,
+    _,
+};
+pub const DataGraphOpticalFlowExecuteFlagsARM = BitField(DataGraphOpticalFlowExecuteFlagBitsARM);
 pub const AccessFlagBits3KHR = enum(u6) {
     _,
 };
@@ -3786,6 +3828,15 @@ pub const StructureType = enum(i32) {
     rendering_attachment_flags_info_khr = 1000630002,
     rendering_end_info_khr = 1000619003,
     resolve_image_mode_info_khr = 1000630004,
+    physical_device_data_graph_optical_flow_features_arm = 1000631000,
+    queue_family_data_graph_optical_flow_properties_arm = 1000631001,
+    data_graph_optical_flow_image_format_info_arm = 1000631003,
+    data_graph_optical_flow_image_format_properties_arm = 1000631004,
+    data_graph_pipeline_optical_flow_dispatch_info_arm = 1000631005,
+    data_graph_pipeline_optical_flow_create_info_arm = 1000631002,
+    data_graph_pipeline_resource_info_image_layout_arm = 1000631006,
+    data_graph_pipeline_single_node_create_info_arm = 1000631007,
+    data_graph_pipeline_single_node_connection_arm = 1000631008,
     physical_device_shader_long_vector_features_ext = 1000635000,
     physical_device_shader_long_vector_properties_ext = 1000635001,
     physical_device_pipeline_cache_incremental_mode_features_sec = 1000637000,
@@ -4380,6 +4431,7 @@ pub const DataGraphPipelinePropertyARM = enum(i32) {
 };
 pub const DataGraphPipelineSessionBindPointARM = enum(i32) {
     transient = 0,
+    optical_flow_cache = 1000631001,
     _,
 };
 pub const DataGraphPipelineSessionBindPointTypeARM = enum(i32) {
@@ -4396,6 +4448,7 @@ pub const PhysicalDeviceDataGraphOperationTypeARM = enum(i32) {
     spirv_extended_instruction_set = 0,
     neural_model_qcom = 1000629000,
     builtin_model_qcom = 1000629001,
+    optical_flow = 1000631000,
     _,
 };
 pub const DataGraphModelCacheTypeQCOM = enum(i32) {
@@ -4426,6 +4479,25 @@ pub const DescriptorMappingSourceEXT = enum(i32) {
 pub const DataGraphTOSALevelARM = enum(i32) {
     none = 0,
     @"8k" = 1,
+    _,
+};
+pub const DataGraphOpticalFlowPerformanceLevelARM = enum(i32) {
+    unknown = 0,
+    slow = 1,
+    medium = 2,
+    fast = 3,
+    _,
+};
+pub const DataGraphPipelineNodeConnectionTypeARM = enum(i32) {
+    optical_flow_input = 1000631000,
+    optical_flow_reference = 1000631001,
+    optical_flow_hint = 1000631002,
+    optical_flow_flow_vector = 1000631003,
+    optical_flow_cost = 1000631004,
+    _,
+};
+pub const DataGraphPipelineNodeTypeARM = enum(i32) {
+    optical_flow = 1000631000,
     _,
 };
 pub const ColorSpaceKHR = enum(i32) {
@@ -5150,6 +5222,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceDeviceAddressCommandsFeaturesKHR,
             *PhysicalDeviceShaderConstantDataFeaturesKHR,
             *PhysicalDeviceShaderAbortFeaturesKHR,
+            *PhysicalDeviceDataGraphOpticalFlowFeaturesARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -5488,6 +5561,7 @@ pub const ImageCreateInfo = extern struct {
             *ImageAlignmentControlCreateInfoMESA,
             *ExternalFormatOHOS,
             *OpaqueCaptureDataCreateInfoEXT,
+            *DataGraphOpticalFlowImageFormatInfoARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7605,6 +7679,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceDeviceAddressCommandsFeaturesKHR,
             *PhysicalDeviceShaderConstantDataFeaturesKHR,
             *PhysicalDeviceShaderAbortFeaturesKHR,
+            *PhysicalDeviceDataGraphOpticalFlowFeaturesARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7814,6 +7889,7 @@ pub const PhysicalDeviceImageFormatInfo2 = extern struct {
             *PhysicalDeviceImageViewImageFormatInfoEXT,
             *ImageCompressionControlEXT,
             *OpticalFlowImageFormatInfoNV,
+            *DataGraphOpticalFlowImageFormatInfoARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -15579,6 +15655,7 @@ pub const DataGraphPipelineResourceInfoARM = extern struct {
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
             inline *TensorDescriptionARM,
+            *DataGraphPipelineResourceInfoImageLayoutARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -15586,6 +15663,11 @@ pub const DataGraphPipelineResourceInfoARM = extern struct {
             else => @compileError("invalid extension struct type"),
         }
     }
+};
+pub const DataGraphPipelineResourceInfoImageLayoutARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_resource_info_image_layout_arm,
+    p_next: ?*const anyopaque = null,
+    layout: ImageLayout = @enumFromInt(0),
 };
 pub const DataGraphPipelineCompilerControlCreateInfoARM = extern struct {
     s_type: StructureType = .data_graph_pipeline_compiler_control_create_info_arm,
@@ -15609,6 +15691,8 @@ pub const DataGraphPipelineCreateInfoARM = extern struct {
             *DataGraphPipelineIdentifierCreateInfoARM,
             *DataGraphProcessingEngineCreateInfoARM,
             *DataGraphPipelineBuiltinModelCreateInfoQCOM,
+            *DataGraphPipelineSingleNodeCreateInfoARM,
+            *DataGraphPipelineOpticalFlowCreateInfoARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -15683,6 +15767,17 @@ pub const DataGraphPipelineDispatchInfoARM = extern struct {
     s_type: StructureType = .data_graph_pipeline_dispatch_info_arm,
     p_next: ?*anyopaque = null,
     flags: DataGraphPipelineDispatchFlagsARM = .none,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *DataGraphPipelineOpticalFlowDispatchInfoARM,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const PhysicalDeviceDataGraphProcessingEngineARM = extern struct {
     type: PhysicalDeviceDataGraphProcessingEngineTypeARM = @enumFromInt(0),
@@ -16326,6 +16421,66 @@ pub const QueueFamilyDataGraphTOSAPropertiesARM = extern struct {
     extension_count: u32 = 0,
     p_extensions: ?[*]const DataGraphTOSANameQualityARM = null,
     level: DataGraphTOSALevelARM = @enumFromInt(0),
+};
+pub const DataGraphPipelineSingleNodeConnectionARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_single_node_connection_arm,
+    p_next: ?*anyopaque = null,
+    set: u32 = 0,
+    binding: u32 = 0,
+    connection: DataGraphPipelineNodeConnectionTypeARM = @enumFromInt(0),
+};
+pub const PhysicalDeviceDataGraphOpticalFlowFeaturesARM = extern struct {
+    s_type: StructureType = .physical_device_data_graph_optical_flow_features_arm,
+    p_next: ?*anyopaque = null,
+    data_graph_optical_flow: Bool32 = .false,
+};
+pub const QueueFamilyDataGraphOpticalFlowPropertiesARM = extern struct {
+    s_type: StructureType = .queue_family_data_graph_optical_flow_properties_arm,
+    p_next: ?*anyopaque = null,
+    supported_output_grid_sizes: DataGraphOpticalFlowGridSizeFlagsARM = .none,
+    supported_hint_grid_sizes: DataGraphOpticalFlowGridSizeFlagsARM = .none,
+    hint_supported: Bool32 = .false,
+    cost_supported: Bool32 = .false,
+    min_width: u32 = 0,
+    min_height: u32 = 0,
+    max_width: u32 = 0,
+    max_height: u32 = 0,
+};
+pub const DataGraphOpticalFlowImageFormatInfoARM = extern struct {
+    s_type: StructureType = .data_graph_optical_flow_image_format_info_arm,
+    p_next: ?*const anyopaque = null,
+    usage: DataGraphOpticalFlowImageUsageFlagsARM = .none,
+};
+pub const DataGraphOpticalFlowImageFormatPropertiesARM = extern struct {
+    s_type: StructureType = .data_graph_optical_flow_image_format_properties_arm,
+    p_next: ?*anyopaque = null,
+    format: Format = @enumFromInt(0),
+};
+pub const DataGraphPipelineSingleNodeCreateInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_single_node_create_info_arm,
+    p_next: ?*anyopaque = null,
+    node_type: DataGraphPipelineNodeTypeARM = @enumFromInt(0),
+    connection_count: u32 = 0,
+    p_connections: ?[*]const DataGraphPipelineSingleNodeConnectionARM = null,
+};
+pub const DataGraphPipelineOpticalFlowCreateInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_optical_flow_create_info_arm,
+    p_next: ?*anyopaque = null,
+    width: u32 = 0,
+    height: u32 = 0,
+    image_format: Format = @enumFromInt(0),
+    flow_vector_format: Format = @enumFromInt(0),
+    cost_format: Format = @enumFromInt(0),
+    output_grid_size: DataGraphOpticalFlowGridSizeFlagsARM = .none,
+    hint_grid_size: DataGraphOpticalFlowGridSizeFlagsARM = .none,
+    performance_level: DataGraphOpticalFlowPerformanceLevelARM = @enumFromInt(0),
+    flags: DataGraphOpticalFlowCreateFlagsARM = .none,
+};
+pub const DataGraphPipelineOpticalFlowDispatchInfoARM = extern struct {
+    s_type: StructureType = .data_graph_pipeline_optical_flow_dispatch_info_arm,
+    p_next: ?*anyopaque = null,
+    flags: DataGraphOpticalFlowExecuteFlagsARM = .none,
+    mean_flow_l1_norm_hint: u32 = 0,
 };
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
@@ -17023,6 +17178,7 @@ pub const FpCmdDispatchIndirect2KHR = *const fn (CommandBuffer, [*c]const Dispat
 pub const FpCreateAccelerationStructure2KHR = *const fn (Device, [*c]const AccelerationStructureCreateInfo2KHR, [*c]const AllocationCallbacks, [*c]AccelerationStructureKHR) callconv(.c) Result;
 pub const FpGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM = *const fn (PhysicalDevice, u32, [*c]const QueueFamilyDataGraphPropertiesARM, [*c]BaseOutStructure) callconv(.c) Result;
 pub const FpCmdSetDispatchParametersARM = *const fn (CommandBuffer, [*c]const DispatchParametersARM) callconv(.c) void;
+pub const FpGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM = *const fn (PhysicalDevice, u32, [*c]const QueueFamilyDataGraphPropertiesARM, [*c]const DataGraphOpticalFlowImageFormatInfoARM, [*c]u32, [*c]DataGraphOpticalFlowImageFormatPropertiesARM) callconv(.c) Result;
 
 const ExtensionNames = struct {
     const khr_surface = "VK_KHR_surface";
@@ -17452,6 +17608,7 @@ const ExtensionNames = struct {
     const ext_custom_resolve = "VK_EXT_custom_resolve";
     const qcom_data_graph_model = "VK_QCOM_data_graph_model";
     const khr_maintenance10 = "VK_KHR_maintenance10";
+    const arm_data_graph_optical_flow = "VK_ARM_data_graph_optical_flow";
     const ext_shader_long_vector = "VK_EXT_shader_long_vector";
     const sec_pipeline_cache_incremental_mode = "VK_SEC_pipeline_cache_incremental_mode";
     const ext_shader_uniform_buffer_unsized_array = "VK_EXT_shader_uniform_buffer_unsized_array";
@@ -20670,6 +20827,13 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_arm_data_graph_optical_flow(self: InstanceExtensions) bool {
+        return self.supports_arm_data_graph();
+    }
+    pub fn enable_arm_data_graph_optical_flow(self: *InstanceExtensions) void {
+        self.enable_arm_data_graph();
+    }
+
     pub fn supports_sec_pipeline_cache_incremental_mode(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
@@ -21125,6 +21289,7 @@ pub const DeviceExtensions = packed struct {
     ext_custom_resolve: bool = false,
     qcom_data_graph_model: bool = false,
     khr_maintenance10: bool = false,
+    arm_data_graph_optical_flow: bool = false,
     ext_shader_long_vector: bool = false,
     sec_pipeline_cache_incremental_mode: bool = false,
     ext_shader_uniform_buffer_unsized_array: bool = false,
@@ -21909,6 +22074,8 @@ pub const DeviceExtensions = packed struct {
             self.qcom_data_graph_model = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance10) == .eq) {
             self.khr_maintenance10 = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.arm_data_graph_optical_flow) == .eq) {
+            self.arm_data_graph_optical_flow = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_long_vector) == .eq) {
             self.ext_shader_long_vector = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.sec_pipeline_cache_incremental_mode) == .eq) {
@@ -22325,6 +22492,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_custom_resolve) try names.append(allocator, ExtensionNames.ext_custom_resolve);
         if (self.qcom_data_graph_model) try names.append(allocator, ExtensionNames.qcom_data_graph_model);
         if (self.khr_maintenance10) try names.append(allocator, ExtensionNames.khr_maintenance10);
+        if (self.arm_data_graph_optical_flow) try names.append(allocator, ExtensionNames.arm_data_graph_optical_flow);
         if (self.ext_shader_long_vector) try names.append(allocator, ExtensionNames.ext_shader_long_vector);
         if (self.sec_pipeline_cache_incremental_mode) try names.append(allocator, ExtensionNames.sec_pipeline_cache_incremental_mode);
         if (self.ext_shader_uniform_buffer_unsized_array) try names.append(allocator, ExtensionNames.ext_shader_uniform_buffer_unsized_array);
@@ -25609,6 +25777,14 @@ pub const DeviceExtensions = packed struct {
         self.khr_maintenance10 = true;
     }
 
+    pub fn supports_arm_data_graph_optical_flow(self: DeviceExtensions) bool {
+        return self.arm_data_graph_optical_flow and self.supports_arm_data_graph();
+    }
+    pub fn enable_arm_data_graph_optical_flow(self: *DeviceExtensions) void {
+        self.arm_data_graph_optical_flow = true;
+        self.enable_arm_data_graph();
+    }
+
     pub fn supports_ext_shader_long_vector(self: DeviceExtensions) bool {
         return self.ext_shader_long_vector and self.core_version.to_int() >= make_version(1, 2, 0).to_int();
     }
@@ -28503,6 +28679,7 @@ pub const DeviceCommands = struct {
     fp_create_acceleration_structure2_khr: ?FpCreateAccelerationStructure2KHR,
     fp_get_physical_device_queue_family_data_graph_engine_operation_properties_arm: ?FpGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM,
     fp_cmd_set_dispatch_parameters_arm: ?FpCmdSetDispatchParametersARM,
+    fp_get_physical_device_queue_family_data_graph_optical_flow_image_formats_arm: ?FpGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM,
 
     pub fn init(globals: GlobalCommands, instance: InstanceCommands, device: Device, create_info: *const DeviceCreateInfo) MissingFunctionError!DeviceCommands {
         var extensions: DeviceExtensions = .{
@@ -29122,8 +29299,9 @@ pub const DeviceCommands = struct {
             .fp_cmd_draw_mesh_tasks_indirect_count2_ext = if (extensions.khr_device_address_commands and (extensions.core_version.to_int() >= make_version(1, 2, 0).to_int() or extensions.khr_draw_indirect_count) and extensions.ext_mesh_shader) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDrawMeshTasksIndirectCount2EXT")) else null,
             .fp_cmd_dispatch_indirect2_khr = if (extensions.khr_device_address_commands) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDispatchIndirect2KHR")) else null,
             .fp_create_acceleration_structure2_khr = if (extensions.khr_device_address_commands and extensions.khr_acceleration_structure) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateAccelerationStructure2KHR")) else null,
-            .fp_get_physical_device_queue_family_data_graph_engine_operation_properties_arm = if (extensions.arm_data_graph_instruction_set_tosa) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM")) else null,
+            .fp_get_physical_device_queue_family_data_graph_engine_operation_properties_arm = if (extensions.arm_data_graph_instruction_set_tosa or extensions.arm_data_graph_optical_flow) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM")) else null,
             .fp_cmd_set_dispatch_parameters_arm = if (extensions.arm_scheduling_controls) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetDispatchParametersARM")) else null,
+            .fp_get_physical_device_queue_family_data_graph_optical_flow_image_formats_arm = if (extensions.arm_data_graph_optical_flow) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM")) else null,
         };
     }
     pub fn destroy_device(
@@ -38040,6 +38218,68 @@ pub const DeviceCommands = struct {
         p_dispatch_parameters: *const DispatchParametersARM,
     ) void {
         self.fp_cmd_set_dispatch_parameters_arm.?(command_buffer, p_dispatch_parameters);
+    }
+    pub const GetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARMError = error{
+        ExtensionNotPresent,
+        InitializationFailed,
+        FormatNotSupported,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_physical_device_queue_family_data_graph_optical_flow_image_formats_arm(
+        self: DeviceCommands,
+        physical_device: PhysicalDevice,
+        queue_family_index: u32,
+        p_queue_family_data_graph_properties: *const QueueFamilyDataGraphPropertiesARM,
+        p_optical_flow_image_format_info: *const DataGraphOpticalFlowImageFormatInfoARM,
+        p_format_count: *u32,
+        p_image_format_properties: ?[*]DataGraphOpticalFlowImageFormatPropertiesARM,
+    ) GetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARMError!EnumerateResult {
+        switch (self.fp_get_physical_device_queue_family_data_graph_optical_flow_image_formats_arm.?(physical_device, queue_family_index, p_queue_family_data_graph_properties, p_optical_flow_image_format_info, p_format_count, p_image_format_properties)) {
+            .success => return .success,
+            .incomplete => return .incomplete,
+            .error_extension_not_present => return error.ExtensionNotPresent,
+            .error_initialization_failed => return error.InitializationFailed,
+            .error_format_not_supported => return error.FormatNotSupported,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const GetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARMOrAllocatorError = GetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARMError || Allocator.Error;
+    pub fn get_physical_device_queue_family_data_graph_optical_flow_image_formats_arm_to_array(
+        self: DeviceCommands,
+        allocator: Allocator,
+        physical_device: PhysicalDevice,
+        queue_family_index: u32,
+        p_queue_family_data_graph_properties: *const QueueFamilyDataGraphPropertiesARM,
+        p_optical_flow_image_format_info: *const DataGraphOpticalFlowImageFormatInfoARM,
+    ) GetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARMOrAllocatorError![]DataGraphOpticalFlowImageFormatPropertiesARM {
+        const enumerator = struct {
+            self: *const DeviceCommands,
+            physical_device: PhysicalDevice,
+            queue_family_index: u32,
+            p_queue_family_data_graph_properties: *const QueueFamilyDataGraphPropertiesARM,
+            p_optical_flow_image_format_info: *const DataGraphOpticalFlowImageFormatInfoARM,
+            pub fn enumerate(enumerator: @This(), len: *u32, elements: ?[*]DataGraphOpticalFlowImageFormatPropertiesARM) !EnumerateResult {
+                return enumerator.self.get_physical_device_queue_family_data_graph_optical_flow_image_formats_arm(
+                    enumerator.physical_device,
+                    enumerator.queue_family_index,
+                    enumerator.p_queue_family_data_graph_properties,
+                    enumerator.p_optical_flow_image_format_info,
+                    len,
+                    elements,
+                );
+            }
+        }{
+            .self = &self,
+            .physical_device = physical_device,
+            .queue_family_index = queue_family_index,
+            .p_queue_family_data_graph_properties = p_queue_family_data_graph_properties,
+            .p_optical_flow_image_format_info = p_optical_flow_image_format_info,
+        };
+        return enumerate_generic_to_array(GetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARMOrAllocatorError, DataGraphOpticalFlowImageFormatPropertiesARM, enumerator, allocator);
     }
 };
 

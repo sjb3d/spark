@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.348
+//! Generated from vk.xml version 1.4.349
 
 #![allow(
     clippy::too_many_arguments,
@@ -3244,6 +3244,12 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_arm_data_graph_optical_flow(&self) -> bool {
+        self.supports_arm_data_graph()
+    }
+    pub fn enable_arm_data_graph_optical_flow(&mut self) {
+        self.enable_arm_data_graph();
+    }
     pub fn supports_sec_pipeline_cache_incremental_mode(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
@@ -6108,6 +6114,7 @@ pub struct DeviceExtensions {
     pub ext_custom_resolve: bool,
     pub qcom_data_graph_model: bool,
     pub khr_maintenance10: bool,
+    pub arm_data_graph_optical_flow: bool,
     pub ext_shader_long_vector: bool,
     pub sec_pipeline_cache_incremental_mode: bool,
     pub ext_shader_uniform_buffer_unsized_array: bool,
@@ -6892,6 +6899,8 @@ impl DeviceExtensions {
             self.qcom_data_graph_model = true;
         } else if name == c"VK_KHR_maintenance10" {
             self.khr_maintenance10 = true;
+        } else if name == c"VK_ARM_data_graph_optical_flow" {
+            self.arm_data_graph_optical_flow = true;
         } else if name == c"VK_EXT_shader_long_vector" {
             self.ext_shader_long_vector = true;
         } else if name == c"VK_SEC_pipeline_cache_incremental_mode" {
@@ -7298,6 +7307,7 @@ impl DeviceExtensions {
             ext_custom_resolve: false,
             qcom_data_graph_model: false,
             khr_maintenance10: false,
+            arm_data_graph_optical_flow: false,
             ext_shader_long_vector: false,
             sec_pipeline_cache_incremental_mode: false,
             ext_shader_uniform_buffer_unsized_array: false,
@@ -10392,6 +10402,13 @@ impl DeviceExtensions {
     pub fn enable_khr_maintenance10(&mut self) {
         self.khr_maintenance10 = true;
     }
+    pub fn supports_arm_data_graph_optical_flow(&self) -> bool {
+        self.arm_data_graph_optical_flow && self.supports_arm_data_graph()
+    }
+    pub fn enable_arm_data_graph_optical_flow(&mut self) {
+        self.arm_data_graph_optical_flow = true;
+        self.enable_arm_data_graph();
+    }
     pub fn supports_ext_shader_long_vector(&self) -> bool {
         self.ext_shader_long_vector && self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
@@ -11603,6 +11620,9 @@ impl DeviceExtensions {
         if self.khr_maintenance10 {
             v.push(c"VK_KHR_maintenance10");
         }
+        if self.arm_data_graph_optical_flow {
+            v.push(c"VK_ARM_data_graph_optical_flow");
+        }
         if self.ext_shader_long_vector {
             v.push(c"VK_EXT_shader_long_vector");
         }
@@ -12265,6 +12285,8 @@ pub struct Device {
     pub fp_get_physical_device_queue_family_data_graph_engine_operation_properties_arm:
         Option<vk::FnGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM>,
     pub fp_cmd_set_dispatch_parameters_arm: Option<vk::FnCmdSetDispatchParametersARM>,
+    pub fp_get_physical_device_queue_family_data_graph_optical_flow_image_formats_arm:
+        Option<vk::FnGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -16864,6 +16886,7 @@ impl Device {
             },
             fp_get_physical_device_queue_family_data_graph_engine_operation_properties_arm: if extensions
                 .arm_data_graph_instruction_set_tosa
+                || extensions.arm_data_graph_optical_flow
             {
                 globals
                     .get_instance_proc_addr(
@@ -16877,6 +16900,18 @@ impl Device {
             fp_cmd_set_dispatch_parameters_arm: if extensions.arm_scheduling_controls {
                 instance
                     .get_device_proc_addr(device, c"vkCmdSetDispatchParametersARM")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_queue_family_data_graph_optical_flow_image_formats_arm: if extensions
+                .arm_data_graph_optical_flow
+            {
+                globals
+                    .get_instance_proc_addr(
+                        instance.handle,
+                        c"vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM",
+                    )
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -26304,5 +26339,49 @@ impl Device {
             .fp_cmd_set_dispatch_parameters_arm
             .expect("vkCmdSetDispatchParametersARM is not loaded");
         (fp)(command_buffer, p_dispatch_parameters)
+    }
+    pub unsafe fn get_physical_device_queue_family_data_graph_optical_flow_image_formats_arm(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+        p_queue_family_data_graph_properties: &vk::QueueFamilyDataGraphPropertiesARM,
+        p_optical_flow_image_format_info: &vk::DataGraphOpticalFlowImageFormatInfoARM,
+        p_format_count: &mut u32,
+        p_image_format_properties: *mut vk::DataGraphOpticalFlowImageFormatPropertiesARM,
+    ) -> Result<EnumerateResult> {
+        let fp = self
+            .fp_get_physical_device_queue_family_data_graph_optical_flow_image_formats_arm
+            .expect("vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM is not loaded");
+        let err = (fp)(
+            physical_device,
+            queue_family_index,
+            p_queue_family_data_graph_properties,
+            p_optical_flow_image_format_info,
+            p_format_count,
+            p_image_format_properties,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(EnumerateResult::Success),
+            vk::Result::INCOMPLETE => Ok(EnumerateResult::Incomplete),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_physical_device_queue_family_data_graph_optical_flow_image_formats_arm_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+        p_queue_family_data_graph_properties: &vk::QueueFamilyDataGraphPropertiesARM,
+        p_optical_flow_image_format_info: &vk::DataGraphOpticalFlowImageFormatInfoARM,
+    ) -> Result<Vec<vk::DataGraphOpticalFlowImageFormatPropertiesARM>> {
+        enumerate_generic_to_vec(|len, ptr| {
+            self.get_physical_device_queue_family_data_graph_optical_flow_image_formats_arm(
+                physical_device,
+                queue_family_index,
+                p_queue_family_data_graph_properties,
+                p_optical_flow_image_format_info,
+                len,
+                ptr,
+            )
+        })
     }
 }

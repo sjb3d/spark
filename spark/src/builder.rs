@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.348
+//! Generated from vk.xml version 1.4.349
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -40346,6 +40346,39 @@ impl<'a> Deref for DataGraphPipelineResourceInfoARMBuilder<'a> {
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct DataGraphPipelineResourceInfoImageLayoutARMBuilder {
+    inner: vk::DataGraphPipelineResourceInfoImageLayoutARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineResourceInfoImageLayoutARM {
+    type Type = DataGraphPipelineResourceInfoImageLayoutARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineResourceInfoImageLayoutARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineResourceInfoImageLayoutARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn layout(mut self, layout: vk::ImageLayout) -> Self {
+        self.inner.layout = layout;
+        self
+    }
+}
+impl Deref for DataGraphPipelineResourceInfoImageLayoutARMBuilder {
+    type Target = vk::DataGraphPipelineResourceInfoImageLayoutARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DataGraphPipelineResourceInfoARMNext for vk::DataGraphPipelineResourceInfoImageLayoutARM {}
+impl DataGraphPipelineResourceInfoARMNext for DataGraphPipelineResourceInfoImageLayoutARMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct DataGraphPipelineCompilerControlCreateInfoARMBuilder<'a> {
     inner: vk::DataGraphPipelineCompilerControlCreateInfoARM,
     phantom: PhantomData<&'a ()>,
@@ -40734,16 +40767,24 @@ impl DataGraphPipelineCreateInfoARMNext for DataGraphPipelineIdentifierCreateInf
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct DataGraphPipelineDispatchInfoARMBuilder {
+pub struct DataGraphPipelineDispatchInfoARMBuilder<'a> {
     inner: vk::DataGraphPipelineDispatchInfoARM,
+    phantom: PhantomData<&'a ()>,
 }
-impl Builder<'_> for vk::DataGraphPipelineDispatchInfoARM {
-    type Type = DataGraphPipelineDispatchInfoARMBuilder;
+impl<'a> Builder<'a> for vk::DataGraphPipelineDispatchInfoARM {
+    type Type = DataGraphPipelineDispatchInfoARMBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl DataGraphPipelineDispatchInfoARMBuilder {
+pub trait DataGraphPipelineDispatchInfoARMNext {}
+impl<'a> DataGraphPipelineDispatchInfoARMBuilder<'a> {
+    pub fn insert_next<T: DataGraphPipelineDispatchInfoARMNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineDispatchInfoARM {
         &mut self.inner
     }
@@ -40756,7 +40797,7 @@ impl DataGraphPipelineDispatchInfoARMBuilder {
         self
     }
 }
-impl Deref for DataGraphPipelineDispatchInfoARMBuilder {
+impl<'a> Deref for DataGraphPipelineDispatchInfoARMBuilder<'a> {
     type Target = vk::DataGraphPipelineDispatchInfoARM;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -43480,3 +43521,253 @@ impl Deref for PhysicalDeviceShaderAbortPropertiesKHRBuilder {
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderAbortPropertiesKHR {}
 impl PhysicalDeviceProperties2Next for PhysicalDeviceShaderAbortPropertiesKHRBuilder {}
 impl DeviceFaultDebugInfoKHRNext for vk::DeviceFaultShaderAbortMessageInfoKHR {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineSingleNodeConnectionARMBuilder {
+    inner: vk::DataGraphPipelineSingleNodeConnectionARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineSingleNodeConnectionARM {
+    type Type = DataGraphPipelineSingleNodeConnectionARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineSingleNodeConnectionARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineSingleNodeConnectionARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn set(mut self, set: u32) -> Self {
+        self.inner.set = set;
+        self
+    }
+    pub fn binding(mut self, binding: u32) -> Self {
+        self.inner.binding = binding;
+        self
+    }
+    pub fn connection(mut self, connection: vk::DataGraphPipelineNodeConnectionTypeARM) -> Self {
+        self.inner.connection = connection;
+        self
+    }
+}
+impl Deref for DataGraphPipelineSingleNodeConnectionARMBuilder {
+    type Target = vk::DataGraphPipelineSingleNodeConnectionARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceDataGraphOpticalFlowFeaturesARMBuilder {
+    inner: vk::PhysicalDeviceDataGraphOpticalFlowFeaturesARM,
+}
+impl Builder<'_> for vk::PhysicalDeviceDataGraphOpticalFlowFeaturesARM {
+    type Type = PhysicalDeviceDataGraphOpticalFlowFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceDataGraphOpticalFlowFeaturesARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceDataGraphOpticalFlowFeaturesARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn data_graph_optical_flow(mut self, data_graph_optical_flow: bool) -> Self {
+        self.inner.data_graph_optical_flow = if data_graph_optical_flow { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDataGraphOpticalFlowFeaturesARMBuilder {
+    type Target = vk::PhysicalDeviceDataGraphOpticalFlowFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDataGraphOpticalFlowFeaturesARM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDataGraphOpticalFlowFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDataGraphOpticalFlowFeaturesARM {}
+impl DeviceCreateInfoNext for PhysicalDeviceDataGraphOpticalFlowFeaturesARMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphOpticalFlowImageFormatInfoARMBuilder {
+    inner: vk::DataGraphOpticalFlowImageFormatInfoARM,
+}
+impl Builder<'_> for vk::DataGraphOpticalFlowImageFormatInfoARM {
+    type Type = DataGraphOpticalFlowImageFormatInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphOpticalFlowImageFormatInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphOpticalFlowImageFormatInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn usage(mut self, usage: vk::DataGraphOpticalFlowImageUsageFlagsARM) -> Self {
+        self.inner.usage = usage;
+        self
+    }
+}
+impl Deref for DataGraphOpticalFlowImageFormatInfoARMBuilder {
+    type Target = vk::DataGraphOpticalFlowImageFormatInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceImageFormatInfo2Next for vk::DataGraphOpticalFlowImageFormatInfoARM {}
+impl PhysicalDeviceImageFormatInfo2Next for DataGraphOpticalFlowImageFormatInfoARMBuilder {}
+impl ImageCreateInfoNext for vk::DataGraphOpticalFlowImageFormatInfoARM {}
+impl ImageCreateInfoNext for DataGraphOpticalFlowImageFormatInfoARMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineSingleNodeCreateInfoARMBuilder<'a> {
+    inner: vk::DataGraphPipelineSingleNodeCreateInfoARM,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::DataGraphPipelineSingleNodeCreateInfoARM {
+    type Type = DataGraphPipelineSingleNodeCreateInfoARMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> DataGraphPipelineSingleNodeCreateInfoARMBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineSingleNodeCreateInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn node_type(mut self, node_type: vk::DataGraphPipelineNodeTypeARM) -> Self {
+        self.inner.node_type = node_type;
+        self
+    }
+    pub fn p_connections(mut self, p_connections: &'a [vk::DataGraphPipelineSingleNodeConnectionARM]) -> Self {
+        self.inner.connection_count = p_connections.len() as u32;
+        self.inner.p_connections = p_connections.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for DataGraphPipelineSingleNodeCreateInfoARMBuilder<'a> {
+    type Target = vk::DataGraphPipelineSingleNodeCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DataGraphPipelineCreateInfoARMNext for vk::DataGraphPipelineSingleNodeCreateInfoARM {}
+impl DataGraphPipelineCreateInfoARMNext for DataGraphPipelineSingleNodeCreateInfoARMBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineOpticalFlowCreateInfoARMBuilder {
+    inner: vk::DataGraphPipelineOpticalFlowCreateInfoARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineOpticalFlowCreateInfoARM {
+    type Type = DataGraphPipelineOpticalFlowCreateInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineOpticalFlowCreateInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineOpticalFlowCreateInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn width(mut self, width: u32) -> Self {
+        self.inner.width = width;
+        self
+    }
+    pub fn height(mut self, height: u32) -> Self {
+        self.inner.height = height;
+        self
+    }
+    pub fn image_format(mut self, image_format: vk::Format) -> Self {
+        self.inner.image_format = image_format;
+        self
+    }
+    pub fn flow_vector_format(mut self, flow_vector_format: vk::Format) -> Self {
+        self.inner.flow_vector_format = flow_vector_format;
+        self
+    }
+    pub fn cost_format(mut self, cost_format: vk::Format) -> Self {
+        self.inner.cost_format = cost_format;
+        self
+    }
+    pub fn output_grid_size(mut self, output_grid_size: vk::DataGraphOpticalFlowGridSizeFlagsARM) -> Self {
+        self.inner.output_grid_size = output_grid_size;
+        self
+    }
+    pub fn hint_grid_size(mut self, hint_grid_size: vk::DataGraphOpticalFlowGridSizeFlagsARM) -> Self {
+        self.inner.hint_grid_size = hint_grid_size;
+        self
+    }
+    pub fn performance_level(mut self, performance_level: vk::DataGraphOpticalFlowPerformanceLevelARM) -> Self {
+        self.inner.performance_level = performance_level;
+        self
+    }
+    pub fn flags(mut self, flags: vk::DataGraphOpticalFlowCreateFlagsARM) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl Deref for DataGraphPipelineOpticalFlowCreateInfoARMBuilder {
+    type Target = vk::DataGraphPipelineOpticalFlowCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DataGraphPipelineCreateInfoARMNext for vk::DataGraphPipelineOpticalFlowCreateInfoARM {}
+impl DataGraphPipelineCreateInfoARMNext for DataGraphPipelineOpticalFlowCreateInfoARMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct DataGraphPipelineOpticalFlowDispatchInfoARMBuilder {
+    inner: vk::DataGraphPipelineOpticalFlowDispatchInfoARM,
+}
+impl Builder<'_> for vk::DataGraphPipelineOpticalFlowDispatchInfoARM {
+    type Type = DataGraphPipelineOpticalFlowDispatchInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl DataGraphPipelineOpticalFlowDispatchInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::DataGraphPipelineOpticalFlowDispatchInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::DataGraphOpticalFlowExecuteFlagsARM) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn mean_flow_l1_norm_hint(mut self, mean_flow_l1_norm_hint: u32) -> Self {
+        self.inner.mean_flow_l1_norm_hint = mean_flow_l1_norm_hint;
+        self
+    }
+}
+impl Deref for DataGraphPipelineOpticalFlowDispatchInfoARMBuilder {
+    type Target = vk::DataGraphPipelineOpticalFlowDispatchInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DataGraphPipelineDispatchInfoARMNext for vk::DataGraphPipelineOpticalFlowDispatchInfoARM {}
+impl DataGraphPipelineDispatchInfoARMNext for DataGraphPipelineOpticalFlowDispatchInfoARMBuilder {}
