@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.350
+//! Generated from vk.xml version 1.4.351
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -14173,6 +14173,41 @@ impl DeviceCreateInfoNext for PhysicalDeviceHostQueryResetFeaturesBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct PhysicalDeviceElapsedTimerQueryFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceElapsedTimerQueryFeaturesQCOM,
+}
+impl Builder<'_> for vk::PhysicalDeviceElapsedTimerQueryFeaturesQCOM {
+    type Type = PhysicalDeviceElapsedTimerQueryFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceElapsedTimerQueryFeaturesQCOMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceElapsedTimerQueryFeaturesQCOM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn elapsed_timer_query(mut self, elapsed_timer_query: bool) -> Self {
+        self.inner.elapsed_timer_query = if elapsed_timer_query { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceElapsedTimerQueryFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceElapsedTimerQueryFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceElapsedTimerQueryFeaturesQCOM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceElapsedTimerQueryFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceElapsedTimerQueryFeaturesQCOM {}
+impl DeviceCreateInfoNext for PhysicalDeviceElapsedTimerQueryFeaturesQCOMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct DeviceQueueGlobalPriorityCreateInfoBuilder {
     inner: vk::DeviceQueueGlobalPriorityCreateInfo,
 }
@@ -22002,6 +22037,350 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCoherentMemoryFeaturesAMD
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceCoherentMemoryFeaturesAMDBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceCoherentMemoryFeaturesAMD {}
 impl DeviceCreateInfoNext for PhysicalDeviceCoherentMemoryFeaturesAMDBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct GpaPerfBlockPropertiesAMDBuilder {
+    inner: vk::GpaPerfBlockPropertiesAMD,
+}
+impl Builder<'_> for vk::GpaPerfBlockPropertiesAMD {
+    type Type = GpaPerfBlockPropertiesAMDBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl GpaPerfBlockPropertiesAMDBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::GpaPerfBlockPropertiesAMD {
+        &mut self.inner
+    }
+    pub fn block_type(mut self, block_type: vk::GpaPerfBlockAMD) -> Self {
+        self.inner.block_type = block_type;
+        self
+    }
+    pub fn flags(mut self, flags: vk::GpaPerfBlockPropertiesFlagsAMD) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn instance_count(mut self, instance_count: u32) -> Self {
+        self.inner.instance_count = instance_count;
+        self
+    }
+    pub fn max_event_id(mut self, max_event_id: u32) -> Self {
+        self.inner.max_event_id = max_event_id;
+        self
+    }
+    pub fn max_global_only_counters(mut self, max_global_only_counters: u32) -> Self {
+        self.inner.max_global_only_counters = max_global_only_counters;
+        self
+    }
+    pub fn max_global_shared_counters(mut self, max_global_shared_counters: u32) -> Self {
+        self.inner.max_global_shared_counters = max_global_shared_counters;
+        self
+    }
+    pub fn max_streaming_counters(mut self, max_streaming_counters: u32) -> Self {
+        self.inner.max_streaming_counters = max_streaming_counters;
+        self
+    }
+}
+impl Deref for GpaPerfBlockPropertiesAMDBuilder {
+    type Target = vk::GpaPerfBlockPropertiesAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceGpaFeaturesAMDBuilder {
+    inner: vk::PhysicalDeviceGpaFeaturesAMD,
+}
+impl Builder<'_> for vk::PhysicalDeviceGpaFeaturesAMD {
+    type Type = PhysicalDeviceGpaFeaturesAMDBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceGpaFeaturesAMDBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceGpaFeaturesAMD {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn perf_counters(mut self, perf_counters: bool) -> Self {
+        self.inner.perf_counters = if perf_counters { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn streaming_perf_counters(mut self, streaming_perf_counters: bool) -> Self {
+        self.inner.streaming_perf_counters = if streaming_perf_counters { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn sq_thread_tracing(mut self, sq_thread_tracing: bool) -> Self {
+        self.inner.sq_thread_tracing = if sq_thread_tracing { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn clock_modes(mut self, clock_modes: bool) -> Self {
+        self.inner.clock_modes = if clock_modes { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceGpaFeaturesAMDBuilder {
+    type Target = vk::PhysicalDeviceGpaFeaturesAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceGpaFeaturesAMD {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceGpaFeaturesAMDBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceGpaFeaturesAMD {}
+impl DeviceCreateInfoNext for PhysicalDeviceGpaFeaturesAMDBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceGpaPropertiesAMD {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceGpaProperties2AMD {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct GpaPerfCounterAMDBuilder {
+    inner: vk::GpaPerfCounterAMD,
+}
+impl Builder<'_> for vk::GpaPerfCounterAMD {
+    type Type = GpaPerfCounterAMDBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl GpaPerfCounterAMDBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::GpaPerfCounterAMD {
+        &mut self.inner
+    }
+    pub fn block_type(mut self, block_type: vk::GpaPerfBlockAMD) -> Self {
+        self.inner.block_type = block_type;
+        self
+    }
+    pub fn block_instance(mut self, block_instance: u32) -> Self {
+        self.inner.block_instance = block_instance;
+        self
+    }
+    pub fn event_id(mut self, event_id: u32) -> Self {
+        self.inner.event_id = event_id;
+        self
+    }
+}
+impl Deref for GpaPerfCounterAMDBuilder {
+    type Target = vk::GpaPerfCounterAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct GpaSampleBeginInfoAMDBuilder<'a> {
+    inner: vk::GpaSampleBeginInfoAMD,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::GpaSampleBeginInfoAMD {
+    type Type = GpaSampleBeginInfoAMDBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> GpaSampleBeginInfoAMDBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::GpaSampleBeginInfoAMD {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn sample_type(mut self, sample_type: vk::GpaSampleTypeAMD) -> Self {
+        self.inner.sample_type = sample_type;
+        self
+    }
+    pub fn sample_internal_operations(mut self, sample_internal_operations: bool) -> Self {
+        self.inner.sample_internal_operations = if sample_internal_operations {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn cache_flush_on_counter_collection(mut self, cache_flush_on_counter_collection: bool) -> Self {
+        self.inner.cache_flush_on_counter_collection = if cache_flush_on_counter_collection {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn sq_shader_mask_enable(mut self, sq_shader_mask_enable: bool) -> Self {
+        self.inner.sq_shader_mask_enable = if sq_shader_mask_enable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn sq_shader_mask(mut self, sq_shader_mask: vk::GpaSqShaderStageFlagsAMD) -> Self {
+        self.inner.sq_shader_mask = sq_shader_mask;
+        self
+    }
+    pub fn p_perf_counters(mut self, p_perf_counters: &'a [vk::GpaPerfCounterAMD]) -> Self {
+        self.inner.perf_counter_count = p_perf_counters.len() as u32;
+        self.inner.p_perf_counters = p_perf_counters.as_ptr();
+        self
+    }
+    pub fn streaming_perf_trace_sample_interval(mut self, streaming_perf_trace_sample_interval: u32) -> Self {
+        self.inner.streaming_perf_trace_sample_interval = streaming_perf_trace_sample_interval;
+        self
+    }
+    pub fn perf_counter_device_memory_limit(mut self, perf_counter_device_memory_limit: vk::DeviceSize) -> Self {
+        self.inner.perf_counter_device_memory_limit = perf_counter_device_memory_limit;
+        self
+    }
+    pub fn sq_thread_trace_enable(mut self, sq_thread_trace_enable: bool) -> Self {
+        self.inner.sq_thread_trace_enable = if sq_thread_trace_enable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn sq_thread_trace_suppress_instruction_tokens(
+        mut self,
+        sq_thread_trace_suppress_instruction_tokens: bool,
+    ) -> Self {
+        self.inner.sq_thread_trace_suppress_instruction_tokens = if sq_thread_trace_suppress_instruction_tokens {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn sq_thread_trace_device_memory_limit(mut self, sq_thread_trace_device_memory_limit: vk::DeviceSize) -> Self {
+        self.inner.sq_thread_trace_device_memory_limit = sq_thread_trace_device_memory_limit;
+        self
+    }
+    pub fn timing_pre_sample(mut self, timing_pre_sample: vk::PipelineStageFlags) -> Self {
+        self.inner.timing_pre_sample = timing_pre_sample;
+        self
+    }
+    pub fn timing_post_sample(mut self, timing_post_sample: vk::PipelineStageFlags) -> Self {
+        self.inner.timing_post_sample = timing_post_sample;
+        self
+    }
+}
+impl<'a> Deref for GpaSampleBeginInfoAMDBuilder<'a> {
+    type Target = vk::GpaSampleBeginInfoAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct GpaDeviceClockModeInfoAMDBuilder {
+    inner: vk::GpaDeviceClockModeInfoAMD,
+}
+impl Builder<'_> for vk::GpaDeviceClockModeInfoAMD {
+    type Type = GpaDeviceClockModeInfoAMDBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl GpaDeviceClockModeInfoAMDBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::GpaDeviceClockModeInfoAMD {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn clock_mode(mut self, clock_mode: vk::GpaDeviceClockModeAMD) -> Self {
+        self.inner.clock_mode = clock_mode;
+        self
+    }
+    pub fn memory_clock_ratio_to_peak(mut self, memory_clock_ratio_to_peak: f32) -> Self {
+        self.inner.memory_clock_ratio_to_peak = memory_clock_ratio_to_peak;
+        self
+    }
+    pub fn engine_clock_ratio_to_peak(mut self, engine_clock_ratio_to_peak: f32) -> Self {
+        self.inner.engine_clock_ratio_to_peak = engine_clock_ratio_to_peak;
+        self
+    }
+}
+impl Deref for GpaDeviceClockModeInfoAMDBuilder {
+    type Target = vk::GpaDeviceClockModeInfoAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct GpaDeviceGetClockInfoAMDBuilder {
+    inner: vk::GpaDeviceGetClockInfoAMD,
+}
+impl Builder<'_> for vk::GpaDeviceGetClockInfoAMD {
+    type Type = GpaDeviceGetClockInfoAMDBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl GpaDeviceGetClockInfoAMDBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::GpaDeviceGetClockInfoAMD {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn memory_clock_ratio_to_peak(mut self, memory_clock_ratio_to_peak: f32) -> Self {
+        self.inner.memory_clock_ratio_to_peak = memory_clock_ratio_to_peak;
+        self
+    }
+    pub fn engine_clock_ratio_to_peak(mut self, engine_clock_ratio_to_peak: f32) -> Self {
+        self.inner.engine_clock_ratio_to_peak = engine_clock_ratio_to_peak;
+        self
+    }
+    pub fn memory_clock_frequency(mut self, memory_clock_frequency: u32) -> Self {
+        self.inner.memory_clock_frequency = memory_clock_frequency;
+        self
+    }
+    pub fn engine_clock_frequency(mut self, engine_clock_frequency: u32) -> Self {
+        self.inner.engine_clock_frequency = engine_clock_frequency;
+        self
+    }
+}
+impl Deref for GpaDeviceGetClockInfoAMDBuilder {
+    type Target = vk::GpaDeviceGetClockInfoAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct GpaSessionCreateInfoAMDBuilder {
+    inner: vk::GpaSessionCreateInfoAMD,
+}
+impl Builder<'_> for vk::GpaSessionCreateInfoAMD {
+    type Type = GpaSessionCreateInfoAMDBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl GpaSessionCreateInfoAMDBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::GpaSessionCreateInfoAMD {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn secondary_copy_source(mut self, secondary_copy_source: vk::GpaSessionAMD) -> Self {
+        self.inner.secondary_copy_source = secondary_copy_source;
+        self
+    }
+}
+impl Deref for GpaSessionCreateInfoAMDBuilder {
+    type Target = vk::GpaSessionCreateInfoAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -31696,6 +32075,67 @@ impl<'a> Deref for MicromapBuildInfoEXTBuilder<'a> {
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct AccelerationStructureGeometryMicromapDataKHRBuilder<'a> {
+    inner: vk::AccelerationStructureGeometryMicromapDataKHR,
+    phantom: PhantomData<&'a ()>,
+}
+impl<'a> Builder<'a> for vk::AccelerationStructureGeometryMicromapDataKHR {
+    type Type = AccelerationStructureGeometryMicromapDataKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl<'a> AccelerationStructureGeometryMicromapDataKHRBuilder<'a> {
+    pub fn get_mut(&mut self) -> &mut vk::AccelerationStructureGeometryMicromapDataKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_usage_counts(
+        mut self,
+        p_usage_counts: Option<&'a [vk::MicromapUsageKHR]>,
+        pp_usage_counts: Option<&'a [*const vk::MicromapUsageKHR]>,
+    ) -> Self {
+        self.inner.usage_counts_count = p_usage_counts
+            .map(|s| s.len() as u32)
+            .or(pp_usage_counts.map(|s| s.len() as u32))
+            .unwrap_or(0);
+        if let Some(len) = p_usage_counts.map(|s| s.len()) {
+            assert_eq!(self.inner.usage_counts_count, len as u32);
+        }
+        if let Some(len) = pp_usage_counts.map(|s| s.len()) {
+            assert_eq!(self.inner.usage_counts_count, len as u32);
+        }
+        self.inner.p_usage_counts = p_usage_counts.map_or(ptr::null(), |s| s.as_ptr());
+        self.inner.pp_usage_counts = pp_usage_counts.map_or(ptr::null(), |s| s.as_ptr());
+        self
+    }
+    pub fn data(mut self, data: vk::DeviceAddress) -> Self {
+        self.inner.data = data;
+        self
+    }
+    pub fn triangle_array(mut self, triangle_array: vk::DeviceAddress) -> Self {
+        self.inner.triangle_array = triangle_array;
+        self
+    }
+    pub fn triangle_array_stride(mut self, triangle_array_stride: vk::DeviceSize) -> Self {
+        self.inner.triangle_array_stride = triangle_array_stride;
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureGeometryMicromapDataKHRBuilder<'a> {
+    type Target = vk::AccelerationStructureGeometryMicromapDataKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl AccelerationStructureGeometryKHRNext for vk::AccelerationStructureGeometryMicromapDataKHR {}
+impl AccelerationStructureGeometryKHRNext for AccelerationStructureGeometryMicromapDataKHRBuilder<'_> {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct MicromapCreateInfoEXTBuilder {
     inner: vk::MicromapCreateInfoEXT,
 }
@@ -31935,6 +32375,41 @@ impl Deref for MicromapBuildSizesInfoEXTBuilder {
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct MicromapUsageKHRBuilder {
+    inner: vk::MicromapUsageKHR,
+}
+impl Builder<'_> for vk::MicromapUsageKHR {
+    type Type = MicromapUsageKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl MicromapUsageKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::MicromapUsageKHR {
+        &mut self.inner
+    }
+    pub fn count(mut self, count: u32) -> Self {
+        self.inner.count = count;
+        self
+    }
+    pub fn subdivision_level(mut self, subdivision_level: u32) -> Self {
+        self.inner.subdivision_level = subdivision_level;
+        self
+    }
+    pub fn format(mut self, format: vk::OpacityMicromapFormatKHR) -> Self {
+        self.inner.format = format;
+        self
+    }
+}
+impl Deref for MicromapUsageKHRBuilder {
+    type Target = vk::MicromapUsageKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct MicromapUsageEXTBuilder {
     inner: vk::MicromapUsageEXT,
 }
@@ -31970,17 +32445,17 @@ impl Deref for MicromapUsageEXTBuilder {
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct MicromapTriangleEXTBuilder {
-    inner: vk::MicromapTriangleEXT,
+pub struct MicromapTriangleKHRBuilder {
+    inner: vk::MicromapTriangleKHR,
 }
-impl Builder<'_> for vk::MicromapTriangleEXT {
-    type Type = MicromapTriangleEXTBuilder;
+impl Builder<'_> for vk::MicromapTriangleKHR {
+    type Type = MicromapTriangleKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl MicromapTriangleEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::MicromapTriangleEXT {
+impl MicromapTriangleKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::MicromapTriangleKHR {
         &mut self.inner
     }
     pub fn data_offset(mut self, data_offset: u32) -> Self {
@@ -31996,12 +32471,47 @@ impl MicromapTriangleEXTBuilder {
         self
     }
 }
-impl Deref for MicromapTriangleEXTBuilder {
-    type Target = vk::MicromapTriangleEXT;
+impl Deref for MicromapTriangleKHRBuilder {
+    type Target = vk::MicromapTriangleKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceOpacityMicromapFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceOpacityMicromapFeaturesKHR,
+}
+impl Builder<'_> for vk::PhysicalDeviceOpacityMicromapFeaturesKHR {
+    type Type = PhysicalDeviceOpacityMicromapFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceOpacityMicromapFeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceOpacityMicromapFeaturesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn micromap(mut self, micromap: bool) -> Self {
+        self.inner.micromap = if micromap { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceOpacityMicromapFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceOpacityMicromapFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceOpacityMicromapFeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceOpacityMicromapFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceOpacityMicromapFeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDeviceOpacityMicromapFeaturesKHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -32045,7 +32555,65 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceOpacityMicromapFeaturesEX
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceOpacityMicromapFeaturesEXTBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceOpacityMicromapFeaturesEXT {}
 impl DeviceCreateInfoNext for PhysicalDeviceOpacityMicromapFeaturesEXTBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceOpacityMicromapPropertiesKHR {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceOpacityMicromapPropertiesEXT {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct AccelerationStructureTrianglesOpacityMicromapKHRBuilder {
+    inner: vk::AccelerationStructureTrianglesOpacityMicromapKHR,
+}
+impl Builder<'_> for vk::AccelerationStructureTrianglesOpacityMicromapKHR {
+    type Type = AccelerationStructureTrianglesOpacityMicromapKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl AccelerationStructureTrianglesOpacityMicromapKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::AccelerationStructureTrianglesOpacityMicromapKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn index_type(mut self, index_type: vk::IndexType) -> Self {
+        self.inner.index_type = index_type;
+        self
+    }
+    pub fn index_buffer(mut self, index_buffer: vk::DeviceAddress) -> Self {
+        self.inner.index_buffer = index_buffer;
+        self
+    }
+    pub fn index_stride(mut self, index_stride: vk::DeviceSize) -> Self {
+        self.inner.index_stride = index_stride;
+        self
+    }
+    pub fn base_triangle(mut self, base_triangle: u32) -> Self {
+        self.inner.base_triangle = base_triangle;
+        self
+    }
+    pub fn micromap(mut self, micromap: vk::AccelerationStructureKHR) -> Self {
+        self.inner.micromap = micromap;
+        self
+    }
+}
+impl Deref for AccelerationStructureTrianglesOpacityMicromapKHRBuilder {
+    type Target = vk::AccelerationStructureTrianglesOpacityMicromapKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl AccelerationStructureGeometryTrianglesDataKHRNext for vk::AccelerationStructureTrianglesOpacityMicromapKHR {}
+impl AccelerationStructureGeometryTrianglesDataKHRNext for AccelerationStructureTrianglesOpacityMicromapKHRBuilder {}
+impl AccelerationStructureDenseGeometryFormatTrianglesDataAMDXNext
+    for vk::AccelerationStructureTrianglesOpacityMicromapKHR
+{
+}
+impl AccelerationStructureDenseGeometryFormatTrianglesDataAMDXNext
+    for AccelerationStructureTrianglesOpacityMicromapKHRBuilder
+{
+}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -33004,6 +33572,46 @@ impl Deref for ImageViewSampleWeightCreateInfoQCOMBuilder {
 }
 impl ImageViewCreateInfoNext for vk::ImageViewSampleWeightCreateInfoQCOM {}
 impl ImageViewCreateInfoNext for ImageViewSampleWeightCreateInfoQCOMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM,
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM {
+    type Type = PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_multiple_wait_queues(mut self, shader_multiple_wait_queues: bool) -> Self {
+        self.inner.shader_multiple_wait_queues = if shader_multiple_wait_queues {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOMBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderMultipleWaitQueuesPropertiesQCOM {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -36655,6 +37263,57 @@ impl Deref for SamplerBlockMatchWindowCreateInfoQCOMBuilder {
 }
 impl SamplerCreateInfoNext for vk::SamplerBlockMatchWindowCreateInfoQCOM {}
 impl SamplerCreateInfoNext for SamplerBlockMatchWindowCreateInfoQCOMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceImageProcessing3FeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceImageProcessing3FeaturesQCOM,
+}
+impl Builder<'_> for vk::PhysicalDeviceImageProcessing3FeaturesQCOM {
+    type Type = PhysicalDeviceImageProcessing3FeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceImageProcessing3FeaturesQCOMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceImageProcessing3FeaturesQCOM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_gather_linear(mut self, image_gather_linear: bool) -> Self {
+        self.inner.image_gather_linear = if image_gather_linear { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn image_gather_extended_modes(mut self, image_gather_extended_modes: bool) -> Self {
+        self.inner.image_gather_extended_modes = if image_gather_extended_modes {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn block_match_extended_clamp_to_edge(mut self, block_match_extended_clamp_to_edge: bool) -> Self {
+        self.inner.block_match_extended_clamp_to_edge = if block_match_extended_clamp_to_edge {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceImageProcessing3FeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceImageProcessing3FeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageProcessing3FeaturesQCOM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageProcessing3FeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceImageProcessing3FeaturesQCOM {}
+impl DeviceCreateInfoNext for PhysicalDeviceImageProcessing3FeaturesQCOMBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -42705,6 +43364,42 @@ impl Deref for SubsampledImageFormatPropertiesEXTBuilder {
 }
 impl ImageFormatProperties2Next for vk::SubsampledImageFormatPropertiesEXT {}
 impl ImageFormatProperties2Next for SubsampledImageFormatPropertiesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceShaderSplitBarrierFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderSplitBarrierFeaturesEXT,
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderSplitBarrierFeaturesEXT {
+    type Type = PhysicalDeviceShaderSplitBarrierFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceShaderSplitBarrierFeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceShaderSplitBarrierFeaturesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_split_barrier(mut self, shader_split_barrier: bool) -> Self {
+        self.inner.shader_split_barrier = if shader_split_barrier { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderSplitBarrierFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderSplitBarrierFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderSplitBarrierFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderSplitBarrierFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderSplitBarrierFeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderSplitBarrierFeaturesEXTBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderSplitBarrierPropertiesEXT {}
 
 #[repr(transparent)]
 #[derive(Default)]

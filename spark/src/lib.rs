@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.350
+//! Generated from vk.xml version 1.4.351
 
 #![allow(
     clippy::too_many_arguments,
@@ -982,6 +982,14 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_amd_gpa_interface(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_amd_gpa_interface(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_amdx_shader_enqueue(&self) -> bool {
         (self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
             || (self.supports_khr_synchronization2()
@@ -1146,6 +1154,14 @@ impl InstanceExtensions {
     }
     pub fn enable_qcom_cooperative_matrix_conversion(&mut self) {
         self.enable_khr_cooperative_matrix();
+    }
+    pub fn supports_qcom_elapsed_timer_query(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_qcom_elapsed_timer_query(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_khr_8bit_storage(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -1850,6 +1866,30 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_qcom_queue_perf_hint(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_qcom_image_processing3(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_qcom_image_processing3(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_qcom_shader_multiple_wait_queues(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_qcom_shader_multiple_wait_queues(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_ext_shader_split_barrier(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_shader_split_barrier(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -3223,6 +3263,13 @@ impl InstanceExtensions {
     }
     pub fn enable_khr_present_mode_fifo_latest_ready(&mut self) {
         self.enable_khr_swapchain();
+    }
+    pub fn supports_khr_opacity_micromap(&self) -> bool {
+        self.supports_khr_acceleration_structure() && self.supports_khr_device_address_commands()
+    }
+    pub fn enable_khr_opacity_micromap(&mut self) {
+        self.enable_khr_acceleration_structure();
+        self.enable_khr_device_address_commands();
     }
     pub fn supports_ext_shader_64bit_indexing(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
@@ -5824,6 +5871,7 @@ pub struct DeviceExtensions {
     pub ext_sampler_filter_minmax: bool,
     pub khr_storage_buffer_storage_class: bool,
     pub amd_gpu_shader_int16: bool,
+    pub amd_gpa_interface: bool,
     pub amdx_shader_enqueue: bool,
     pub ext_descriptor_heap: bool,
     pub amd_mixed_attachment_samples: bool,
@@ -5859,6 +5907,7 @@ pub struct DeviceExtensions {
     pub ext_filter_cubic: bool,
     pub qcom_render_pass_shader_resolve: bool,
     pub qcom_cooperative_matrix_conversion: bool,
+    pub qcom_elapsed_timer_query: bool,
     pub ext_global_priority: bool,
     pub khr_shader_subgroup_extended_types: bool,
     pub khr_8bit_storage: bool,
@@ -5955,6 +6004,9 @@ pub struct DeviceExtensions {
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
     pub qcom_queue_perf_hint: bool,
+    pub qcom_image_processing3: bool,
+    pub qcom_shader_multiple_wait_queues: bool,
+    pub ext_shader_split_barrier: bool,
     pub nv_cuda_kernel_launch: bool,
     pub qcom_tile_shading: bool,
     pub nv_low_latency: bool,
@@ -6128,6 +6180,7 @@ pub struct DeviceExtensions {
     pub ext_fragment_density_map_offset: bool,
     pub ext_zero_initialize_device_memory: bool,
     pub khr_present_mode_fifo_latest_ready: bool,
+    pub khr_opacity_micromap: bool,
     pub ext_shader_64bit_indexing: bool,
     pub ext_custom_resolve: bool,
     pub qcom_data_graph_model: bool,
@@ -6304,6 +6357,8 @@ impl DeviceExtensions {
             self.khr_storage_buffer_storage_class = true;
         } else if name == c"VK_AMD_gpu_shader_int16" {
             self.amd_gpu_shader_int16 = true;
+        } else if name == c"VK_AMD_gpa_interface" {
+            self.amd_gpa_interface = true;
         } else if name == c"VK_AMDX_shader_enqueue" {
             self.amdx_shader_enqueue = true;
         } else if name == c"VK_EXT_descriptor_heap" {
@@ -6374,6 +6429,8 @@ impl DeviceExtensions {
             self.qcom_render_pass_shader_resolve = true;
         } else if name == c"VK_QCOM_cooperative_matrix_conversion" {
             self.qcom_cooperative_matrix_conversion = true;
+        } else if name == c"VK_QCOM_elapsed_timer_query" {
+            self.qcom_elapsed_timer_query = true;
         } else if name == c"VK_EXT_global_priority" {
             self.ext_global_priority = true;
         } else if name == c"VK_KHR_shader_subgroup_extended_types" {
@@ -6566,6 +6623,12 @@ impl DeviceExtensions {
             self.qcom_render_pass_store_ops = true;
         } else if name == c"VK_QCOM_queue_perf_hint" {
             self.qcom_queue_perf_hint = true;
+        } else if name == c"VK_QCOM_image_processing3" {
+            self.qcom_image_processing3 = true;
+        } else if name == c"VK_QCOM_shader_multiple_wait_queues" {
+            self.qcom_shader_multiple_wait_queues = true;
+        } else if name == c"VK_EXT_shader_split_barrier" {
+            self.ext_shader_split_barrier = true;
         } else if name == c"VK_NV_cuda_kernel_launch" {
             self.nv_cuda_kernel_launch = true;
         } else if name == c"VK_QCOM_tile_shading" {
@@ -6912,6 +6975,8 @@ impl DeviceExtensions {
             self.ext_zero_initialize_device_memory = true;
         } else if name == c"VK_KHR_present_mode_fifo_latest_ready" {
             self.khr_present_mode_fifo_latest_ready = true;
+        } else if name == c"VK_KHR_opacity_micromap" {
+            self.khr_opacity_micromap = true;
         } else if name == c"VK_EXT_shader_64bit_indexing" {
             self.ext_shader_64bit_indexing = true;
         } else if name == c"VK_EXT_custom_resolve" {
@@ -7026,6 +7091,7 @@ impl DeviceExtensions {
             ext_sampler_filter_minmax: false,
             khr_storage_buffer_storage_class: false,
             amd_gpu_shader_int16: false,
+            amd_gpa_interface: false,
             amdx_shader_enqueue: false,
             ext_descriptor_heap: false,
             amd_mixed_attachment_samples: false,
@@ -7061,6 +7127,7 @@ impl DeviceExtensions {
             ext_filter_cubic: false,
             qcom_render_pass_shader_resolve: false,
             qcom_cooperative_matrix_conversion: false,
+            qcom_elapsed_timer_query: false,
             ext_global_priority: false,
             khr_shader_subgroup_extended_types: false,
             khr_8bit_storage: false,
@@ -7157,6 +7224,9 @@ impl DeviceExtensions {
             nv_device_diagnostics_config: false,
             qcom_render_pass_store_ops: false,
             qcom_queue_perf_hint: false,
+            qcom_image_processing3: false,
+            qcom_shader_multiple_wait_queues: false,
+            ext_shader_split_barrier: false,
             nv_cuda_kernel_launch: false,
             qcom_tile_shading: false,
             nv_low_latency: false,
@@ -7330,6 +7400,7 @@ impl DeviceExtensions {
             ext_fragment_density_map_offset: false,
             ext_zero_initialize_device_memory: false,
             khr_present_mode_fifo_latest_ready: false,
+            khr_opacity_micromap: false,
             ext_shader_64bit_indexing: false,
             ext_custom_resolve: false,
             qcom_data_graph_model: false,
@@ -7964,6 +8035,12 @@ impl DeviceExtensions {
     pub fn enable_amd_gpu_shader_int16(&mut self) {
         self.amd_gpu_shader_int16 = true;
     }
+    pub fn supports_amd_gpa_interface(&self) -> bool {
+        self.amd_gpa_interface
+    }
+    pub fn enable_amd_gpa_interface(&mut self) {
+        self.amd_gpa_interface = true;
+    }
     pub fn supports_amdx_shader_enqueue(&self) -> bool {
         self.amdx_shader_enqueue
             && (self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
@@ -8275,6 +8352,12 @@ impl DeviceExtensions {
     pub fn enable_qcom_cooperative_matrix_conversion(&mut self) {
         self.qcom_cooperative_matrix_conversion = true;
         self.enable_khr_cooperative_matrix();
+    }
+    pub fn supports_qcom_elapsed_timer_query(&self) -> bool {
+        self.qcom_elapsed_timer_query
+    }
+    pub fn enable_qcom_elapsed_timer_query(&mut self) {
+        self.qcom_elapsed_timer_query = true;
     }
     pub fn supports_ext_global_priority(&self) -> bool {
         self.ext_global_priority
@@ -9027,6 +9110,24 @@ impl DeviceExtensions {
     }
     pub fn enable_qcom_queue_perf_hint(&mut self) {
         self.qcom_queue_perf_hint = true;
+    }
+    pub fn supports_qcom_image_processing3(&self) -> bool {
+        self.qcom_image_processing3
+    }
+    pub fn enable_qcom_image_processing3(&mut self) {
+        self.qcom_image_processing3 = true;
+    }
+    pub fn supports_qcom_shader_multiple_wait_queues(&self) -> bool {
+        self.qcom_shader_multiple_wait_queues
+    }
+    pub fn enable_qcom_shader_multiple_wait_queues(&mut self) {
+        self.qcom_shader_multiple_wait_queues = true;
+    }
+    pub fn supports_ext_shader_split_barrier(&self) -> bool {
+        self.ext_shader_split_barrier
+    }
+    pub fn enable_ext_shader_split_barrier(&mut self) {
+        self.ext_shader_split_barrier = true;
     }
     pub fn supports_nv_cuda_kernel_launch(&self) -> bool {
         self.nv_cuda_kernel_launch
@@ -10407,6 +10508,16 @@ impl DeviceExtensions {
         self.khr_present_mode_fifo_latest_ready = true;
         self.enable_khr_swapchain();
     }
+    pub fn supports_khr_opacity_micromap(&self) -> bool {
+        self.khr_opacity_micromap
+            && self.supports_khr_acceleration_structure()
+            && self.supports_khr_device_address_commands()
+    }
+    pub fn enable_khr_opacity_micromap(&mut self) {
+        self.khr_opacity_micromap = true;
+        self.enable_khr_acceleration_structure();
+        self.enable_khr_device_address_commands();
+    }
     pub fn supports_ext_shader_64bit_indexing(&self) -> bool {
         self.ext_shader_64bit_indexing
     }
@@ -10744,6 +10855,9 @@ impl DeviceExtensions {
         if self.amd_gpu_shader_int16 {
             v.push(c"VK_AMD_gpu_shader_int16");
         }
+        if self.amd_gpa_interface {
+            v.push(c"VK_AMD_gpa_interface");
+        }
         if self.amdx_shader_enqueue {
             v.push(c"VK_AMDX_shader_enqueue");
         }
@@ -10848,6 +10962,9 @@ impl DeviceExtensions {
         }
         if self.qcom_cooperative_matrix_conversion {
             v.push(c"VK_QCOM_cooperative_matrix_conversion");
+        }
+        if self.qcom_elapsed_timer_query {
+            v.push(c"VK_QCOM_elapsed_timer_query");
         }
         if self.ext_global_priority {
             v.push(c"VK_EXT_global_priority");
@@ -11136,6 +11253,15 @@ impl DeviceExtensions {
         }
         if self.qcom_queue_perf_hint {
             v.push(c"VK_QCOM_queue_perf_hint");
+        }
+        if self.qcom_image_processing3 {
+            v.push(c"VK_QCOM_image_processing3");
+        }
+        if self.qcom_shader_multiple_wait_queues {
+            v.push(c"VK_QCOM_shader_multiple_wait_queues");
+        }
+        if self.ext_shader_split_barrier {
+            v.push(c"VK_EXT_shader_split_barrier");
         }
         if self.nv_cuda_kernel_launch {
             v.push(c"VK_NV_cuda_kernel_launch");
@@ -11655,6 +11781,9 @@ impl DeviceExtensions {
         }
         if self.khr_present_mode_fifo_latest_ready {
             v.push(c"VK_KHR_present_mode_fifo_latest_ready");
+        }
+        if self.khr_opacity_micromap {
+            v.push(c"VK_KHR_opacity_micromap");
         }
         if self.ext_shader_64bit_indexing {
             v.push(c"VK_EXT_shader_64bit_indexing");
@@ -12237,6 +12366,18 @@ pub struct Device {
     pub fp_cmd_dispatch_graph_amdx: Option<vk::FnCmdDispatchGraphAMDX>,
     pub fp_cmd_dispatch_graph_indirect_amdx: Option<vk::FnCmdDispatchGraphIndirectAMDX>,
     pub fp_cmd_dispatch_graph_indirect_count_amdx: Option<vk::FnCmdDispatchGraphIndirectCountAMDX>,
+    pub fp_create_gpa_session_amd: Option<vk::FnCreateGpaSessionAMD>,
+    pub fp_destroy_gpa_session_amd: Option<vk::FnDestroyGpaSessionAMD>,
+    pub fp_set_gpa_device_clock_mode_amd: Option<vk::FnSetGpaDeviceClockModeAMD>,
+    pub fp_get_gpa_device_clock_info_amd: Option<vk::FnGetGpaDeviceClockInfoAMD>,
+    pub fp_cmd_begin_gpa_session_amd: Option<vk::FnCmdBeginGpaSessionAMD>,
+    pub fp_cmd_end_gpa_session_amd: Option<vk::FnCmdEndGpaSessionAMD>,
+    pub fp_cmd_begin_gpa_sample_amd: Option<vk::FnCmdBeginGpaSampleAMD>,
+    pub fp_cmd_end_gpa_sample_amd: Option<vk::FnCmdEndGpaSampleAMD>,
+    pub fp_get_gpa_session_status_amd: Option<vk::FnGetGpaSessionStatusAMD>,
+    pub fp_get_gpa_session_results_amd: Option<vk::FnGetGpaSessionResultsAMD>,
+    pub fp_reset_gpa_session_amd: Option<vk::FnResetGpaSessionAMD>,
+    pub fp_cmd_copy_gpa_session_results_amd: Option<vk::FnCmdCopyGpaSessionResultsAMD>,
     pub fp_cmd_bind_descriptor_sets2: Option<vk::FnCmdBindDescriptorSets2>,
     pub fp_cmd_push_constants2: Option<vk::FnCmdPushConstants2>,
     pub fp_cmd_push_descriptor_set2: Option<vk::FnCmdPushDescriptorSet2>,
@@ -16209,6 +16350,90 @@ impl Device {
             fp_cmd_dispatch_graph_indirect_count_amdx: if extensions.amdx_shader_enqueue {
                 instance
                     .get_device_proc_addr(device, c"vkCmdDispatchGraphIndirectCountAMDX")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_gpa_session_amd: if extensions.amd_gpa_interface {
+                instance
+                    .get_device_proc_addr(device, c"vkCreateGpaSessionAMD")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_gpa_session_amd: if extensions.amd_gpa_interface {
+                instance
+                    .get_device_proc_addr(device, c"vkDestroyGpaSessionAMD")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_gpa_device_clock_mode_amd: if extensions.amd_gpa_interface {
+                instance
+                    .get_device_proc_addr(device, c"vkSetGpaDeviceClockModeAMD")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_gpa_device_clock_info_amd: if extensions.amd_gpa_interface {
+                instance
+                    .get_device_proc_addr(device, c"vkGetGpaDeviceClockInfoAMD")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_gpa_session_amd: if extensions.amd_gpa_interface {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdBeginGpaSessionAMD")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_gpa_session_amd: if extensions.amd_gpa_interface {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdEndGpaSessionAMD")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_gpa_sample_amd: if extensions.amd_gpa_interface {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdBeginGpaSampleAMD")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_gpa_sample_amd: if extensions.amd_gpa_interface {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdEndGpaSampleAMD")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_gpa_session_status_amd: if extensions.amd_gpa_interface {
+                instance
+                    .get_device_proc_addr(device, c"vkGetGpaSessionStatusAMD")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_gpa_session_results_amd: if extensions.amd_gpa_interface {
+                instance
+                    .get_device_proc_addr(device, c"vkGetGpaSessionResultsAMD")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_reset_gpa_session_amd: if extensions.amd_gpa_interface {
+                instance
+                    .get_device_proc_addr(device, c"vkResetGpaSessionAMD")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_gpa_session_results_amd: if extensions.amd_gpa_interface {
+                instance
+                    .get_device_proc_addr(device, c"vkCmdCopyGpaSessionResultsAMD")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -25012,6 +25237,162 @@ impl Device {
             .fp_cmd_dispatch_graph_indirect_count_amdx
             .expect("vkCmdDispatchGraphIndirectCountAMDX is not loaded");
         (fp)(command_buffer, scratch, scratch_size, count_info)
+    }
+    pub unsafe fn create_gpa_session_amd(
+        &self,
+        p_create_info: &vk::GpaSessionCreateInfoAMD,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::GpaSessionAMD> {
+        let fp = self
+            .fp_create_gpa_session_amd
+            .expect("vkCreateGpaSessionAMD is not loaded");
+        let mut p_gpa_session = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            self.handle,
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            p_gpa_session.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(p_gpa_session.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_gpa_session_amd(
+        &self,
+        gpa_session: vk::GpaSessionAMD,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_gpa_session_amd
+            .expect("vkDestroyGpaSessionAMD is not loaded");
+        (fp)(self.handle, gpa_session, p_allocator.map_or(ptr::null(), |r| r))
+    }
+    pub unsafe fn set_gpa_device_clock_mode_amd(&self, p_info: &mut vk::GpaDeviceClockModeInfoAMD) -> Result<()> {
+        let fp = self
+            .fp_set_gpa_device_clock_mode_amd
+            .expect("vkSetGpaDeviceClockModeAMD is not loaded");
+        let err = (fp)(self.handle, p_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_gpa_device_clock_info_amd(&self, p_info: &mut vk::GpaDeviceGetClockInfoAMD) -> Result<()> {
+        let fp = self
+            .fp_get_gpa_device_clock_info_amd
+            .expect("vkGetGpaDeviceClockInfoAMD is not loaded");
+        let err = (fp)(self.handle, p_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_begin_gpa_session_amd(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        gpa_session: vk::GpaSessionAMD,
+    ) -> Result<()> {
+        let fp = self
+            .fp_cmd_begin_gpa_session_amd
+            .expect("vkCmdBeginGpaSessionAMD is not loaded");
+        let err = (fp)(command_buffer, gpa_session);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_end_gpa_session_amd(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        gpa_session: vk::GpaSessionAMD,
+    ) -> Result<()> {
+        let fp = self
+            .fp_cmd_end_gpa_session_amd
+            .expect("vkCmdEndGpaSessionAMD is not loaded");
+        let err = (fp)(command_buffer, gpa_session);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_begin_gpa_sample_amd(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        gpa_session: vk::GpaSessionAMD,
+        p_gpa_sample_begin_info: &vk::GpaSampleBeginInfoAMD,
+    ) -> Result<u32> {
+        let fp = self
+            .fp_cmd_begin_gpa_sample_amd
+            .expect("vkCmdBeginGpaSampleAMD is not loaded");
+        let mut p_sample_id = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            command_buffer,
+            gpa_session,
+            p_gpa_sample_begin_info,
+            p_sample_id.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(p_sample_id.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_end_gpa_sample_amd(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        gpa_session: vk::GpaSessionAMD,
+        sample_id: u32,
+    ) {
+        let fp = self
+            .fp_cmd_end_gpa_sample_amd
+            .expect("vkCmdEndGpaSampleAMD is not loaded");
+        (fp)(command_buffer, gpa_session, sample_id)
+    }
+    pub unsafe fn get_gpa_session_status_amd(&self, gpa_session: vk::GpaSessionAMD) -> Result<()> {
+        let fp = self
+            .fp_get_gpa_session_status_amd
+            .expect("vkGetGpaSessionStatusAMD is not loaded");
+        let err = (fp)(self.handle, gpa_session);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_gpa_session_results_amd(
+        &self,
+        gpa_session: vk::GpaSessionAMD,
+        sample_id: u32,
+        p_size_in_bytes: &mut usize,
+        p_data: *mut c_void,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_gpa_session_results_amd
+            .expect("vkGetGpaSessionResultsAMD is not loaded");
+        let err = (fp)(self.handle, gpa_session, sample_id, p_size_in_bytes, p_data);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn reset_gpa_session_amd(&self, gpa_session: vk::GpaSessionAMD) -> Result<()> {
+        let fp = self
+            .fp_reset_gpa_session_amd
+            .expect("vkResetGpaSessionAMD is not loaded");
+        let err = (fp)(self.handle, gpa_session);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_copy_gpa_session_results_amd(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        gpa_session: vk::GpaSessionAMD,
+    ) {
+        let fp = self
+            .fp_cmd_copy_gpa_session_results_amd
+            .expect("vkCmdCopyGpaSessionResultsAMD is not loaded");
+        (fp)(command_buffer, gpa_session)
     }
     pub unsafe fn cmd_bind_descriptor_sets2(
         &self,

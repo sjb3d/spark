@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.350
+//! Generated from vk.xml version 1.4.351
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -1097,10 +1097,11 @@ impl PipelineCreateFlags {
     pub const RAY_TRACING_ALLOW_MOTION_NV: Self = Self(0x100000);
     pub const COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x2000000);
     pub const DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x4000000);
-    pub const RAY_TRACING_OPACITY_MICROMAP_EXT: Self = Self(0x1000000);
+    pub const RAY_TRACING_OPACITY_MICROMAP_EXT: Self = Self::RAY_TRACING_OPACITY_MICROMAP_KHR;
     pub const RAY_TRACING_DISPLACEMENT_MICROMAP_NV: Self = Self(0x10000000);
     pub const NO_PROTECTED_ACCESS_EXT: Self = Self::NO_PROTECTED_ACCESS;
     pub const PROTECTED_ACCESS_ONLY_EXT: Self = Self::PROTECTED_ACCESS_ONLY;
+    pub const RAY_TRACING_OPACITY_MICROMAP_KHR: Self = Self(0x1000000);
 }
 impl_bitmask!(PipelineCreateFlags);
 impl fmt::Display for PipelineCreateFlags {
@@ -1137,8 +1138,8 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x100000, "RAY_TRACING_ALLOW_MOTION_NV"),
                 (0x2000000, "COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT"),
                 (0x4000000, "DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT"),
-                (0x1000000, "RAY_TRACING_OPACITY_MICROMAP_EXT"),
                 (0x10000000, "RAY_TRACING_DISPLACEMENT_MICROMAP_NV"),
+                (0x1000000, "RAY_TRACING_OPACITY_MICROMAP_KHR"),
             ],
             f,
         )
@@ -1956,8 +1957,10 @@ impl GeometryInstanceFlagsKHR {
     pub const TRIANGLE_FRONT_COUNTERCLOCKWISE_NV: Self = Self::TRIANGLE_FRONT_COUNTERCLOCKWISE;
     pub const FORCE_OPAQUE_NV: Self = Self::FORCE_OPAQUE;
     pub const FORCE_NO_OPAQUE_NV: Self = Self::FORCE_NO_OPAQUE;
-    pub const FORCE_OPACITY_MICROMAP_2_STATE_EXT: Self = Self(0x10);
-    pub const DISABLE_OPACITY_MICROMAPS_EXT: Self = Self(0x20);
+    pub const FORCE_OPACITY_MICROMAP_2_STATE_EXT: Self = Self::FORCE_OPACITY_MICROMAP_2_STATE;
+    pub const DISABLE_OPACITY_MICROMAPS_EXT: Self = Self::DISABLE_OPACITY_MICROMAPS;
+    pub const FORCE_OPACITY_MICROMAP_2_STATE: Self = Self(0x10);
+    pub const DISABLE_OPACITY_MICROMAPS: Self = Self(0x20);
 }
 impl_bitmask!(GeometryInstanceFlagsKHR);
 impl fmt::Display for GeometryInstanceFlagsKHR {
@@ -1969,8 +1972,8 @@ impl fmt::Display for GeometryInstanceFlagsKHR {
                 (0x2, "TRIANGLE_FLIP_FACING"),
                 (0x4, "FORCE_OPAQUE"),
                 (0x8, "FORCE_NO_OPAQUE"),
-                (0x10, "FORCE_OPACITY_MICROMAP_2_STATE_EXT"),
-                (0x20, "DISABLE_OPACITY_MICROMAPS_EXT"),
+                (0x10, "FORCE_OPACITY_MICROMAP_2_STATE"),
+                (0x20, "DISABLE_OPACITY_MICROMAPS"),
             ],
             f,
         )
@@ -2059,12 +2062,15 @@ impl BuildAccelerationStructureFlagsKHR {
     pub const PREFER_FAST_BUILD_NV: Self = Self::PREFER_FAST_BUILD;
     pub const LOW_MEMORY_NV: Self = Self::LOW_MEMORY;
     pub const MOTION_NV: Self = Self(0x20);
-    pub const ALLOW_OPACITY_MICROMAP_UPDATE_EXT: Self = Self(0x40);
-    pub const ALLOW_DISABLE_OPACITY_MICROMAPS_EXT: Self = Self(0x80);
+    pub const ALLOW_OPACITY_MICROMAP_UPDATE_EXT: Self = Self::ALLOW_OPACITY_MICROMAP_UPDATE;
+    pub const ALLOW_DISABLE_OPACITY_MICROMAPS_EXT: Self = Self::ALLOW_DISABLE_OPACITY_MICROMAPS;
     pub const ALLOW_OPACITY_MICROMAP_DATA_UPDATE_EXT: Self = Self(0x100);
     pub const ALLOW_DISPLACEMENT_MICROMAP_UPDATE_NV: Self = Self(0x200);
     pub const ALLOW_DATA_ACCESS: Self = Self(0x800);
     pub const ALLOW_CLUSTER_OPACITY_MICROMAPS_NV: Self = Self(0x1000);
+    pub const ALLOW_OPACITY_MICROMAP_UPDATE: Self = Self(0x40);
+    pub const ALLOW_DISABLE_OPACITY_MICROMAPS: Self = Self(0x80);
+    pub const MICROMAP_LOSSY: Self = Self(0x400);
 }
 impl_bitmask!(BuildAccelerationStructureFlagsKHR);
 impl fmt::Display for BuildAccelerationStructureFlagsKHR {
@@ -2078,12 +2084,13 @@ impl fmt::Display for BuildAccelerationStructureFlagsKHR {
                 (0x8, "PREFER_FAST_BUILD"),
                 (0x10, "LOW_MEMORY"),
                 (0x20, "MOTION_NV"),
-                (0x40, "ALLOW_OPACITY_MICROMAP_UPDATE_EXT"),
-                (0x80, "ALLOW_DISABLE_OPACITY_MICROMAPS_EXT"),
                 (0x100, "ALLOW_OPACITY_MICROMAP_DATA_UPDATE_EXT"),
                 (0x200, "ALLOW_DISPLACEMENT_MICROMAP_UPDATE_NV"),
                 (0x800, "ALLOW_DATA_ACCESS"),
                 (0x1000, "ALLOW_CLUSTER_OPACITY_MICROMAPS_NV"),
+                (0x40, "ALLOW_OPACITY_MICROMAP_UPDATE"),
+                (0x80, "ALLOW_DISABLE_OPACITY_MICROMAPS"),
+                (0x400, "MICROMAP_LOSSY"),
             ],
             f,
         )
@@ -2590,6 +2597,7 @@ impl FormatFeatureFlags2 {
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x1000000);
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x40000000);
     pub const HOST_IMAGE_TRANSFER_EXT: Self = Self::HOST_IMAGE_TRANSFER;
+    pub const BLOCK_MATCHING_SXD_QCOM: Self = Self(0x100000000000);
     pub const SAMPLED_IMAGE_KHR: Self = Self::SAMPLED_IMAGE;
     pub const STORAGE_IMAGE_KHR: Self = Self::STORAGE_IMAGE;
     pub const STORAGE_IMAGE_ATOMIC_KHR: Self = Self::STORAGE_IMAGE_ATOMIC;
@@ -2685,6 +2693,7 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x20000000, "ACCELERATION_STRUCTURE_VERTEX_BUFFER_KHR"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x40000000, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
+                (0x100000000000, "BLOCK_MATCHING_SXD_QCOM"),
                 (0x8000000000000, "ACCELERATION_STRUCTURE_RADIUS_BUFFER_NV"),
                 (0x4000000000, "LINEAR_COLOR_ATTACHMENT_NV"),
                 (0x400000000, "WEIGHT_IMAGE_QCOM"),
@@ -2895,6 +2904,7 @@ impl PipelineCreateFlags2 {
     pub const EXECUTION_GRAPH_AMDX: Self = Self(0x100000000);
     pub const DESCRIPTOR_HEAP_EXT: Self = Self(0x1000000000);
     pub const RAY_TRACING_SKIP_BUILT_IN_PRIMITIVES_KHR: Self = Self::RAY_TRACING_SKIP_TRIANGLES_KHR;
+    pub const RAY_TRACING_OPACITY_MICROMAP_EXT: Self = Self::RAY_TRACING_OPACITY_MICROMAP_KHR;
     pub const RAY_TRACING_ALLOW_SPHERES_AND_LINEAR_SWEPT_SPHERES_NV: Self = Self(0x200000000);
     pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x400000000);
     pub const DISABLE_OPTIMIZATION_KHR: Self = Self::DISABLE_OPTIMIZATION;
@@ -2921,7 +2931,6 @@ impl PipelineCreateFlags2 {
     pub const RAY_TRACING_ALLOW_MOTION_NV: Self = Self(0x100000);
     pub const RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x200000);
     pub const RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT: Self = Self(0x400000);
-    pub const RAY_TRACING_OPACITY_MICROMAP_EXT: Self = Self(0x1000000);
     pub const COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x2000000);
     pub const DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x4000000);
     pub const NO_PROTECTED_ACCESS_EXT: Self = Self::NO_PROTECTED_ACCESS;
@@ -2933,6 +2942,8 @@ impl PipelineCreateFlags2 {
     pub const CAPTURE_DATA_KHR: Self = Self(0x80000000);
     pub const INDIRECT_BINDABLE_EXT: Self = Self(0x4000000000);
     pub const PER_LAYER_FRAGMENT_DENSITY_VALVE: Self = Self(0x10000000000);
+    pub const RAY_TRACING_OPACITY_MICROMAP_KHR: Self = Self(0x1000000);
+    pub const OPACITY_MICROMAP_DISALLOW_MIXED_SPECIAL_INDEX_KHR: Self = Self(0x20000000000);
     pub const N64_BIT_INDEXING_EXT: Self = Self(0x80000000000);
 }
 impl_bitmask!(PipelineCreateFlags2);
@@ -2971,7 +2982,6 @@ impl fmt::Display for PipelineCreateFlags2 {
                 (0x100000, "RAY_TRACING_ALLOW_MOTION_NV"),
                 (0x200000, "RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
                 (0x400000, "RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT"),
-                (0x1000000, "RAY_TRACING_OPACITY_MICROMAP_EXT"),
                 (0x2000000, "COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT"),
                 (0x4000000, "DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT"),
                 (0x10000000, "RAY_TRACING_DISPLACEMENT_MICROMAP_NV"),
@@ -2981,6 +2991,8 @@ impl fmt::Display for PipelineCreateFlags2 {
                 (0x80000000, "CAPTURE_DATA_KHR"),
                 (0x4000000000, "INDIRECT_BINDABLE_EXT"),
                 (0x10000000000, "PER_LAYER_FRAGMENT_DENSITY_VALVE"),
+                (0x1000000, "RAY_TRACING_OPACITY_MICROMAP_KHR"),
+                (0x20000000000, "OPACITY_MICROMAP_DISALLOW_MIXED_SPECIAL_INDEX_KHR"),
                 (0x80000000000, "N64_BIT_INDEXING_EXT"),
             ],
             f,
@@ -3005,6 +3017,8 @@ impl BufferUsageFlags2 {
     pub const SHADER_DEVICE_ADDRESS: Self = Self(0x20000);
     pub const EXECUTION_GRAPH_SCRATCH_AMDX: Self = Self(0x2000000);
     pub const DESCRIPTOR_HEAP_EXT: Self = Self(0x10000000);
+    pub const MICROMAP_BUILD_INPUT_READ_ONLY_EXT: Self = Self(0x800000);
+    pub const MICROMAP_STORAGE_EXT: Self = Self(0x1000000);
     pub const TRANSFER_SRC_KHR: Self = Self::TRANSFER_SRC;
     pub const TRANSFER_DST_KHR: Self = Self::TRANSFER_DST;
     pub const UNIFORM_TEXEL_BUFFER_KHR: Self = Self::UNIFORM_TEXEL_BUFFER;
@@ -3025,8 +3039,6 @@ impl BufferUsageFlags2 {
     pub const SAMPLER_DESCRIPTOR_BUFFER_EXT: Self = Self(0x200000);
     pub const RESOURCE_DESCRIPTOR_BUFFER_EXT: Self = Self(0x400000);
     pub const PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT: Self = Self(0x4000000);
-    pub const MICROMAP_BUILD_INPUT_READ_ONLY_EXT: Self = Self(0x800000);
-    pub const MICROMAP_STORAGE_EXT: Self = Self(0x1000000);
     pub const COMPRESSED_DATA_DGF1_AMDX: Self = Self(0x200000000);
     pub const DATA_GRAPH_FOREIGN_DESCRIPTOR_ARM: Self = Self(0x20000000);
     pub const TILE_MEMORY_QCOM: Self = Self(0x8000000);
@@ -3051,6 +3063,8 @@ impl fmt::Display for BufferUsageFlags2 {
                 (0x20000, "SHADER_DEVICE_ADDRESS"),
                 (0x2000000, "EXECUTION_GRAPH_SCRATCH_AMDX"),
                 (0x10000000, "DESCRIPTOR_HEAP_EXT"),
+                (0x800000, "MICROMAP_BUILD_INPUT_READ_ONLY_EXT"),
+                (0x1000000, "MICROMAP_STORAGE_EXT"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
                 (0x400, "SHADER_BINDING_TABLE_KHR"),
                 (0x800, "TRANSFORM_FEEDBACK_BUFFER_EXT"),
@@ -3060,8 +3074,6 @@ impl fmt::Display for BufferUsageFlags2 {
                 (0x200000, "SAMPLER_DESCRIPTOR_BUFFER_EXT"),
                 (0x400000, "RESOURCE_DESCRIPTOR_BUFFER_EXT"),
                 (0x4000000, "PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT"),
-                (0x800000, "MICROMAP_BUILD_INPUT_READ_ONLY_EXT"),
-                (0x1000000, "MICROMAP_STORAGE_EXT"),
                 (0x200000000, "COMPRESSED_DATA_DGF1_AMDX"),
                 (0x20000000, "DATA_GRAPH_FOREIGN_DESCRIPTOR_ARM"),
                 (0x8000000, "TILE_MEMORY_QCOM"),
@@ -3219,6 +3231,59 @@ impl fmt::Display for SpirvResourceTypeFlagsEXT {
             ],
             f,
         )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct GpaSqShaderStageFlagsAMD(pub(crate) u32);
+impl GpaSqShaderStageFlagsAMD {
+    pub const PS: Self = Self(0x1);
+    pub const VS: Self = Self(0x2);
+    pub const GS: Self = Self(0x4);
+    pub const ES: Self = Self(0x8);
+    pub const HS: Self = Self(0x10);
+    pub const LS: Self = Self(0x20);
+    pub const CS: Self = Self(0x40);
+}
+impl_bitmask!(GpaSqShaderStageFlagsAMD);
+impl fmt::Display for GpaSqShaderStageFlagsAMD {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "PS"),
+                (0x2, "VS"),
+                (0x4, "GS"),
+                (0x8, "ES"),
+                (0x10, "HS"),
+                (0x20, "LS"),
+                (0x40, "CS"),
+            ],
+            f,
+        )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct GpaPerfBlockPropertiesFlagsAMD(pub(crate) u32);
+impl GpaPerfBlockPropertiesFlagsAMD {}
+impl_bitmask!(GpaPerfBlockPropertiesFlagsAMD);
+impl fmt::Display for GpaPerfBlockPropertiesFlagsAMD {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct PhysicalDeviceGpaPropertiesFlagsAMD(pub(crate) u32);
+impl PhysicalDeviceGpaPropertiesFlagsAMD {}
+impl_bitmask!(PhysicalDeviceGpaPropertiesFlagsAMD);
+impl fmt::Display for PhysicalDeviceGpaPropertiesFlagsAMD {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 
@@ -4684,6 +4749,7 @@ impl ShaderCreateFlagsEXT {
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x20);
     pub const FRAGMENT_DENSITY_MAP_ATTACHMENT: Self = Self(0x40);
     pub const INDIRECT_BINDABLE: Self = Self(0x80);
+    pub const OPACITY_MICROMAP_DISALLOW_MIXED_SPECIAL_INDEX: Self = Self(0x1000);
     pub const N64_BIT_INDEXING: Self = Self(0x8000);
     pub const INDEPENDENT_SETS_KHR: Self = Self(0x40000);
 }
@@ -4703,6 +4769,7 @@ impl fmt::Display for ShaderCreateFlagsEXT {
                 (0x20, "FRAGMENT_SHADING_RATE_ATTACHMENT"),
                 (0x40, "FRAGMENT_DENSITY_MAP_ATTACHMENT"),
                 (0x80, "INDIRECT_BINDABLE"),
+                (0x1000, "OPACITY_MICROMAP_DISALLOW_MIXED_SPECIAL_INDEX"),
                 (0x8000, "N64_BIT_INDEXING"),
                 (0x40000, "INDEPENDENT_SETS_KHR"),
             ],
@@ -5203,6 +5270,11 @@ impl_handle!(DataGraphPipelineSessionARM);
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]
 pub struct ShaderInstrumentationARM(u64);
 impl_handle!(ShaderInstrumentationARM);
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]
+pub struct GpaSessionAMD(u64);
+impl_handle!(GpaSessionAMD);
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]
@@ -6989,6 +7061,7 @@ impl QueryType {
     pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR: Self = Self(1000150000);
     pub const ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR: Self = Self(1000150001);
     pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV: Self = Self(1000165000);
+    pub const TIME_ELAPSED_QCOM: Self = Self(1000173000);
     pub const PERFORMANCE_QUERY_INTEL: Self = Self(1000210000);
     pub const MESH_PRIMITIVES_GENERATED_EXT: Self = Self(1000328000);
     pub const PRIMITIVES_GENERATED_EXT: Self = Self(1000382000);
@@ -7008,6 +7081,7 @@ impl fmt::Display for QueryType {
             1000150000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR"),
             1000150001 => Some(&"ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV"),
+            1000173000 => Some(&"TIME_ELAPSED_QCOM"),
             1000210000 => Some(&"PERFORMANCE_QUERY_INTEL"),
             1000328000 => Some(&"MESH_PRIMITIVES_GENERATED_EXT"),
             1000382000 => Some(&"PRIMITIVES_GENERATED_EXT"),
@@ -7668,6 +7742,13 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT: Self =
         Self::PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES;
     pub const SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT: Self = Self::SAMPLER_REDUCTION_MODE_CREATE_INFO;
+    pub const PHYSICAL_DEVICE_GPA_FEATURES_AMD: Self = Self(1000133000);
+    pub const PHYSICAL_DEVICE_GPA_PROPERTIES_AMD: Self = Self(1000133001);
+    pub const GPA_SAMPLE_BEGIN_INFO_AMD: Self = Self(1000133002);
+    pub const GPA_SESSION_CREATE_INFO_AMD: Self = Self(1000133003);
+    pub const GPA_DEVICE_CLOCK_MODE_INFO_AMD: Self = Self(1000133004);
+    pub const PHYSICAL_DEVICE_GPA_PROPERTIES_2_AMD: Self = Self(1000133005);
+    pub const GPA_DEVICE_GET_CLOCK_INFO_AMD: Self = Self(1000133006);
     pub const PHYSICAL_DEVICE_SHADER_ENQUEUE_FEATURES_AMDX: Self = Self(1000134000);
     pub const PHYSICAL_DEVICE_SHADER_ENQUEUE_PROPERTIES_AMDX: Self = Self(1000134001);
     pub const EXECUTION_GRAPH_PIPELINE_SCRATCH_SIZE_AMDX: Self = Self(1000134002);
@@ -7789,6 +7870,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT: Self = Self(1000170000);
     pub const FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT: Self = Self(1000170001);
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_CONVERSION_FEATURES_QCOM: Self = Self(1000172000);
+    pub const PHYSICAL_DEVICE_ELAPSED_TIMER_QUERY_FEATURES_QCOM: Self = Self(1000173000);
     pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT: Self = Self::DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO;
     pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES_KHR: Self =
         Self::PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES;
@@ -8026,6 +8108,11 @@ impl StructureType {
     pub const PERF_HINT_INFO_QCOM: Self = Self(1000302000);
     pub const PHYSICAL_DEVICE_QUEUE_PERF_HINT_FEATURES_QCOM: Self = Self(1000302001);
     pub const PHYSICAL_DEVICE_QUEUE_PERF_HINT_PROPERTIES_QCOM: Self = Self(1000302002);
+    pub const PHYSICAL_DEVICE_IMAGE_PROCESSING_3_FEATURES_QCOM: Self = Self(1000303000);
+    pub const PHYSICAL_DEVICE_SHADER_MULTIPLE_WAIT_QUEUES_FEATURES_QCOM: Self = Self(1000304000);
+    pub const PHYSICAL_DEVICE_SHADER_MULTIPLE_WAIT_QUEUES_PROPERTIES_QCOM: Self = Self(1000304001);
+    pub const PHYSICAL_DEVICE_SHADER_SPLIT_BARRIER_FEATURES_EXT: Self = Self(1000305000);
+    pub const PHYSICAL_DEVICE_SHADER_SPLIT_BARRIER_PROPERTIES_EXT: Self = Self(1000305001);
     pub const CUDA_MODULE_CREATE_INFO_NV: Self = Self(1000307000);
     pub const CUDA_FUNCTION_CREATE_INFO_NV: Self = Self(1000307001);
     pub const CUDA_LAUNCH_INFO_NV: Self = Self(1000307002);
@@ -8581,6 +8668,10 @@ impl StructureType {
     pub const RENDERING_END_INFO_EXT: Self = Self::RENDERING_END_INFO_KHR;
     pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT: Self = Self(1000620000);
     pub const PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR: Self = Self(1000361000);
+    pub const PHYSICAL_DEVICE_OPACITY_MICROMAP_FEATURES_KHR: Self = Self(1000623000);
+    pub const PHYSICAL_DEVICE_OPACITY_MICROMAP_PROPERTIES_KHR: Self = Self(1000623001);
+    pub const ACCELERATION_STRUCTURE_GEOMETRY_MICROMAP_DATA_KHR: Self = Self(1000623002);
+    pub const ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_KHR: Self = Self(1000623003);
     pub const PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT: Self = Self(1000627000);
     pub const PHYSICAL_DEVICE_CUSTOM_RESOLVE_FEATURES_EXT: Self = Self(1000628000);
     pub const BEGIN_CUSTOM_RESOLVE_INFO_EXT: Self = Self(1000628001);
@@ -9003,6 +9094,13 @@ impl fmt::Display for StructureType {
             1000129004 => Some(&"MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID"),
             1000129005 => Some(&"EXTERNAL_FORMAT_ANDROID"),
             1000129006 => Some(&"ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_2_ANDROID"),
+            1000133000 => Some(&"PHYSICAL_DEVICE_GPA_FEATURES_AMD"),
+            1000133001 => Some(&"PHYSICAL_DEVICE_GPA_PROPERTIES_AMD"),
+            1000133002 => Some(&"GPA_SAMPLE_BEGIN_INFO_AMD"),
+            1000133003 => Some(&"GPA_SESSION_CREATE_INFO_AMD"),
+            1000133004 => Some(&"GPA_DEVICE_CLOCK_MODE_INFO_AMD"),
+            1000133005 => Some(&"PHYSICAL_DEVICE_GPA_PROPERTIES_2_AMD"),
+            1000133006 => Some(&"GPA_DEVICE_GET_CLOCK_INFO_AMD"),
             1000134000 => Some(&"PHYSICAL_DEVICE_SHADER_ENQUEUE_FEATURES_AMDX"),
             1000134001 => Some(&"PHYSICAL_DEVICE_SHADER_ENQUEUE_PROPERTIES_AMDX"),
             1000134002 => Some(&"EXECUTION_GRAPH_PIPELINE_SCRATCH_SIZE_AMDX"),
@@ -9088,6 +9186,7 @@ impl fmt::Display for StructureType {
             1000170000 => Some(&"PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT"),
             1000170001 => Some(&"FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT"),
             1000172000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_CONVERSION_FEATURES_QCOM"),
+            1000173000 => Some(&"PHYSICAL_DEVICE_ELAPSED_TIMER_QUERY_FEATURES_QCOM"),
             1000178000 => Some(&"IMPORT_MEMORY_HOST_POINTER_INFO_EXT"),
             1000178001 => Some(&"MEMORY_HOST_POINTER_PROPERTIES_EXT"),
             1000178002 => Some(&"PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT"),
@@ -9215,6 +9314,11 @@ impl fmt::Display for StructureType {
             1000302000 => Some(&"PERF_HINT_INFO_QCOM"),
             1000302001 => Some(&"PHYSICAL_DEVICE_QUEUE_PERF_HINT_FEATURES_QCOM"),
             1000302002 => Some(&"PHYSICAL_DEVICE_QUEUE_PERF_HINT_PROPERTIES_QCOM"),
+            1000303000 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_3_FEATURES_QCOM"),
+            1000304000 => Some(&"PHYSICAL_DEVICE_SHADER_MULTIPLE_WAIT_QUEUES_FEATURES_QCOM"),
+            1000304001 => Some(&"PHYSICAL_DEVICE_SHADER_MULTIPLE_WAIT_QUEUES_PROPERTIES_QCOM"),
+            1000305000 => Some(&"PHYSICAL_DEVICE_SHADER_SPLIT_BARRIER_FEATURES_EXT"),
+            1000305001 => Some(&"PHYSICAL_DEVICE_SHADER_SPLIT_BARRIER_PROPERTIES_EXT"),
             1000307000 => Some(&"CUDA_MODULE_CREATE_INFO_NV"),
             1000307001 => Some(&"CUDA_FUNCTION_CREATE_INFO_NV"),
             1000307002 => Some(&"CUDA_LAUNCH_INFO_NV"),
@@ -9678,6 +9782,10 @@ impl fmt::Display for StructureType {
             1000425002 => Some(&"RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT"),
             1000620000 => Some(&"PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT"),
             1000361000 => Some(&"PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR"),
+            1000623000 => Some(&"PHYSICAL_DEVICE_OPACITY_MICROMAP_FEATURES_KHR"),
+            1000623001 => Some(&"PHYSICAL_DEVICE_OPACITY_MICROMAP_PROPERTIES_KHR"),
+            1000623002 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_MICROMAP_DATA_KHR"),
+            1000623003 => Some(&"ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_KHR"),
             1000627000 => Some(&"PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT"),
             1000628000 => Some(&"PHYSICAL_DEVICE_CUSTOM_RESOLVE_FEATURES_EXT"),
             1000628001 => Some(&"BEGIN_CUSTOM_RESOLVE_INFO_EXT"),
@@ -9991,6 +10099,7 @@ impl ObjectType {
     pub const CU_FUNCTION_NVX: Self = Self(1000029001);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE;
     pub const DEBUG_UTILS_MESSENGER_EXT: Self = Self(1000128000);
+    pub const GPA_SESSION_AMD: Self = Self(1000133000);
     pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000150000);
     pub const SAMPLER_YCBCR_CONVERSION_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION;
     pub const VALIDATION_CACHE_EXT: Self = Self(1000160000);
@@ -10054,6 +10163,7 @@ impl fmt::Display for ObjectType {
             1000029000 => Some(&"CU_MODULE_NVX"),
             1000029001 => Some(&"CU_FUNCTION_NVX"),
             1000128000 => Some(&"DEBUG_UTILS_MESSENGER_EXT"),
+            1000133000 => Some(&"GPA_SESSION_AMD"),
             1000150000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
             1000160000 => Some(&"VALIDATION_CACHE_EXT"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
@@ -10529,6 +10639,7 @@ impl AccelerationStructureTypeKHR {
     pub const GENERIC: Self = Self(2);
     pub const TOP_LEVEL_NV: Self = Self::TOP_LEVEL;
     pub const BOTTOM_LEVEL_NV: Self = Self::BOTTOM_LEVEL;
+    pub const OPACITY_MICROMAP: Self = Self(1000623000);
 }
 impl fmt::Display for AccelerationStructureTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10536,6 +10647,7 @@ impl fmt::Display for AccelerationStructureTypeKHR {
             0 => Some(&"TOP_LEVEL"),
             1 => Some(&"BOTTOM_LEVEL"),
             2 => Some(&"GENERIC"),
+            1000623000 => Some(&"OPACITY_MICROMAP"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10559,6 +10671,7 @@ impl GeometryTypeKHR {
     pub const SPHERES_NV: Self = Self(1000429004);
     pub const LINEAR_SWEPT_SPHERES_NV: Self = Self(1000429005);
     pub const DENSE_GEOMETRY_FORMAT_TRIANGLES_AMDX: Self = Self(1000478000);
+    pub const MICROMAP: Self = Self(1000623000);
 }
 impl fmt::Display for GeometryTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10569,6 +10682,7 @@ impl fmt::Display for GeometryTypeKHR {
             1000429004 => Some(&"SPHERES_NV"),
             1000429005 => Some(&"LINEAR_SWEPT_SPHERES_NV"),
             1000478000 => Some(&"DENSE_GEOMETRY_FORMAT_TRIANGLES_AMDX"),
+            1000623000 => Some(&"MICROMAP"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11303,12 +11417,14 @@ impl fmt::Display for CopyMicromapModeEXT {
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct OpacityMicromapFormatEXT(pub(crate) i32);
-impl OpacityMicromapFormatEXT {
+pub struct OpacityMicromapFormatKHR(pub(crate) i32);
+impl OpacityMicromapFormatKHR {
     pub const N2_STATE: Self = Self(1);
     pub const N4_STATE: Self = Self(2);
+    pub const N2_STATE_EXT: Self = Self::N2_STATE;
+    pub const N4_STATE_EXT: Self = Self::N4_STATE;
 }
-impl fmt::Display for OpacityMicromapFormatEXT {
+impl fmt::Display for OpacityMicromapFormatKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             1 => Some(&"N2_STATE"),
@@ -11322,18 +11438,23 @@ impl fmt::Display for OpacityMicromapFormatEXT {
         }
     }
 }
+pub type OpacityMicromapFormatEXT = OpacityMicromapFormatKHR;
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct OpacityMicromapSpecialIndexEXT(pub(crate) i32);
-impl OpacityMicromapSpecialIndexEXT {
+pub struct OpacityMicromapSpecialIndexKHR(pub(crate) i32);
+impl OpacityMicromapSpecialIndexKHR {
     pub const FULLY_TRANSPARENT: Self = Self(-1);
     pub const FULLY_OPAQUE: Self = Self(-2);
     pub const FULLY_UNKNOWN_TRANSPARENT: Self = Self(-3);
     pub const FULLY_UNKNOWN_OPAQUE: Self = Self(-4);
+    pub const FULLY_TRANSPARENT_EXT: Self = Self::FULLY_TRANSPARENT;
+    pub const FULLY_OPAQUE_EXT: Self = Self::FULLY_OPAQUE;
+    pub const FULLY_UNKNOWN_TRANSPARENT_EXT: Self = Self::FULLY_UNKNOWN_TRANSPARENT;
+    pub const FULLY_UNKNOWN_OPAQUE_EXT: Self = Self::FULLY_UNKNOWN_OPAQUE;
     pub const CLUSTER_GEOMETRY_DISABLE_OPACITY_MICROMAP_NV: Self = Self(-5);
 }
-impl fmt::Display for OpacityMicromapSpecialIndexEXT {
+impl fmt::Display for OpacityMicromapSpecialIndexKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             -1 => Some(&"FULLY_TRANSPARENT"),
@@ -11341,6 +11462,27 @@ impl fmt::Display for OpacityMicromapSpecialIndexEXT {
             -3 => Some(&"FULLY_UNKNOWN_TRANSPARENT"),
             -4 => Some(&"FULLY_UNKNOWN_OPAQUE"),
             -5 => Some(&"CLUSTER_GEOMETRY_DISABLE_OPACITY_MICROMAP_NV"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+pub type OpacityMicromapSpecialIndexEXT = OpacityMicromapSpecialIndexKHR;
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct AccelerationStructureSerializedBlockTypeKHR(pub(crate) i32);
+impl AccelerationStructureSerializedBlockTypeKHR {
+    pub const OPACITY_MICROMAP: Self = Self(0);
+}
+impl fmt::Display for AccelerationStructureSerializedBlockTypeKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"OPACITY_MICROMAP"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12036,6 +12178,194 @@ impl fmt::Display for DescriptorMappingSourceEXT {
             8 => Some(&"HEAP_WITH_SHADER_RECORD_INDEX"),
             9 => Some(&"SHADER_RECORD_DATA"),
             10 => Some(&"SHADER_RECORD_ADDRESS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct GpaPerfBlockAMD(pub(crate) i32);
+impl GpaPerfBlockAMD {
+    pub const CPF: Self = Self(0);
+    pub const IA: Self = Self(1);
+    pub const VGT: Self = Self(2);
+    pub const PA: Self = Self(3);
+    pub const SC: Self = Self(4);
+    pub const SPI: Self = Self(5);
+    pub const SQ: Self = Self(6);
+    pub const SX: Self = Self(7);
+    pub const TA: Self = Self(8);
+    pub const TD: Self = Self(9);
+    pub const TCP: Self = Self(10);
+    pub const TCC: Self = Self(11);
+    pub const TCA: Self = Self(12);
+    pub const DB: Self = Self(13);
+    pub const CB: Self = Self(14);
+    pub const GDS: Self = Self(15);
+    pub const SRBM: Self = Self(16);
+    pub const GRBM: Self = Self(17);
+    pub const GRBM_SE: Self = Self(18);
+    pub const RLC: Self = Self(19);
+    pub const DMA: Self = Self(20);
+    pub const MC: Self = Self(21);
+    pub const CPG: Self = Self(22);
+    pub const CPC: Self = Self(23);
+    pub const WD: Self = Self(24);
+    pub const TCS: Self = Self(25);
+    pub const ATC: Self = Self(26);
+    pub const ATC_L2: Self = Self(27);
+    pub const MC_VM_L2: Self = Self(28);
+    pub const EA: Self = Self(29);
+    pub const RPB: Self = Self(30);
+    pub const RMI: Self = Self(31);
+    pub const UMCCH: Self = Self(32);
+    pub const GE: Self = Self(33);
+    pub const GL1A: Self = Self(34);
+    pub const GL1C: Self = Self(35);
+    pub const GL1CG: Self = Self(36);
+    pub const GL2A: Self = Self(37);
+    pub const GL2C: Self = Self(38);
+    pub const CHA: Self = Self(39);
+    pub const CHC: Self = Self(40);
+    pub const CHCG: Self = Self(41);
+    pub const GUS: Self = Self(42);
+    pub const GCR: Self = Self(43);
+    pub const PH: Self = Self(44);
+    pub const UTCL1: Self = Self(45);
+    pub const GE1: Self = Self::GE;
+    pub const GE_DIST: Self = Self(46);
+    pub const GE_SE: Self = Self(47);
+    pub const DF_MALL: Self = Self(48);
+    pub const SQ_WGP: Self = Self(49);
+    pub const PC: Self = Self(50);
+    pub const GL1XA: Self = Self(51);
+    pub const GL1XC: Self = Self(52);
+    pub const WGS: Self = Self(53);
+    pub const EACPWD: Self = Self(54);
+    pub const EASE: Self = Self(55);
+    pub const RLCUSER: Self = Self(56);
+    pub const RLCLOCAL: Self = Self::RLCUSER;
+}
+impl fmt::Display for GpaPerfBlockAMD {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"CPF"),
+            1 => Some(&"IA"),
+            2 => Some(&"VGT"),
+            3 => Some(&"PA"),
+            4 => Some(&"SC"),
+            5 => Some(&"SPI"),
+            6 => Some(&"SQ"),
+            7 => Some(&"SX"),
+            8 => Some(&"TA"),
+            9 => Some(&"TD"),
+            10 => Some(&"TCP"),
+            11 => Some(&"TCC"),
+            12 => Some(&"TCA"),
+            13 => Some(&"DB"),
+            14 => Some(&"CB"),
+            15 => Some(&"GDS"),
+            16 => Some(&"SRBM"),
+            17 => Some(&"GRBM"),
+            18 => Some(&"GRBM_SE"),
+            19 => Some(&"RLC"),
+            20 => Some(&"DMA"),
+            21 => Some(&"MC"),
+            22 => Some(&"CPG"),
+            23 => Some(&"CPC"),
+            24 => Some(&"WD"),
+            25 => Some(&"TCS"),
+            26 => Some(&"ATC"),
+            27 => Some(&"ATC_L2"),
+            28 => Some(&"MC_VM_L2"),
+            29 => Some(&"EA"),
+            30 => Some(&"RPB"),
+            31 => Some(&"RMI"),
+            32 => Some(&"UMCCH"),
+            33 => Some(&"GE"),
+            34 => Some(&"GL1A"),
+            35 => Some(&"GL1C"),
+            36 => Some(&"GL1CG"),
+            37 => Some(&"GL2A"),
+            38 => Some(&"GL2C"),
+            39 => Some(&"CHA"),
+            40 => Some(&"CHC"),
+            41 => Some(&"CHCG"),
+            42 => Some(&"GUS"),
+            43 => Some(&"GCR"),
+            44 => Some(&"PH"),
+            45 => Some(&"UTCL1"),
+            46 => Some(&"GE_DIST"),
+            47 => Some(&"GE_SE"),
+            48 => Some(&"DF_MALL"),
+            49 => Some(&"SQ_WGP"),
+            50 => Some(&"PC"),
+            51 => Some(&"GL1XA"),
+            52 => Some(&"GL1XC"),
+            53 => Some(&"WGS"),
+            54 => Some(&"EACPWD"),
+            55 => Some(&"EASE"),
+            56 => Some(&"RLCUSER"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct GpaSampleTypeAMD(pub(crate) i32);
+impl GpaSampleTypeAMD {
+    pub const CUMULATIVE: Self = Self(0);
+    pub const TRACE: Self = Self(1);
+    pub const TIMING: Self = Self(2);
+}
+impl fmt::Display for GpaSampleTypeAMD {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"CUMULATIVE"),
+            1 => Some(&"TRACE"),
+            2 => Some(&"TIMING"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct GpaDeviceClockModeAMD(pub(crate) i32);
+impl GpaDeviceClockModeAMD {
+    pub const DEFAULT: Self = Self(0);
+    pub const QUERY: Self = Self(1);
+    pub const PROFILING: Self = Self(2);
+    pub const MIN_MEMORY: Self = Self(3);
+    pub const MIN_ENGINE: Self = Self(4);
+    pub const PEAK: Self = Self(5);
+}
+impl fmt::Display for GpaDeviceClockModeAMD {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DEFAULT"),
+            1 => Some(&"QUERY"),
+            2 => Some(&"PROFILING"),
+            3 => Some(&"MIN_MEMORY"),
+            4 => Some(&"MIN_ENGINE"),
+            5 => Some(&"PEAK"),
             _ => None,
         };
         if let Some(name) = name {
@@ -26324,6 +26654,34 @@ impl fmt::Debug for ShaderStatisticsInfoAMD {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceElapsedTimerQueryFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub elapsed_timer_query: Bool32,
+}
+unsafe impl Send for PhysicalDeviceElapsedTimerQueryFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceElapsedTimerQueryFeaturesQCOM {}
+impl Default for PhysicalDeviceElapsedTimerQueryFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_ELAPSED_TIMER_QUERY_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            elapsed_timer_query: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceElapsedTimerQueryFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceElapsedTimerQueryFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("elapsed_timer_query", &self.elapsed_timer_query)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct DeviceQueueGlobalPriorityCreateInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -35382,6 +35740,312 @@ impl fmt::Debug for PhysicalDeviceCoherentMemoryFeaturesAMD {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("device_coherent_memory", &self.device_coherent_memory)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct GpaPerfBlockPropertiesAMD {
+    pub block_type: GpaPerfBlockAMD,
+    pub flags: GpaPerfBlockPropertiesFlagsAMD,
+    pub instance_count: u32,
+    pub max_event_id: u32,
+    pub max_global_only_counters: u32,
+    pub max_global_shared_counters: u32,
+    pub max_streaming_counters: u32,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceGpaFeaturesAMD {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub perf_counters: Bool32,
+    pub streaming_perf_counters: Bool32,
+    pub sq_thread_tracing: Bool32,
+    pub clock_modes: Bool32,
+}
+unsafe impl Send for PhysicalDeviceGpaFeaturesAMD {}
+unsafe impl Sync for PhysicalDeviceGpaFeaturesAMD {}
+impl Default for PhysicalDeviceGpaFeaturesAMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_GPA_FEATURES_AMD,
+            p_next: ptr::null_mut(),
+            perf_counters: Default::default(),
+            streaming_perf_counters: Default::default(),
+            sq_thread_tracing: Default::default(),
+            clock_modes: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceGpaFeaturesAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceGpaFeaturesAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("perf_counters", &self.perf_counters)
+            .field("streaming_perf_counters", &self.streaming_perf_counters)
+            .field("sq_thread_tracing", &self.sq_thread_tracing)
+            .field("clock_modes", &self.clock_modes)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceGpaPropertiesAMD {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub flags: PhysicalDeviceGpaPropertiesFlagsAMD,
+    pub max_sqtt_se_buffer_size: DeviceSize,
+    pub shader_engine_count: u32,
+    pub perf_block_count: u32,
+    pub p_perf_blocks: *mut GpaPerfBlockPropertiesAMD,
+}
+unsafe impl Send for PhysicalDeviceGpaPropertiesAMD {}
+unsafe impl Sync for PhysicalDeviceGpaPropertiesAMD {}
+impl Default for PhysicalDeviceGpaPropertiesAMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_GPA_PROPERTIES_AMD,
+            p_next: ptr::null_mut(),
+            flags: Default::default(),
+            max_sqtt_se_buffer_size: Default::default(),
+            shader_engine_count: Default::default(),
+            perf_block_count: Default::default(),
+            p_perf_blocks: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceGpaPropertiesAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceGpaPropertiesAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("max_sqtt_se_buffer_size", &self.max_sqtt_se_buffer_size)
+            .field("shader_engine_count", &self.shader_engine_count)
+            .field("perf_block_count", &self.perf_block_count)
+            .field("p_perf_blocks", &self.p_perf_blocks)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceGpaProperties2AMD {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub revision_id: u32,
+}
+unsafe impl Send for PhysicalDeviceGpaProperties2AMD {}
+unsafe impl Sync for PhysicalDeviceGpaProperties2AMD {}
+impl Default for PhysicalDeviceGpaProperties2AMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_GPA_PROPERTIES_2_AMD,
+            p_next: ptr::null_mut(),
+            revision_id: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceGpaProperties2AMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceGpaProperties2AMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("revision_id", &self.revision_id)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct GpaPerfCounterAMD {
+    pub block_type: GpaPerfBlockAMD,
+    pub block_instance: u32,
+    pub event_id: u32,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct GpaSampleBeginInfoAMD {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub sample_type: GpaSampleTypeAMD,
+    pub sample_internal_operations: Bool32,
+    pub cache_flush_on_counter_collection: Bool32,
+    pub sq_shader_mask_enable: Bool32,
+    pub sq_shader_mask: GpaSqShaderStageFlagsAMD,
+    pub perf_counter_count: u32,
+    pub p_perf_counters: *const GpaPerfCounterAMD,
+    pub streaming_perf_trace_sample_interval: u32,
+    pub perf_counter_device_memory_limit: DeviceSize,
+    pub sq_thread_trace_enable: Bool32,
+    pub sq_thread_trace_suppress_instruction_tokens: Bool32,
+    pub sq_thread_trace_device_memory_limit: DeviceSize,
+    pub timing_pre_sample: PipelineStageFlags,
+    pub timing_post_sample: PipelineStageFlags,
+}
+unsafe impl Send for GpaSampleBeginInfoAMD {}
+unsafe impl Sync for GpaSampleBeginInfoAMD {}
+impl Default for GpaSampleBeginInfoAMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::GPA_SAMPLE_BEGIN_INFO_AMD,
+            p_next: ptr::null(),
+            sample_type: Default::default(),
+            sample_internal_operations: Default::default(),
+            cache_flush_on_counter_collection: Default::default(),
+            sq_shader_mask_enable: Default::default(),
+            sq_shader_mask: Default::default(),
+            perf_counter_count: Default::default(),
+            p_perf_counters: ptr::null(),
+            streaming_perf_trace_sample_interval: Default::default(),
+            perf_counter_device_memory_limit: Default::default(),
+            sq_thread_trace_enable: Default::default(),
+            sq_thread_trace_suppress_instruction_tokens: Default::default(),
+            sq_thread_trace_device_memory_limit: Default::default(),
+            timing_pre_sample: Default::default(),
+            timing_post_sample: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for GpaSampleBeginInfoAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("GpaSampleBeginInfoAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("sample_type", &self.sample_type)
+            .field("sample_internal_operations", &self.sample_internal_operations)
+            .field(
+                "cache_flush_on_counter_collection",
+                &self.cache_flush_on_counter_collection,
+            )
+            .field("sq_shader_mask_enable", &self.sq_shader_mask_enable)
+            .field("sq_shader_mask", &self.sq_shader_mask)
+            .field("perf_counter_count", &self.perf_counter_count)
+            .field("p_perf_counters", &self.p_perf_counters)
+            .field(
+                "streaming_perf_trace_sample_interval",
+                &self.streaming_perf_trace_sample_interval,
+            )
+            .field(
+                "perf_counter_device_memory_limit",
+                &self.perf_counter_device_memory_limit,
+            )
+            .field("sq_thread_trace_enable", &self.sq_thread_trace_enable)
+            .field(
+                "sq_thread_trace_suppress_instruction_tokens",
+                &self.sq_thread_trace_suppress_instruction_tokens,
+            )
+            .field(
+                "sq_thread_trace_device_memory_limit",
+                &self.sq_thread_trace_device_memory_limit,
+            )
+            .field("timing_pre_sample", &self.timing_pre_sample)
+            .field("timing_post_sample", &self.timing_post_sample)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct GpaDeviceClockModeInfoAMD {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub clock_mode: GpaDeviceClockModeAMD,
+    pub memory_clock_ratio_to_peak: f32,
+    pub engine_clock_ratio_to_peak: f32,
+}
+unsafe impl Send for GpaDeviceClockModeInfoAMD {}
+unsafe impl Sync for GpaDeviceClockModeInfoAMD {}
+impl Default for GpaDeviceClockModeInfoAMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::GPA_DEVICE_CLOCK_MODE_INFO_AMD,
+            p_next: ptr::null(),
+            clock_mode: Default::default(),
+            memory_clock_ratio_to_peak: Default::default(),
+            engine_clock_ratio_to_peak: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for GpaDeviceClockModeInfoAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("GpaDeviceClockModeInfoAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("clock_mode", &self.clock_mode)
+            .field("memory_clock_ratio_to_peak", &self.memory_clock_ratio_to_peak)
+            .field("engine_clock_ratio_to_peak", &self.engine_clock_ratio_to_peak)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct GpaDeviceGetClockInfoAMD {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub memory_clock_ratio_to_peak: f32,
+    pub engine_clock_ratio_to_peak: f32,
+    pub memory_clock_frequency: u32,
+    pub engine_clock_frequency: u32,
+}
+unsafe impl Send for GpaDeviceGetClockInfoAMD {}
+unsafe impl Sync for GpaDeviceGetClockInfoAMD {}
+impl Default for GpaDeviceGetClockInfoAMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::GPA_DEVICE_GET_CLOCK_INFO_AMD,
+            p_next: ptr::null_mut(),
+            memory_clock_ratio_to_peak: Default::default(),
+            engine_clock_ratio_to_peak: Default::default(),
+            memory_clock_frequency: Default::default(),
+            engine_clock_frequency: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for GpaDeviceGetClockInfoAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("GpaDeviceGetClockInfoAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory_clock_ratio_to_peak", &self.memory_clock_ratio_to_peak)
+            .field("engine_clock_ratio_to_peak", &self.engine_clock_ratio_to_peak)
+            .field("memory_clock_frequency", &self.memory_clock_frequency)
+            .field("engine_clock_frequency", &self.engine_clock_frequency)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct GpaSessionCreateInfoAMD {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub secondary_copy_source: GpaSessionAMD,
+}
+unsafe impl Send for GpaSessionCreateInfoAMD {}
+unsafe impl Sync for GpaSessionCreateInfoAMD {}
+impl Default for GpaSessionCreateInfoAMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::GPA_SESSION_CREATE_INFO_AMD,
+            p_next: ptr::null(),
+            secondary_copy_source: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for GpaSessionCreateInfoAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("GpaSessionCreateInfoAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("secondary_copy_source", &self.secondary_copy_source)
             .finish()
     }
 }
@@ -44588,6 +45252,49 @@ impl fmt::Debug for MicromapBuildInfoEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct AccelerationStructureGeometryMicromapDataKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub usage_counts_count: u32,
+    pub p_usage_counts: *const MicromapUsageKHR,
+    pub pp_usage_counts: *const *const MicromapUsageKHR,
+    pub data: DeviceAddress,
+    pub triangle_array: DeviceAddress,
+    pub triangle_array_stride: DeviceSize,
+}
+unsafe impl Send for AccelerationStructureGeometryMicromapDataKHR {}
+unsafe impl Sync for AccelerationStructureGeometryMicromapDataKHR {}
+impl Default for AccelerationStructureGeometryMicromapDataKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_MICROMAP_DATA_KHR,
+            p_next: ptr::null(),
+            usage_counts_count: Default::default(),
+            p_usage_counts: ptr::null(),
+            pp_usage_counts: ptr::null(),
+            data: Default::default(),
+            triangle_array: Default::default(),
+            triangle_array_stride: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureGeometryMicromapDataKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureGeometryMicromapDataKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("usage_counts_count", &self.usage_counts_count)
+            .field("p_usage_counts", &self.p_usage_counts)
+            .field("pp_usage_counts", &self.pp_usage_counts)
+            .field("data", &self.data)
+            .field("triangle_array", &self.triangle_array)
+            .field("triangle_array_stride", &self.triangle_array_stride)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct MicromapCreateInfoEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -44795,6 +45502,14 @@ impl fmt::Debug for MicromapBuildSizesInfoEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct MicromapUsageKHR {
+    pub count: u32,
+    pub subdivision_level: u32,
+    pub format: OpacityMicromapFormatKHR,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub struct MicromapUsageEXT {
     pub count: u32,
     pub subdivision_level: u32,
@@ -44803,10 +45518,39 @@ pub struct MicromapUsageEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
-pub struct MicromapTriangleEXT {
+pub struct MicromapTriangleKHR {
     pub data_offset: u32,
     pub subdivision_level: u16,
     pub format: u16,
+}
+pub type MicromapTriangleEXT = MicromapTriangleKHR;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceOpacityMicromapFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub micromap: Bool32,
+}
+unsafe impl Send for PhysicalDeviceOpacityMicromapFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceOpacityMicromapFeaturesKHR {}
+impl Default for PhysicalDeviceOpacityMicromapFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_OPACITY_MICROMAP_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            micromap: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceOpacityMicromapFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceOpacityMicromapFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("micromap", &self.micromap)
+            .finish()
+    }
 }
 
 #[repr(C)]
@@ -44845,6 +45589,52 @@ impl fmt::Debug for PhysicalDeviceOpacityMicromapFeaturesEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceOpacityMicromapPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_opacity2_state_subdivision_level: u32,
+    pub max_opacity4_state_subdivision_level: u32,
+    pub max_opacity_lossy4_state_subdivision_level: u32,
+    pub max_micromap_triangles: u64,
+}
+unsafe impl Send for PhysicalDeviceOpacityMicromapPropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceOpacityMicromapPropertiesKHR {}
+impl Default for PhysicalDeviceOpacityMicromapPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_OPACITY_MICROMAP_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            max_opacity2_state_subdivision_level: Default::default(),
+            max_opacity4_state_subdivision_level: Default::default(),
+            max_opacity_lossy4_state_subdivision_level: Default::default(),
+            max_micromap_triangles: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceOpacityMicromapPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceOpacityMicromapPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_opacity2_state_subdivision_level",
+                &self.max_opacity2_state_subdivision_level,
+            )
+            .field(
+                "max_opacity4_state_subdivision_level",
+                &self.max_opacity4_state_subdivision_level,
+            )
+            .field(
+                "max_opacity_lossy4_state_subdivision_level",
+                &self.max_opacity_lossy4_state_subdivision_level,
+            )
+            .field("max_micromap_triangles", &self.max_micromap_triangles)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceOpacityMicromapPropertiesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -44876,6 +45666,46 @@ impl fmt::Debug for PhysicalDeviceOpacityMicromapPropertiesEXT {
                 "max_opacity4_state_subdivision_level",
                 &self.max_opacity4_state_subdivision_level,
             )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureTrianglesOpacityMicromapKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub index_type: IndexType,
+    pub index_buffer: DeviceAddress,
+    pub index_stride: DeviceSize,
+    pub base_triangle: u32,
+    pub micromap: AccelerationStructureKHR,
+}
+unsafe impl Send for AccelerationStructureTrianglesOpacityMicromapKHR {}
+unsafe impl Sync for AccelerationStructureTrianglesOpacityMicromapKHR {}
+impl Default for AccelerationStructureTrianglesOpacityMicromapKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_KHR,
+            p_next: ptr::null_mut(),
+            index_type: Default::default(),
+            index_buffer: Default::default(),
+            index_stride: Default::default(),
+            base_triangle: Default::default(),
+            micromap: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureTrianglesOpacityMicromapKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureTrianglesOpacityMicromapKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("index_type", &self.index_type)
+            .field("index_buffer", &self.index_buffer)
+            .field("index_stride", &self.index_stride)
+            .field("base_triangle", &self.base_triangle)
+            .field("micromap", &self.micromap)
             .finish()
     }
 }
@@ -45726,6 +46556,62 @@ impl fmt::Debug for ImageViewSampleWeightCreateInfoQCOM {
             .field("filter_center", &self.filter_center)
             .field("filter_size", &self.filter_size)
             .field("num_phases", &self.num_phases)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_multiple_wait_queues: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM {}
+impl Default for PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_MULTIPLE_WAIT_QUEUES_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            shader_multiple_wait_queues: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_multiple_wait_queues", &self.shader_multiple_wait_queues)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderMultipleWaitQueuesPropertiesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_shader_wait_queues: u32,
+}
+unsafe impl Send for PhysicalDeviceShaderMultipleWaitQueuesPropertiesQCOM {}
+unsafe impl Sync for PhysicalDeviceShaderMultipleWaitQueuesPropertiesQCOM {}
+impl Default for PhysicalDeviceShaderMultipleWaitQueuesPropertiesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_MULTIPLE_WAIT_QUEUES_PROPERTIES_QCOM,
+            p_next: ptr::null_mut(),
+            max_shader_wait_queues: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderMultipleWaitQueuesPropertiesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderMultipleWaitQueuesPropertiesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_shader_wait_queues", &self.max_shader_wait_queues)
             .finish()
     }
 }
@@ -49259,6 +50145,43 @@ impl fmt::Debug for SamplerBlockMatchWindowCreateInfoQCOM {
             .field("p_next", &self.p_next)
             .field("window_extent", &self.window_extent)
             .field("window_compare_mode", &self.window_compare_mode)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageProcessing3FeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub image_gather_linear: Bool32,
+    pub image_gather_extended_modes: Bool32,
+    pub block_match_extended_clamp_to_edge: Bool32,
+}
+unsafe impl Send for PhysicalDeviceImageProcessing3FeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceImageProcessing3FeaturesQCOM {}
+impl Default for PhysicalDeviceImageProcessing3FeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_PROCESSING_3_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            image_gather_linear: Default::default(),
+            image_gather_extended_modes: Default::default(),
+            block_match_extended_clamp_to_edge: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageProcessing3FeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageProcessing3FeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_gather_linear", &self.image_gather_linear)
+            .field("image_gather_extended_modes", &self.image_gather_extended_modes)
+            .field(
+                "block_match_extended_clamp_to_edge",
+                &self.block_match_extended_clamp_to_edge,
+            )
             .finish()
     }
 }
@@ -55107,6 +56030,65 @@ impl fmt::Debug for SubsampledImageFormatPropertiesEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderSplitBarrierFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_split_barrier: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderSplitBarrierFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderSplitBarrierFeaturesEXT {}
+impl Default for PhysicalDeviceShaderSplitBarrierFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_SPLIT_BARRIER_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_split_barrier: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderSplitBarrierFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderSplitBarrierFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_split_barrier", &self.shader_split_barrier)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderSplitBarrierPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub split_barrier_reserved_shared_memory: u32,
+}
+unsafe impl Send for PhysicalDeviceShaderSplitBarrierPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderSplitBarrierPropertiesEXT {}
+impl Default for PhysicalDeviceShaderSplitBarrierPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_SPLIT_BARRIER_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            split_barrier_reserved_shared_memory: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderSplitBarrierPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderSplitBarrierPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "split_barrier_reserved_shared_memory",
+                &self.split_barrier_reserved_shared_memory,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceDescriptorHeapFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -59183,6 +60165,41 @@ pub type FnCmdDispatchGraphIndirectCountAMDX = unsafe extern "system" fn(
     scratch_size: DeviceSize,
     count_info: DeviceAddress,
 );
+pub type FnCreateGpaSessionAMD = unsafe extern "system" fn(
+    device: Device,
+    p_create_info: *const GpaSessionCreateInfoAMD,
+    p_allocator: *const AllocationCallbacks,
+    p_gpa_session: *mut GpaSessionAMD,
+) -> Result;
+pub type FnDestroyGpaSessionAMD =
+    unsafe extern "system" fn(device: Device, gpa_session: GpaSessionAMD, p_allocator: *const AllocationCallbacks);
+pub type FnSetGpaDeviceClockModeAMD =
+    unsafe extern "system" fn(device: Device, p_info: *mut GpaDeviceClockModeInfoAMD) -> Result;
+pub type FnGetGpaDeviceClockInfoAMD =
+    unsafe extern "system" fn(device: Device, p_info: *mut GpaDeviceGetClockInfoAMD) -> Result;
+pub type FnCmdBeginGpaSessionAMD =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, gpa_session: GpaSessionAMD) -> Result;
+pub type FnCmdEndGpaSessionAMD =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, gpa_session: GpaSessionAMD) -> Result;
+pub type FnCmdBeginGpaSampleAMD = unsafe extern "system" fn(
+    command_buffer: CommandBuffer,
+    gpa_session: GpaSessionAMD,
+    p_gpa_sample_begin_info: *const GpaSampleBeginInfoAMD,
+    p_sample_id: *mut u32,
+) -> Result;
+pub type FnCmdEndGpaSampleAMD =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, gpa_session: GpaSessionAMD, sample_id: u32);
+pub type FnGetGpaSessionStatusAMD = unsafe extern "system" fn(device: Device, gpa_session: GpaSessionAMD) -> Result;
+pub type FnGetGpaSessionResultsAMD = unsafe extern "system" fn(
+    device: Device,
+    gpa_session: GpaSessionAMD,
+    sample_id: u32,
+    p_size_in_bytes: *mut usize,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnResetGpaSessionAMD = unsafe extern "system" fn(device: Device, gpa_session: GpaSessionAMD) -> Result;
+pub type FnCmdCopyGpaSessionResultsAMD =
+    unsafe extern "system" fn(command_buffer: CommandBuffer, gpa_session: GpaSessionAMD);
 pub type FnCmdBindDescriptorSets2 = unsafe extern "system" fn(
     command_buffer: CommandBuffer,
     p_bind_descriptor_sets_info: *const BindDescriptorSetsInfo,

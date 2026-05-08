@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.350
+// Generated from vk.xml version 1.4.351
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -543,8 +543,8 @@ pub const PipelineCreateFlagBits = enum(u5) {
     ray_tracing_allow_motion_nv = 20,
     color_attachment_feedback_loop_ext = 25,
     depth_stencil_attachment_feedback_loop_ext = 26,
-    ray_tracing_opacity_micromap_ext = 24,
     ray_tracing_displacement_micromap_nv = 28,
+    ray_tracing_opacity_micromap_khr = 24,
     _,
 };
 pub const PipelineCreateFlags = BitField(PipelineCreateFlagBits);
@@ -846,8 +846,8 @@ pub const GeometryInstanceFlagBitsKHR = enum(u5) {
     triangle_flip_facing = 1,
     force_opaque = 2,
     force_no_opaque = 3,
-    force_opacity_micromap_2_state_ext = 4,
-    disable_opacity_micromaps_ext = 5,
+    force_opacity_micromap_2_state = 4,
+    disable_opacity_micromaps = 5,
     _,
 };
 pub const GeometryInstanceFlagsKHR = BitField(GeometryInstanceFlagBitsKHR);
@@ -884,12 +884,13 @@ pub const BuildAccelerationStructureFlagBitsKHR = enum(u5) {
     prefer_fast_build = 3,
     low_memory = 4,
     motion_nv = 5,
-    allow_opacity_micromap_update_ext = 6,
-    allow_disable_opacity_micromaps_ext = 7,
     allow_opacity_micromap_data_update_ext = 8,
     allow_displacement_micromap_update_nv = 9,
     allow_data_access = 11,
     allow_cluster_opacity_micromaps_nv = 12,
+    allow_opacity_micromap_update = 6,
+    allow_disable_opacity_micromaps = 7,
+    micromap_lossy = 10,
     _,
 };
 pub const BuildAccelerationStructureFlagsKHR = BitField(BuildAccelerationStructureFlagBitsKHR);
@@ -1096,6 +1097,7 @@ pub const FormatFeatureFlagBits2 = enum(u6) {
     acceleration_structure_vertex_buffer_khr = 29,
     fragment_density_map_ext = 24,
     fragment_shading_rate_attachment_khr = 30,
+    block_matching_sxd_qcom = 44,
     acceleration_structure_radius_buffer_nv = 51,
     linear_color_attachment_nv = 38,
     weight_image_qcom = 34,
@@ -1209,7 +1211,6 @@ pub const PipelineCreateFlagBits2 = enum(u6) {
     ray_tracing_allow_motion_nv = 20,
     rendering_fragment_shading_rate_attachment_khr = 21,
     rendering_fragment_density_map_attachment_ext = 22,
-    ray_tracing_opacity_micromap_ext = 24,
     color_attachment_feedback_loop_ext = 25,
     depth_stencil_attachment_feedback_loop_ext = 26,
     ray_tracing_displacement_micromap_nv = 28,
@@ -1219,6 +1220,8 @@ pub const PipelineCreateFlagBits2 = enum(u6) {
     capture_data_khr = 31,
     indirect_bindable_ext = 38,
     per_layer_fragment_density_valve = 40,
+    ray_tracing_opacity_micromap_khr = 24,
+    opacity_micromap_disallow_mixed_special_index_khr = 41,
     @"64_bit_indexing_ext" = 43,
     _,
 };
@@ -1237,6 +1240,8 @@ pub const BufferUsageFlagBits2 = enum(u6) {
     shader_device_address = 17,
     execution_graph_scratch_amdx = 25,
     descriptor_heap_ext = 28,
+    micromap_build_input_read_only_ext = 23,
+    micromap_storage_ext = 24,
     conditional_rendering_ext = 9,
     shader_binding_table_khr = 10,
     transform_feedback_buffer_ext = 11,
@@ -1246,8 +1251,6 @@ pub const BufferUsageFlagBits2 = enum(u6) {
     sampler_descriptor_buffer_ext = 21,
     resource_descriptor_buffer_ext = 22,
     push_descriptors_descriptor_buffer_ext = 26,
-    micromap_build_input_read_only_ext = 23,
-    micromap_storage_ext = 24,
     compressed_data_dgf1_amdx = 33,
     data_graph_foreign_descriptor_arm = 29,
     tile_memory_qcom = 27,
@@ -1313,6 +1316,25 @@ pub const SpirvResourceTypeFlagsEXT = BitField(SpirvResourceTypeFlagBitsEXT);
 pub const SpirvResourceTypeFlagMasksEXT = struct {
     pub const all = SpirvResourceTypeFlagsEXT{ .bits = 0x7fffffff };
 };
+pub const GpaSqShaderStageFlagBitsAMD = enum(u5) {
+    ps = 0,
+    vs = 1,
+    gs = 2,
+    es = 3,
+    hs = 4,
+    ls = 5,
+    cs = 6,
+    _,
+};
+pub const GpaSqShaderStageFlagsAMD = BitField(GpaSqShaderStageFlagBitsAMD);
+pub const GpaPerfBlockPropertiesFlagBitsAMD = enum(u5) {
+    _,
+};
+pub const GpaPerfBlockPropertiesFlagsAMD = BitField(GpaPerfBlockPropertiesFlagBitsAMD);
+pub const PhysicalDeviceGpaPropertiesFlagBitsAMD = enum(u5) {
+    _,
+};
+pub const PhysicalDeviceGpaPropertiesFlagsAMD = BitField(PhysicalDeviceGpaPropertiesFlagBitsAMD);
 pub const AddressCommandFlagBitsKHR = enum(u5) {
     protected = 0,
     fully_bound = 1,
@@ -1850,6 +1872,7 @@ pub const ShaderCreateFlagBitsEXT = enum(u5) {
     fragment_shading_rate_attachment = 5,
     fragment_density_map_attachment = 6,
     indirect_bindable = 7,
+    opacity_micromap_disallow_mixed_special_index = 12,
     @"64_bit_indexing" = 15,
     independent_sets_khr = 18,
     _,
@@ -2002,6 +2025,7 @@ pub const TensorARM = enum(u64) { null_handle = 0, _ };
 pub const TensorViewARM = enum(u64) { null_handle = 0, _ };
 pub const DataGraphPipelineSessionARM = enum(u64) { null_handle = 0, _ };
 pub const ShaderInstrumentationARM = enum(u64) { null_handle = 0, _ };
+pub const GpaSessionAMD = enum(u64) { null_handle = 0, _ };
 pub const DisplayKHR = enum(u64) { null_handle = 0, _ };
 pub const DisplayModeKHR = enum(u64) { null_handle = 0, _ };
 pub const SurfaceKHR = enum(u64) { null_handle = 0, _ };
@@ -2691,6 +2715,7 @@ pub const QueryType = enum(i32) {
     acceleration_structure_compacted_size_khr = 1000150000,
     acceleration_structure_serialization_size_khr = 1000150001,
     acceleration_structure_compacted_size_nv = 1000165000,
+    time_elapsed_qcom = 1000173000,
     performance_query_intel = 1000210000,
     mesh_primitives_generated_ext = 1000328000,
     primitives_generated_ext = 1000382000,
@@ -3145,6 +3170,13 @@ pub const StructureType = enum(i32) {
     memory_get_android_hardware_buffer_info_android = 1000129004,
     external_format_android = 1000129005,
     android_hardware_buffer_format_properties_2_android = 1000129006,
+    physical_device_gpa_features_amd = 1000133000,
+    physical_device_gpa_properties_amd = 1000133001,
+    gpa_sample_begin_info_amd = 1000133002,
+    gpa_session_create_info_amd = 1000133003,
+    gpa_device_clock_mode_info_amd = 1000133004,
+    physical_device_gpa_properties_2_amd = 1000133005,
+    gpa_device_get_clock_info_amd = 1000133006,
     physical_device_shader_enqueue_features_amdx = 1000134000,
     physical_device_shader_enqueue_properties_amdx = 1000134001,
     execution_graph_pipeline_scratch_size_amdx = 1000134002,
@@ -3230,6 +3262,7 @@ pub const StructureType = enum(i32) {
     physical_device_image_view_image_format_info_ext = 1000170000,
     filter_cubic_image_view_image_format_properties_ext = 1000170001,
     physical_device_cooperative_matrix_conversion_features_qcom = 1000172000,
+    physical_device_elapsed_timer_query_features_qcom = 1000173000,
     import_memory_host_pointer_info_ext = 1000178000,
     memory_host_pointer_properties_ext = 1000178001,
     physical_device_external_memory_host_properties_ext = 1000178002,
@@ -3357,6 +3390,11 @@ pub const StructureType = enum(i32) {
     perf_hint_info_qcom = 1000302000,
     physical_device_queue_perf_hint_features_qcom = 1000302001,
     physical_device_queue_perf_hint_properties_qcom = 1000302002,
+    physical_device_image_processing_3_features_qcom = 1000303000,
+    physical_device_shader_multiple_wait_queues_features_qcom = 1000304000,
+    physical_device_shader_multiple_wait_queues_properties_qcom = 1000304001,
+    physical_device_shader_split_barrier_features_ext = 1000305000,
+    physical_device_shader_split_barrier_properties_ext = 1000305001,
     cuda_module_create_info_nv = 1000307000,
     cuda_function_create_info_nv = 1000307001,
     cuda_launch_info_nv = 1000307002,
@@ -3820,6 +3858,10 @@ pub const StructureType = enum(i32) {
     render_pass_fragment_density_map_offset_end_info_ext = 1000425002,
     physical_device_zero_initialize_device_memory_features_ext = 1000620000,
     physical_device_present_mode_fifo_latest_ready_features_khr = 1000361000,
+    physical_device_opacity_micromap_features_khr = 1000623000,
+    physical_device_opacity_micromap_properties_khr = 1000623001,
+    acceleration_structure_geometry_micromap_data_khr = 1000623002,
+    acceleration_structure_triangles_opacity_micromap_khr = 1000623003,
     physical_device_shader_64_bit_indexing_features_ext = 1000627000,
     physical_device_custom_resolve_features_ext = 1000628000,
     begin_custom_resolve_info_ext = 1000628001,
@@ -3954,6 +3996,7 @@ pub const ObjectType = enum(i32) {
     cu_module_nvx = 1000029000,
     cu_function_nvx = 1000029001,
     debug_utils_messenger_ext = 1000128000,
+    gpa_session_amd = 1000133000,
     acceleration_structure_khr = 1000150000,
     validation_cache_ext = 1000160000,
     acceleration_structure_nv = 1000165000,
@@ -4095,6 +4138,7 @@ pub const AccelerationStructureTypeKHR = enum(i32) {
     top_level = 0,
     bottom_level = 1,
     generic = 2,
+    opacity_micromap = 1000623000,
     _,
 };
 pub const AccelerationStructureTypeNV = AccelerationStructureTypeKHR;
@@ -4105,6 +4149,7 @@ pub const GeometryTypeKHR = enum(i32) {
     spheres_nv = 1000429004,
     linear_swept_spheres_nv = 1000429005,
     dense_geometry_format_triangles_amdx = 1000478000,
+    micromap = 1000623000,
     _,
 };
 pub const GeometryTypeNV = GeometryTypeKHR;
@@ -4298,17 +4343,23 @@ pub const CopyMicromapModeEXT = enum(i32) {
     compact = 3,
     _,
 };
-pub const OpacityMicromapFormatEXT = enum(i32) {
+pub const OpacityMicromapFormatKHR = enum(i32) {
     @"2_state" = 1,
     @"4_state" = 2,
     _,
 };
-pub const OpacityMicromapSpecialIndexEXT = enum(i32) {
+pub const OpacityMicromapFormatEXT = OpacityMicromapFormatKHR;
+pub const OpacityMicromapSpecialIndexKHR = enum(i32) {
     fully_transparent = -1,
     fully_opaque = -2,
     fully_unknown_transparent = -3,
     fully_unknown_opaque = -4,
     cluster_geometry_disable_opacity_micromap_nv = -5,
+    _,
+};
+pub const OpacityMicromapSpecialIndexEXT = OpacityMicromapSpecialIndexKHR;
+pub const AccelerationStructureSerializedBlockTypeKHR = enum(i32) {
+    opacity_micromap = 0,
     _,
 };
 pub const IndirectExecutionSetInfoTypeEXT = enum(i32) {
@@ -4487,6 +4538,81 @@ pub const DescriptorMappingSourceEXT = enum(i32) {
     heap_with_shader_record_index = 8,
     shader_record_data = 9,
     shader_record_address = 10,
+    _,
+};
+pub const GpaPerfBlockAMD = enum(i32) {
+    cpf = 0,
+    ia = 1,
+    vgt = 2,
+    pa = 3,
+    sc = 4,
+    spi = 5,
+    sq = 6,
+    sx = 7,
+    ta = 8,
+    td = 9,
+    tcp = 10,
+    tcc = 11,
+    tca = 12,
+    db = 13,
+    cb = 14,
+    gds = 15,
+    srbm = 16,
+    grbm = 17,
+    grbm_se = 18,
+    rlc = 19,
+    dma = 20,
+    mc = 21,
+    cpg = 22,
+    cpc = 23,
+    wd = 24,
+    tcs = 25,
+    atc = 26,
+    atc_l2 = 27,
+    mc_vm_l2 = 28,
+    ea = 29,
+    rpb = 30,
+    rmi = 31,
+    umcch = 32,
+    ge = 33,
+    gl1a = 34,
+    gl1c = 35,
+    gl1cg = 36,
+    gl2a = 37,
+    gl2c = 38,
+    cha = 39,
+    chc = 40,
+    chcg = 41,
+    gus = 42,
+    gcr = 43,
+    ph = 44,
+    utcl1 = 45,
+    ge_dist = 46,
+    ge_se = 47,
+    df_mall = 48,
+    sq_wgp = 49,
+    pc = 50,
+    gl1xa = 51,
+    gl1xc = 52,
+    wgs = 53,
+    eacpwd = 54,
+    ease = 55,
+    rlcuser = 56,
+    _,
+};
+pub const GpaSampleTypeAMD = enum(i32) {
+    cumulative = 0,
+    trace = 1,
+    timing = 2,
+    _,
+};
+pub const GpaDeviceClockModeAMD = enum(i32) {
+    default = 0,
+    query = 1,
+    profiling = 2,
+    min_memory = 3,
+    min_engine = 4,
+    peak = 5,
     _,
 };
 pub const DataGraphTOSALevelARM = enum(i32) {
@@ -5021,6 +5147,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderDrawParametersFeatures,
             *PhysicalDeviceShaderFloat16Int8Features,
             *PhysicalDeviceHostQueryResetFeatures,
+            *PhysicalDeviceElapsedTimerQueryFeaturesQCOM,
             *PhysicalDeviceGlobalPriorityQueryFeatures,
             *PhysicalDeviceDeviceMemoryReportFeaturesEXT,
             *DeviceDeviceMemoryReportCreateInfoEXT,
@@ -5088,6 +5215,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceVulkan13Features,
             *PhysicalDeviceVulkan14Features,
             *PhysicalDeviceCoherentMemoryFeaturesAMD,
+            *PhysicalDeviceGpaFeaturesAMD,
             *PhysicalDeviceCustomBorderColorFeaturesEXT,
             *PhysicalDeviceBorderColorSwizzleFeaturesEXT,
             *PhysicalDeviceExtendedDynamicStateFeaturesEXT,
@@ -5155,12 +5283,14 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceImageCompressionControlFeaturesEXT,
             *PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT,
             *PhysicalDeviceSubpassMergeFeedbackFeaturesEXT,
+            *PhysicalDeviceOpacityMicromapFeaturesKHR,
             *PhysicalDeviceOpacityMicromapFeaturesEXT,
             *PhysicalDeviceDisplacementMicromapFeaturesNV,
             *PhysicalDevicePipelinePropertiesFeaturesEXT,
             *PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD,
             *PhysicalDeviceNonSeamlessCubeMapFeaturesEXT,
             *PhysicalDevicePipelineRobustnessFeatures,
+            *PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM,
             *PhysicalDeviceImageProcessingFeaturesQCOM,
             *PhysicalDeviceTilePropertiesFeaturesQCOM,
             *PhysicalDeviceAmigoProfilingFeaturesSEC,
@@ -5193,6 +5323,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceYcbcrDegammaFeaturesQCOM,
             *PhysicalDeviceCubicWeightsFeaturesQCOM,
             *PhysicalDeviceImageProcessing2FeaturesQCOM,
+            *PhysicalDeviceImageProcessing3FeaturesQCOM,
             *PhysicalDeviceDescriptorPoolOverallocationFeaturesNV,
             *PhysicalDevicePerStageDescriptorSetFeaturesNV,
             *PhysicalDeviceExternalFormatResolveFeaturesANDROID,
@@ -5245,6 +5376,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderLongVectorFeaturesEXT,
             *PhysicalDeviceTextureCompressionASTC3DFeaturesEXT,
             *PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT,
+            *PhysicalDeviceShaderSplitBarrierFeaturesEXT,
             *PhysicalDeviceDescriptorHeapFeaturesEXT,
             *PhysicalDeviceShaderInstrumentationFeaturesARM,
             *PhysicalDeviceDeviceAddressCommandsFeaturesKHR,
@@ -7488,6 +7620,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderDrawParametersFeatures,
             *PhysicalDeviceShaderFloat16Int8Features,
             *PhysicalDeviceHostQueryResetFeatures,
+            *PhysicalDeviceElapsedTimerQueryFeaturesQCOM,
             *PhysicalDeviceGlobalPriorityQueryFeatures,
             *PhysicalDeviceDeviceMemoryReportFeaturesEXT,
             *PhysicalDeviceDescriptorIndexingFeatures,
@@ -7553,6 +7686,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceVulkan13Features,
             *PhysicalDeviceVulkan14Features,
             *PhysicalDeviceCoherentMemoryFeaturesAMD,
+            *PhysicalDeviceGpaFeaturesAMD,
             *PhysicalDeviceCustomBorderColorFeaturesEXT,
             *PhysicalDeviceBorderColorSwizzleFeaturesEXT,
             *PhysicalDeviceExtendedDynamicStateFeaturesEXT,
@@ -7618,12 +7752,14 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceImageCompressionControlFeaturesEXT,
             *PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT,
             *PhysicalDeviceSubpassMergeFeedbackFeaturesEXT,
+            *PhysicalDeviceOpacityMicromapFeaturesKHR,
             *PhysicalDeviceOpacityMicromapFeaturesEXT,
             *PhysicalDeviceDisplacementMicromapFeaturesNV,
             *PhysicalDevicePipelinePropertiesFeaturesEXT,
             *PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD,
             *PhysicalDeviceNonSeamlessCubeMapFeaturesEXT,
             *PhysicalDevicePipelineRobustnessFeatures,
+            *PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM,
             *PhysicalDeviceImageProcessingFeaturesQCOM,
             *PhysicalDeviceTilePropertiesFeaturesQCOM,
             *PhysicalDeviceAmigoProfilingFeaturesSEC,
@@ -7656,6 +7792,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceYcbcrDegammaFeaturesQCOM,
             *PhysicalDeviceCubicWeightsFeaturesQCOM,
             *PhysicalDeviceImageProcessing2FeaturesQCOM,
+            *PhysicalDeviceImageProcessing3FeaturesQCOM,
             *PhysicalDeviceDescriptorPoolOverallocationFeaturesNV,
             *PhysicalDevicePerStageDescriptorSetFeaturesNV,
             *PhysicalDeviceExternalFormatResolveFeaturesANDROID,
@@ -7706,6 +7843,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderLongVectorFeaturesEXT,
             *PhysicalDeviceTextureCompressionASTC3DFeaturesEXT,
             *PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT,
+            *PhysicalDeviceShaderSplitBarrierFeaturesEXT,
             *PhysicalDeviceDescriptorHeapFeaturesEXT,
             *PhysicalDeviceShaderInstrumentationFeaturesARM,
             *PhysicalDeviceDeviceAddressCommandsFeaturesKHR,
@@ -7789,6 +7927,8 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceVulkan12Properties,
             *PhysicalDeviceVulkan13Properties,
             *PhysicalDeviceVulkan14Properties,
+            *PhysicalDeviceGpaPropertiesAMD,
+            *PhysicalDeviceGpaProperties2AMD,
             *PhysicalDeviceCustomBorderColorPropertiesEXT,
             *PhysicalDeviceExtendedDynamicState3PropertiesEXT,
             *PhysicalDevicePartitionedAccelerationStructurePropertiesNV,
@@ -7809,9 +7949,11 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT,
             *PhysicalDeviceNestedCommandBufferPropertiesEXT,
             *PhysicalDeviceShaderModuleIdentifierPropertiesEXT,
+            *PhysicalDeviceOpacityMicromapPropertiesKHR,
             *PhysicalDeviceOpacityMicromapPropertiesEXT,
             *PhysicalDeviceDisplacementMicromapPropertiesNV,
             *PhysicalDevicePipelineRobustnessProperties,
+            *PhysicalDeviceShaderMultipleWaitQueuesPropertiesQCOM,
             *PhysicalDeviceImageProcessingPropertiesQCOM,
             *PhysicalDeviceOpticalFlowPropertiesNV,
             *PhysicalDeviceFaultPropertiesKHR,
@@ -7844,6 +7986,7 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceQueuePerfHintPropertiesQCOM,
             *PhysicalDevicePerformanceCountersByRegionPropertiesARM,
             *PhysicalDeviceShaderLongVectorPropertiesEXT,
+            *PhysicalDeviceShaderSplitBarrierPropertiesEXT,
             *PhysicalDeviceDescriptorHeapPropertiesEXT,
             *PhysicalDeviceDescriptorHeapTensorPropertiesARM,
             *PhysicalDeviceShaderInstrumentationPropertiesARM,
@@ -9521,6 +9664,11 @@ pub const ShaderStatisticsInfoAMD = extern struct {
     num_available_vgprs: u32 = 0,
     num_available_sgprs: u32 = 0,
     compute_work_group_size: [3]u32 = [_]u32{0} ** 3,
+};
+pub const PhysicalDeviceElapsedTimerQueryFeaturesQCOM = extern struct {
+    s_type: StructureType = .physical_device_elapsed_timer_query_features_qcom,
+    p_next: ?*anyopaque = null,
+    elapsed_timer_query: Bool32 = .false,
 };
 pub const DeviceQueueGlobalPriorityCreateInfo = extern struct {
     s_type: StructureType = .device_queue_global_priority_create_info,
@@ -11573,6 +11721,80 @@ pub const PhysicalDeviceCoherentMemoryFeaturesAMD = extern struct {
     p_next: ?*anyopaque = null,
     device_coherent_memory: Bool32 = .false,
 };
+pub const GpaPerfBlockPropertiesAMD = extern struct {
+    block_type: GpaPerfBlockAMD = @enumFromInt(0),
+    flags: GpaPerfBlockPropertiesFlagsAMD = .none,
+    instance_count: u32 = 0,
+    max_event_id: u32 = 0,
+    max_global_only_counters: u32 = 0,
+    max_global_shared_counters: u32 = 0,
+    max_streaming_counters: u32 = 0,
+};
+pub const PhysicalDeviceGpaFeaturesAMD = extern struct {
+    s_type: StructureType = .physical_device_gpa_features_amd,
+    p_next: ?*anyopaque = null,
+    perf_counters: Bool32 = .false,
+    streaming_perf_counters: Bool32 = .false,
+    sq_thread_tracing: Bool32 = .false,
+    clock_modes: Bool32 = .false,
+};
+pub const PhysicalDeviceGpaPropertiesAMD = extern struct {
+    s_type: StructureType = .physical_device_gpa_properties_amd,
+    p_next: ?*anyopaque = null,
+    flags: PhysicalDeviceGpaPropertiesFlagsAMD = .none,
+    max_sqtt_se_buffer_size: DeviceSize = 0,
+    shader_engine_count: u32 = 0,
+    perf_block_count: u32 = 0,
+    p_perf_blocks: ?[*]GpaPerfBlockPropertiesAMD = null,
+};
+pub const PhysicalDeviceGpaProperties2AMD = extern struct {
+    s_type: StructureType = .physical_device_gpa_properties_2_amd,
+    p_next: ?*anyopaque = null,
+    revision_id: u32 = 0,
+};
+pub const GpaPerfCounterAMD = extern struct {
+    block_type: GpaPerfBlockAMD = @enumFromInt(0),
+    block_instance: u32 = 0,
+    event_id: u32 = 0,
+};
+pub const GpaSampleBeginInfoAMD = extern struct {
+    s_type: StructureType = .gpa_sample_begin_info_amd,
+    p_next: ?*const anyopaque = null,
+    sample_type: GpaSampleTypeAMD = @enumFromInt(0),
+    sample_internal_operations: Bool32 = .false,
+    cache_flush_on_counter_collection: Bool32 = .false,
+    sq_shader_mask_enable: Bool32 = .false,
+    sq_shader_mask: GpaSqShaderStageFlagsAMD = .none,
+    perf_counter_count: u32 = 0,
+    p_perf_counters: ?[*]const GpaPerfCounterAMD = null,
+    streaming_perf_trace_sample_interval: u32 = 0,
+    perf_counter_device_memory_limit: DeviceSize = 0,
+    sq_thread_trace_enable: Bool32 = .false,
+    sq_thread_trace_suppress_instruction_tokens: Bool32 = .false,
+    sq_thread_trace_device_memory_limit: DeviceSize = 0,
+    timing_pre_sample: PipelineStageFlags = .none,
+    timing_post_sample: PipelineStageFlags = .none,
+};
+pub const GpaDeviceClockModeInfoAMD = extern struct {
+    s_type: StructureType = .gpa_device_clock_mode_info_amd,
+    p_next: ?*const anyopaque = null,
+    clock_mode: GpaDeviceClockModeAMD = @enumFromInt(0),
+    memory_clock_ratio_to_peak: f32 = 0,
+    engine_clock_ratio_to_peak: f32 = 0,
+};
+pub const GpaDeviceGetClockInfoAMD = extern struct {
+    s_type: StructureType = .gpa_device_get_clock_info_amd,
+    p_next: ?*anyopaque = null,
+    memory_clock_ratio_to_peak: f32 = 0,
+    engine_clock_ratio_to_peak: f32 = 0,
+    memory_clock_frequency: u32 = 0,
+    engine_clock_frequency: u32 = 0,
+};
+pub const GpaSessionCreateInfoAMD = extern struct {
+    s_type: StructureType = .gpa_session_create_info_amd,
+    p_next: ?*const anyopaque = null,
+    secondary_copy_source: GpaSessionAMD = .null_handle,
+};
 pub const PhysicalDeviceToolProperties = extern struct {
     s_type: StructureType = .physical_device_tool_properties,
     p_next: ?*anyopaque = null,
@@ -11638,6 +11860,7 @@ pub const AccelerationStructureGeometryTrianglesDataKHR = extern struct {
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
             inline *AccelerationStructureGeometryMotionTrianglesDataNV,
+            *AccelerationStructureTrianglesOpacityMicromapKHR,
             *AccelerationStructureTrianglesOpacityMicromapEXT,
             *AccelerationStructureTrianglesDisplacementMicromapNV,
             => {
@@ -11704,6 +11927,7 @@ pub const AccelerationStructureGeometryKHR = extern struct {
         switch (@TypeOf(next)) {
             inline *AccelerationStructureGeometryLinearSweptSpheresDataNV,
             *AccelerationStructureGeometrySpheresDataNV,
+            *AccelerationStructureGeometryMicromapDataKHR,
             *AccelerationStructureDenseGeometryFormatTrianglesDataAMDX,
             => {
                 next.p_next = @constCast(self.p_next);
@@ -13814,6 +14038,16 @@ pub const MicromapBuildInfoEXT = extern struct {
     triangle_array: DeviceOrHostAddressConstKHR = .{ .device_address = 0 },
     triangle_array_stride: DeviceSize = 0,
 };
+pub const AccelerationStructureGeometryMicromapDataKHR = extern struct {
+    s_type: StructureType = .acceleration_structure_geometry_micromap_data_khr,
+    p_next: ?*const anyopaque = null,
+    usage_counts_count: u32 = 0,
+    p_usage_counts: ?[*]const MicromapUsageKHR = null,
+    pp_usage_counts: ?[*]const ?*const MicromapUsageKHR = null,
+    data: DeviceAddress = 0,
+    triangle_array: DeviceAddress = 0,
+    triangle_array_stride: DeviceSize = 0,
+};
 pub const MicromapCreateInfoEXT = extern struct {
     s_type: StructureType = .micromap_create_info_ext,
     p_next: ?*const anyopaque = null,
@@ -13857,15 +14091,26 @@ pub const MicromapBuildSizesInfoEXT = extern struct {
     build_scratch_size: DeviceSize = 0,
     discardable: Bool32 = .false,
 };
+pub const MicromapUsageKHR = extern struct {
+    count: u32 = 0,
+    subdivision_level: u32 = 0,
+    format: OpacityMicromapFormatKHR = @enumFromInt(0),
+};
 pub const MicromapUsageEXT = extern struct {
     count: u32 = 0,
     subdivision_level: u32 = 0,
     format: u32 = 0,
 };
-pub const MicromapTriangleEXT = extern struct {
+pub const MicromapTriangleKHR = extern struct {
     data_offset: u32 = 0,
     subdivision_level: u16 = 0,
     format: u16 = 0,
+};
+pub const MicromapTriangleEXT = MicromapTriangleKHR;
+pub const PhysicalDeviceOpacityMicromapFeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_opacity_micromap_features_khr,
+    p_next: ?*anyopaque = null,
+    micromap: Bool32 = .false,
 };
 pub const PhysicalDeviceOpacityMicromapFeaturesEXT = extern struct {
     s_type: StructureType = .physical_device_opacity_micromap_features_ext,
@@ -13874,11 +14119,28 @@ pub const PhysicalDeviceOpacityMicromapFeaturesEXT = extern struct {
     micromap_capture_replay: Bool32 = .false,
     micromap_host_commands: Bool32 = .false,
 };
+pub const PhysicalDeviceOpacityMicromapPropertiesKHR = extern struct {
+    s_type: StructureType = .physical_device_opacity_micromap_properties_khr,
+    p_next: ?*anyopaque = null,
+    max_opacity2_state_subdivision_level: u32 = 0,
+    max_opacity4_state_subdivision_level: u32 = 0,
+    max_opacity_lossy4_state_subdivision_level: u32 = 0,
+    max_micromap_triangles: u64 = 0,
+};
 pub const PhysicalDeviceOpacityMicromapPropertiesEXT = extern struct {
     s_type: StructureType = .physical_device_opacity_micromap_properties_ext,
     p_next: ?*anyopaque = null,
     max_opacity2_state_subdivision_level: u32 = 0,
     max_opacity4_state_subdivision_level: u32 = 0,
+};
+pub const AccelerationStructureTrianglesOpacityMicromapKHR = extern struct {
+    s_type: StructureType = .acceleration_structure_triangles_opacity_micromap_khr,
+    p_next: ?*anyopaque = null,
+    index_type: IndexType = @enumFromInt(0),
+    index_buffer: DeviceAddress = 0,
+    index_stride: DeviceSize = 0,
+    base_triangle: u32 = 0,
+    micromap: AccelerationStructureKHR = .null_handle,
 };
 pub const AccelerationStructureTrianglesOpacityMicromapEXT = extern struct {
     s_type: StructureType = .acceleration_structure_triangles_opacity_micromap_ext,
@@ -14062,6 +14324,16 @@ pub const ImageViewSampleWeightCreateInfoQCOM = extern struct {
     filter_center: Offset2D = .{},
     filter_size: Extent2D = .{},
     num_phases: u32 = 0,
+};
+pub const PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM = extern struct {
+    s_type: StructureType = .physical_device_shader_multiple_wait_queues_features_qcom,
+    p_next: ?*anyopaque = null,
+    shader_multiple_wait_queues: Bool32 = .false,
+};
+pub const PhysicalDeviceShaderMultipleWaitQueuesPropertiesQCOM = extern struct {
+    s_type: StructureType = .physical_device_shader_multiple_wait_queues_properties_qcom,
+    p_next: ?*anyopaque = null,
+    max_shader_wait_queues: u32 = 0,
 };
 pub const PhysicalDeviceImageProcessingFeaturesQCOM = extern struct {
     s_type: StructureType = .physical_device_image_processing_features_qcom,
@@ -14939,6 +15211,13 @@ pub const SamplerBlockMatchWindowCreateInfoQCOM = extern struct {
     window_extent: Extent2D = .{},
     window_compare_mode: BlockMatchWindowCompareModeQCOM = @enumFromInt(0),
 };
+pub const PhysicalDeviceImageProcessing3FeaturesQCOM = extern struct {
+    s_type: StructureType = .physical_device_image_processing_3_features_qcom,
+    p_next: ?*anyopaque = null,
+    image_gather_linear: Bool32 = .false,
+    image_gather_extended_modes: Bool32 = .false,
+    block_match_extended_clamp_to_edge: Bool32 = .false,
+};
 pub const PhysicalDeviceDescriptorPoolOverallocationFeaturesNV = extern struct {
     s_type: StructureType = .physical_device_descriptor_pool_overallocation_features_nv,
     p_next: ?*anyopaque = null,
@@ -15294,7 +15573,8 @@ pub const AccelerationStructureDenseGeometryFormatTrianglesDataAMDX = extern str
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
-            inline *AccelerationStructureTrianglesOpacityMicromapEXT,
+            inline *AccelerationStructureTrianglesOpacityMicromapKHR,
+            *AccelerationStructureTrianglesOpacityMicromapEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -16240,6 +16520,16 @@ pub const SubsampledImageFormatPropertiesEXT = extern struct {
     p_next: ?*const anyopaque = null,
     subsampled_image_descriptor_count: u32 = 0,
 };
+pub const PhysicalDeviceShaderSplitBarrierFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_shader_split_barrier_features_ext,
+    p_next: ?*anyopaque = null,
+    shader_split_barrier: Bool32 = .false,
+};
+pub const PhysicalDeviceShaderSplitBarrierPropertiesEXT = extern struct {
+    s_type: StructureType = .physical_device_shader_split_barrier_properties_ext,
+    p_next: ?*anyopaque = null,
+    split_barrier_reserved_shared_memory: u32 = 0,
+};
 pub const PhysicalDeviceDescriptorHeapFeaturesEXT = extern struct {
     s_type: StructureType = .physical_device_descriptor_heap_features_ext,
     p_next: ?*anyopaque = null,
@@ -17164,6 +17454,18 @@ pub const FpCmdInitializeGraphScratchMemoryAMDX = *const fn (CommandBuffer, Pipe
 pub const FpCmdDispatchGraphAMDX = *const fn (CommandBuffer, DeviceAddress, DeviceSize, [*c]const DispatchGraphCountInfoAMDX) callconv(.c) void;
 pub const FpCmdDispatchGraphIndirectAMDX = *const fn (CommandBuffer, DeviceAddress, DeviceSize, [*c]const DispatchGraphCountInfoAMDX) callconv(.c) void;
 pub const FpCmdDispatchGraphIndirectCountAMDX = *const fn (CommandBuffer, DeviceAddress, DeviceSize, DeviceAddress) callconv(.c) void;
+pub const FpCreateGpaSessionAMD = *const fn (Device, [*c]const GpaSessionCreateInfoAMD, [*c]const AllocationCallbacks, [*c]GpaSessionAMD) callconv(.c) Result;
+pub const FpDestroyGpaSessionAMD = *const fn (Device, GpaSessionAMD, [*c]const AllocationCallbacks) callconv(.c) void;
+pub const FpSetGpaDeviceClockModeAMD = *const fn (Device, [*c]GpaDeviceClockModeInfoAMD) callconv(.c) Result;
+pub const FpGetGpaDeviceClockInfoAMD = *const fn (Device, [*c]GpaDeviceGetClockInfoAMD) callconv(.c) Result;
+pub const FpCmdBeginGpaSessionAMD = *const fn (CommandBuffer, GpaSessionAMD) callconv(.c) Result;
+pub const FpCmdEndGpaSessionAMD = *const fn (CommandBuffer, GpaSessionAMD) callconv(.c) Result;
+pub const FpCmdBeginGpaSampleAMD = *const fn (CommandBuffer, GpaSessionAMD, [*c]const GpaSampleBeginInfoAMD, [*c]u32) callconv(.c) Result;
+pub const FpCmdEndGpaSampleAMD = *const fn (CommandBuffer, GpaSessionAMD, u32) callconv(.c) void;
+pub const FpGetGpaSessionStatusAMD = *const fn (Device, GpaSessionAMD) callconv(.c) Result;
+pub const FpGetGpaSessionResultsAMD = *const fn (Device, GpaSessionAMD, u32, [*c]usize, ?*anyopaque) callconv(.c) Result;
+pub const FpResetGpaSessionAMD = *const fn (Device, GpaSessionAMD) callconv(.c) Result;
+pub const FpCmdCopyGpaSessionResultsAMD = *const fn (CommandBuffer, GpaSessionAMD) callconv(.c) void;
 pub const FpCmdBindDescriptorSets2 = *const fn (CommandBuffer, [*c]const BindDescriptorSetsInfo) callconv(.c) void;
 pub const FpCmdPushConstants2 = *const fn (CommandBuffer, [*c]const PushConstantsInfo) callconv(.c) void;
 pub const FpCmdPushDescriptorSet2 = *const fn (CommandBuffer, [*c]const PushDescriptorSetInfo) callconv(.c) void;
@@ -17365,6 +17667,7 @@ const ExtensionNames = struct {
     const ext_sampler_filter_minmax = "VK_EXT_sampler_filter_minmax";
     const khr_storage_buffer_storage_class = "VK_KHR_storage_buffer_storage_class";
     const amd_gpu_shader_int16 = "VK_AMD_gpu_shader_int16";
+    const amd_gpa_interface = "VK_AMD_gpa_interface";
     const amdx_shader_enqueue = "VK_AMDX_shader_enqueue";
     const ext_descriptor_heap = "VK_EXT_descriptor_heap";
     const amd_mixed_attachment_samples = "VK_AMD_mixed_attachment_samples";
@@ -17400,6 +17703,7 @@ const ExtensionNames = struct {
     const ext_filter_cubic = "VK_EXT_filter_cubic";
     const qcom_render_pass_shader_resolve = "VK_QCOM_render_pass_shader_resolve";
     const qcom_cooperative_matrix_conversion = "VK_QCOM_cooperative_matrix_conversion";
+    const qcom_elapsed_timer_query = "VK_QCOM_elapsed_timer_query";
     const ext_global_priority = "VK_EXT_global_priority";
     const khr_shader_subgroup_extended_types = "VK_KHR_shader_subgroup_extended_types";
     const khr_8bit_storage = "VK_KHR_8bit_storage";
@@ -17503,6 +17807,9 @@ const ExtensionNames = struct {
     const nv_device_diagnostics_config = "VK_NV_device_diagnostics_config";
     const qcom_render_pass_store_ops = "VK_QCOM_render_pass_store_ops";
     const qcom_queue_perf_hint = "VK_QCOM_queue_perf_hint";
+    const qcom_image_processing3 = "VK_QCOM_image_processing3";
+    const qcom_shader_multiple_wait_queues = "VK_QCOM_shader_multiple_wait_queues";
+    const ext_shader_split_barrier = "VK_EXT_shader_split_barrier";
     const nv_cuda_kernel_launch = "VK_NV_cuda_kernel_launch";
     const qcom_tile_shading = "VK_QCOM_tile_shading";
     const nv_low_latency = "VK_NV_low_latency";
@@ -17684,6 +17991,7 @@ const ExtensionNames = struct {
     const ext_fragment_density_map_offset = "VK_EXT_fragment_density_map_offset";
     const ext_zero_initialize_device_memory = "VK_EXT_zero_initialize_device_memory";
     const khr_present_mode_fifo_latest_ready = "VK_KHR_present_mode_fifo_latest_ready";
+    const khr_opacity_micromap = "VK_KHR_opacity_micromap";
     const ext_shader_64bit_indexing = "VK_EXT_shader_64bit_indexing";
     const ext_custom_resolve = "VK_EXT_custom_resolve";
     const qcom_data_graph_model = "VK_QCOM_data_graph_model";
@@ -18502,6 +18810,15 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_amd_gpa_interface(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_amd_gpa_interface(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_amdx_shader_enqueue(self: InstanceExtensions) bool {
         return (self.core_version.to_int() >= make_version(1, 3, 0).to_int() or (self.supports_khr_synchronization2() and self.supports_khr_spirv_1_4() and self.supports_ext_extended_dynamic_state())) and self.supports_khr_maintenance5();
     }
@@ -18671,6 +18988,15 @@ pub const InstanceExtensions = packed struct {
     }
     pub fn enable_qcom_cooperative_matrix_conversion(self: *InstanceExtensions) void {
         self.enable_khr_cooperative_matrix();
+    }
+
+    pub fn supports_qcom_elapsed_timer_query(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_qcom_elapsed_timer_query(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
 
     pub fn supports_khr_8bit_storage(self: InstanceExtensions) bool {
@@ -19422,6 +19748,33 @@ pub const InstanceExtensions = packed struct {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
     pub fn enable_qcom_queue_perf_hint(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_qcom_image_processing3(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_qcom_image_processing3(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_qcom_shader_multiple_wait_queues(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_qcom_shader_multiple_wait_queues(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_ext_shader_split_barrier(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_ext_shader_split_barrier(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -20887,6 +21240,14 @@ pub const InstanceExtensions = packed struct {
         self.enable_khr_swapchain();
     }
 
+    pub fn supports_khr_opacity_micromap(self: InstanceExtensions) bool {
+        return self.supports_khr_acceleration_structure() and self.supports_khr_device_address_commands();
+    }
+    pub fn enable_khr_opacity_micromap(self: *InstanceExtensions) void {
+        self.enable_khr_acceleration_structure();
+        self.enable_khr_device_address_commands();
+    }
+
     pub fn supports_ext_shader_64bit_indexing(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
@@ -21084,6 +21445,7 @@ pub const DeviceExtensions = packed struct {
     ext_sampler_filter_minmax: bool = false,
     khr_storage_buffer_storage_class: bool = false,
     amd_gpu_shader_int16: bool = false,
+    amd_gpa_interface: bool = false,
     amdx_shader_enqueue: bool = false,
     ext_descriptor_heap: bool = false,
     amd_mixed_attachment_samples: bool = false,
@@ -21119,6 +21481,7 @@ pub const DeviceExtensions = packed struct {
     ext_filter_cubic: bool = false,
     qcom_render_pass_shader_resolve: bool = false,
     qcom_cooperative_matrix_conversion: bool = false,
+    qcom_elapsed_timer_query: bool = false,
     ext_global_priority: bool = false,
     khr_shader_subgroup_extended_types: bool = false,
     khr_8bit_storage: bool = false,
@@ -21215,6 +21578,9 @@ pub const DeviceExtensions = packed struct {
     nv_device_diagnostics_config: bool = false,
     qcom_render_pass_store_ops: bool = false,
     qcom_queue_perf_hint: bool = false,
+    qcom_image_processing3: bool = false,
+    qcom_shader_multiple_wait_queues: bool = false,
+    ext_shader_split_barrier: bool = false,
     nv_cuda_kernel_launch: bool = false,
     qcom_tile_shading: bool = false,
     nv_low_latency: bool = false,
@@ -21388,6 +21754,7 @@ pub const DeviceExtensions = packed struct {
     ext_fragment_density_map_offset: bool = false,
     ext_zero_initialize_device_memory: bool = false,
     khr_present_mode_fifo_latest_ready: bool = false,
+    khr_opacity_micromap: bool = false,
     ext_shader_64bit_indexing: bool = false,
     ext_custom_resolve: bool = false,
     qcom_data_graph_model: bool = false,
@@ -21564,6 +21931,8 @@ pub const DeviceExtensions = packed struct {
             self.khr_storage_buffer_storage_class = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.amd_gpu_shader_int16) == .eq) {
             self.amd_gpu_shader_int16 = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.amd_gpa_interface) == .eq) {
+            self.amd_gpa_interface = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.amdx_shader_enqueue) == .eq) {
             self.amdx_shader_enqueue = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_descriptor_heap) == .eq) {
@@ -21634,6 +22003,8 @@ pub const DeviceExtensions = packed struct {
             self.qcom_render_pass_shader_resolve = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_cooperative_matrix_conversion) == .eq) {
             self.qcom_cooperative_matrix_conversion = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_elapsed_timer_query) == .eq) {
+            self.qcom_elapsed_timer_query = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_global_priority) == .eq) {
             self.ext_global_priority = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_shader_subgroup_extended_types) == .eq) {
@@ -21826,6 +22197,12 @@ pub const DeviceExtensions = packed struct {
             self.qcom_render_pass_store_ops = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_queue_perf_hint) == .eq) {
             self.qcom_queue_perf_hint = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_image_processing3) == .eq) {
+            self.qcom_image_processing3 = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_shader_multiple_wait_queues) == .eq) {
+            self.qcom_shader_multiple_wait_queues = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_split_barrier) == .eq) {
+            self.ext_shader_split_barrier = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_cuda_kernel_launch) == .eq) {
             self.nv_cuda_kernel_launch = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.qcom_tile_shading) == .eq) {
@@ -22172,6 +22549,8 @@ pub const DeviceExtensions = packed struct {
             self.ext_zero_initialize_device_memory = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_present_mode_fifo_latest_ready) == .eq) {
             self.khr_present_mode_fifo_latest_ready = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_opacity_micromap) == .eq) {
+            self.khr_opacity_micromap = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_64bit_indexing) == .eq) {
             self.ext_shader_64bit_indexing = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_custom_resolve) == .eq) {
@@ -22296,6 +22675,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_sampler_filter_minmax) try names.append(allocator, ExtensionNames.ext_sampler_filter_minmax);
         if (self.khr_storage_buffer_storage_class) try names.append(allocator, ExtensionNames.khr_storage_buffer_storage_class);
         if (self.amd_gpu_shader_int16) try names.append(allocator, ExtensionNames.amd_gpu_shader_int16);
+        if (self.amd_gpa_interface) try names.append(allocator, ExtensionNames.amd_gpa_interface);
         if (self.amdx_shader_enqueue) try names.append(allocator, ExtensionNames.amdx_shader_enqueue);
         if (self.ext_descriptor_heap) try names.append(allocator, ExtensionNames.ext_descriptor_heap);
         if (self.amd_mixed_attachment_samples) try names.append(allocator, ExtensionNames.amd_mixed_attachment_samples);
@@ -22331,6 +22711,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_filter_cubic) try names.append(allocator, ExtensionNames.ext_filter_cubic);
         if (self.qcom_render_pass_shader_resolve) try names.append(allocator, ExtensionNames.qcom_render_pass_shader_resolve);
         if (self.qcom_cooperative_matrix_conversion) try names.append(allocator, ExtensionNames.qcom_cooperative_matrix_conversion);
+        if (self.qcom_elapsed_timer_query) try names.append(allocator, ExtensionNames.qcom_elapsed_timer_query);
         if (self.ext_global_priority) try names.append(allocator, ExtensionNames.ext_global_priority);
         if (self.khr_shader_subgroup_extended_types) try names.append(allocator, ExtensionNames.khr_shader_subgroup_extended_types);
         if (self.khr_8bit_storage) try names.append(allocator, ExtensionNames.khr_8bit_storage);
@@ -22427,6 +22808,9 @@ pub const DeviceExtensions = packed struct {
         if (self.nv_device_diagnostics_config) try names.append(allocator, ExtensionNames.nv_device_diagnostics_config);
         if (self.qcom_render_pass_store_ops) try names.append(allocator, ExtensionNames.qcom_render_pass_store_ops);
         if (self.qcom_queue_perf_hint) try names.append(allocator, ExtensionNames.qcom_queue_perf_hint);
+        if (self.qcom_image_processing3) try names.append(allocator, ExtensionNames.qcom_image_processing3);
+        if (self.qcom_shader_multiple_wait_queues) try names.append(allocator, ExtensionNames.qcom_shader_multiple_wait_queues);
+        if (self.ext_shader_split_barrier) try names.append(allocator, ExtensionNames.ext_shader_split_barrier);
         if (self.nv_cuda_kernel_launch) try names.append(allocator, ExtensionNames.nv_cuda_kernel_launch);
         if (self.qcom_tile_shading) try names.append(allocator, ExtensionNames.qcom_tile_shading);
         if (self.nv_low_latency) try names.append(allocator, ExtensionNames.nv_low_latency);
@@ -22600,6 +22984,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_fragment_density_map_offset) try names.append(allocator, ExtensionNames.ext_fragment_density_map_offset);
         if (self.ext_zero_initialize_device_memory) try names.append(allocator, ExtensionNames.ext_zero_initialize_device_memory);
         if (self.khr_present_mode_fifo_latest_ready) try names.append(allocator, ExtensionNames.khr_present_mode_fifo_latest_ready);
+        if (self.khr_opacity_micromap) try names.append(allocator, ExtensionNames.khr_opacity_micromap);
         if (self.ext_shader_64bit_indexing) try names.append(allocator, ExtensionNames.ext_shader_64bit_indexing);
         if (self.ext_custom_resolve) try names.append(allocator, ExtensionNames.ext_custom_resolve);
         if (self.qcom_data_graph_model) try names.append(allocator, ExtensionNames.qcom_data_graph_model);
@@ -23273,6 +23658,13 @@ pub const DeviceExtensions = packed struct {
         self.amd_gpu_shader_int16 = true;
     }
 
+    pub fn supports_amd_gpa_interface(self: DeviceExtensions) bool {
+        return self.amd_gpa_interface;
+    }
+    pub fn enable_amd_gpa_interface(self: *DeviceExtensions) void {
+        self.amd_gpa_interface = true;
+    }
+
     pub fn supports_amdx_shader_enqueue(self: DeviceExtensions) bool {
         return self.amdx_shader_enqueue and (self.core_version.to_int() >= make_version(1, 3, 0).to_int() or (self.supports_khr_synchronization2() and self.supports_khr_spirv_1_4() and self.supports_ext_extended_dynamic_state())) and self.supports_khr_maintenance5() and self.supports_khr_pipeline_library();
     }
@@ -23586,6 +23978,13 @@ pub const DeviceExtensions = packed struct {
     pub fn enable_qcom_cooperative_matrix_conversion(self: *DeviceExtensions) void {
         self.qcom_cooperative_matrix_conversion = true;
         self.enable_khr_cooperative_matrix();
+    }
+
+    pub fn supports_qcom_elapsed_timer_query(self: DeviceExtensions) bool {
+        return self.qcom_elapsed_timer_query;
+    }
+    pub fn enable_qcom_elapsed_timer_query(self: *DeviceExtensions) void {
+        self.qcom_elapsed_timer_query = true;
     }
 
     pub fn supports_ext_global_priority(self: DeviceExtensions) bool {
@@ -24394,6 +24793,27 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_qcom_queue_perf_hint(self: *DeviceExtensions) void {
         self.qcom_queue_perf_hint = true;
+    }
+
+    pub fn supports_qcom_image_processing3(self: DeviceExtensions) bool {
+        return self.qcom_image_processing3;
+    }
+    pub fn enable_qcom_image_processing3(self: *DeviceExtensions) void {
+        self.qcom_image_processing3 = true;
+    }
+
+    pub fn supports_qcom_shader_multiple_wait_queues(self: DeviceExtensions) bool {
+        return self.qcom_shader_multiple_wait_queues;
+    }
+    pub fn enable_qcom_shader_multiple_wait_queues(self: *DeviceExtensions) void {
+        self.qcom_shader_multiple_wait_queues = true;
+    }
+
+    pub fn supports_ext_shader_split_barrier(self: DeviceExtensions) bool {
+        return self.ext_shader_split_barrier;
+    }
+    pub fn enable_ext_shader_split_barrier(self: *DeviceExtensions) void {
+        self.ext_shader_split_barrier = true;
     }
 
     pub fn supports_nv_cuda_kernel_launch(self: DeviceExtensions) bool {
@@ -25861,6 +26281,15 @@ pub const DeviceExtensions = packed struct {
     pub fn enable_khr_present_mode_fifo_latest_ready(self: *DeviceExtensions) void {
         self.khr_present_mode_fifo_latest_ready = true;
         self.enable_khr_swapchain();
+    }
+
+    pub fn supports_khr_opacity_micromap(self: DeviceExtensions) bool {
+        return self.khr_opacity_micromap and self.supports_khr_acceleration_structure() and self.supports_khr_device_address_commands();
+    }
+    pub fn enable_khr_opacity_micromap(self: *DeviceExtensions) void {
+        self.khr_opacity_micromap = true;
+        self.enable_khr_acceleration_structure();
+        self.enable_khr_device_address_commands();
     }
 
     pub fn supports_ext_shader_64bit_indexing(self: DeviceExtensions) bool {
@@ -28721,6 +29150,18 @@ pub const DeviceCommands = struct {
     fp_cmd_dispatch_graph_amdx: ?FpCmdDispatchGraphAMDX,
     fp_cmd_dispatch_graph_indirect_amdx: ?FpCmdDispatchGraphIndirectAMDX,
     fp_cmd_dispatch_graph_indirect_count_amdx: ?FpCmdDispatchGraphIndirectCountAMDX,
+    fp_create_gpa_session_amd: ?FpCreateGpaSessionAMD,
+    fp_destroy_gpa_session_amd: ?FpDestroyGpaSessionAMD,
+    fp_set_gpa_device_clock_mode_amd: ?FpSetGpaDeviceClockModeAMD,
+    fp_get_gpa_device_clock_info_amd: ?FpGetGpaDeviceClockInfoAMD,
+    fp_cmd_begin_gpa_session_amd: ?FpCmdBeginGpaSessionAMD,
+    fp_cmd_end_gpa_session_amd: ?FpCmdEndGpaSessionAMD,
+    fp_cmd_begin_gpa_sample_amd: ?FpCmdBeginGpaSampleAMD,
+    fp_cmd_end_gpa_sample_amd: ?FpCmdEndGpaSampleAMD,
+    fp_get_gpa_session_status_amd: ?FpGetGpaSessionStatusAMD,
+    fp_get_gpa_session_results_amd: ?FpGetGpaSessionResultsAMD,
+    fp_reset_gpa_session_amd: ?FpResetGpaSessionAMD,
+    fp_cmd_copy_gpa_session_results_amd: ?FpCmdCopyGpaSessionResultsAMD,
     fp_cmd_bind_descriptor_sets2: ?FpCmdBindDescriptorSets2,
     fp_cmd_push_constants2: ?FpCmdPushConstants2,
     fp_cmd_push_descriptor_set2: ?FpCmdPushDescriptorSet2,
@@ -29343,6 +29784,18 @@ pub const DeviceCommands = struct {
             .fp_cmd_dispatch_graph_amdx = if (extensions.amdx_shader_enqueue) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDispatchGraphAMDX")) else null,
             .fp_cmd_dispatch_graph_indirect_amdx = if (extensions.amdx_shader_enqueue) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDispatchGraphIndirectAMDX")) else null,
             .fp_cmd_dispatch_graph_indirect_count_amdx = if (extensions.amdx_shader_enqueue) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdDispatchGraphIndirectCountAMDX")) else null,
+            .fp_create_gpa_session_amd = if (extensions.amd_gpa_interface) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateGpaSessionAMD")) else null,
+            .fp_destroy_gpa_session_amd = if (extensions.amd_gpa_interface) @ptrCast(try instance.get_device_proc_addr(device, "vkDestroyGpaSessionAMD")) else null,
+            .fp_set_gpa_device_clock_mode_amd = if (extensions.amd_gpa_interface) @ptrCast(try instance.get_device_proc_addr(device, "vkSetGpaDeviceClockModeAMD")) else null,
+            .fp_get_gpa_device_clock_info_amd = if (extensions.amd_gpa_interface) @ptrCast(try instance.get_device_proc_addr(device, "vkGetGpaDeviceClockInfoAMD")) else null,
+            .fp_cmd_begin_gpa_session_amd = if (extensions.amd_gpa_interface) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBeginGpaSessionAMD")) else null,
+            .fp_cmd_end_gpa_session_amd = if (extensions.amd_gpa_interface) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdEndGpaSessionAMD")) else null,
+            .fp_cmd_begin_gpa_sample_amd = if (extensions.amd_gpa_interface) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBeginGpaSampleAMD")) else null,
+            .fp_cmd_end_gpa_sample_amd = if (extensions.amd_gpa_interface) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdEndGpaSampleAMD")) else null,
+            .fp_get_gpa_session_status_amd = if (extensions.amd_gpa_interface) @ptrCast(try instance.get_device_proc_addr(device, "vkGetGpaSessionStatusAMD")) else null,
+            .fp_get_gpa_session_results_amd = if (extensions.amd_gpa_interface) @ptrCast(try instance.get_device_proc_addr(device, "vkGetGpaSessionResultsAMD")) else null,
+            .fp_reset_gpa_session_amd = if (extensions.amd_gpa_interface) @ptrCast(try instance.get_device_proc_addr(device, "vkResetGpaSessionAMD")) else null,
+            .fp_cmd_copy_gpa_session_results_amd = if (extensions.amd_gpa_interface) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdCopyGpaSessionResultsAMD")) else null,
             .fp_cmd_bind_descriptor_sets2 = if (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int()) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBindDescriptorSets2")) else if (extensions.khr_maintenance6) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdBindDescriptorSets2KHR")) else null,
             .fp_cmd_push_constants2 = if (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int()) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdPushConstants2")) else if (extensions.khr_maintenance6) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdPushConstants2KHR")) else null,
             .fp_cmd_push_descriptor_set2 = if (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int()) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdPushDescriptorSet2")) else if (extensions.khr_maintenance6 and extensions.khr_push_descriptor) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdPushDescriptorSet2KHR")) else null,
@@ -37040,6 +37493,218 @@ pub const DeviceCommands = struct {
         count_info: DeviceAddress,
     ) void {
         self.fp_cmd_dispatch_graph_indirect_count_amdx.?(command_buffer, scratch, scratch_size, count_info);
+    }
+    pub const CreateGpaSessionAMDError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn create_gpa_session_amd(
+        self: DeviceCommands,
+        p_create_info: *const GpaSessionCreateInfoAMD,
+        p_allocator: ?*const AllocationCallbacks,
+    ) CreateGpaSessionAMDError!GpaSessionAMD {
+        var p_gpa_session: GpaSessionAMD = undefined;
+        switch (self.fp_create_gpa_session_amd.?(self.handle, p_create_info, p_allocator, &p_gpa_session)) {
+            .success => return p_gpa_session,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn destroy_gpa_session_amd(
+        self: DeviceCommands,
+        gpa_session: GpaSessionAMD,
+        p_allocator: ?*const AllocationCallbacks,
+    ) void {
+        self.fp_destroy_gpa_session_amd.?(self.handle, gpa_session, p_allocator);
+    }
+    pub const SetGpaDeviceClockModeAMDError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn set_gpa_device_clock_mode_amd(
+        self: DeviceCommands,
+        p_info: *GpaDeviceClockModeInfoAMD,
+    ) SetGpaDeviceClockModeAMDError!void {
+        switch (self.fp_set_gpa_device_clock_mode_amd.?(self.handle, p_info)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const GetGpaDeviceClockInfoAMDError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_gpa_device_clock_info_amd(
+        self: DeviceCommands,
+        p_info: *GpaDeviceGetClockInfoAMD,
+    ) GetGpaDeviceClockInfoAMDError!void {
+        switch (self.fp_get_gpa_device_clock_info_amd.?(self.handle, p_info)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const CmdBeginGpaSessionAMDError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn cmd_begin_gpa_session_amd(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        gpa_session: GpaSessionAMD,
+    ) CmdBeginGpaSessionAMDError!void {
+        switch (self.fp_cmd_begin_gpa_session_amd.?(command_buffer, gpa_session)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const CmdEndGpaSessionAMDError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn cmd_end_gpa_session_amd(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        gpa_session: GpaSessionAMD,
+    ) CmdEndGpaSessionAMDError!void {
+        switch (self.fp_cmd_end_gpa_session_amd.?(command_buffer, gpa_session)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const CmdBeginGpaSampleAMDError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn cmd_begin_gpa_sample_amd(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        gpa_session: GpaSessionAMD,
+        p_gpa_sample_begin_info: *const GpaSampleBeginInfoAMD,
+    ) CmdBeginGpaSampleAMDError!u32 {
+        var p_sample_id: u32 = undefined;
+        switch (self.fp_cmd_begin_gpa_sample_amd.?(command_buffer, gpa_session, p_gpa_sample_begin_info, &p_sample_id)) {
+            .success => return p_sample_id,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn cmd_end_gpa_sample_amd(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        gpa_session: GpaSessionAMD,
+        sample_id: u32,
+    ) void {
+        self.fp_cmd_end_gpa_sample_amd.?(command_buffer, gpa_session, sample_id);
+    }
+    pub const GetGpaSessionStatusAMDError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_gpa_session_status_amd(
+        self: DeviceCommands,
+        gpa_session: GpaSessionAMD,
+    ) GetGpaSessionStatusAMDError!void {
+        switch (self.fp_get_gpa_session_status_amd.?(self.handle, gpa_session)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const GetGpaSessionResultsAMDError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_gpa_session_results_amd(
+        self: DeviceCommands,
+        gpa_session: GpaSessionAMD,
+        sample_id: u32,
+        p_size_in_bytes: *usize,
+        p_data: ?*anyopaque,
+    ) GetGpaSessionResultsAMDError!void {
+        switch (self.fp_get_gpa_session_results_amd.?(self.handle, gpa_session, sample_id, p_size_in_bytes, p_data)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const ResetGpaSessionAMDError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn reset_gpa_session_amd(
+        self: DeviceCommands,
+        gpa_session: GpaSessionAMD,
+    ) ResetGpaSessionAMDError!void {
+        switch (self.fp_reset_gpa_session_amd.?(self.handle, gpa_session)) {
+            .success => return,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub fn cmd_copy_gpa_session_results_amd(
+        self: DeviceCommands,
+        command_buffer: CommandBuffer,
+        gpa_session: GpaSessionAMD,
+    ) void {
+        self.fp_cmd_copy_gpa_session_results_amd.?(command_buffer, gpa_session);
     }
     pub fn cmd_bind_descriptor_sets2(
         self: DeviceCommands,
