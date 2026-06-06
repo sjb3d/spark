@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.352
+//! Generated from vk.xml version 1.4.353
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -1368,6 +1368,86 @@ impl<'a> Deref for ImageCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ImageCreateFlags2CreateInfoKHRBuilder {
+    inner: vk::ImageCreateFlags2CreateInfoKHR,
+}
+impl Builder<'_> for vk::ImageCreateFlags2CreateInfoKHR {
+    type Type = ImageCreateFlags2CreateInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ImageCreateFlags2CreateInfoKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ImageCreateFlags2CreateInfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::ImageCreateFlags2KHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl Deref for ImageCreateFlags2CreateInfoKHRBuilder {
+    type Target = vk::ImageCreateFlags2CreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageCreateInfoNext for vk::ImageCreateFlags2CreateInfoKHR {}
+impl ImageCreateInfoNext for ImageCreateFlags2CreateInfoKHRBuilder {}
+impl PhysicalDeviceImageFormatInfo2Next for vk::ImageCreateFlags2CreateInfoKHR {}
+impl PhysicalDeviceImageFormatInfo2Next for ImageCreateFlags2CreateInfoKHRBuilder {}
+impl FramebufferAttachmentImageInfoNext for vk::ImageCreateFlags2CreateInfoKHR {}
+impl FramebufferAttachmentImageInfoNext for ImageCreateFlags2CreateInfoKHRBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ImageUsageFlags2CreateInfoKHRBuilder {
+    inner: vk::ImageUsageFlags2CreateInfoKHR,
+}
+impl Builder<'_> for vk::ImageUsageFlags2CreateInfoKHR {
+    type Type = ImageUsageFlags2CreateInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ImageUsageFlags2CreateInfoKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ImageUsageFlags2CreateInfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn usage(mut self, usage: vk::ImageUsageFlags2KHR) -> Self {
+        self.inner.usage = usage;
+        self
+    }
+}
+impl Deref for ImageUsageFlags2CreateInfoKHRBuilder {
+    type Target = vk::ImageUsageFlags2CreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl FramebufferAttachmentImageInfoNext for vk::ImageUsageFlags2CreateInfoKHR {}
+impl FramebufferAttachmentImageInfoNext for ImageUsageFlags2CreateInfoKHRBuilder {}
+impl ImageCreateInfoNext for vk::ImageUsageFlags2CreateInfoKHR {}
+impl ImageCreateInfoNext for ImageUsageFlags2CreateInfoKHRBuilder {}
+impl PhysicalDeviceImageFormatInfo2Next for vk::ImageUsageFlags2CreateInfoKHR {}
+impl PhysicalDeviceImageFormatInfo2Next for ImageUsageFlags2CreateInfoKHRBuilder {}
+impl PhysicalDeviceSparseImageFormatInfo2Next for vk::ImageUsageFlags2CreateInfoKHR {}
+impl PhysicalDeviceSparseImageFormatInfo2Next for ImageUsageFlags2CreateInfoKHRBuilder {}
+impl SurfaceCapabilities2KHRNext for vk::ImageUsageFlags2CreateInfoKHR {}
+impl SurfaceCapabilities2KHRNext for ImageUsageFlags2CreateInfoKHRBuilder {}
+impl SwapchainCreateInfoKHRNext for vk::ImageUsageFlags2CreateInfoKHR {}
+impl SwapchainCreateInfoKHRNext for ImageUsageFlags2CreateInfoKHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -8539,16 +8619,24 @@ impl<'a> Deref for PhysicalDeviceMemoryProperties2Builder<'a> {
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct PhysicalDeviceSparseImageFormatInfo2Builder {
+pub struct PhysicalDeviceSparseImageFormatInfo2Builder<'a> {
     inner: vk::PhysicalDeviceSparseImageFormatInfo2,
+    phantom: PhantomData<&'a ()>,
 }
-impl Builder<'_> for vk::PhysicalDeviceSparseImageFormatInfo2 {
-    type Type = PhysicalDeviceSparseImageFormatInfo2Builder;
+impl<'a> Builder<'a> for vk::PhysicalDeviceSparseImageFormatInfo2 {
+    type Type = PhysicalDeviceSparseImageFormatInfo2Builder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl PhysicalDeviceSparseImageFormatInfo2Builder {
+pub trait PhysicalDeviceSparseImageFormatInfo2Next {}
+impl<'a> PhysicalDeviceSparseImageFormatInfo2Builder<'a> {
+    pub fn insert_next<T: PhysicalDeviceSparseImageFormatInfo2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceSparseImageFormatInfo2 {
         &mut self.inner
     }
@@ -8577,7 +8665,7 @@ impl PhysicalDeviceSparseImageFormatInfo2Builder {
         self
     }
 }
-impl Deref for PhysicalDeviceSparseImageFormatInfo2Builder {
+impl<'a> Deref for PhysicalDeviceSparseImageFormatInfo2Builder<'a> {
     type Target = vk::PhysicalDeviceSparseImageFormatInfo2;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -12136,6 +12224,8 @@ impl Deref for DisplayPlaneInfo2KHRBuilder {
     }
 }
 impl SurfaceCapabilities2KHRNext for vk::SharedPresentSurfaceCapabilitiesKHR {}
+impl SurfaceCapabilities2KHRNext for vk::SwapchainFlagsSurfaceCapabilitiesEXT {}
+impl SurfaceCapabilities2KHRNext for vk::SharedPresentSurfaceCapabilities2KHR {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -12503,6 +12593,39 @@ impl Deref for ImageViewUsageCreateInfoBuilder {
 }
 impl ImageViewCreateInfoNext for vk::ImageViewUsageCreateInfo {}
 impl ImageViewCreateInfoNext for ImageViewUsageCreateInfoBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ImageViewUsage2CreateInfoKHRBuilder {
+    inner: vk::ImageViewUsage2CreateInfoKHR,
+}
+impl Builder<'_> for vk::ImageViewUsage2CreateInfoKHR {
+    type Type = ImageViewUsage2CreateInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ImageViewUsage2CreateInfoKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ImageViewUsage2CreateInfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn usage(mut self, usage: vk::ImageUsageFlags2KHR) -> Self {
+        self.inner.usage = usage;
+        self
+    }
+}
+impl Deref for ImageViewUsage2CreateInfoKHRBuilder {
+    type Target = vk::ImageViewUsage2CreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageViewCreateInfoNext for vk::ImageViewUsage2CreateInfoKHR {}
+impl ImageViewCreateInfoNext for ImageViewUsage2CreateInfoKHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -18629,6 +18752,41 @@ impl PhysicalDeviceImageFormatInfo2Next for ImageStencilUsageCreateInfoBuilder {
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct ImageStencilUsage2CreateInfoKHRBuilder {
+    inner: vk::ImageStencilUsage2CreateInfoKHR,
+}
+impl Builder<'_> for vk::ImageStencilUsage2CreateInfoKHR {
+    type Type = ImageStencilUsage2CreateInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ImageStencilUsage2CreateInfoKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ImageStencilUsage2CreateInfoKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stencil_usage(mut self, stencil_usage: vk::ImageUsageFlags2KHR) -> Self {
+        self.inner.stencil_usage = stencil_usage;
+        self
+    }
+}
+impl Deref for ImageStencilUsage2CreateInfoKHRBuilder {
+    type Target = vk::ImageStencilUsage2CreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageCreateInfoNext for vk::ImageStencilUsage2CreateInfoKHR {}
+impl ImageCreateInfoNext for ImageStencilUsage2CreateInfoKHRBuilder {}
+impl PhysicalDeviceImageFormatInfo2Next for vk::ImageStencilUsage2CreateInfoKHR {}
+impl PhysicalDeviceImageFormatInfo2Next for ImageStencilUsage2CreateInfoKHRBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct DeviceMemoryOverallocationCreateInfoAMDBuilder {
     inner: vk::DeviceMemoryOverallocationCreateInfoAMD,
 }
@@ -19440,7 +19598,14 @@ impl<'a> Builder<'a> for vk::FramebufferAttachmentImageInfo {
         Default::default()
     }
 }
+pub trait FramebufferAttachmentImageInfoNext {}
 impl<'a> FramebufferAttachmentImageInfoBuilder<'a> {
+    pub fn insert_next<T: FramebufferAttachmentImageInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn get_mut(&mut self) -> &mut vk::FramebufferAttachmentImageInfo {
         &mut self.inner
     }
@@ -23859,6 +24024,41 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceExtendedDynamicState3Features
 impl DeviceCreateInfoNext for vk::PhysicalDeviceExtendedDynamicState3FeaturesEXT {}
 impl DeviceCreateInfoNext for PhysicalDeviceExtendedDynamicState3FeaturesEXTBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceExtendedDynamicState3PropertiesEXT {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceExtendedFlagsFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceExtendedFlagsFeaturesKHR,
+}
+impl Builder<'_> for vk::PhysicalDeviceExtendedFlagsFeaturesKHR {
+    type Type = PhysicalDeviceExtendedFlagsFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceExtendedFlagsFeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceExtendedFlagsFeaturesKHR {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn extended_flags(mut self, extended_flags: bool) -> Self {
+        self.inner.extended_flags = if extended_flags { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceExtendedFlagsFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceExtendedFlagsFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceExtendedFlagsFeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceExtendedFlagsFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceExtendedFlagsFeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDeviceExtendedFlagsFeaturesKHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -28604,6 +28804,45 @@ impl RenderingInfoNext for MultisampledRenderToSingleSampledInfoEXTBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
+pub struct PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT,
+}
+impl Builder<'_> for vk::PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT {
+    type Type = PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn multisampled_render_to_swapchain(mut self, multisampled_render_to_swapchain: bool) -> Self {
+        self.inner.multisampled_render_to_swapchain = if multisampled_render_to_swapchain {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
 pub struct PhysicalDevicePipelineProtectedAccessFeaturesBuilder {
     inner: vk::PhysicalDevicePipelineProtectedAccessFeatures,
 }
@@ -30547,6 +30786,7 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceRGBA10X6FormatsFeaturesEXTBui
 impl DeviceCreateInfoNext for vk::PhysicalDeviceRGBA10X6FormatsFeaturesEXT {}
 impl DeviceCreateInfoNext for PhysicalDeviceRGBA10X6FormatsFeaturesEXTBuilder {}
 impl FormatProperties2Next for vk::FormatProperties3 {}
+impl FormatProperties2Next for vk::FormatProperties4KHR {}
 impl FormatProperties2Next for vk::DrmFormatModifierPropertiesList2EXT {}
 impl AndroidHardwareBufferPropertiesANDROIDNext for vk::AndroidHardwareBufferFormatProperties2ANDROID {}
 

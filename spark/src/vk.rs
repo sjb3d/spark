@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.352
+//! Generated from vk.xml version 1.4.353
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -2723,6 +2723,17 @@ pub type FormatFeatureFlags2KHR = FormatFeatureFlags2;
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct FormatFeatureFlags4KHR(pub(crate) u64);
+impl FormatFeatureFlags4KHR {}
+impl_bitmask!(FormatFeatureFlags4KHR);
+impl fmt::Display for FormatFeatureFlags4KHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct RenderingFlags(pub(crate) u32);
 impl RenderingFlags {
     pub const CONTENTS_SECONDARY_COMMAND_BUFFERS: Self = Self(0x1);
@@ -3088,6 +3099,114 @@ pub type BufferUsageFlags2KHR = BufferUsageFlags2;
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ImageUsageFlags2KHR(pub(crate) u64);
+impl ImageUsageFlags2KHR {
+    pub const TRANSFER_SRC: Self = Self(0x1);
+    pub const TRANSFER_DST: Self = Self(0x2);
+    pub const SAMPLED: Self = Self(0x4);
+    pub const STORAGE: Self = Self(0x8);
+    pub const COLOR_ATTACHMENT: Self = Self(0x10);
+    pub const DEPTH_STENCIL_ATTACHMENT: Self = Self(0x20);
+    pub const TRANSIENT_ATTACHMENT: Self = Self(0x40);
+    pub const INPUT_ATTACHMENT: Self = Self(0x80);
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x100);
+    pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x200);
+    pub const INVOCATION_MASK_HUAWEI: Self = Self(0x40000);
+    pub const ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x80000);
+    pub const SAMPLE_WEIGHT_QCOM: Self = Self(0x100000);
+    pub const SAMPLE_BLOCK_MATCH_QCOM: Self = Self(0x200000);
+    pub const HOST_TRANSFER: Self = Self(0x400000);
+    pub const TENSOR_ALIASING_ARM: Self = Self(0x800000);
+    pub const TILE_MEMORY_QCOM: Self = Self(0x8000000);
+}
+impl_bitmask!(ImageUsageFlags2KHR);
+impl fmt::Display for ImageUsageFlags2KHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "TRANSFER_SRC"),
+                (0x2, "TRANSFER_DST"),
+                (0x4, "SAMPLED"),
+                (0x8, "STORAGE"),
+                (0x10, "COLOR_ATTACHMENT"),
+                (0x20, "DEPTH_STENCIL_ATTACHMENT"),
+                (0x40, "TRANSIENT_ATTACHMENT"),
+                (0x80, "INPUT_ATTACHMENT"),
+                (0x100, "FRAGMENT_SHADING_RATE_ATTACHMENT"),
+                (0x200, "FRAGMENT_DENSITY_MAP_EXT"),
+                (0x40000, "INVOCATION_MASK_HUAWEI"),
+                (0x80000, "ATTACHMENT_FEEDBACK_LOOP_EXT"),
+                (0x100000, "SAMPLE_WEIGHT_QCOM"),
+                (0x200000, "SAMPLE_BLOCK_MATCH_QCOM"),
+                (0x400000, "HOST_TRANSFER"),
+                (0x800000, "TENSOR_ALIASING_ARM"),
+                (0x8000000, "TILE_MEMORY_QCOM"),
+            ],
+            f,
+        )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ImageCreateFlags2KHR(pub(crate) u64);
+impl ImageCreateFlags2KHR {
+    pub const SPARSE_BINDING: Self = Self(0x1);
+    pub const SPARSE_RESIDENCY: Self = Self(0x2);
+    pub const SPARSE_ALIASED: Self = Self(0x4);
+    pub const MUTABLE_FORMAT: Self = Self(0x8);
+    pub const CUBE_COMPATIBLE: Self = Self(0x10);
+    pub const ALIAS_SINGLE_LAYER_DESCRIPTOR: Self = Self(0x400000);
+    pub const N2D_ARRAY_COMPATIBLE: Self = Self(0x20);
+    pub const SPLIT_INSTANCE_BIND_REGIONS: Self = Self(0x40);
+    pub const BLOCK_TEXEL_VIEW_COMPATIBLE: Self = Self(0x80);
+    pub const EXTENDED_USAGE: Self = Self(0x100);
+    pub const DISJOINT: Self = Self(0x200);
+    pub const ALIAS: Self = Self(0x400);
+    pub const PROTECTED: Self = Self(0x800);
+    pub const SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT: Self = Self(0x1000);
+    pub const CORNER_SAMPLED_NV: Self = Self(0x2000);
+    pub const SUBSAMPLED_EXT: Self = Self(0x4000);
+    pub const FRAGMENT_DENSITY_MAP_OFFSET_EXT: Self = Self(0x8000);
+    pub const DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT: Self = Self(0x10000);
+    pub const N2D_VIEW_COMPATIBLE_EXT: Self = Self(0x20000);
+    pub const MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXT: Self = Self(0x40000);
+}
+impl_bitmask!(ImageCreateFlags2KHR);
+impl fmt::Display for ImageCreateFlags2KHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "SPARSE_BINDING"),
+                (0x2, "SPARSE_RESIDENCY"),
+                (0x4, "SPARSE_ALIASED"),
+                (0x8, "MUTABLE_FORMAT"),
+                (0x10, "CUBE_COMPATIBLE"),
+                (0x400000, "ALIAS_SINGLE_LAYER_DESCRIPTOR"),
+                (0x20, "N2D_ARRAY_COMPATIBLE"),
+                (0x40, "SPLIT_INSTANCE_BIND_REGIONS"),
+                (0x80, "BLOCK_TEXEL_VIEW_COMPATIBLE"),
+                (0x100, "EXTENDED_USAGE"),
+                (0x200, "DISJOINT"),
+                (0x400, "ALIAS"),
+                (0x800, "PROTECTED"),
+                (0x1000, "SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT"),
+                (0x2000, "CORNER_SAMPLED_NV"),
+                (0x4000, "SUBSAMPLED_EXT"),
+                (0x8000, "FRAGMENT_DENSITY_MAP_OFFSET_EXT"),
+                (0x10000, "DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT"),
+                (0x20000, "N2D_VIEW_COMPATIBLE_EXT"),
+                (0x40000, "MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXT"),
+            ],
+            f,
+        )
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct AddressCopyFlagsKHR(pub(crate) u32);
 impl AddressCopyFlagsKHR {
     pub const DEVICE_LOCAL: Self = Self(0x1);
@@ -3413,6 +3532,7 @@ impl SwapchainCreateFlagsKHR {
     pub const PRESENT_ID_2: Self = Self(0x40);
     pub const PRESENT_WAIT_2: Self = Self(0x80);
     pub const DEFERRED_MEMORY_ALLOCATION: Self = Self(0x8);
+    pub const MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXT: Self = Self(0x100);
 }
 impl_bitmask!(SwapchainCreateFlagsKHR);
 impl fmt::Display for SwapchainCreateFlagsKHR {
@@ -3427,6 +3547,7 @@ impl fmt::Display for SwapchainCreateFlagsKHR {
                 (0x40, "PRESENT_ID_2"),
                 (0x80, "PRESENT_WAIT_2"),
                 (0x8, "DEFERRED_MEMORY_ALLOCATION"),
+                (0x100, "MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXT"),
             ],
             f,
         )
@@ -8662,6 +8783,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_KHR: Self = Self(1000286001);
     pub const SET_PRESENT_CONFIG_NV: Self = Self(1000613000);
     pub const PHYSICAL_DEVICE_PRESENT_METERING_FEATURES_NV: Self = Self(1000613001);
+    pub const PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SWAPCHAIN_FEATURES_EXT: Self = Self(1000616000);
+    pub const SWAPCHAIN_FLAGS_SURFACE_CAPABILITIES_EXT: Self = Self(1000616001);
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_EXT: Self = Self(1000425000);
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_EXT: Self = Self(1000425001);
     pub const RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT: Self = Self(1000425002);
@@ -8702,6 +8825,13 @@ impl StructureType {
     pub const QUEUE_FAMILY_OPTIMAL_IMAGE_TRANSFER_GRANULARITY_PROPERTIES_KHR: Self = Self(1000657001);
     pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT: Self = Self(1000662000);
     pub const UBM_SURFACE_CREATE_INFO_SEC: Self = Self(1000664000);
+    pub const FORMAT_PROPERTIES_4_KHR: Self = Self(1000668000);
+    pub const IMAGE_CREATE_FLAGS_2_CREATE_INFO_KHR: Self = Self(1000668001);
+    pub const IMAGE_USAGE_FLAGS_2_CREATE_INFO_KHR: Self = Self(1000668002);
+    pub const IMAGE_VIEW_USAGE_2_CREATE_INFO_KHR: Self = Self(1000668003);
+    pub const PHYSICAL_DEVICE_EXTENDED_FLAGS_FEATURES_KHR: Self = Self(1000668004);
+    pub const IMAGE_STENCIL_USAGE_2_CREATE_INFO_KHR: Self = Self(1000668005);
+    pub const SHARED_PRESENT_SURFACE_CAPABILITIES_2_KHR: Self = Self(1000668006);
     pub const PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE: Self = Self(1000673000);
     pub const PHYSICAL_DEVICE_THROTTLE_HINT_FEATURES_SEC: Self = Self(1000674000);
     pub const THROTTLE_HINT_SUBMIT_INFO_SEC: Self = Self(1000674001);
@@ -9778,6 +9908,8 @@ impl fmt::Display for StructureType {
             1000286001 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_KHR"),
             1000613000 => Some(&"SET_PRESENT_CONFIG_NV"),
             1000613001 => Some(&"PHYSICAL_DEVICE_PRESENT_METERING_FEATURES_NV"),
+            1000616000 => Some(&"PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SWAPCHAIN_FEATURES_EXT"),
+            1000616001 => Some(&"SWAPCHAIN_FLAGS_SURFACE_CAPABILITIES_EXT"),
             1000425000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_EXT"),
             1000425001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_EXT"),
             1000425002 => Some(&"RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT"),
@@ -9817,6 +9949,13 @@ impl fmt::Display for StructureType {
             1000657001 => Some(&"QUEUE_FAMILY_OPTIMAL_IMAGE_TRANSFER_GRANULARITY_PROPERTIES_KHR"),
             1000662000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT"),
             1000664000 => Some(&"UBM_SURFACE_CREATE_INFO_SEC"),
+            1000668000 => Some(&"FORMAT_PROPERTIES_4_KHR"),
+            1000668001 => Some(&"IMAGE_CREATE_FLAGS_2_CREATE_INFO_KHR"),
+            1000668002 => Some(&"IMAGE_USAGE_FLAGS_2_CREATE_INFO_KHR"),
+            1000668003 => Some(&"IMAGE_VIEW_USAGE_2_CREATE_INFO_KHR"),
+            1000668004 => Some(&"PHYSICAL_DEVICE_EXTENDED_FLAGS_FEATURES_KHR"),
+            1000668005 => Some(&"IMAGE_STENCIL_USAGE_2_CREATE_INFO_KHR"),
+            1000668006 => Some(&"SHARED_PRESENT_SURFACE_CAPABILITIES_2_KHR"),
             1000673000 => Some(&"PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE"),
             1000674000 => Some(&"PHYSICAL_DEVICE_THROTTLE_HINT_FEATURES_SEC"),
             1000674001 => Some(&"THROTTLE_HINT_SUBMIT_INFO_SEC"),
@@ -14680,6 +14819,62 @@ impl fmt::Debug for ImageCreateInfo {
             .field("queue_family_index_count", &self.queue_family_index_count)
             .field("p_queue_family_indices", &self.p_queue_family_indices)
             .field("initial_layout", &self.initial_layout)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageCreateFlags2CreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub flags: ImageCreateFlags2KHR,
+}
+unsafe impl Send for ImageCreateFlags2CreateInfoKHR {}
+unsafe impl Sync for ImageCreateFlags2CreateInfoKHR {}
+impl Default for ImageCreateFlags2CreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_CREATE_FLAGS_2_CREATE_INFO_KHR,
+            p_next: ptr::null_mut(),
+            flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageCreateFlags2CreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageCreateFlags2CreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageUsageFlags2CreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub usage: ImageUsageFlags2KHR,
+}
+unsafe impl Send for ImageUsageFlags2CreateInfoKHR {}
+unsafe impl Sync for ImageUsageFlags2CreateInfoKHR {}
+impl Default for ImageUsageFlags2CreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_USAGE_FLAGS_2_CREATE_INFO_KHR,
+            p_next: ptr::null_mut(),
+            usage: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageUsageFlags2CreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageUsageFlags2CreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("usage", &self.usage)
             .finish()
     }
 }
@@ -24020,6 +24215,65 @@ impl fmt::Debug for SharedPresentSurfaceCapabilitiesKHR {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct SwapchainFlagsSurfaceCapabilitiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub swapchain_supported_flags: SwapchainCreateFlagsKHR,
+}
+unsafe impl Send for SwapchainFlagsSurfaceCapabilitiesEXT {}
+unsafe impl Sync for SwapchainFlagsSurfaceCapabilitiesEXT {}
+impl Default for SwapchainFlagsSurfaceCapabilitiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SWAPCHAIN_FLAGS_SURFACE_CAPABILITIES_EXT,
+            p_next: ptr::null_mut(),
+            swapchain_supported_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainFlagsSurfaceCapabilitiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainFlagsSurfaceCapabilitiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("swapchain_supported_flags", &self.swapchain_supported_flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SharedPresentSurfaceCapabilities2KHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shared_present_supported_usage_flags: ImageUsageFlags2KHR,
+}
+unsafe impl Send for SharedPresentSurfaceCapabilities2KHR {}
+unsafe impl Sync for SharedPresentSurfaceCapabilities2KHR {}
+impl Default for SharedPresentSurfaceCapabilities2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SHARED_PRESENT_SURFACE_CAPABILITIES_2_KHR,
+            p_next: ptr::null_mut(),
+            shared_present_supported_usage_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SharedPresentSurfaceCapabilities2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SharedPresentSurfaceCapabilities2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "shared_present_supported_usage_flags",
+                &self.shared_present_supported_usage_flags,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDevice16BitStorageFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -24445,6 +24699,34 @@ impl Default for ImageViewUsageCreateInfo {
 impl fmt::Debug for ImageViewUsageCreateInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_struct("ImageViewUsageCreateInfo")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("usage", &self.usage)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageViewUsage2CreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub usage: ImageUsageFlags2KHR,
+}
+unsafe impl Send for ImageViewUsage2CreateInfoKHR {}
+unsafe impl Sync for ImageViewUsage2CreateInfoKHR {}
+impl Default for ImageViewUsage2CreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_VIEW_USAGE_2_CREATE_INFO_KHR,
+            p_next: ptr::null_mut(),
+            usage: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageViewUsage2CreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageViewUsage2CreateInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("usage", &self.usage)
@@ -31409,6 +31691,34 @@ pub type ImageStencilUsageCreateInfoEXT = ImageStencilUsageCreateInfo;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct ImageStencilUsage2CreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub stencil_usage: ImageUsageFlags2KHR,
+}
+unsafe impl Send for ImageStencilUsage2CreateInfoKHR {}
+unsafe impl Sync for ImageStencilUsage2CreateInfoKHR {}
+impl Default for ImageStencilUsage2CreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_STENCIL_USAGE_2_CREATE_INFO_KHR,
+            p_next: ptr::null_mut(),
+            stencil_usage: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageStencilUsage2CreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageStencilUsage2CreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stencil_usage", &self.stencil_usage)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct DeviceMemoryOverallocationCreateInfoAMD {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -37274,6 +37584,34 @@ impl fmt::Debug for PhysicalDeviceExtendedDynamicState3PropertiesEXT {
 }
 
 #[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceExtendedFlagsFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub extended_flags: Bool32,
+}
+unsafe impl Send for PhysicalDeviceExtendedFlagsFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceExtendedFlagsFeaturesKHR {}
+impl Default for PhysicalDeviceExtendedFlagsFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_EXTENDED_FLAGS_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            extended_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceExtendedFlagsFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceExtendedFlagsFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("extended_flags", &self.extended_flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub struct ColorBlendEquationEXT {
     pub src_color_blend_factor: BlendFactor,
@@ -41500,6 +41838,37 @@ impl fmt::Debug for MultisampledRenderToSingleSampledInfoEXT {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub multisampled_render_to_swapchain: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT {}
+impl Default for PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SWAPCHAIN_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            multisampled_render_to_swapchain: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "multisampled_render_to_swapchain",
+                &self.multisampled_render_to_swapchain,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDevicePipelineProtectedAccessFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -43694,6 +44063,40 @@ impl fmt::Debug for FormatProperties3 {
     }
 }
 pub type FormatProperties3KHR = FormatProperties3;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct FormatProperties4KHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub linear_tiling_features: FormatFeatureFlags4KHR,
+    pub optimal_tiling_features: FormatFeatureFlags4KHR,
+    pub buffer_features: FormatFeatureFlags4KHR,
+}
+unsafe impl Send for FormatProperties4KHR {}
+unsafe impl Sync for FormatProperties4KHR {}
+impl Default for FormatProperties4KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::FORMAT_PROPERTIES_4_KHR,
+            p_next: ptr::null_mut(),
+            linear_tiling_features: Default::default(),
+            optimal_tiling_features: Default::default(),
+            buffer_features: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for FormatProperties4KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("FormatProperties4KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("linear_tiling_features", &self.linear_tiling_features)
+            .field("optimal_tiling_features", &self.optimal_tiling_features)
+            .field("buffer_features", &self.buffer_features)
+            .finish()
+    }
+}
 
 #[repr(C)]
 #[derive(Copy, Clone)]

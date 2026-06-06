@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.352
+// Generated from vk.xml version 1.4.353
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -1122,6 +1122,10 @@ pub const FormatFeatureFlagBits2 = enum(u6) {
 };
 pub const FormatFeatureFlags2 = BitField(FormatFeatureFlagBits2);
 pub const FormatFeatureFlags2KHR = FormatFeatureFlags2;
+pub const FormatFeatureFlagBits4KHR = enum(u6) {
+    _,
+};
+pub const FormatFeatureFlags4KHR = BitField(FormatFeatureFlagBits4KHR);
 pub const RenderingFlagBits = enum(u5) {
     contents_secondary_command_buffers = 0,
     suspending = 1,
@@ -1260,6 +1264,51 @@ pub const BufferUsageFlagBits2 = enum(u6) {
 };
 pub const BufferUsageFlags2 = BitField(BufferUsageFlagBits2);
 pub const BufferUsageFlags2KHR = BufferUsageFlags2;
+pub const ImageUsageFlagBits2KHR = enum(u6) {
+    transfer_src = 0,
+    transfer_dst = 1,
+    sampled = 2,
+    storage = 3,
+    color_attachment = 4,
+    depth_stencil_attachment = 5,
+    transient_attachment = 6,
+    input_attachment = 7,
+    fragment_shading_rate_attachment = 8,
+    fragment_density_map_ext = 9,
+    invocation_mask_huawei = 18,
+    attachment_feedback_loop_ext = 19,
+    sample_weight_qcom = 20,
+    sample_block_match_qcom = 21,
+    host_transfer = 22,
+    tensor_aliasing_arm = 23,
+    tile_memory_qcom = 27,
+    _,
+};
+pub const ImageUsageFlags2KHR = BitField(ImageUsageFlagBits2KHR);
+pub const ImageCreateFlagBits2KHR = enum(u6) {
+    sparse_binding = 0,
+    sparse_residency = 1,
+    sparse_aliased = 2,
+    mutable_format = 3,
+    cube_compatible = 4,
+    alias_single_layer_descriptor = 22,
+    @"2d_array_compatible" = 5,
+    split_instance_bind_regions = 6,
+    block_texel_view_compatible = 7,
+    extended_usage = 8,
+    disjoint = 9,
+    alias = 10,
+    protected = 11,
+    sample_locations_compatible_depth_ext = 12,
+    corner_sampled_nv = 13,
+    subsampled_ext = 14,
+    fragment_density_map_offset_ext = 15,
+    descriptor_buffer_capture_replay_ext = 16,
+    @"2d_view_compatible_ext" = 17,
+    multisampled_render_to_single_sampled_ext = 18,
+    _,
+};
+pub const ImageCreateFlags2KHR = BitField(ImageCreateFlagBits2KHR);
 pub const AddressCopyFlagBitsKHR = enum(u5) {
     device_local = 0,
     sparse = 1,
@@ -1382,6 +1431,7 @@ pub const SwapchainCreateFlagBitsKHR = enum(u5) {
     present_id_2 = 6,
     present_wait_2 = 7,
     deferred_memory_allocation = 3,
+    multisampled_render_to_single_sampled_ext = 8,
     _,
 };
 pub const SwapchainCreateFlagsKHR = BitField(SwapchainCreateFlagBitsKHR);
@@ -3853,6 +3903,8 @@ pub const StructureType = enum(i32) {
     physical_device_robustness_2_properties_khr = 1000286001,
     set_present_config_nv = 1000613000,
     physical_device_present_metering_features_nv = 1000613001,
+    physical_device_multisampled_render_to_swapchain_features_ext = 1000616000,
+    swapchain_flags_surface_capabilities_ext = 1000616001,
     physical_device_fragment_density_map_offset_features_ext = 1000425000,
     physical_device_fragment_density_map_offset_properties_ext = 1000425001,
     render_pass_fragment_density_map_offset_end_info_ext = 1000425002,
@@ -3892,6 +3944,13 @@ pub const StructureType = enum(i32) {
     queue_family_optimal_image_transfer_granularity_properties_khr = 1000657001,
     physical_device_shader_subgroup_partitioned_features_ext = 1000662000,
     ubm_surface_create_info_sec = 1000664000,
+    format_properties_4_khr = 1000668000,
+    image_create_flags_2_create_info_khr = 1000668001,
+    image_usage_flags_2_create_info_khr = 1000668002,
+    image_view_usage_2_create_info_khr = 1000668003,
+    physical_device_extended_flags_features_khr = 1000668004,
+    image_stencil_usage_2_create_info_khr = 1000668005,
+    shared_present_surface_capabilities_2_khr = 1000668006,
     physical_device_shader_mixed_float_dot_product_features_valve = 1000673000,
     physical_device_throttle_hint_features_sec = 1000674000,
     throttle_hint_submit_info_sec = 1000674001,
@@ -5223,6 +5282,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceExtendedDynamicStateFeaturesEXT,
             *PhysicalDeviceExtendedDynamicState2FeaturesEXT,
             *PhysicalDeviceExtendedDynamicState3FeaturesEXT,
+            *PhysicalDeviceExtendedFlagsFeaturesKHR,
             *PhysicalDevicePartitionedAccelerationStructureFeaturesNV,
             *PhysicalDeviceDiagnosticsConfigFeaturesNV,
             *DeviceDiagnosticsConfigCreateInfoNV,
@@ -5259,6 +5319,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT,
             *PhysicalDeviceLegacyDitheringFeaturesEXT,
             *PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT,
+            *PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT,
             *PhysicalDevicePipelineProtectedAccessFeatures,
             *PhysicalDeviceInheritedViewportScissorFeaturesNV,
             *PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT,
@@ -5705,7 +5766,9 @@ pub const ImageCreateInfo = extern struct {
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
-            inline *DedicatedAllocationImageCreateInfoNV,
+            inline *ImageCreateFlags2CreateInfoKHR,
+            *ImageUsageFlags2CreateInfoKHR,
+            *DedicatedAllocationImageCreateInfoNV,
             *ExternalMemoryImageCreateInfoNV,
             *ExternalMemoryImageCreateInfo,
             *ImageSwapchainCreateInfoKHR,
@@ -5714,6 +5777,7 @@ pub const ImageCreateInfo = extern struct {
             *ImageDrmFormatModifierListCreateInfoEXT,
             *ImageDrmFormatModifierExplicitCreateInfoEXT,
             *ImageStencilUsageCreateInfo,
+            *ImageStencilUsage2CreateInfoKHR,
             *OpaqueCaptureDescriptorDataCreateInfoEXT,
             *BufferCollectionImageCreateInfoFUCHSIA,
             *ImageCompressionControlEXT,
@@ -5732,6 +5796,16 @@ pub const ImageCreateInfo = extern struct {
             else => @compileError("invalid extension struct type"),
         }
     }
+};
+pub const ImageCreateFlags2CreateInfoKHR = extern struct {
+    s_type: StructureType = .image_create_flags_2_create_info_khr,
+    p_next: ?*anyopaque = null,
+    flags: ImageCreateFlags2KHR = .none,
+};
+pub const ImageUsageFlags2CreateInfoKHR = extern struct {
+    s_type: StructureType = .image_usage_flags_2_create_info_khr,
+    p_next: ?*anyopaque = null,
+    usage: ImageUsageFlags2KHR = .none,
 };
 pub const SubresourceLayout = extern struct {
     offset: DeviceSize = 0,
@@ -5753,6 +5827,7 @@ pub const ImageViewCreateInfo = extern struct {
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
             inline *ImageViewUsageCreateInfo,
+            *ImageViewUsage2CreateInfoKHR,
             *ImageViewSlicedCreateInfoEXT,
             *SamplerYcbcrConversionInfo,
             *ImageViewASTCDecodeModeEXT,
@@ -7117,7 +7192,8 @@ pub const SwapchainCreateInfoKHR = extern struct {
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
-            inline *SwapchainCounterCreateInfoEXT,
+            inline *ImageUsageFlags2CreateInfoKHR,
+            *SwapchainCounterCreateInfoEXT,
             *DeviceGroupSwapchainCreateInfoKHR,
             *SwapchainDisplayNativeHdrCreateInfoAMD,
             *ImageFormatListCreateInfo,
@@ -7695,6 +7771,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceExtendedDynamicStateFeaturesEXT,
             *PhysicalDeviceExtendedDynamicState2FeaturesEXT,
             *PhysicalDeviceExtendedDynamicState3FeaturesEXT,
+            *PhysicalDeviceExtendedFlagsFeaturesKHR,
             *PhysicalDevicePartitionedAccelerationStructureFeaturesNV,
             *PhysicalDeviceDiagnosticsConfigFeaturesNV,
             *PhysicalDeviceZeroInitializeWorkgroupMemoryFeatures,
@@ -7730,6 +7807,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT,
             *PhysicalDeviceLegacyDitheringFeaturesEXT,
             *PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT,
+            *PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT,
             *PhysicalDevicePipelineProtectedAccessFeatures,
             *PhysicalDeviceInheritedViewportScissorFeaturesNV,
             *PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT,
@@ -8014,6 +8092,7 @@ pub const FormatProperties2 = extern struct {
             inline *DrmFormatModifierPropertiesListEXT,
             *SubpassResolvePerformanceQueryEXT,
             *FormatProperties3,
+            *FormatProperties4KHR,
             *DrmFormatModifierPropertiesList2EXT,
             *TensorFormatPropertiesARM,
             => {
@@ -8061,10 +8140,13 @@ pub const PhysicalDeviceImageFormatInfo2 = extern struct {
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
-            inline *PhysicalDeviceExternalImageFormatInfo,
+            inline *ImageCreateFlags2CreateInfoKHR,
+            *ImageUsageFlags2CreateInfoKHR,
+            *PhysicalDeviceExternalImageFormatInfo,
             *ImageFormatListCreateInfo,
             *PhysicalDeviceImageDrmFormatModifierInfoEXT,
             *ImageStencilUsageCreateInfo,
+            *ImageStencilUsage2CreateInfoKHR,
             *PhysicalDeviceImageViewImageFormatInfoEXT,
             *ImageCompressionControlEXT,
             *OpticalFlowImageFormatInfoNV,
@@ -8130,6 +8212,17 @@ pub const PhysicalDeviceSparseImageFormatInfo2 = extern struct {
     samples: SampleCountFlags = .none,
     usage: ImageUsageFlags = .none,
     tiling: ImageTiling = @enumFromInt(0),
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *ImageUsageFlags2CreateInfoKHR,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const PhysicalDeviceSparseImageFormatInfo2KHR = PhysicalDeviceSparseImageFormatInfo2;
 pub const PhysicalDevicePushDescriptorProperties = extern struct {
@@ -8992,9 +9085,12 @@ pub const SurfaceCapabilities2KHR = extern struct {
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
-            inline *PresentTimingSurfaceCapabilitiesEXT,
+            inline *ImageUsageFlags2CreateInfoKHR,
+            *PresentTimingSurfaceCapabilitiesEXT,
             *DisplayNativeHdrSurfaceCapabilitiesAMD,
             *SharedPresentSurfaceCapabilitiesKHR,
+            *SwapchainFlagsSurfaceCapabilitiesEXT,
+            *SharedPresentSurfaceCapabilities2KHR,
             *SurfaceProtectedCapabilitiesKHR,
             *SurfaceCapabilitiesFullScreenExclusiveEXT,
             *SurfaceCapabilitiesPresentBarrierNV,
@@ -9073,6 +9169,16 @@ pub const SharedPresentSurfaceCapabilitiesKHR = extern struct {
     s_type: StructureType = .shared_present_surface_capabilities_khr,
     p_next: ?*anyopaque = null,
     shared_present_supported_usage_flags: ImageUsageFlags = .none,
+};
+pub const SwapchainFlagsSurfaceCapabilitiesEXT = extern struct {
+    s_type: StructureType = .swapchain_flags_surface_capabilities_ext,
+    p_next: ?*anyopaque = null,
+    swapchain_supported_flags: SwapchainCreateFlagsKHR = .none,
+};
+pub const SharedPresentSurfaceCapabilities2KHR = extern struct {
+    s_type: StructureType = .shared_present_surface_capabilities_2_khr,
+    p_next: ?*anyopaque = null,
+    shared_present_supported_usage_flags: ImageUsageFlags2KHR = .none,
 };
 pub const PhysicalDevice16BitStorageFeatures = extern struct {
     s_type: StructureType = .physical_device_16bit_storage_features,
@@ -9187,6 +9293,11 @@ pub const ImageViewUsageCreateInfo = extern struct {
     s_type: StructureType = .image_view_usage_create_info,
     p_next: ?*const anyopaque = null,
     usage: ImageUsageFlags = .none,
+};
+pub const ImageViewUsage2CreateInfoKHR = extern struct {
+    s_type: StructureType = .image_view_usage_2_create_info_khr,
+    p_next: ?*anyopaque = null,
+    usage: ImageUsageFlags2KHR = .none,
 };
 pub const ImageViewSlicedCreateInfoEXT = extern struct {
     s_type: StructureType = .image_view_sliced_create_info_ext,
@@ -10840,6 +10951,11 @@ pub const ImageStencilUsageCreateInfo = extern struct {
     stencil_usage: ImageUsageFlags = .none,
 };
 pub const ImageStencilUsageCreateInfoEXT = ImageStencilUsageCreateInfo;
+pub const ImageStencilUsage2CreateInfoKHR = extern struct {
+    s_type: StructureType = .image_stencil_usage_2_create_info_khr,
+    p_next: ?*anyopaque = null,
+    stencil_usage: ImageUsageFlags2KHR = .none,
+};
 pub const DeviceMemoryOverallocationCreateInfoAMD = extern struct {
     s_type: StructureType = .device_memory_overallocation_create_info_amd,
     p_next: ?*const anyopaque = null,
@@ -11013,6 +11129,18 @@ pub const FramebufferAttachmentImageInfo = extern struct {
     layer_count: u32 = 0,
     view_format_count: u32 = 0,
     p_view_formats: ?[*]const Format = null,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *ImageCreateFlags2CreateInfoKHR,
+            *ImageUsageFlags2CreateInfoKHR,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const FramebufferAttachmentImageInfoKHR = FramebufferAttachmentImageInfo;
 pub const RenderPassAttachmentBeginInfo = extern struct {
@@ -12097,6 +12225,11 @@ pub const PhysicalDeviceExtendedDynamicState3PropertiesEXT = extern struct {
     p_next: ?*anyopaque = null,
     dynamic_primitive_topology_unrestricted: Bool32 = .false,
 };
+pub const PhysicalDeviceExtendedFlagsFeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_extended_flags_features_khr,
+    p_next: ?*anyopaque = null,
+    extended_flags: Bool32 = .false,
+};
 pub const ColorBlendEquationEXT = extern struct {
     src_color_blend_factor: BlendFactor = @enumFromInt(0),
     dst_color_blend_factor: BlendFactor = @enumFromInt(0),
@@ -13179,6 +13312,11 @@ pub const MultisampledRenderToSingleSampledInfoEXT = extern struct {
     multisampled_render_to_single_sampled_enable: Bool32 = .false,
     rasterization_samples: SampleCountFlags = .none,
 };
+pub const PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_multisampled_render_to_swapchain_features_ext,
+    p_next: ?*anyopaque = null,
+    multisampled_render_to_swapchain: Bool32 = .false,
+};
 pub const PhysicalDevicePipelineProtectedAccessFeatures = extern struct {
     s_type: StructureType = .physical_device_pipeline_protected_access_features,
     p_next: ?*anyopaque = null,
@@ -13674,6 +13812,13 @@ pub const FormatProperties3 = extern struct {
     buffer_features: FormatFeatureFlags2 = .none,
 };
 pub const FormatProperties3KHR = FormatProperties3;
+pub const FormatProperties4KHR = extern struct {
+    s_type: StructureType = .format_properties_4_khr,
+    p_next: ?*anyopaque = null,
+    linear_tiling_features: FormatFeatureFlags4KHR = .none,
+    optimal_tiling_features: FormatFeatureFlags4KHR = .none,
+    buffer_features: FormatFeatureFlags4KHR = .none,
+};
 pub const DrmFormatModifierPropertiesList2EXT = extern struct {
     s_type: StructureType = .drm_format_modifier_properties_list_2_ext,
     p_next: ?*anyopaque = null,
@@ -17997,6 +18142,7 @@ const ExtensionNames = struct {
     const valve_fragment_density_map_layered = "VK_VALVE_fragment_density_map_layered";
     const khr_robustness2 = "VK_KHR_robustness2";
     const nv_present_metering = "VK_NV_present_metering";
+    const ext_multisampled_render_to_swapchain = "VK_EXT_multisampled_render_to_swapchain";
     const ext_fragment_density_map_offset = "VK_EXT_fragment_density_map_offset";
     const ext_zero_initialize_device_memory = "VK_EXT_zero_initialize_device_memory";
     const khr_present_mode_fifo_latest_ready = "VK_KHR_present_mode_fifo_latest_ready";
@@ -18013,6 +18159,7 @@ const ExtensionNames = struct {
     const khr_maintenance11 = "VK_KHR_maintenance11";
     const ext_shader_subgroup_partitioned = "VK_EXT_shader_subgroup_partitioned";
     const sec_ubm_surface = "VK_SEC_ubm_surface";
+    const khr_extended_flags = "VK_KHR_extended_flags";
     const valve_shader_mixed_float_dot_product = "VK_VALVE_shader_mixed_float_dot_product";
     const sec_throttle_hint = "VK_SEC_throttle_hint";
     const arm_data_graph_neural_accelerator_statistics = "VK_ARM_data_graph_neural_accelerator_statistics";
@@ -18842,12 +18989,15 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn supports_ext_descriptor_heap(self: InstanceExtensions) bool {
-        return self.supports_khr_maintenance5() and (self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address());
+        return self.core_version.to_int() >= make_version(1, 4, 0).to_int() or ((self.supports_khr_extended_flags() or self.supports_khr_maintenance5()) and (self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address()));
     }
     pub fn enable_ext_descriptor_heap(self: *InstanceExtensions) void {
-        self.enable_khr_maintenance5();
-        if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
-            self.enable_khr_buffer_device_address();
+        if (self.core_version.to_int() < make_version(1, 4, 0).to_int()) {
+            // ambiguous dependency, caller must enable one explicitly
+            assert(self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
+            if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
+                self.enable_khr_buffer_device_address();
+            }
         }
     }
 
@@ -20584,12 +20734,13 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn supports_amdx_dense_geometry_format(self: InstanceExtensions) bool {
-        return self.supports_khr_acceleration_structure() and (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_maintenance5());
+        return self.supports_khr_acceleration_structure() and (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
     }
     pub fn enable_amdx_dense_geometry_format(self: *InstanceExtensions) void {
         self.enable_khr_acceleration_structure();
         if (self.core_version.to_int() < make_version(1, 4, 0).to_int()) {
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            assert(self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
         }
     }
 
@@ -20632,11 +20783,12 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn supports_khr_pipeline_binary(self: InstanceExtensions) bool {
-        return self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_maintenance5();
+        return self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_extended_flags() or self.supports_khr_maintenance5();
     }
     pub fn enable_khr_pipeline_binary(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 4, 0).to_int()) {
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            assert(self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
         }
     }
 
@@ -20784,12 +20936,13 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn supports_arm_data_graph(self: InstanceExtensions) bool {
-        return self.core_version.to_int() >= make_version(1, 3, 0).to_int() and self.supports_khr_maintenance5();
+        return self.core_version.to_int() >= make_version(1, 3, 0).to_int() and (self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
     }
     pub fn enable_arm_data_graph(self: *InstanceExtensions) void {
         // depends on minimum core version, caller must specify
         assert(self.core_version.to_int() >= make_version(1, 3, 0).to_int());
-        self.enable_khr_maintenance5();
+        // ambiguous dependency, caller must enable one explicitly
+        assert(self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
     }
 
     pub fn supports_arm_data_graph_instruction_set_tosa(self: InstanceExtensions) bool {
@@ -21040,14 +21193,15 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn supports_ext_device_generated_commands(self: InstanceExtensions) bool {
-        return self.core_version.to_int() >= make_version(1, 3, 0).to_int() or ((self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address()) and self.supports_khr_maintenance5());
+        return self.core_version.to_int() >= make_version(1, 3, 0).to_int() or ((self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address()) and (self.supports_khr_extended_flags() or self.supports_khr_maintenance5()));
     }
     pub fn enable_ext_device_generated_commands(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 3, 0).to_int()) {
             if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
                 self.enable_khr_buffer_device_address();
             }
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            assert(self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
         }
     }
 
@@ -21191,11 +21345,12 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn supports_valve_fragment_density_map_layered(self: InstanceExtensions) bool {
-        return (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_maintenance5()) and self.supports_ext_fragment_density_map();
+        return (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_extended_flags() or self.supports_khr_maintenance5()) and self.supports_ext_fragment_density_map();
     }
     pub fn enable_valve_fragment_density_map_layered(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 4, 0).to_int()) {
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            assert(self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
         }
         self.enable_ext_fragment_density_map();
     }
@@ -21216,6 +21371,14 @@ pub const InstanceExtensions = packed struct {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+
+    pub fn supports_ext_multisampled_render_to_swapchain(self: InstanceExtensions) bool {
+        return self.supports_khr_swapchain() and self.supports_ext_multisampled_render_to_single_sampled();
+    }
+    pub fn enable_ext_multisampled_render_to_swapchain(self: *InstanceExtensions) void {
+        self.enable_khr_swapchain();
+        self.enable_ext_multisampled_render_to_single_sampled();
     }
 
     pub fn supports_ext_fragment_density_map_offset(self: InstanceExtensions) bool {
@@ -21350,6 +21513,15 @@ pub const InstanceExtensions = packed struct {
     pub fn enable_sec_ubm_surface(self: *InstanceExtensions) void {
         self.sec_ubm_surface = true;
         self.enable_khr_surface();
+    }
+
+    pub fn supports_khr_extended_flags(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_khr_extended_flags(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
 
     pub fn supports_valve_shader_mixed_float_dot_product(self: InstanceExtensions) bool {
@@ -21768,6 +21940,7 @@ pub const DeviceExtensions = packed struct {
     valve_fragment_density_map_layered: bool = false,
     khr_robustness2: bool = false,
     nv_present_metering: bool = false,
+    ext_multisampled_render_to_swapchain: bool = false,
     ext_fragment_density_map_offset: bool = false,
     ext_zero_initialize_device_memory: bool = false,
     khr_present_mode_fifo_latest_ready: bool = false,
@@ -21783,6 +21956,7 @@ pub const DeviceExtensions = packed struct {
     nv_compute_occupancy_priority: bool = false,
     khr_maintenance11: bool = false,
     ext_shader_subgroup_partitioned: bool = false,
+    khr_extended_flags: bool = false,
     valve_shader_mixed_float_dot_product: bool = false,
     sec_throttle_hint: bool = false,
     arm_data_graph_neural_accelerator_statistics: bool = false,
@@ -22561,6 +22735,8 @@ pub const DeviceExtensions = packed struct {
             self.khr_robustness2 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_present_metering) == .eq) {
             self.nv_present_metering = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_multisampled_render_to_swapchain) == .eq) {
+            self.ext_multisampled_render_to_swapchain = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_fragment_density_map_offset) == .eq) {
             self.ext_fragment_density_map_offset = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_zero_initialize_device_memory) == .eq) {
@@ -22591,6 +22767,8 @@ pub const DeviceExtensions = packed struct {
             self.khr_maintenance11 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_subgroup_partitioned) == .eq) {
             self.ext_shader_subgroup_partitioned = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_extended_flags) == .eq) {
+            self.khr_extended_flags = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.valve_shader_mixed_float_dot_product) == .eq) {
             self.valve_shader_mixed_float_dot_product = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.sec_throttle_hint) == .eq) {
@@ -23001,6 +23179,7 @@ pub const DeviceExtensions = packed struct {
         if (self.valve_fragment_density_map_layered) try names.append(allocator, ExtensionNames.valve_fragment_density_map_layered);
         if (self.khr_robustness2) try names.append(allocator, ExtensionNames.khr_robustness2);
         if (self.nv_present_metering) try names.append(allocator, ExtensionNames.nv_present_metering);
+        if (self.ext_multisampled_render_to_swapchain) try names.append(allocator, ExtensionNames.ext_multisampled_render_to_swapchain);
         if (self.ext_fragment_density_map_offset) try names.append(allocator, ExtensionNames.ext_fragment_density_map_offset);
         if (self.ext_zero_initialize_device_memory) try names.append(allocator, ExtensionNames.ext_zero_initialize_device_memory);
         if (self.khr_present_mode_fifo_latest_ready) try names.append(allocator, ExtensionNames.khr_present_mode_fifo_latest_ready);
@@ -23016,6 +23195,7 @@ pub const DeviceExtensions = packed struct {
         if (self.nv_compute_occupancy_priority) try names.append(allocator, ExtensionNames.nv_compute_occupancy_priority);
         if (self.khr_maintenance11) try names.append(allocator, ExtensionNames.khr_maintenance11);
         if (self.ext_shader_subgroup_partitioned) try names.append(allocator, ExtensionNames.ext_shader_subgroup_partitioned);
+        if (self.khr_extended_flags) try names.append(allocator, ExtensionNames.khr_extended_flags);
         if (self.valve_shader_mixed_float_dot_product) try names.append(allocator, ExtensionNames.valve_shader_mixed_float_dot_product);
         if (self.sec_throttle_hint) try names.append(allocator, ExtensionNames.sec_throttle_hint);
         if (self.arm_data_graph_neural_accelerator_statistics) try names.append(allocator, ExtensionNames.arm_data_graph_neural_accelerator_statistics);
@@ -23701,13 +23881,16 @@ pub const DeviceExtensions = packed struct {
     }
 
     pub fn supports_ext_descriptor_heap(self: DeviceExtensions) bool {
-        return self.ext_descriptor_heap and self.supports_khr_maintenance5() and (self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address());
+        return self.ext_descriptor_heap and (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or ((self.supports_khr_extended_flags() or self.supports_khr_maintenance5()) and (self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address())));
     }
     pub fn enable_ext_descriptor_heap(self: *DeviceExtensions) void {
         self.ext_descriptor_heap = true;
-        self.enable_khr_maintenance5();
-        if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
-            self.enable_khr_buffer_device_address();
+        if (self.core_version.to_int() < make_version(1, 4, 0).to_int()) {
+            // ambiguous dependency, caller must enable one explicitly
+            assert(self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
+            if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
+                self.enable_khr_buffer_device_address();
+            }
         }
     }
 
@@ -25638,13 +25821,14 @@ pub const DeviceExtensions = packed struct {
     }
 
     pub fn supports_amdx_dense_geometry_format(self: DeviceExtensions) bool {
-        return self.amdx_dense_geometry_format and self.supports_khr_acceleration_structure() and (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_maintenance5());
+        return self.amdx_dense_geometry_format and self.supports_khr_acceleration_structure() and (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
     }
     pub fn enable_amdx_dense_geometry_format(self: *DeviceExtensions) void {
         self.amdx_dense_geometry_format = true;
         self.enable_khr_acceleration_structure();
         if (self.core_version.to_int() < make_version(1, 4, 0).to_int()) {
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            assert(self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
         }
     }
 
@@ -25684,12 +25868,13 @@ pub const DeviceExtensions = packed struct {
     }
 
     pub fn supports_khr_pipeline_binary(self: DeviceExtensions) bool {
-        return self.khr_pipeline_binary and (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_maintenance5());
+        return self.khr_pipeline_binary and (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
     }
     pub fn enable_khr_pipeline_binary(self: *DeviceExtensions) void {
         self.khr_pipeline_binary = true;
         if (self.core_version.to_int() < make_version(1, 4, 0).to_int()) {
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            assert(self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
         }
     }
 
@@ -25817,13 +26002,14 @@ pub const DeviceExtensions = packed struct {
     }
 
     pub fn supports_arm_data_graph(self: DeviceExtensions) bool {
-        return self.arm_data_graph and self.core_version.to_int() >= make_version(1, 3, 0).to_int() and self.supports_khr_maintenance5() and self.supports_khr_deferred_host_operations();
+        return self.arm_data_graph and self.core_version.to_int() >= make_version(1, 3, 0).to_int() and (self.supports_khr_extended_flags() or self.supports_khr_maintenance5()) and self.supports_khr_deferred_host_operations();
     }
     pub fn enable_arm_data_graph(self: *DeviceExtensions) void {
         self.arm_data_graph = true;
         // depends on minimum core version, caller must specify
         assert(self.core_version.to_int() >= make_version(1, 3, 0).to_int());
-        self.enable_khr_maintenance5();
+        // ambiguous dependency, caller must enable one explicitly
+        assert(self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
         self.enable_khr_deferred_host_operations();
     }
 
@@ -26109,7 +26295,7 @@ pub const DeviceExtensions = packed struct {
     }
 
     pub fn supports_ext_device_generated_commands(self: DeviceExtensions) bool {
-        return self.ext_device_generated_commands and (self.core_version.to_int() >= make_version(1, 3, 0).to_int() or ((self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address()) and self.supports_khr_maintenance5()));
+        return self.ext_device_generated_commands and (self.core_version.to_int() >= make_version(1, 3, 0).to_int() or ((self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address()) and (self.supports_khr_extended_flags() or self.supports_khr_maintenance5())));
     }
     pub fn enable_ext_device_generated_commands(self: *DeviceExtensions) void {
         self.ext_device_generated_commands = true;
@@ -26117,7 +26303,8 @@ pub const DeviceExtensions = packed struct {
             if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
                 self.enable_khr_buffer_device_address();
             }
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            assert(self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
         }
     }
 
@@ -26251,12 +26438,13 @@ pub const DeviceExtensions = packed struct {
     }
 
     pub fn supports_valve_fragment_density_map_layered(self: DeviceExtensions) bool {
-        return self.valve_fragment_density_map_layered and (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_maintenance5()) and self.supports_ext_fragment_density_map();
+        return self.valve_fragment_density_map_layered and (self.core_version.to_int() >= make_version(1, 4, 0).to_int() or self.supports_khr_extended_flags() or self.supports_khr_maintenance5()) and self.supports_ext_fragment_density_map();
     }
     pub fn enable_valve_fragment_density_map_layered(self: *DeviceExtensions) void {
         self.valve_fragment_density_map_layered = true;
         if (self.core_version.to_int() < make_version(1, 4, 0).to_int()) {
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            assert(self.supports_khr_extended_flags() or self.supports_khr_maintenance5());
         }
         self.enable_ext_fragment_density_map();
     }
@@ -26273,6 +26461,15 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_nv_present_metering(self: *DeviceExtensions) void {
         self.nv_present_metering = true;
+    }
+
+    pub fn supports_ext_multisampled_render_to_swapchain(self: DeviceExtensions) bool {
+        return self.ext_multisampled_render_to_swapchain and self.supports_khr_swapchain() and self.supports_ext_multisampled_render_to_single_sampled();
+    }
+    pub fn enable_ext_multisampled_render_to_swapchain(self: *DeviceExtensions) void {
+        self.ext_multisampled_render_to_swapchain = true;
+        self.enable_khr_swapchain();
+        self.enable_ext_multisampled_render_to_single_sampled();
     }
 
     pub fn supports_ext_fragment_density_map_offset(self: DeviceExtensions) bool {
@@ -26392,6 +26589,13 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_ext_shader_subgroup_partitioned(self: *DeviceExtensions) void {
         self.ext_shader_subgroup_partitioned = true;
+    }
+
+    pub fn supports_khr_extended_flags(self: DeviceExtensions) bool {
+        return self.khr_extended_flags;
+    }
+    pub fn enable_khr_extended_flags(self: *DeviceExtensions) void {
+        self.khr_extended_flags = true;
     }
 
     pub fn supports_valve_shader_mixed_float_dot_product(self: DeviceExtensions) bool {
@@ -29680,8 +29884,8 @@ pub const DeviceCommands = struct {
             .fp_cmd_set_sample_locations_enable_ext = if ((extensions.ext_extended_dynamic_state3 and extensions.ext_sample_locations) or (extensions.ext_shader_object and extensions.ext_sample_locations)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetSampleLocationsEnableEXT")) else null,
             .fp_cmd_set_color_blend_advanced_ext = if ((extensions.ext_extended_dynamic_state3 and extensions.ext_blend_operation_advanced) or (extensions.ext_shader_object and extensions.ext_blend_operation_advanced)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetColorBlendAdvancedEXT")) else null,
             .fp_cmd_set_provoking_vertex_mode_ext = if ((extensions.ext_extended_dynamic_state3 and extensions.ext_provoking_vertex) or (extensions.ext_shader_object and extensions.ext_provoking_vertex)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetProvokingVertexModeEXT")) else null,
-            .fp_cmd_set_line_rasterization_mode_ext = if ((extensions.ext_extended_dynamic_state3 and extensions.ext_line_rasterization) or (extensions.ext_shader_object and extensions.ext_line_rasterization)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetLineRasterizationModeEXT")) else null,
-            .fp_cmd_set_line_stipple_enable_ext = if ((extensions.ext_extended_dynamic_state3 and extensions.ext_line_rasterization) or (extensions.ext_shader_object and extensions.ext_line_rasterization)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetLineStippleEnableEXT")) else null,
+            .fp_cmd_set_line_rasterization_mode_ext = if ((extensions.ext_extended_dynamic_state3 and (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int() or extensions.khr_line_rasterization or extensions.ext_line_rasterization)) or (extensions.ext_shader_object and (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int() or extensions.khr_line_rasterization or extensions.ext_line_rasterization))) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetLineRasterizationModeEXT")) else null,
+            .fp_cmd_set_line_stipple_enable_ext = if ((extensions.ext_extended_dynamic_state3 and (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int() or extensions.khr_line_rasterization or extensions.ext_line_rasterization)) or (extensions.ext_shader_object and (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int() or extensions.khr_line_rasterization or extensions.ext_line_rasterization))) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetLineStippleEnableEXT")) else null,
             .fp_cmd_set_depth_clip_negative_one_to_one_ext = if ((extensions.ext_extended_dynamic_state3 and extensions.ext_depth_clip_control) or (extensions.ext_shader_object and extensions.ext_depth_clip_control)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetDepthClipNegativeOneToOneEXT")) else null,
             .fp_cmd_set_viewport_w_scaling_enable_nv = if ((extensions.ext_extended_dynamic_state3 and extensions.nv_clip_space_w_scaling) or (extensions.ext_shader_object and extensions.nv_clip_space_w_scaling)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetViewportWScalingEnableNV")) else null,
             .fp_cmd_set_viewport_swizzle_nv = if ((extensions.ext_extended_dynamic_state3 and extensions.nv_viewport_swizzle) or (extensions.ext_shader_object and extensions.nv_viewport_swizzle)) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetViewportSwizzleNV")) else null,

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.352
+//! Generated from vk.xml version 1.4.353
 
 #![allow(
     clippy::too_many_arguments,
@@ -1006,13 +1006,18 @@ impl InstanceExtensions {
         self.enable_khr_maintenance5();
     }
     pub fn supports_ext_descriptor_heap(&self) -> bool {
-        self.supports_khr_maintenance5()
-            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_buffer_device_address())
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+            || ((self.supports_khr_extended_flags() || self.supports_khr_maintenance5())
+                && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+                    || self.supports_khr_buffer_device_address()))
     }
     pub fn enable_ext_descriptor_heap(&mut self) {
-        self.enable_khr_maintenance5();
-        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
-            self.enable_khr_buffer_device_address();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            // ambiguous dependency, caller must enable one explicitly
+            debug_assert!(self.supports_khr_extended_flags() || self.supports_khr_maintenance5());
+            if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+                self.enable_khr_buffer_device_address();
+            }
         }
     }
     pub fn supports_ext_inline_uniform_block(&self) -> bool {
@@ -2644,12 +2649,15 @@ impl InstanceExtensions {
     }
     pub fn supports_amdx_dense_geometry_format(&self) -> bool {
         self.supports_khr_acceleration_structure()
-            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5())
+            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+                || self.supports_khr_extended_flags()
+                || self.supports_khr_maintenance5())
     }
     pub fn enable_amdx_dense_geometry_format(&mut self) {
         self.enable_khr_acceleration_structure();
         if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            debug_assert!(self.supports_khr_extended_flags() || self.supports_khr_maintenance5());
         }
     }
     pub fn supports_khr_present_id2(&self) -> bool {
@@ -2693,11 +2701,14 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_khr_pipeline_binary(&self) -> bool {
-        self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5()
+        self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+            || self.supports_khr_extended_flags()
+            || self.supports_khr_maintenance5()
     }
     pub fn enable_khr_pipeline_binary(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            debug_assert!(self.supports_khr_extended_flags() || self.supports_khr_maintenance5());
         }
     }
     pub fn supports_qcom_tile_properties(&self) -> bool {
@@ -2835,12 +2846,14 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_arm_data_graph(&self) -> bool {
-        self.core_version >= vk::Version::from_raw_parts(1, 3, 0) && self.supports_khr_maintenance5()
+        self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+            && (self.supports_khr_extended_flags() || self.supports_khr_maintenance5())
     }
     pub fn enable_arm_data_graph(&mut self) {
         // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 3, 0));
-        self.enable_khr_maintenance5();
+        // ambiguous dependency, caller must enable one explicitly
+        debug_assert!(self.supports_khr_extended_flags() || self.supports_khr_maintenance5());
     }
     pub fn supports_arm_data_graph_instruction_set_tosa(&self) -> bool {
         self.supports_arm_data_graph()
@@ -3069,14 +3082,15 @@ impl InstanceExtensions {
         self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
             || ((self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
                 || self.supports_khr_buffer_device_address())
-                && self.supports_khr_maintenance5())
+                && (self.supports_khr_extended_flags() || self.supports_khr_maintenance5()))
     }
     pub fn enable_ext_device_generated_commands(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
                 self.enable_khr_buffer_device_address();
             }
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            debug_assert!(self.supports_khr_extended_flags() || self.supports_khr_maintenance5());
         }
     }
     pub fn supports_khr_device_fault(&self) -> bool {
@@ -3206,12 +3220,15 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_valve_fragment_density_map_layered(&self) -> bool {
-        (self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5())
+        (self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+            || self.supports_khr_extended_flags()
+            || self.supports_khr_maintenance5())
             && self.supports_ext_fragment_density_map()
     }
     pub fn enable_valve_fragment_density_map_layered(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            debug_assert!(self.supports_khr_extended_flags() || self.supports_khr_maintenance5());
         }
         self.enable_ext_fragment_density_map();
     }
@@ -3230,6 +3247,13 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }
+    }
+    pub fn supports_ext_multisampled_render_to_swapchain(&self) -> bool {
+        self.supports_khr_swapchain() && self.supports_ext_multisampled_render_to_single_sampled()
+    }
+    pub fn enable_ext_multisampled_render_to_swapchain(&mut self) {
+        self.enable_khr_swapchain();
+        self.enable_ext_multisampled_render_to_single_sampled();
     }
     pub fn supports_ext_fragment_density_map_offset(&self) -> bool {
         (self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -3353,6 +3377,14 @@ impl InstanceExtensions {
     pub fn enable_sec_ubm_surface(&mut self) {
         self.sec_ubm_surface = true;
         self.enable_khr_surface();
+    }
+    pub fn supports_khr_extended_flags(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_extended_flags(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_valve_shader_mixed_float_dot_product(&self) -> bool {
         (self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -6183,6 +6215,7 @@ pub struct DeviceExtensions {
     pub valve_fragment_density_map_layered: bool,
     pub khr_robustness2: bool,
     pub nv_present_metering: bool,
+    pub ext_multisampled_render_to_swapchain: bool,
     pub ext_fragment_density_map_offset: bool,
     pub ext_zero_initialize_device_memory: bool,
     pub khr_present_mode_fifo_latest_ready: bool,
@@ -6198,6 +6231,7 @@ pub struct DeviceExtensions {
     pub nv_compute_occupancy_priority: bool,
     pub khr_maintenance11: bool,
     pub ext_shader_subgroup_partitioned: bool,
+    pub khr_extended_flags: bool,
     pub valve_shader_mixed_float_dot_product: bool,
     pub sec_throttle_hint: bool,
     pub arm_data_graph_neural_accelerator_statistics: bool,
@@ -6976,6 +7010,8 @@ impl DeviceExtensions {
             self.khr_robustness2 = true;
         } else if name == c"VK_NV_present_metering" {
             self.nv_present_metering = true;
+        } else if name == c"VK_EXT_multisampled_render_to_swapchain" {
+            self.ext_multisampled_render_to_swapchain = true;
         } else if name == c"VK_EXT_fragment_density_map_offset" {
             self.ext_fragment_density_map_offset = true;
         } else if name == c"VK_EXT_zero_initialize_device_memory" {
@@ -7006,6 +7042,8 @@ impl DeviceExtensions {
             self.khr_maintenance11 = true;
         } else if name == c"VK_EXT_shader_subgroup_partitioned" {
             self.ext_shader_subgroup_partitioned = true;
+        } else if name == c"VK_KHR_extended_flags" {
+            self.khr_extended_flags = true;
         } else if name == c"VK_VALVE_shader_mixed_float_dot_product" {
             self.valve_shader_mixed_float_dot_product = true;
         } else if name == c"VK_SEC_throttle_hint" {
@@ -7406,6 +7444,7 @@ impl DeviceExtensions {
             valve_fragment_density_map_layered: false,
             khr_robustness2: false,
             nv_present_metering: false,
+            ext_multisampled_render_to_swapchain: false,
             ext_fragment_density_map_offset: false,
             ext_zero_initialize_device_memory: false,
             khr_present_mode_fifo_latest_ready: false,
@@ -7421,6 +7460,7 @@ impl DeviceExtensions {
             nv_compute_occupancy_priority: false,
             khr_maintenance11: false,
             ext_shader_subgroup_partitioned: false,
+            khr_extended_flags: false,
             valve_shader_mixed_float_dot_product: false,
             sec_throttle_hint: false,
             arm_data_graph_neural_accelerator_statistics: false,
@@ -8072,14 +8112,19 @@ impl DeviceExtensions {
     }
     pub fn supports_ext_descriptor_heap(&self) -> bool {
         self.ext_descriptor_heap
-            && self.supports_khr_maintenance5()
-            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_buffer_device_address())
+            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+                || ((self.supports_khr_extended_flags() || self.supports_khr_maintenance5())
+                    && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
+                        || self.supports_khr_buffer_device_address())))
     }
     pub fn enable_ext_descriptor_heap(&mut self) {
         self.ext_descriptor_heap = true;
-        self.enable_khr_maintenance5();
-        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
-            self.enable_khr_buffer_device_address();
+        if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
+            // ambiguous dependency, caller must enable one explicitly
+            debug_assert!(self.supports_khr_extended_flags() || self.supports_khr_maintenance5());
+            if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+                self.enable_khr_buffer_device_address();
+            }
         }
     }
     pub fn supports_amd_mixed_attachment_samples(&self) -> bool {
@@ -9901,13 +9946,16 @@ impl DeviceExtensions {
     pub fn supports_amdx_dense_geometry_format(&self) -> bool {
         self.amdx_dense_geometry_format
             && self.supports_khr_acceleration_structure()
-            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5())
+            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+                || self.supports_khr_extended_flags()
+                || self.supports_khr_maintenance5())
     }
     pub fn enable_amdx_dense_geometry_format(&mut self) {
         self.amdx_dense_geometry_format = true;
         self.enable_khr_acceleration_structure();
         if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            debug_assert!(self.supports_khr_extended_flags() || self.supports_khr_maintenance5());
         }
     }
     pub fn supports_khr_present_id2(&self) -> bool {
@@ -9944,12 +9992,15 @@ impl DeviceExtensions {
     }
     pub fn supports_khr_pipeline_binary(&self) -> bool {
         self.khr_pipeline_binary
-            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5())
+            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+                || self.supports_khr_extended_flags()
+                || self.supports_khr_maintenance5())
     }
     pub fn enable_khr_pipeline_binary(&mut self) {
         self.khr_pipeline_binary = true;
         if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            debug_assert!(self.supports_khr_extended_flags() || self.supports_khr_maintenance5());
         }
     }
     pub fn supports_qcom_tile_properties(&self) -> bool {
@@ -10069,14 +10120,15 @@ impl DeviceExtensions {
     pub fn supports_arm_data_graph(&self) -> bool {
         self.arm_data_graph
             && self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
-            && self.supports_khr_maintenance5()
+            && (self.supports_khr_extended_flags() || self.supports_khr_maintenance5())
             && self.supports_khr_deferred_host_operations()
     }
     pub fn enable_arm_data_graph(&mut self) {
         self.arm_data_graph = true;
         // depends on minimum core version, caller must specify
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 3, 0));
-        self.enable_khr_maintenance5();
+        // ambiguous dependency, caller must enable one explicitly
+        debug_assert!(self.supports_khr_extended_flags() || self.supports_khr_maintenance5());
         self.enable_khr_deferred_host_operations();
     }
     pub fn supports_arm_data_graph_instruction_set_tosa(&self) -> bool {
@@ -10341,7 +10393,7 @@ impl DeviceExtensions {
             && (self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
                 || ((self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
                     || self.supports_khr_buffer_device_address())
-                    && self.supports_khr_maintenance5()))
+                    && (self.supports_khr_extended_flags() || self.supports_khr_maintenance5())))
     }
     pub fn enable_ext_device_generated_commands(&mut self) {
         self.ext_device_generated_commands = true;
@@ -10349,7 +10401,8 @@ impl DeviceExtensions {
             if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
                 self.enable_khr_buffer_device_address();
             }
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            debug_assert!(self.supports_khr_extended_flags() || self.supports_khr_maintenance5());
         }
     }
     pub fn supports_khr_device_fault(&self) -> bool {
@@ -10467,13 +10520,16 @@ impl DeviceExtensions {
     }
     pub fn supports_valve_fragment_density_map_layered(&self) -> bool {
         self.valve_fragment_density_map_layered
-            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0) || self.supports_khr_maintenance5())
+            && (self.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+                || self.supports_khr_extended_flags()
+                || self.supports_khr_maintenance5())
             && self.supports_ext_fragment_density_map()
     }
     pub fn enable_valve_fragment_density_map_layered(&mut self) {
         self.valve_fragment_density_map_layered = true;
         if self.core_version < vk::Version::from_raw_parts(1, 4, 0) {
-            self.enable_khr_maintenance5();
+            // ambiguous dependency, caller must enable one explicitly
+            debug_assert!(self.supports_khr_extended_flags() || self.supports_khr_maintenance5());
         }
         self.enable_ext_fragment_density_map();
     }
@@ -10488,6 +10544,16 @@ impl DeviceExtensions {
     }
     pub fn enable_nv_present_metering(&mut self) {
         self.nv_present_metering = true;
+    }
+    pub fn supports_ext_multisampled_render_to_swapchain(&self) -> bool {
+        self.ext_multisampled_render_to_swapchain
+            && self.supports_khr_swapchain()
+            && self.supports_ext_multisampled_render_to_single_sampled()
+    }
+    pub fn enable_ext_multisampled_render_to_swapchain(&mut self) {
+        self.ext_multisampled_render_to_swapchain = true;
+        self.enable_khr_swapchain();
+        self.enable_ext_multisampled_render_to_single_sampled();
     }
     pub fn supports_ext_fragment_density_map_offset(&self) -> bool {
         self.ext_fragment_density_map_offset
@@ -10597,6 +10663,12 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_shader_subgroup_partitioned(&mut self) {
         self.ext_shader_subgroup_partitioned = true;
+    }
+    pub fn supports_khr_extended_flags(&self) -> bool {
+        self.khr_extended_flags
+    }
+    pub fn enable_khr_extended_flags(&mut self) {
+        self.khr_extended_flags = true;
     }
     pub fn supports_valve_shader_mixed_float_dot_product(&self) -> bool {
         self.valve_shader_mixed_float_dot_product
@@ -11790,6 +11862,9 @@ impl DeviceExtensions {
         if self.nv_present_metering {
             v.push(c"VK_NV_present_metering");
         }
+        if self.ext_multisampled_render_to_swapchain {
+            v.push(c"VK_EXT_multisampled_render_to_swapchain");
+        }
         if self.ext_fragment_density_map_offset {
             v.push(c"VK_EXT_fragment_density_map_offset");
         }
@@ -11834,6 +11909,9 @@ impl DeviceExtensions {
         }
         if self.ext_shader_subgroup_partitioned {
             v.push(c"VK_EXT_shader_subgroup_partitioned");
+        }
+        if self.khr_extended_flags {
+            v.push(c"VK_KHR_extended_flags");
         }
         if self.valve_shader_mixed_float_dot_product {
             v.push(c"VK_VALVE_shader_mixed_float_dot_product");
@@ -15281,8 +15359,13 @@ impl Device {
                 None
             },
             fp_cmd_set_line_rasterization_mode_ext: if (extensions.ext_extended_dynamic_state3
-                && extensions.ext_line_rasterization)
-                || (extensions.ext_shader_object && extensions.ext_line_rasterization)
+                && (extensions.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+                    || extensions.khr_line_rasterization
+                    || extensions.ext_line_rasterization))
+                || (extensions.ext_shader_object
+                    && (extensions.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+                        || extensions.khr_line_rasterization
+                        || extensions.ext_line_rasterization))
             {
                 instance
                     .get_device_proc_addr(device, c"vkCmdSetLineRasterizationModeEXT")
@@ -15291,8 +15374,13 @@ impl Device {
                 None
             },
             fp_cmd_set_line_stipple_enable_ext: if (extensions.ext_extended_dynamic_state3
-                && extensions.ext_line_rasterization)
-                || (extensions.ext_shader_object && extensions.ext_line_rasterization)
+                && (extensions.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+                    || extensions.khr_line_rasterization
+                    || extensions.ext_line_rasterization))
+                || (extensions.ext_shader_object
+                    && (extensions.core_version >= vk::Version::from_raw_parts(1, 4, 0)
+                        || extensions.khr_line_rasterization
+                        || extensions.ext_line_rasterization))
             {
                 instance
                     .get_device_proc_addr(device, c"vkCmdSetLineStippleEnableEXT")
