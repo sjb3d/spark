@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.351
+//! Generated from vk.xml version 1.4.352
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -8709,6 +8709,7 @@ impl StructureType {
     pub const DATA_GRAPH_PIPELINE_SESSION_NEURAL_STATISTICS_CREATE_INFO_ARM: Self = Self(1000676001);
     pub const PHYSICAL_DEVICE_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_FEATURES_ARM: Self = Self(1000676002);
     pub const PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT: Self = Self(1000678000);
+    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV: Self = Self(1000689000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9823,6 +9824,7 @@ impl fmt::Display for StructureType {
             1000676001 => Some(&"DATA_GRAPH_PIPELINE_SESSION_NEURAL_STATISTICS_CREATE_INFO_ARM"),
             1000676002 => Some(&"PHYSICAL_DEVICE_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_FEATURES_ARM"),
             1000678000 => Some(&"PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT"),
+            1000689000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -13444,6 +13446,7 @@ impl DriverId {
     pub const MESA_HONEYKRISP: Self = Self(26);
     pub const VULKAN_SC_EMULATION_ON_VULKAN: Self = Self(27);
     pub const MESA_KOSMICKRISP: Self = Self(28);
+    pub const MESA_GFXSTREAM: Self = Self(29);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -13488,6 +13491,7 @@ impl fmt::Display for DriverId {
             26 => Some(&"MESA_HONEYKRISP"),
             27 => Some(&"VULKAN_SC_EMULATION_ON_VULKAN"),
             28 => Some(&"MESA_KOSMICKRISP"),
+            29 => Some(&"MESA_GFXSTREAM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -51871,6 +51875,37 @@ impl fmt::Debug for CooperativeMatrixFlexibleDimensionsPropertiesNV {
             .field("saturating_accumulation", &self.saturating_accumulation)
             .field("scope", &self.scope)
             .field("workgroup_invocations", &self.workgroup_invocations)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cooperative_matrix_decode_vector: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV {}
+impl Default for PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            cooperative_matrix_decode_vector: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "cooperative_matrix_decode_vector",
+                &self.cooperative_matrix_decode_vector,
+            )
             .finish()
     }
 }

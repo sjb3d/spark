@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.351
+//! Generated from vk.xml version 1.4.352
 
 #![allow(
     clippy::too_many_arguments,
@@ -3375,6 +3375,12 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_nv_cooperative_matrix_decode_vector(&self) -> bool {
+        self.supports_nv_cooperative_matrix2()
+    }
+    pub fn enable_nv_cooperative_matrix_decode_vector(&mut self) {
+        self.enable_nv_cooperative_matrix2();
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_surface {
@@ -6196,6 +6202,7 @@ pub struct DeviceExtensions {
     pub sec_throttle_hint: bool,
     pub arm_data_graph_neural_accelerator_statistics: bool,
     pub ext_primitive_restart_index: bool,
+    pub nv_cooperative_matrix_decode_vector: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -7007,6 +7014,8 @@ impl DeviceExtensions {
             self.arm_data_graph_neural_accelerator_statistics = true;
         } else if name == c"VK_EXT_primitive_restart_index" {
             self.ext_primitive_restart_index = true;
+        } else if name == c"VK_NV_cooperative_matrix_decode_vector" {
+            self.nv_cooperative_matrix_decode_vector = true;
         }
     }
     pub fn new(core_version: vk::Version) -> Self {
@@ -7416,6 +7425,7 @@ impl DeviceExtensions {
             sec_throttle_hint: false,
             arm_data_graph_neural_accelerator_statistics: false,
             ext_primitive_restart_index: false,
+            nv_cooperative_matrix_decode_vector: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -10616,6 +10626,13 @@ impl DeviceExtensions {
     pub fn enable_ext_primitive_restart_index(&mut self) {
         self.ext_primitive_restart_index = true;
     }
+    pub fn supports_nv_cooperative_matrix_decode_vector(&self) -> bool {
+        self.nv_cooperative_matrix_decode_vector && self.supports_nv_cooperative_matrix2()
+    }
+    pub fn enable_nv_cooperative_matrix_decode_vector(&mut self) {
+        self.nv_cooperative_matrix_decode_vector = true;
+        self.enable_nv_cooperative_matrix2();
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -11829,6 +11846,9 @@ impl DeviceExtensions {
         }
         if self.ext_primitive_restart_index {
             v.push(c"VK_EXT_primitive_restart_index");
+        }
+        if self.nv_cooperative_matrix_decode_vector {
+            v.push(c"VK_NV_cooperative_matrix_decode_vector");
         }
         v
     }

@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.351
+// Generated from vk.xml version 1.4.352
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -3899,6 +3899,7 @@ pub const StructureType = enum(i32) {
     data_graph_pipeline_session_neural_statistics_create_info_arm = 1000676001,
     physical_device_data_graph_neural_accelerator_statistics_features_arm = 1000676002,
     physical_device_primitive_restart_index_features_ext = 1000678000,
+    physical_device_cooperative_matrix_decode_vector_features_nv = 1000689000,
     _,
 };
 pub const SystemAllocationScope = enum(i32) {
@@ -4946,6 +4947,7 @@ pub const DriverId = enum(i32) {
     mesa_honeykrisp = 26,
     vulkan_sc_emulation_on_vulkan = 27,
     mesa_kosmickrisp = 28,
+    mesa_gfxstream = 29,
     _,
 };
 pub const DriverIdKHR = DriverId;
@@ -5348,6 +5350,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderReplicatedCompositesFeaturesEXT,
             *PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR,
             *PhysicalDeviceCooperativeMatrix2FeaturesNV,
+            *PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV,
             *PhysicalDeviceHdrVividFeaturesHUAWEI,
             *PhysicalDeviceVertexAttributeRobustnessFeaturesEXT,
             *PhysicalDeviceDenseGeometryFormatFeaturesAMDX,
@@ -7816,6 +7819,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderReplicatedCompositesFeaturesEXT,
             *PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR,
             *PhysicalDeviceCooperativeMatrix2FeaturesNV,
+            *PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV,
             *PhysicalDeviceHdrVividFeaturesHUAWEI,
             *PhysicalDeviceVertexAttributeRobustnessFeaturesEXT,
             *PhysicalDeviceDenseGeometryFormatFeaturesAMDX,
@@ -15545,6 +15549,11 @@ pub const CooperativeMatrixFlexibleDimensionsPropertiesNV = extern struct {
     scope: ScopeKHR = @enumFromInt(0),
     workgroup_invocations: u32 = 0,
 };
+pub const PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV = extern struct {
+    s_type: StructureType = .physical_device_cooperative_matrix_decode_vector_features_nv,
+    p_next: ?*anyopaque = null,
+    cooperative_matrix_decode_vector: Bool32 = .false,
+};
 pub const PhysicalDeviceHdrVividFeaturesHUAWEI = extern struct {
     s_type: StructureType = .physical_device_hdr_vivid_features_huawei,
     p_next: ?*anyopaque = null,
@@ -18008,6 +18017,7 @@ const ExtensionNames = struct {
     const sec_throttle_hint = "VK_SEC_throttle_hint";
     const arm_data_graph_neural_accelerator_statistics = "VK_ARM_data_graph_neural_accelerator_statistics";
     const ext_primitive_restart_index = "VK_EXT_primitive_restart_index";
+    const nv_cooperative_matrix_decode_vector = "VK_NV_cooperative_matrix_decode_vector";
 };
 
 pub const InstanceExtensions = packed struct {
@@ -21362,6 +21372,13 @@ pub const InstanceExtensions = packed struct {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+
+    pub fn supports_nv_cooperative_matrix_decode_vector(self: InstanceExtensions) bool {
+        return self.supports_nv_cooperative_matrix2();
+    }
+    pub fn enable_nv_cooperative_matrix_decode_vector(self: *InstanceExtensions) void {
+        self.enable_nv_cooperative_matrix2();
+    }
 };
 
 pub const DeviceExtensions = packed struct {
@@ -21770,6 +21787,7 @@ pub const DeviceExtensions = packed struct {
     sec_throttle_hint: bool = false,
     arm_data_graph_neural_accelerator_statistics: bool = false,
     ext_primitive_restart_index: bool = false,
+    nv_cooperative_matrix_decode_vector: bool = false,
 
     pub fn enable_by_name(self: *DeviceExtensions, maybe_name: ?[*:0]const u8) void {
         const name = maybe_name orelse return;
@@ -22581,6 +22599,8 @@ pub const DeviceExtensions = packed struct {
             self.arm_data_graph_neural_accelerator_statistics = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_primitive_restart_index) == .eq) {
             self.ext_primitive_restart_index = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_cooperative_matrix_decode_vector) == .eq) {
+            self.nv_cooperative_matrix_decode_vector = true;
         }
     }
 
@@ -23000,6 +23020,7 @@ pub const DeviceExtensions = packed struct {
         if (self.sec_throttle_hint) try names.append(allocator, ExtensionNames.sec_throttle_hint);
         if (self.arm_data_graph_neural_accelerator_statistics) try names.append(allocator, ExtensionNames.arm_data_graph_neural_accelerator_statistics);
         if (self.ext_primitive_restart_index) try names.append(allocator, ExtensionNames.ext_primitive_restart_index);
+        if (self.nv_cooperative_matrix_decode_vector) try names.append(allocator, ExtensionNames.nv_cooperative_matrix_decode_vector);
         return names.toOwnedSlice(allocator);
     }
 
@@ -26402,6 +26423,14 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_ext_primitive_restart_index(self: *DeviceExtensions) void {
         self.ext_primitive_restart_index = true;
+    }
+
+    pub fn supports_nv_cooperative_matrix_decode_vector(self: DeviceExtensions) bool {
+        return self.nv_cooperative_matrix_decode_vector and self.supports_nv_cooperative_matrix2();
+    }
+    pub fn enable_nv_cooperative_matrix_decode_vector(self: *DeviceExtensions) void {
+        self.nv_cooperative_matrix_decode_vector = true;
+        self.enable_nv_cooperative_matrix2();
     }
 };
 

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.351
+//! Generated from vk.xml version 1.4.352
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -38893,6 +38893,45 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceCooperativeMatrix2FeaturesNVB
 impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrix2FeaturesNV {}
 impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrix2FeaturesNVBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCooperativeMatrix2PropertiesNV {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV,
+}
+impl Builder<'_> for vk::PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV {
+    type Type = PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNVBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cooperative_matrix_decode_vector(mut self, cooperative_matrix_decode_vector: bool) -> Self {
+        self.inner.cooperative_matrix_decode_vector = if cooperative_matrix_decode_vector {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV {}
+impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNVBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
