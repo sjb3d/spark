@@ -787,7 +787,10 @@ fn write_command_param_body(
                     )?;
                 } else {
                     writeln!(w, "if let Some(len) = {slice_ident}.map(|s| s.len() {as_dest}) {{")?;
-                    writeln!(w, "if let Some(n) = {ident} {{ assert_eq!(n, len); }} else {{ {ident} = Some(len); }} }}")?;
+                    writeln!(
+                        w,
+                        "if let Some(n) = {ident} {{ assert_eq!(n, len); }} else {{ {ident} = Some(len); }} }}"
+                    )?;
                 }
             }
         }
@@ -1425,50 +1428,47 @@ fn write_enable_dependency(
             }
         }
         ExtensionDependencyExpr::Or(deps) => {
-            // only handle pairs
-            if deps.len() == 2 {
-                match (&deps[0], &deps[1]) {
-                    (ExtensionDependencyExpr::Version(v), other) | (other, ExtensionDependencyExpr::Version(v)) => {
-                        writeln!(
-                            w,
-                            "if self.core_version < vk::Version::from_raw_parts({}, {}, 0) {{",
-                            v.major, v.minor
-                        )?;
-                        write_enable_dependency(w, oracle, current_index, other)?;
-                        writeln!(w, "}}")?;
-                    }
-                    (ExtensionDependencyExpr::Extension(index_a), ExtensionDependencyExpr::Extension(index_b)) => {
-                        let ident_a = AsIdent(&oracle.extensions[*index_a].short_name);
-                        let ident_b = AsIdent(&oracle.extensions[*index_b].short_name);
-                        writeln!(
-                            w,
-                            "// ambiguous dependency, caller must enable one explicitly\n\
-                             debug_assert!(self.supports_{ident_a}() || self.supports_{ident_b}());"
-                        )?;
-                    }
-                    _ => unimplemented!(),
+            // handle the version part of the dependency
+            for (index, dep) in deps.iter().enumerate() {
+                if let ExtensionDependencyExpr::Version(v) = dep {
+                    let mut remaining = deps[0..index].to_vec();
+                    remaining.extend_from_slice(&deps[index + 1..]);
+
+                    writeln!(
+                        w,
+                        "if self.core_version < vk::Version::from_raw_parts({}, {}, 0) {{",
+                        v.major, v.minor
+                    )?;
+                    write_enable_dependency(w, oracle, current_index, &ExtensionDependencyExpr::Or(remaining))?;
+                    writeln!(w, "}}")?;
+                    return Ok(());
                 }
-            } else {
-                match (&deps[0], &deps[1], &deps[2]) {
-                    (
-                        ExtensionDependencyExpr::Extension(index_a),
-                        ExtensionDependencyExpr::Extension(index_b),
-                        ExtensionDependencyExpr::Extension(index_c),
-                    ) => {
-                        let ident_a = AsIdent(&oracle.extensions[*index_a].short_name);
-                        let ident_b = AsIdent(&oracle.extensions[*index_b].short_name);
-                        let ident_c = AsIdent(&oracle.extensions[*index_c].short_name);
-                        writeln!(
+            }
+
+            // handle extension combinations up to 3
+            match &deps[..] {
+                [a] => write_enable_dependency(w, oracle, current_index, a)?,
+                [ExtensionDependencyExpr::Extension(index_a), ExtensionDependencyExpr::Extension(index_b)] => {
+                    let ident_a = AsIdent(&oracle.extensions[*index_a].short_name);
+                    let ident_b = AsIdent(&oracle.extensions[*index_b].short_name);
+                    writeln!(
+                        w,
+                        "// ambiguous dependency, caller must enable one explicitly\n\
+                         debug_assert!(self.supports_{ident_a}() || self.supports_{ident_b}());"
+                    )?;
+                }
+                [ExtensionDependencyExpr::Extension(index_a), ExtensionDependencyExpr::Extension(index_b), ExtensionDependencyExpr::Extension(index_c)] =>
+                {
+                    let ident_a = AsIdent(&oracle.extensions[*index_a].short_name);
+                    let ident_b = AsIdent(&oracle.extensions[*index_b].short_name);
+                    let ident_c = AsIdent(&oracle.extensions[*index_c].short_name);
+                    writeln!(
                             w,
                             "// ambiguous dependency, caller must enable one explicitly\n\
                              debug_assert!(self.supports_{ident_a}() || self.supports_{ident_b}() || self.supports_{ident_c}());"
                         )?;
-                    }
-                    _ => {
-                        println!("{deps:?}");
-                        unimplemented!()
-                    }
                 }
+                _ => unimplemented!(),
             }
         }
     }

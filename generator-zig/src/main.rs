@@ -617,55 +617,52 @@ fn write_enable_dependency(
             }
         }
         ExtensionDependencyExpr::Or(deps) => {
-            // only handle pairs
-            if deps.len() == 2 {
-                match (&deps[0], &deps[1]) {
-                    (ExtensionDependencyExpr::Version(v), other) | (other, ExtensionDependencyExpr::Version(v)) => {
-                        writeln!(
-                            w,
-                            "if (self.core_version.to_int() < make_version({}, {}, 0).to_int()) {{",
-                            v.major, v.minor
-                        )?;
-                        write_enable_dependency(w, oracle, current_index, other)?;
-                        writeln!(w, "}}")?;
-                    }
-                    (ExtensionDependencyExpr::Extension(index_a), ExtensionDependencyExpr::Extension(index_b)) => {
-                        let ext_a = &oracle.extensions[*index_a];
-                        let ext_b = &oracle.extensions[*index_b];
-                        let supports_a = AsPrefixedIdent("supports_", &ext_a.short_name);
-                        let supports_b = AsPrefixedIdent("supports_", &ext_b.short_name);
-                        writeln!(
-                            w,
-                            "// ambiguous dependency, caller must enable one explicitly\n\
-                             assert(self.{supports_a}() or self.{supports_b}());"
-                        )?;
-                    }
-                    _ => unimplemented!(),
+            // handle the version part of the dependency
+            for (index, dep) in deps.iter().enumerate() {
+                if let ExtensionDependencyExpr::Version(v) = dep {
+                    let mut remaining = deps[0..index].to_vec();
+                    remaining.extend_from_slice(&deps[index + 1..]);
+
+                    writeln!(
+                        w,
+                        "if (self.core_version.to_int() < make_version({}, {}, 0).to_int()) {{",
+                        v.major, v.minor
+                    )?;
+                    write_enable_dependency(w, oracle, current_index, &ExtensionDependencyExpr::Or(remaining))?;
+                    writeln!(w, "}}")?;
+                    return Ok(());
                 }
-            } else {
-                match (&deps[0], &deps[1], &deps[2]) {
-                    (
-                        ExtensionDependencyExpr::Extension(index_a),
-                        ExtensionDependencyExpr::Extension(index_b),
-                        ExtensionDependencyExpr::Extension(index_c),
-                    ) => {
-                        let ext_a = &oracle.extensions[*index_a];
-                        let ext_b = &oracle.extensions[*index_b];
-                        let ext_c = &oracle.extensions[*index_c];
-                        let supports_a = AsPrefixedIdent("supports_", &ext_a.short_name);
-                        let supports_b = AsPrefixedIdent("supports_", &ext_b.short_name);
-                        let supports_c = AsPrefixedIdent("supports_", &ext_c.short_name);
-                        writeln!(
-                            w,
-                            "// ambiguous dependency, caller must enable one explicitly\n\
-                             assert(self.{supports_a}() or self.{supports_b}() or self.{supports_c}());"
-                        )?;
-                    }
-                    _ => {
-                        println!("{deps:?}");
-                        unimplemented!()
-                    }
+            }
+
+            // handle extension combinations up to 3
+            match &deps[..] {
+                [a] => write_enable_dependency(w, oracle, current_index, a)?,
+                [ExtensionDependencyExpr::Extension(index_a), ExtensionDependencyExpr::Extension(index_b)] => {
+                    let ext_a = &oracle.extensions[*index_a];
+                    let ext_b = &oracle.extensions[*index_b];
+                    let supports_a = AsPrefixedIdent("supports_", &ext_a.short_name);
+                    let supports_b = AsPrefixedIdent("supports_", &ext_b.short_name);
+                    writeln!(
+                        w,
+                        "// ambiguous dependency, caller must enable one explicitly\n\
+                         assert(self.{supports_a}() or self.{supports_b}());"
+                    )?;
                 }
+                [ExtensionDependencyExpr::Extension(index_a), ExtensionDependencyExpr::Extension(index_b), ExtensionDependencyExpr::Extension(index_c)] =>
+                {
+                    let ext_a = &oracle.extensions[*index_a];
+                    let ext_b = &oracle.extensions[*index_b];
+                    let ext_c = &oracle.extensions[*index_c];
+                    let supports_a = AsPrefixedIdent("supports_", &ext_a.short_name);
+                    let supports_b = AsPrefixedIdent("supports_", &ext_b.short_name);
+                    let supports_c = AsPrefixedIdent("supports_", &ext_c.short_name);
+                    writeln!(
+                        w,
+                        "// ambiguous dependency, caller must enable one explicitly\n\
+                         assert(self.{supports_a}() or self.{supports_b}() or self.{supports_c}());"
+                    )?;
+                }
+                _ => unimplemented!(),
             }
         }
     }
@@ -891,7 +888,10 @@ fn write_command_param_body(
                     writeln!(w, "if ({slice_ident}) |s| {{ assert({ident} == s.len); }}")?;
                 } else {
                     writeln!(w, "if ({slice_ident}) |s| {{")?;
-                    writeln!(w, "if ({ident}) |n| {{ assert(n == s.len); }} else {{ {ident} = @intCast(s.len); }}")?;
+                    writeln!(
+                        w,
+                        "if ({ident}) |n| {{ assert(n == s.len); }} else {{ {ident} = @intCast(s.len); }}"
+                    )?;
                     writeln!(w, "}}")?;
                 }
             }
