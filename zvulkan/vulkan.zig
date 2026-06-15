@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.353
+// Generated from vk.xml version 1.4.354
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -1111,6 +1111,7 @@ pub const FormatFeatureFlagBits2 = enum(u6) {
     optical_flow_cost_nv = 42,
     tensor_data_graph_arm = 48,
     copy_image_indirect_dst_khr = 59,
+    sampled_image_filter_linear_2d_img = 45,
     depth_copy_on_compute_queue_khr = 52,
     depth_copy_on_transfer_queue_khr = 53,
     stencil_copy_on_compute_queue_khr = 54,
@@ -4975,6 +4976,7 @@ pub const VendorId = enum(i32) {
     mesa = 65541,
     pocl = 65542,
     mobileye = 65543,
+    ape = 65544,
     _,
 };
 pub const DriverId = enum(i32) {
@@ -5007,6 +5009,7 @@ pub const DriverId = enum(i32) {
     vulkan_sc_emulation_on_vulkan = 27,
     mesa_kosmickrisp = 28,
     mesa_gfxstream = 29,
+    ape_soft = 30,
     _,
 };
 pub const DriverIdKHR = DriverId;
@@ -18133,6 +18136,7 @@ const ExtensionNames = struct {
     const huawei_hdr_vivid = "VK_HUAWEI_hdr_vivid";
     const nv_cooperative_matrix2 = "VK_NV_cooperative_matrix2";
     const arm_pipeline_opacity_micromap = "VK_ARM_pipeline_opacity_micromap";
+    const img_filter_linear_2d = "VK_IMG_filter_linear_2d";
     const ext_external_memory_metal = "VK_EXT_external_memory_metal";
     const khr_depth_clamp_zero_one = "VK_KHR_depth_clamp_zero_one";
     const arm_performance_counters_by_region = "VK_ARM_performance_counters_by_region";
@@ -21290,6 +21294,15 @@ pub const InstanceExtensions = packed struct {
         self.enable_ext_opacity_micromap();
     }
 
+    pub fn supports_img_filter_linear_2d(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 3, 0).to_int() or self.supports_khr_format_feature_flags2();
+    }
+    pub fn enable_img_filter_linear_2d(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 3, 0).to_int()) {
+            self.enable_khr_format_feature_flags2();
+        }
+    }
+
     pub fn supports_ext_external_memory_metal(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_external_memory();
     }
@@ -21931,6 +21944,7 @@ pub const DeviceExtensions = packed struct {
     huawei_hdr_vivid: bool = false,
     nv_cooperative_matrix2: bool = false,
     arm_pipeline_opacity_micromap: bool = false,
+    img_filter_linear_2d: bool = false,
     ext_external_memory_metal: bool = false,
     khr_depth_clamp_zero_one: bool = false,
     arm_performance_counters_by_region: bool = false,
@@ -22717,6 +22731,8 @@ pub const DeviceExtensions = packed struct {
             self.nv_cooperative_matrix2 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.arm_pipeline_opacity_micromap) == .eq) {
             self.arm_pipeline_opacity_micromap = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.img_filter_linear_2d) == .eq) {
+            self.img_filter_linear_2d = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_external_memory_metal) == .eq) {
             self.ext_external_memory_metal = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_depth_clamp_zero_one) == .eq) {
@@ -23170,6 +23186,7 @@ pub const DeviceExtensions = packed struct {
         if (self.huawei_hdr_vivid) try names.append(allocator, ExtensionNames.huawei_hdr_vivid);
         if (self.nv_cooperative_matrix2) try names.append(allocator, ExtensionNames.nv_cooperative_matrix2);
         if (self.arm_pipeline_opacity_micromap) try names.append(allocator, ExtensionNames.arm_pipeline_opacity_micromap);
+        if (self.img_filter_linear_2d) try names.append(allocator, ExtensionNames.img_filter_linear_2d);
         if (self.ext_external_memory_metal) try names.append(allocator, ExtensionNames.ext_external_memory_metal);
         if (self.khr_depth_clamp_zero_one) try names.append(allocator, ExtensionNames.khr_depth_clamp_zero_one);
         if (self.arm_performance_counters_by_region) try names.append(allocator, ExtensionNames.arm_performance_counters_by_region);
@@ -26390,6 +26407,16 @@ pub const DeviceExtensions = packed struct {
     pub fn enable_arm_pipeline_opacity_micromap(self: *DeviceExtensions) void {
         self.arm_pipeline_opacity_micromap = true;
         self.enable_ext_opacity_micromap();
+    }
+
+    pub fn supports_img_filter_linear_2d(self: DeviceExtensions) bool {
+        return self.img_filter_linear_2d and (self.core_version.to_int() >= make_version(1, 3, 0).to_int() or self.supports_khr_format_feature_flags2());
+    }
+    pub fn enable_img_filter_linear_2d(self: *DeviceExtensions) void {
+        self.img_filter_linear_2d = true;
+        if (self.core_version.to_int() < make_version(1, 3, 0).to_int()) {
+            self.enable_khr_format_feature_flags2();
+        }
     }
 
     pub fn supports_ext_external_memory_metal(self: DeviceExtensions) bool {

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.353
+//! Generated from vk.xml version 1.4.354
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -2642,6 +2642,7 @@ impl FormatFeatureFlags2 {
     pub const OPTICAL_FLOW_COST_NV: Self = Self(0x40000000000);
     pub const TENSOR_DATA_GRAPH_ARM: Self = Self(0x1000000000000);
     pub const COPY_IMAGE_INDIRECT_DST_KHR: Self = Self(0x800000000000000);
+    pub const SAMPLED_IMAGE_FILTER_LINEAR_2D_IMG: Self = Self(0x200000000000);
     pub const DEPTH_COPY_ON_COMPUTE_QUEUE_KHR: Self = Self(0x10000000000000);
     pub const DEPTH_COPY_ON_TRANSFER_QUEUE_KHR: Self = Self(0x20000000000000);
     pub const STENCIL_COPY_ON_COMPUTE_QUEUE_KHR: Self = Self(0x40000000000000);
@@ -2707,6 +2708,7 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x40000000000, "OPTICAL_FLOW_COST_NV"),
                 (0x1000000000000, "TENSOR_DATA_GRAPH_ARM"),
                 (0x800000000000000, "COPY_IMAGE_INDIRECT_DST_KHR"),
+                (0x200000000000, "SAMPLED_IMAGE_FILTER_LINEAR_2D_IMG"),
                 (0x10000000000000, "DEPTH_COPY_ON_COMPUTE_QUEUE_KHR"),
                 (0x20000000000000, "DEPTH_COPY_ON_TRANSFER_QUEUE_KHR"),
                 (0x40000000000000, "STENCIL_COPY_ON_COMPUTE_QUEUE_KHR"),
@@ -13531,6 +13533,7 @@ impl VendorId {
     pub const MESA: Self = Self(65541);
     pub const POCL: Self = Self(65542);
     pub const MOBILEYE: Self = Self(65543);
+    pub const APE: Self = Self(65544);
 }
 impl fmt::Display for VendorId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -13543,6 +13546,7 @@ impl fmt::Display for VendorId {
             65541 => Some(&"MESA"),
             65542 => Some(&"POCL"),
             65543 => Some(&"MOBILEYE"),
+            65544 => Some(&"APE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -13586,6 +13590,7 @@ impl DriverId {
     pub const VULKAN_SC_EMULATION_ON_VULKAN: Self = Self(27);
     pub const MESA_KOSMICKRISP: Self = Self(28);
     pub const MESA_GFXSTREAM: Self = Self(29);
+    pub const APE_SOFT: Self = Self(30);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -13631,6 +13636,7 @@ impl fmt::Display for DriverId {
             27 => Some(&"VULKAN_SC_EMULATION_ON_VULKAN"),
             28 => Some(&"MESA_KOSMICKRISP"),
             29 => Some(&"MESA_GFXSTREAM"),
+            30 => Some(&"APE_SOFT"),
             _ => None,
         };
         if let Some(name) = name {

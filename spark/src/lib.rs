@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.353
+//! Generated from vk.xml version 1.4.354
 
 #![allow(
     clippy::too_many_arguments,
@@ -3171,6 +3171,14 @@ impl InstanceExtensions {
     pub fn enable_arm_pipeline_opacity_micromap(&mut self) {
         self.enable_ext_opacity_micromap();
     }
+    pub fn supports_img_filter_linear_2d(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 3, 0) || self.supports_khr_format_feature_flags2()
+    }
+    pub fn enable_img_filter_linear_2d(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            self.enable_khr_format_feature_flags2();
+        }
+    }
     pub fn supports_ext_external_memory_metal(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_external_memory()
     }
@@ -6206,6 +6214,7 @@ pub struct DeviceExtensions {
     pub huawei_hdr_vivid: bool,
     pub nv_cooperative_matrix2: bool,
     pub arm_pipeline_opacity_micromap: bool,
+    pub img_filter_linear_2d: bool,
     pub ext_external_memory_metal: bool,
     pub khr_depth_clamp_zero_one: bool,
     pub arm_performance_counters_by_region: bool,
@@ -6992,6 +7001,8 @@ impl DeviceExtensions {
             self.nv_cooperative_matrix2 = true;
         } else if name == c"VK_ARM_pipeline_opacity_micromap" {
             self.arm_pipeline_opacity_micromap = true;
+        } else if name == c"VK_IMG_filter_linear_2d" {
+            self.img_filter_linear_2d = true;
         } else if name == c"VK_EXT_external_memory_metal" {
             self.ext_external_memory_metal = true;
         } else if name == c"VK_KHR_depth_clamp_zero_one" {
@@ -7435,6 +7446,7 @@ impl DeviceExtensions {
             huawei_hdr_vivid: false,
             nv_cooperative_matrix2: false,
             arm_pipeline_opacity_micromap: false,
+            img_filter_linear_2d: false,
             ext_external_memory_metal: false,
             khr_depth_clamp_zero_one: false,
             arm_performance_counters_by_region: false,
@@ -10478,6 +10490,16 @@ impl DeviceExtensions {
         self.arm_pipeline_opacity_micromap = true;
         self.enable_ext_opacity_micromap();
     }
+    pub fn supports_img_filter_linear_2d(&self) -> bool {
+        self.img_filter_linear_2d
+            && (self.core_version >= vk::Version::from_raw_parts(1, 3, 0) || self.supports_khr_format_feature_flags2())
+    }
+    pub fn enable_img_filter_linear_2d(&mut self) {
+        self.img_filter_linear_2d = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            self.enable_khr_format_feature_flags2();
+        }
+    }
     pub fn supports_ext_external_memory_metal(&self) -> bool {
         self.ext_external_memory_metal
             && (self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_external_memory())
@@ -11834,6 +11856,9 @@ impl DeviceExtensions {
         }
         if self.arm_pipeline_opacity_micromap {
             v.push(c"VK_ARM_pipeline_opacity_micromap");
+        }
+        if self.img_filter_linear_2d {
+            v.push(c"VK_IMG_filter_linear_2d");
         }
         if self.ext_external_memory_metal {
             v.push(c"VK_EXT_external_memory_metal");
