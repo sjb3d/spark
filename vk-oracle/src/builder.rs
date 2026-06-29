@@ -1016,6 +1016,13 @@ impl<'a> OracleBuilder<'a> {
                                     track_external_type(member_type_name);
                                 }
                             }
+                            if let Some(CArraySize::Ident(s)) = decl.ty.array_size {
+                                if let Some(enum_info) = self.enum_info_by_name.get_mut(s) {
+                                    if let EnumInfoDetail::Global(global) = &mut enum_info.detail {
+                                        global.is_referenced = true;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
