@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.354
+//! Generated from vk.xml version 1.4.355
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -31674,6 +31674,40 @@ impl Deref for DataGraphPipelineSessionNeuralStatisticsCreateInfoARMBuilder {
 }
 impl DataGraphPipelineSessionCreateInfoARMNext for vk::DataGraphPipelineSessionNeuralStatisticsCreateInfoARM {}
 impl DataGraphPipelineSessionCreateInfoARMNext for DataGraphPipelineSessionNeuralStatisticsCreateInfoARMBuilder {}
+impl FormatProperties2Next for vk::TensorExplicitTilingFormatPropertiesARM {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct TensorRollingBackingCreateInfoARMBuilder {
+    inner: vk::TensorRollingBackingCreateInfoARM,
+}
+impl Builder<'_> for vk::TensorRollingBackingCreateInfoARM {
+    type Type = TensorRollingBackingCreateInfoARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl TensorRollingBackingCreateInfoARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::TensorRollingBackingCreateInfoARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn wraps(mut self, wraps: [u32; vk::MAX_TENSOR_CREATE_INFO_ROLLING_BACKING_WRAP_COUNT_ARM]) -> Self {
+        self.inner.wraps = wraps;
+        self
+    }
+}
+impl Deref for TensorRollingBackingCreateInfoARMBuilder {
+    type Target = vk::TensorRollingBackingCreateInfoARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl TensorCreateInfoARMNext for vk::TensorRollingBackingCreateInfoARM {}
+impl TensorCreateInfoARMNext for TensorRollingBackingCreateInfoARMBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]

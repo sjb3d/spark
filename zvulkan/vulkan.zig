@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.354
+// Generated from vk.xml version 1.4.355
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -184,6 +184,7 @@ pub const compute_occupancy_priority_low_nv: f32 = 0.25;
 pub const compute_occupancy_priority_normal_nv: f32 = 0.5;
 pub const compute_occupancy_priority_high_nv: f32 = 0.75;
 pub const max_data_graph_tosa_name_size_arm = 128;
+pub const max_tensor_create_info_rolling_backing_wrap_count_arm = 4;
 pub const wl_display = opaque {};
 pub const ubm_device = opaque {};
 pub const Display = opaque {};
@@ -3825,6 +3826,8 @@ pub const StructureType = enum(i32) {
     physical_device_layered_api_vulkan_properties_khr = 1000562004,
     physical_device_shader_atomic_float16_vector_features_nv = 1000563000,
     physical_device_shader_replicated_composites_features_ext = 1000564000,
+    tensor_explicit_tiling_format_properties_arm = 1000565000,
+    tensor_rolling_backing_create_info_arm = 1000565001,
     physical_device_shader_float8_features_ext = 1000567000,
     physical_device_ray_tracing_validation_features_nv = 1000568000,
     physical_device_cluster_acceleration_structure_features_nv = 1000569000,
@@ -4544,6 +4547,11 @@ pub const CooperativeVectorMatrixLayoutNV = enum(i32) {
 pub const TensorTilingARM = enum(i32) {
     optimal = 0,
     linear = 1,
+    brick_16_wide = 1000565000,
+    brick_8_wide = 1000565001,
+    brick_4_wide = 1000565002,
+    block_u_interleaved = 1000565003,
+    block_u_interleaved_64k = 1000565004,
     _,
 };
 pub const DataGraphPipelinePropertyARM = enum(i32) {
@@ -8097,6 +8105,7 @@ pub const FormatProperties2 = extern struct {
             *FormatProperties3,
             *FormatProperties4KHR,
             *DrmFormatModifierPropertiesList2EXT,
+            *TensorExplicitTilingFormatPropertiesARM,
             *TensorFormatPropertiesARM,
             => {
                 next.p_next = @constCast(self.p_next);
@@ -14047,6 +14056,20 @@ pub const DataGraphPipelineSessionNeuralStatisticsCreateInfoARM = extern struct 
     p_next: ?*const anyopaque = null,
     mode: NeuralAcceleratorStatisticsModeARM = @enumFromInt(0),
 };
+pub const TensorExplicitTilingFormatPropertiesARM = extern struct {
+    s_type: StructureType = .tensor_explicit_tiling_format_properties_arm,
+    p_next: ?*anyopaque = null,
+    brick16_tiling_tensor_features: FormatFeatureFlags2 = .none,
+    brick8_tiling_tensor_features: FormatFeatureFlags2 = .none,
+    brick4_tiling_tensor_features: FormatFeatureFlags2 = .none,
+    block_u_tiling_tensor_features: FormatFeatureFlags2 = .none,
+    block_u64k_tiling_tensor_features: FormatFeatureFlags2 = .none,
+};
+pub const TensorRollingBackingCreateInfoARM = extern struct {
+    s_type: StructureType = .tensor_rolling_backing_create_info_arm,
+    p_next: ?*const anyopaque = null,
+    wraps: [max_tensor_create_info_rolling_backing_wrap_count_arm]u32 = [_]u32{0} ** max_tensor_create_info_rolling_backing_wrap_count_arm,
+};
 pub const PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE = extern struct {
     s_type: StructureType = .physical_device_descriptor_set_host_mapping_features_valve,
     p_next: ?*anyopaque = null,
@@ -15932,6 +15955,7 @@ pub const TensorCreateInfoARM = extern struct {
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
             inline *OpaqueCaptureDescriptorDataCreateInfoEXT,
+            *TensorRollingBackingCreateInfoARM,
             *ExternalMemoryTensorCreateInfoARM,
             *OpaqueCaptureDataCreateInfoEXT,
             => {
@@ -18119,6 +18143,7 @@ const ExtensionNames = struct {
     const khr_maintenance7 = "VK_KHR_maintenance7";
     const nv_shader_atomic_float16_vector = "VK_NV_shader_atomic_float16_vector";
     const ext_shader_replicated_composites = "VK_EXT_shader_replicated_composites";
+    const arm_tensor_controls = "VK_ARM_tensor_controls";
     const ext_shader_float8 = "VK_EXT_shader_float8";
     const nv_ray_tracing_validation = "VK_NV_ray_tracing_validation";
     const nv_cluster_acceleration_structure = "VK_NV_cluster_acceleration_structure";
@@ -21928,6 +21953,7 @@ pub const DeviceExtensions = packed struct {
     khr_maintenance7: bool = false,
     nv_shader_atomic_float16_vector: bool = false,
     ext_shader_replicated_composites: bool = false,
+    arm_tensor_controls: bool = false,
     ext_shader_float8: bool = false,
     nv_ray_tracing_validation: bool = false,
     nv_cluster_acceleration_structure: bool = false,
@@ -22699,6 +22725,8 @@ pub const DeviceExtensions = packed struct {
             self.nv_shader_atomic_float16_vector = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_replicated_composites) == .eq) {
             self.ext_shader_replicated_composites = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.arm_tensor_controls) == .eq) {
+            self.arm_tensor_controls = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_float8) == .eq) {
             self.ext_shader_float8 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_ray_tracing_validation) == .eq) {
@@ -23170,6 +23198,7 @@ pub const DeviceExtensions = packed struct {
         if (self.khr_maintenance7) try names.append(allocator, ExtensionNames.khr_maintenance7);
         if (self.nv_shader_atomic_float16_vector) try names.append(allocator, ExtensionNames.nv_shader_atomic_float16_vector);
         if (self.ext_shader_replicated_composites) try names.append(allocator, ExtensionNames.ext_shader_replicated_composites);
+        if (self.arm_tensor_controls) try names.append(allocator, ExtensionNames.arm_tensor_controls);
         if (self.ext_shader_float8) try names.append(allocator, ExtensionNames.ext_shader_float8);
         if (self.nv_ray_tracing_validation) try names.append(allocator, ExtensionNames.nv_ray_tracing_validation);
         if (self.nv_cluster_acceleration_structure) try names.append(allocator, ExtensionNames.nv_cluster_acceleration_structure);
@@ -26279,6 +26308,14 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_ext_shader_replicated_composites(self: *DeviceExtensions) void {
         self.ext_shader_replicated_composites = true;
+    }
+
+    pub fn supports_arm_tensor_controls(self: DeviceExtensions) bool {
+        return self.arm_tensor_controls and self.supports_arm_tensors();
+    }
+    pub fn enable_arm_tensor_controls(self: *DeviceExtensions) void {
+        self.arm_tensor_controls = true;
+        self.enable_arm_tensors();
     }
 
     pub fn supports_ext_shader_float8(self: DeviceExtensions) bool {

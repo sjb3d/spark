@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.354
+//! Generated from vk.xml version 1.4.355
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -183,6 +183,7 @@ pub const COMPUTE_OCCUPANCY_PRIORITY_LOW_NV: f32 = 0.25_f32;
 pub const COMPUTE_OCCUPANCY_PRIORITY_NORMAL_NV: f32 = 0.5_f32;
 pub const COMPUTE_OCCUPANCY_PRIORITY_HIGH_NV: f32 = 0.75_f32;
 pub const MAX_DATA_GRAPH_TOSA_NAME_SIZE_ARM: usize = 128;
+pub const MAX_TENSOR_CREATE_INFO_ROLLING_BACKING_WRAP_COUNT_ARM: usize = 4;
 #[allow(non_camel_case_types)]
 pub type wl_display = Never;
 #[allow(non_camel_case_types)]
@@ -8706,6 +8707,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_LAYERED_API_VULKAN_PROPERTIES_KHR: Self = Self(1000562004);
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV: Self = Self(1000563000);
     pub const PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT: Self = Self(1000564000);
+    pub const TENSOR_EXPLICIT_TILING_FORMAT_PROPERTIES_ARM: Self = Self(1000565000);
+    pub const TENSOR_ROLLING_BACKING_CREATE_INFO_ARM: Self = Self(1000565001);
     pub const PHYSICAL_DEVICE_SHADER_FLOAT8_FEATURES_EXT: Self = Self(1000567000);
     pub const PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV: Self = Self(1000568000);
     pub const PHYSICAL_DEVICE_CLUSTER_ACCELERATION_STRUCTURE_FEATURES_NV: Self = Self(1000569000);
@@ -9831,6 +9834,8 @@ impl fmt::Display for StructureType {
             1000562004 => Some(&"PHYSICAL_DEVICE_LAYERED_API_VULKAN_PROPERTIES_KHR"),
             1000563000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV"),
             1000564000 => Some(&"PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT"),
+            1000565000 => Some(&"TENSOR_EXPLICIT_TILING_FORMAT_PROPERTIES_ARM"),
+            1000565001 => Some(&"TENSOR_ROLLING_BACKING_CREATE_INFO_ARM"),
             1000567000 => Some(&"PHYSICAL_DEVICE_SHADER_FLOAT8_FEATURES_EXT"),
             1000568000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV"),
             1000569000 => Some(&"PHYSICAL_DEVICE_CLUSTER_ACCELERATION_STRUCTURE_FEATURES_NV"),
@@ -12109,12 +12114,22 @@ pub struct TensorTilingARM(pub(crate) i32);
 impl TensorTilingARM {
     pub const OPTIMAL: Self = Self(0);
     pub const LINEAR: Self = Self(1);
+    pub const BRICK_16_WIDE: Self = Self(1000565000);
+    pub const BRICK_8_WIDE: Self = Self(1000565001);
+    pub const BRICK_4_WIDE: Self = Self(1000565002);
+    pub const BLOCK_U_INTERLEAVED: Self = Self(1000565003);
+    pub const BLOCK_U_INTERLEAVED_64K: Self = Self(1000565004);
 }
 impl fmt::Display for TensorTilingARM {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"OPTIMAL"),
             1 => Some(&"LINEAR"),
+            1000565000 => Some(&"BRICK_16_WIDE"),
+            1000565001 => Some(&"BRICK_8_WIDE"),
+            1000565002 => Some(&"BRICK_4_WIDE"),
+            1000565003 => Some(&"BLOCK_U_INTERLEAVED"),
+            1000565004 => Some(&"BLOCK_U_INTERLEAVED_64K"),
             _ => None,
         };
         if let Some(name) = name {
@@ -44991,6 +45006,77 @@ impl fmt::Debug for DataGraphPipelineSessionNeuralStatisticsCreateInfoARM {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("mode", &self.mode)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TensorExplicitTilingFormatPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub brick16_tiling_tensor_features: FormatFeatureFlags2,
+    pub brick8_tiling_tensor_features: FormatFeatureFlags2,
+    pub brick4_tiling_tensor_features: FormatFeatureFlags2,
+    pub block_u_tiling_tensor_features: FormatFeatureFlags2,
+    pub block_u64k_tiling_tensor_features: FormatFeatureFlags2,
+}
+unsafe impl Send for TensorExplicitTilingFormatPropertiesARM {}
+unsafe impl Sync for TensorExplicitTilingFormatPropertiesARM {}
+impl Default for TensorExplicitTilingFormatPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TENSOR_EXPLICIT_TILING_FORMAT_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            brick16_tiling_tensor_features: Default::default(),
+            brick8_tiling_tensor_features: Default::default(),
+            brick4_tiling_tensor_features: Default::default(),
+            block_u_tiling_tensor_features: Default::default(),
+            block_u64k_tiling_tensor_features: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TensorExplicitTilingFormatPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TensorExplicitTilingFormatPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("brick16_tiling_tensor_features", &self.brick16_tiling_tensor_features)
+            .field("brick8_tiling_tensor_features", &self.brick8_tiling_tensor_features)
+            .field("brick4_tiling_tensor_features", &self.brick4_tiling_tensor_features)
+            .field("block_u_tiling_tensor_features", &self.block_u_tiling_tensor_features)
+            .field(
+                "block_u64k_tiling_tensor_features",
+                &self.block_u64k_tiling_tensor_features,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TensorRollingBackingCreateInfoARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub wraps: [u32; MAX_TENSOR_CREATE_INFO_ROLLING_BACKING_WRAP_COUNT_ARM],
+}
+unsafe impl Send for TensorRollingBackingCreateInfoARM {}
+unsafe impl Sync for TensorRollingBackingCreateInfoARM {}
+impl Default for TensorRollingBackingCreateInfoARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TENSOR_ROLLING_BACKING_CREATE_INFO_ARM,
+            p_next: ptr::null(),
+            wraps: [Default::default(); MAX_TENSOR_CREATE_INFO_ROLLING_BACKING_WRAP_COUNT_ARM],
+        }
+    }
+}
+impl fmt::Debug for TensorRollingBackingCreateInfoARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TensorRollingBackingCreateInfoARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("wraps", &self.wraps)
             .finish()
     }
 }

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.354
+//! Generated from vk.xml version 1.4.355
 
 #![allow(
     clippy::too_many_arguments,
@@ -6198,6 +6198,7 @@ pub struct DeviceExtensions {
     pub khr_maintenance7: bool,
     pub nv_shader_atomic_float16_vector: bool,
     pub ext_shader_replicated_composites: bool,
+    pub arm_tensor_controls: bool,
     pub ext_shader_float8: bool,
     pub nv_ray_tracing_validation: bool,
     pub nv_cluster_acceleration_structure: bool,
@@ -6969,6 +6970,8 @@ impl DeviceExtensions {
             self.nv_shader_atomic_float16_vector = true;
         } else if name == c"VK_EXT_shader_replicated_composites" {
             self.ext_shader_replicated_composites = true;
+        } else if name == c"VK_ARM_tensor_controls" {
+            self.arm_tensor_controls = true;
         } else if name == c"VK_EXT_shader_float8" {
             self.ext_shader_float8 = true;
         } else if name == c"VK_NV_ray_tracing_validation" {
@@ -7430,6 +7433,7 @@ impl DeviceExtensions {
             khr_maintenance7: false,
             nv_shader_atomic_float16_vector: false,
             ext_shader_replicated_composites: false,
+            arm_tensor_controls: false,
             ext_shader_float8: false,
             nv_ray_tracing_validation: false,
             nv_cluster_acceleration_structure: false,
@@ -10374,6 +10378,13 @@ impl DeviceExtensions {
     pub fn enable_ext_shader_replicated_composites(&mut self) {
         self.ext_shader_replicated_composites = true;
     }
+    pub fn supports_arm_tensor_controls(&self) -> bool {
+        self.arm_tensor_controls && self.supports_arm_tensors()
+    }
+    pub fn enable_arm_tensor_controls(&mut self) {
+        self.arm_tensor_controls = true;
+        self.enable_arm_tensors();
+    }
     pub fn supports_ext_shader_float8(&self) -> bool {
         self.ext_shader_float8
     }
@@ -11808,6 +11819,9 @@ impl DeviceExtensions {
         }
         if self.ext_shader_replicated_composites {
             v.push(c"VK_EXT_shader_replicated_composites");
+        }
+        if self.arm_tensor_controls {
+            v.push(c"VK_ARM_tensor_controls");
         }
         if self.ext_shader_float8 {
             v.push(c"VK_EXT_shader_float8");
