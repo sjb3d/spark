@@ -306,36 +306,8 @@ fn type_decl_default(oracle: &Oracle, decl: &TypeDecl) -> Option<String> {
             _ => Some("0".to_owned()),
         },
         TypeDecl::Array(array_decl) => {
-            let mut element_type = Vec::new();
-            write_type_decl(
-                &mut element_type,
-                oracle,
-                &array_decl.element_type,
-                TypeContext::default(),
-            )
-            .unwrap();
-            let element_type = String::from_utf8(element_type).unwrap();
-
             let element_default = type_decl_default(oracle, &array_decl.element_type)?;
-            let count = match &array_decl.array.size {
-                ArraySize::Unknown | ArraySize::Named(_) => {
-                    panic!("cannot set default for array of unknown length")
-                }
-                ArraySize::Literal(value) => {
-                    let number = AsNumber(*value);
-                    format!("{number}")
-                }
-                ArraySize::Constant(constant_index) => {
-                    let ident = AsIdent(&oracle.constants[*constant_index].short_name);
-                    format!("{ident}")
-                }
-            };
-
-            if array_decl.array.is_null_terminated {
-                Some(format!("[_:0]{element_type}{{ {element_default} }} ** ({count} - 1)"))
-            } else {
-                Some(format!("[_]{element_type}{{ {element_default} }} ** {count}"))
-            }
+            Some(format!("@splat({element_default})"))
         }
         TypeDecl::Pointer(_) => Some("null".to_owned()),
         TypeDecl::Type(type_index) => type_default(oracle, *type_index),

@@ -34,7 +34,7 @@ pub const Version = packed struct(u32) {
         return @bitCast(i);
     }
 
-    pub fn format(self: Version, writer: *std.io.Writer) std.io.Writer.Error!void {
+    pub fn format(self: Version, writer: *Io.Writer) Io.Writer.Error!void {
         return writer.print("{}.{}.{}", .{ self.major, self.minor, self.patch });
     }
 };
@@ -45,7 +45,7 @@ pub const MissingFunctionError = error{
 
 fn BitField(comptime Fields: type) type {
     const bit_count = 1 << @bitSizeOf(@typeInfo(Fields).@"enum".tag_type);
-    const BitsInt = std.meta.Int(.unsigned, bit_count);
+    const BitsInt = @Int(.unsigned, bit_count);
 
     return packed struct(BitsInt) {
         bits: BitsInt,
@@ -5120,20 +5120,20 @@ pub const PhysicalDeviceProperties = extern struct {
     vendor_id: u32 = 0,
     device_id: u32 = 0,
     device_type: PhysicalDeviceType = @enumFromInt(0),
-    device_name: [max_physical_device_name_size - 1:0]u8 = [_:0]u8{0} ** (max_physical_device_name_size - 1),
-    pipeline_cache_uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
+    device_name: [max_physical_device_name_size - 1:0]u8 = @splat(0),
+    pipeline_cache_uuid: [uuid_size]u8 = @splat(0),
     limits: PhysicalDeviceLimits = .{},
     sparse_properties: PhysicalDeviceSparseProperties = .{},
 };
 pub const ExtensionProperties = extern struct {
-    extension_name: [max_extension_name_size - 1:0]u8 = [_:0]u8{0} ** (max_extension_name_size - 1),
+    extension_name: [max_extension_name_size - 1:0]u8 = @splat(0),
     spec_version: u32 = 0,
 };
 pub const LayerProperties = extern struct {
-    layer_name: [max_extension_name_size - 1:0]u8 = [_:0]u8{0} ** (max_extension_name_size - 1),
+    layer_name: [max_extension_name_size - 1:0]u8 = @splat(0),
     spec_version: u32 = 0,
     implementation_version: u32 = 0,
-    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    description: [max_description_size - 1:0]u8 = @splat(0),
 };
 pub const ApplicationInfo = extern struct {
     s_type: StructureType = .application_info,
@@ -5501,9 +5501,9 @@ pub const QueueFamilyProperties = extern struct {
 };
 pub const PhysicalDeviceMemoryProperties = extern struct {
     memory_type_count: u32 = 0,
-    memory_types: [max_memory_types]MemoryType = [_]MemoryType{.{}} ** max_memory_types,
+    memory_types: [max_memory_types]MemoryType = @splat(.{}),
     memory_heap_count: u32 = 0,
-    memory_heaps: [max_memory_heaps]MemoryHeap = [_]MemoryHeap{.{}} ** max_memory_heaps,
+    memory_heaps: [max_memory_heaps]MemoryHeap = @splat(.{}),
 };
 pub const MemoryAllocateInfo = extern struct {
     s_type: StructureType = .memory_allocate_info,
@@ -5926,9 +5926,9 @@ pub const ImageCopy = extern struct {
 };
 pub const ImageBlit = extern struct {
     src_subresource: ImageSubresourceLayers = .{},
-    src_offsets: [2]Offset3D = [_]Offset3D{.{}} ** 2,
+    src_offsets: [2]Offset3D = @splat(.{}),
     dst_subresource: ImageSubresourceLayers = .{},
-    dst_offsets: [2]Offset3D = [_]Offset3D{.{}} ** 2,
+    dst_offsets: [2]Offset3D = @splat(.{}),
 };
 pub const BufferImageCopy = extern struct {
     buffer_offset: DeviceSize = 0,
@@ -6304,7 +6304,7 @@ pub const PipelineColorBlendStateCreateInfo = extern struct {
     logic_op: LogicOp = @enumFromInt(0),
     attachment_count: u32 = 0,
     p_attachments: ?[*]const PipelineColorBlendAttachmentState = null,
-    blend_constants: [4]f32 = [_]f32{0} ** 4,
+    blend_constants: [4]f32 = @splat(0),
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
@@ -6412,14 +6412,14 @@ pub const PipelineCacheHeaderVersionOne = extern struct {
     header_version: PipelineCacheHeaderVersion = @enumFromInt(0),
     vendor_id: u32 = 0,
     device_id: u32 = 0,
-    pipeline_cache_uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
+    pipeline_cache_uuid: [uuid_size]u8 = @splat(0),
 };
 pub const PipelineCacheHeaderVersionDataGraphQCOM = extern struct {
     header_size: u32 = 0,
     header_version: PipelineCacheHeaderVersion = @enumFromInt(0),
     cache_type: DataGraphModelCacheTypeQCOM = @enumFromInt(0),
     cache_version: u32 = 0,
-    toolchain_version: [data_graph_model_toolchain_version_length_qcom]u32 = [_]u32{0} ** data_graph_model_toolchain_version_length_qcom,
+    toolchain_version: [data_graph_model_toolchain_version_length_qcom]u32 = @splat(0),
 };
 pub const PushConstantRange = extern struct {
     stage_flags: ShaderStageFlags = .none,
@@ -6452,7 +6452,7 @@ pub const PipelineBinaryKeyKHR = extern struct {
     s_type: StructureType = .pipeline_binary_key_khr,
     p_next: ?*anyopaque = null,
     key_size: u32 = 0,
-    key: [max_pipeline_binary_key_size_khr]u8 = [_]u8{0} ** max_pipeline_binary_key_size_khr,
+    key: [max_pipeline_binary_key_size_khr]u8 = @splat(0),
 };
 pub const PipelineBinaryInfoKHR = extern struct {
     s_type: StructureType = .pipeline_binary_info_khr,
@@ -6639,7 +6639,7 @@ pub const ClearValue = extern union {
 pub const ClearAttachment = extern struct {
     aspect_mask: ImageAspectFlags = .none,
     color_attachment: u32 = 0,
-    clear_value: ClearValue = .{ .color = .{ .float32 = [_]f32{0} ** 4 } },
+    clear_value: ClearValue = .{ .color = .{ .float32 = @splat(0) } },
 };
 pub const AttachmentDescription = extern struct {
     flags: AttachmentDescriptionFlags = .none,
@@ -6854,9 +6854,9 @@ pub const PhysicalDeviceLimits = extern struct {
     max_fragment_dual_src_attachments: u32 = 0,
     max_fragment_combined_output_resources: u32 = 0,
     max_compute_shared_memory_size: u32 = 0,
-    max_compute_work_group_count: [3]u32 = [_]u32{0} ** 3,
+    max_compute_work_group_count: [3]u32 = @splat(0),
     max_compute_work_group_invocations: u32 = 0,
-    max_compute_work_group_size: [3]u32 = [_]u32{0} ** 3,
+    max_compute_work_group_size: [3]u32 = @splat(0),
     sub_pixel_precision_bits: u32 = 0,
     sub_texel_precision_bits: u32 = 0,
     mipmap_precision_bits: u32 = 0,
@@ -6865,8 +6865,8 @@ pub const PhysicalDeviceLimits = extern struct {
     max_sampler_lod_bias: f32 = 0,
     max_sampler_anisotropy: f32 = 0,
     max_viewports: u32 = 0,
-    max_viewport_dimensions: [2]u32 = [_]u32{0} ** 2,
-    viewport_bounds_range: [2]f32 = [_]f32{0} ** 2,
+    max_viewport_dimensions: [2]u32 = @splat(0),
+    viewport_bounds_range: [2]f32 = @splat(0),
     viewport_sub_pixel_bits: u32 = 0,
     min_memory_map_alignment: usize = 0,
     min_texel_buffer_offset_alignment: DeviceSize = 0,
@@ -6899,8 +6899,8 @@ pub const PhysicalDeviceLimits = extern struct {
     max_cull_distances: u32 = 0,
     max_combined_clip_and_cull_distances: u32 = 0,
     discrete_queue_priorities: u32 = 0,
-    point_size_range: [2]f32 = [_]f32{0} ** 2,
-    line_width_range: [2]f32 = [_]f32{0} ** 2,
+    point_size_range: [2]f32 = @splat(0),
+    line_width_range: [2]f32 = @splat(0),
     point_size_granularity: f32 = 0,
     line_width_granularity: f32 = 0,
     strict_lines: Bool32 = .false,
@@ -7314,7 +7314,7 @@ pub const DebugMarkerMarkerInfoEXT = extern struct {
     s_type: StructureType = .debug_marker_marker_info_ext,
     p_next: ?*const anyopaque = null,
     p_marker_name: ?[*:0]const u8 = null,
-    color: [4]f32 = [_]f32{0} ** 4,
+    color: [4]f32 = @splat(0),
 };
 pub const DedicatedAllocationImageCreateInfoNV = extern struct {
     s_type: StructureType = .dedicated_allocation_image_create_info_nv,
@@ -8254,8 +8254,8 @@ pub const PhysicalDeviceDriverProperties = extern struct {
     s_type: StructureType = .physical_device_driver_properties,
     p_next: ?*anyopaque = null,
     driver_id: DriverId = @enumFromInt(0),
-    driver_name: [max_driver_name_size - 1:0]u8 = [_:0]u8{0} ** (max_driver_name_size - 1),
-    driver_info: [max_driver_info_size - 1:0]u8 = [_:0]u8{0} ** (max_driver_info_size - 1),
+    driver_name: [max_driver_name_size - 1:0]u8 = @splat(0),
+    driver_info: [max_driver_info_size - 1:0]u8 = @splat(0),
     conformance_version: ConformanceVersion = .{},
 };
 pub const PhysicalDeviceDriverPropertiesKHR = PhysicalDeviceDriverProperties;
@@ -8329,9 +8329,9 @@ pub const ExternalBufferPropertiesKHR = ExternalBufferProperties;
 pub const PhysicalDeviceIDProperties = extern struct {
     s_type: StructureType = .physical_device_id_properties,
     p_next: ?*anyopaque = null,
-    device_uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
-    driver_uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
-    device_luid: [luid_size]u8 = [_]u8{0} ** luid_size,
+    device_uuid: [uuid_size]u8 = @splat(0),
+    driver_uuid: [uuid_size]u8 = @splat(0),
+    device_luid: [luid_size]u8 = @splat(0),
     device_node_mask: u32 = 0,
     device_luid_valid: Bool32 = .false,
 };
@@ -8651,7 +8651,7 @@ pub const PhysicalDeviceGroupProperties = extern struct {
     s_type: StructureType = .physical_device_group_properties,
     p_next: ?*anyopaque = null,
     physical_device_count: u32 = 0,
-    physical_devices: [max_device_group_size]PhysicalDevice = [_]PhysicalDevice{.null_handle} ** max_device_group_size,
+    physical_devices: [max_device_group_size]PhysicalDevice = @splat(.null_handle),
     subset_allocation: Bool32 = .false,
 };
 pub const PhysicalDeviceGroupPropertiesKHR = PhysicalDeviceGroupProperties;
@@ -8755,7 +8755,7 @@ pub const DeviceGroupBindSparseInfoKHR = DeviceGroupBindSparseInfo;
 pub const DeviceGroupPresentCapabilitiesKHR = extern struct {
     s_type: StructureType = .device_group_present_capabilities_khr,
     p_next: ?*anyopaque = null,
-    present_mask: [max_device_group_size]u32 = [_]u32{0} ** max_device_group_size,
+    present_mask: [max_device_group_size]u32 = @splat(0),
     modes: DeviceGroupPresentModeFlagsKHR = .none,
 };
 pub const ImageSwapchainCreateInfoKHR = extern struct {
@@ -9467,7 +9467,7 @@ pub const PhysicalDeviceSampleLocationsPropertiesEXT = extern struct {
     p_next: ?*anyopaque = null,
     sample_location_sample_counts: SampleCountFlags = .none,
     max_sample_location_grid_size: Extent2D = .{},
-    sample_location_coordinate_range: [2]f32 = [_]f32{0} ** 2,
+    sample_location_coordinate_range: [2]f32 = @splat(0),
     sample_location_sub_pixel_bits: u32 = 0,
     variable_sample_locations: Bool32 = .false,
 };
@@ -9646,7 +9646,7 @@ pub const PhysicalDeviceLayeredApiPropertiesKHR = extern struct {
     vendor_id: u32 = 0,
     device_id: u32 = 0,
     layered_api: PhysicalDeviceLayeredApiKHR = @enumFromInt(0),
-    device_name: [max_physical_device_name_size]u8 = [_]u8{0} ** max_physical_device_name_size,
+    device_name: [max_physical_device_name_size]u8 = @splat(0),
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
@@ -9790,7 +9790,7 @@ pub const ShaderStatisticsInfoAMD = extern struct {
     num_physical_sgprs: u32 = 0,
     num_available_vgprs: u32 = 0,
     num_available_sgprs: u32 = 0,
-    compute_work_group_size: [3]u32 = [_]u32{0} ** 3,
+    compute_work_group_size: [3]u32 = @splat(0),
 };
 pub const PhysicalDeviceElapsedTimerQueryFeaturesQCOM = extern struct {
     s_type: StructureType = .physical_device_elapsed_timer_query_features_qcom,
@@ -9815,7 +9815,7 @@ pub const QueueFamilyGlobalPriorityProperties = extern struct {
     s_type: StructureType = .queue_family_global_priority_properties,
     p_next: ?*anyopaque = null,
     priority_count: u32 = 0,
-    priorities: [max_global_priority_size]QueueGlobalPriority = [_]QueueGlobalPriority{@enumFromInt(0)} ** max_global_priority_size,
+    priorities: [max_global_priority_size]QueueGlobalPriority = @splat(@enumFromInt(0)),
 };
 pub const QueueFamilyGlobalPriorityPropertiesKHR = QueueFamilyGlobalPriorityProperties;
 pub const QueueFamilyGlobalPriorityPropertiesEXT = QueueFamilyGlobalPriorityProperties;
@@ -9839,7 +9839,7 @@ pub const DebugUtilsLabelEXT = extern struct {
     s_type: StructureType = .debug_utils_label_ext,
     p_next: ?*const anyopaque = null,
     p_label_name: ?[*:0]const u8 = null,
-    color: [4]f32 = [_]f32{0} ** 4,
+    color: [4]f32 = @splat(0),
 };
 pub const DebugUtilsMessengerCreateInfoEXT = extern struct {
     s_type: StructureType = .debug_utils_messenger_create_info_ext,
@@ -10605,11 +10605,11 @@ pub const PhysicalDeviceMeshShaderPropertiesNV = extern struct {
     p_next: ?*anyopaque = null,
     max_draw_mesh_tasks_count: u32 = 0,
     max_task_work_group_invocations: u32 = 0,
-    max_task_work_group_size: [3]u32 = [_]u32{0} ** 3,
+    max_task_work_group_size: [3]u32 = @splat(0),
     max_task_total_memory_size: u32 = 0,
     max_task_output_count: u32 = 0,
     max_mesh_work_group_invocations: u32 = 0,
-    max_mesh_work_group_size: [3]u32 = [_]u32{0} ** 3,
+    max_mesh_work_group_size: [3]u32 = @splat(0),
     max_mesh_total_memory_size: u32 = 0,
     max_mesh_output_vertices: u32 = 0,
     max_mesh_output_primitives: u32 = 0,
@@ -10634,16 +10634,16 @@ pub const PhysicalDeviceMeshShaderPropertiesEXT = extern struct {
     s_type: StructureType = .physical_device_mesh_shader_properties_ext,
     p_next: ?*anyopaque = null,
     max_task_work_group_total_count: u32 = 0,
-    max_task_work_group_count: [3]u32 = [_]u32{0} ** 3,
+    max_task_work_group_count: [3]u32 = @splat(0),
     max_task_work_group_invocations: u32 = 0,
-    max_task_work_group_size: [3]u32 = [_]u32{0} ** 3,
+    max_task_work_group_size: [3]u32 = @splat(0),
     max_task_payload_size: u32 = 0,
     max_task_shared_memory_size: u32 = 0,
     max_task_payload_and_shared_memory_size: u32 = 0,
     max_mesh_work_group_total_count: u32 = 0,
-    max_mesh_work_group_count: [3]u32 = [_]u32{0} ** 3,
+    max_mesh_work_group_count: [3]u32 = @splat(0),
     max_mesh_work_group_invocations: u32 = 0,
-    max_mesh_work_group_size: [3]u32 = [_]u32{0} ** 3,
+    max_mesh_work_group_size: [3]u32 = @splat(0),
     max_mesh_shared_memory_size: u32 = 0,
     max_mesh_payload_and_shared_memory_size: u32 = 0,
     max_mesh_output_memory_size: u32 = 0,
@@ -11055,8 +11055,8 @@ pub const PipelineRasterizationDepthClipStateCreateInfoEXT = extern struct {
 pub const PhysicalDeviceMemoryBudgetPropertiesEXT = extern struct {
     s_type: StructureType = .physical_device_memory_budget_properties_ext,
     p_next: ?*anyopaque = null,
-    heap_budget: [max_memory_heaps]DeviceSize = [_]DeviceSize{0} ** max_memory_heaps,
-    heap_usage: [max_memory_heaps]DeviceSize = [_]DeviceSize{0} ** max_memory_heaps,
+    heap_budget: [max_memory_heaps]DeviceSize = @splat(0),
+    heap_usage: [max_memory_heaps]DeviceSize = @splat(0),
 };
 pub const PhysicalDeviceMemoryPriorityFeaturesEXT = extern struct {
     s_type: StructureType = .physical_device_memory_priority_features_ext,
@@ -11269,15 +11269,15 @@ pub const PerformanceCounterKHR = extern struct {
     unit: PerformanceCounterUnitKHR = @enumFromInt(0),
     scope: PerformanceCounterScopeKHR = @enumFromInt(0),
     storage: PerformanceCounterStorageKHR = @enumFromInt(0),
-    uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
+    uuid: [uuid_size]u8 = @splat(0),
 };
 pub const PerformanceCounterDescriptionKHR = extern struct {
     s_type: StructureType = .performance_counter_description_khr,
     p_next: ?*anyopaque = null,
     flags: PerformanceCounterDescriptionFlagsKHR = .none,
-    name: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
-    category: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
-    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    name: [max_description_size - 1:0]u8 = @splat(0),
+    category: [max_description_size - 1:0]u8 = @splat(0),
+    description: [max_description_size - 1:0]u8 = @splat(0),
 };
 pub const QueryPoolPerformanceCreateInfoKHR = extern struct {
     s_type: StructureType = .query_pool_performance_create_info_khr,
@@ -11449,8 +11449,8 @@ pub const PipelineExecutablePropertiesKHR = extern struct {
     s_type: StructureType = .pipeline_executable_properties_khr,
     p_next: ?*anyopaque = null,
     stages: ShaderStageFlags = .none,
-    name: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
-    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    name: [max_description_size - 1:0]u8 = @splat(0),
+    description: [max_description_size - 1:0]u8 = @splat(0),
     subgroup_size: u32 = 0,
 };
 pub const PipelineExecutableInfoKHR = extern struct {
@@ -11468,16 +11468,16 @@ pub const PipelineExecutableStatisticValueKHR = extern union {
 pub const PipelineExecutableStatisticKHR = extern struct {
     s_type: StructureType = .pipeline_executable_statistic_khr,
     p_next: ?*anyopaque = null,
-    name: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
-    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    name: [max_description_size - 1:0]u8 = @splat(0),
+    description: [max_description_size - 1:0]u8 = @splat(0),
     format: PipelineExecutableStatisticFormatKHR = @enumFromInt(0),
     value: PipelineExecutableStatisticValueKHR = .{ .b32 = .false },
 };
 pub const PipelineExecutableInternalRepresentationKHR = extern struct {
     s_type: StructureType = .pipeline_executable_internal_representation_khr,
     p_next: ?*anyopaque = null,
-    name: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
-    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    name: [max_description_size - 1:0]u8 = @splat(0),
+    description: [max_description_size - 1:0]u8 = @splat(0),
     is_text: Bool32 = .false,
     data_size: usize = 0,
     p_data: ?*anyopaque = null,
@@ -11539,8 +11539,8 @@ pub const PhysicalDeviceSubpassShadingPropertiesHUAWEI = extern struct {
 pub const PhysicalDeviceClusterCullingShaderPropertiesHUAWEI = extern struct {
     s_type: StructureType = .physical_device_cluster_culling_shader_properties_huawei,
     p_next: ?*anyopaque = null,
-    max_work_group_count: [3]u32 = [_]u32{0} ** 3,
-    max_work_group_size: [3]u32 = [_]u32{0} ** 3,
+    max_work_group_count: [3]u32 = @splat(0),
+    max_work_group_size: [3]u32 = @splat(0),
     max_output_cluster_count: u32 = 0,
     indirect_buffer_offset_alignment: DeviceSize = 0,
 };
@@ -11610,9 +11610,9 @@ pub const PhysicalDeviceVulkan11Features = extern struct {
 pub const PhysicalDeviceVulkan11Properties = extern struct {
     s_type: StructureType = .physical_device_vulkan_1_1_properties,
     p_next: ?*anyopaque = null,
-    device_uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
-    driver_uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
-    device_luid: [luid_size]u8 = [_]u8{0} ** luid_size,
+    device_uuid: [uuid_size]u8 = @splat(0),
+    driver_uuid: [uuid_size]u8 = @splat(0),
+    device_luid: [luid_size]u8 = @splat(0),
     device_node_mask: u32 = 0,
     device_luid_valid: Bool32 = .false,
     subgroup_size: u32 = 0,
@@ -11681,8 +11681,8 @@ pub const PhysicalDeviceVulkan12Properties = extern struct {
     s_type: StructureType = .physical_device_vulkan_1_2_properties,
     p_next: ?*anyopaque = null,
     driver_id: DriverId = @enumFromInt(0),
-    driver_name: [max_driver_name_size - 1:0]u8 = [_:0]u8{0} ** (max_driver_name_size - 1),
-    driver_info: [max_driver_info_size - 1:0]u8 = [_:0]u8{0} ** (max_driver_info_size - 1),
+    driver_name: [max_driver_name_size - 1:0]u8 = @splat(0),
+    driver_info: [max_driver_info_size - 1:0]u8 = @splat(0),
     conformance_version: ConformanceVersion = .{},
     denorm_behavior_independence: ShaderFloatControlsIndependence = @enumFromInt(0),
     rounding_mode_independence: ShaderFloatControlsIndependence = @enumFromInt(0),
@@ -11852,7 +11852,7 @@ pub const PhysicalDeviceVulkan14Properties = extern struct {
     p_copy_src_layouts: ?[*]ImageLayout = null,
     copy_dst_layout_count: u32 = 0,
     p_copy_dst_layouts: ?[*]ImageLayout = null,
-    optimal_tiling_layout_uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
+    optimal_tiling_layout_uuid: [uuid_size]u8 = @splat(0),
     identical_memory_type_requirements: Bool32 = .false,
 };
 pub const PipelineCompilerControlCreateInfoAMD = extern struct {
@@ -11942,17 +11942,17 @@ pub const GpaSessionCreateInfoAMD = extern struct {
 pub const PhysicalDeviceToolProperties = extern struct {
     s_type: StructureType = .physical_device_tool_properties,
     p_next: ?*anyopaque = null,
-    name: [max_extension_name_size - 1:0]u8 = [_:0]u8{0} ** (max_extension_name_size - 1),
-    version: [max_extension_name_size - 1:0]u8 = [_:0]u8{0} ** (max_extension_name_size - 1),
+    name: [max_extension_name_size - 1:0]u8 = @splat(0),
+    version: [max_extension_name_size - 1:0]u8 = @splat(0),
     purposes: ToolPurposeFlags = .none,
-    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
-    layer: [max_extension_name_size - 1:0]u8 = [_:0]u8{0} ** (max_extension_name_size - 1),
+    description: [max_description_size - 1:0]u8 = @splat(0),
+    layer: [max_extension_name_size - 1:0]u8 = @splat(0),
 };
 pub const PhysicalDeviceToolPropertiesEXT = PhysicalDeviceToolProperties;
 pub const SamplerCustomBorderColorCreateInfoEXT = extern struct {
     s_type: StructureType = .sampler_custom_border_color_create_info_ext,
     p_next: ?*const anyopaque = null,
-    custom_border_color: ClearColorValue = .{ .float32 = [_]f32{0} ** 4 },
+    custom_border_color: ClearColorValue = .{ .float32 = @splat(0) },
     format: Format = @enumFromInt(0),
 };
 pub const PhysicalDeviceCustomBorderColorPropertiesEXT = extern struct {
@@ -12132,7 +12132,7 @@ pub const AabbPositionsKHR = extern struct {
 };
 pub const AabbPositionsNV = AabbPositionsKHR;
 pub const TransformMatrixKHR = extern struct {
-    matrix: [12]f32 = [_]f32{0} ** 12,
+    matrix: [12]f32 = @splat(0),
 };
 pub const TransformMatrixNV = TransformMatrixKHR;
 pub const AccelerationStructureInstanceKHR = extern struct {
@@ -12295,7 +12295,7 @@ pub const PartitionedAccelerationStructureFlagsNV = extern struct {
 };
 pub const PartitionedAccelerationStructureWriteInstanceDataNV = extern struct {
     transform: TransformMatrixKHR = .{},
-    explicit_aabb: [6]f32 = [_]f32{0} ** 6,
+    explicit_aabb: [6]f32 = @splat(0),
     instance_id: u32 = 0,
     instance_mask: u32 = 0,
     instance_contribution_to_hit_group_index: u32 = 0,
@@ -12311,7 +12311,7 @@ pub const PartitionedAccelerationStructureUpdateInstanceDataNV = extern struct {
 };
 pub const PartitionedAccelerationStructureWritePartitionTranslationDataNV = extern struct {
     partition_index: u32 = 0,
-    partition_translation: [3]f32 = [_]f32{0} ** 3,
+    partition_translation: [3]f32 = @splat(0),
 };
 pub const WriteDescriptorSetPartitionedAccelerationStructureNV = extern struct {
     s_type: StructureType = .write_descriptor_set_partitioned_acceleration_structure_nv,
@@ -12478,9 +12478,9 @@ pub const ImageBlit2 = extern struct {
     s_type: StructureType = .image_blit_2,
     p_next: ?*const anyopaque = null,
     src_subresource: ImageSubresourceLayers = .{},
-    src_offsets: [2]Offset3D = [_]Offset3D{.{}} ** 2,
+    src_offsets: [2]Offset3D = @splat(.{}),
     dst_subresource: ImageSubresourceLayers = .{},
-    dst_offsets: [2]Offset3D = [_]Offset3D{.{}} ** 2,
+    dst_offsets: [2]Offset3D = @splat(.{}),
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
@@ -12627,7 +12627,7 @@ pub const PipelineFragmentShadingRateStateCreateInfoKHR = extern struct {
     s_type: StructureType = .pipeline_fragment_shading_rate_state_create_info_khr,
     p_next: ?*const anyopaque = null,
     fragment_size: Extent2D = .{},
-    combiner_ops: [2]FragmentShadingRateCombinerOpKHR = [_]FragmentShadingRateCombinerOpKHR{@enumFromInt(0)} ** 2,
+    combiner_ops: [2]FragmentShadingRateCombinerOpKHR = @splat(@enumFromInt(0)),
 };
 pub const PhysicalDeviceFragmentShadingRateFeaturesKHR = extern struct {
     s_type: StructureType = .physical_device_fragment_shading_rate_features_khr,
@@ -12686,7 +12686,7 @@ pub const PipelineFragmentShadingRateEnumStateCreateInfoNV = extern struct {
     p_next: ?*const anyopaque = null,
     shading_rate_type: FragmentShadingRateTypeNV = @enumFromInt(0),
     shading_rate: FragmentShadingRateNV = @enumFromInt(0),
-    combiner_ops: [2]FragmentShadingRateCombinerOpKHR = [_]FragmentShadingRateCombinerOpKHR{@enumFromInt(0)} ** 2,
+    combiner_ops: [2]FragmentShadingRateCombinerOpKHR = @splat(@enumFromInt(0)),
 };
 pub const AccelerationStructureBuildSizesInfoKHR = extern struct {
     s_type: StructureType = .acceleration_structure_build_sizes_info_khr,
@@ -13206,7 +13206,7 @@ pub const PhysicalDeviceHostImageCopyProperties = extern struct {
     p_copy_src_layouts: ?[*]ImageLayout = null,
     copy_dst_layout_count: u32 = 0,
     p_copy_dst_layouts: ?[*]ImageLayout = null,
-    optimal_tiling_layout_uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
+    optimal_tiling_layout_uuid: [uuid_size]u8 = @splat(0),
     identical_memory_type_requirements: Bool32 = .false,
 };
 pub const PhysicalDeviceHostImageCopyPropertiesEXT = PhysicalDeviceHostImageCopyProperties;
@@ -13923,7 +13923,7 @@ pub const RenderingAttachmentInfo = extern struct {
     resolve_image_layout: ImageLayout = @enumFromInt(0),
     load_op: AttachmentLoadOp = @enumFromInt(0),
     store_op: AttachmentStoreOp = @enumFromInt(0),
-    clear_value: ClearValue = .{ .color = .{ .float32 = [_]f32{0} ** 4 } },
+    clear_value: ClearValue = .{ .color = .{ .float32 = @splat(0) } },
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
@@ -14068,7 +14068,7 @@ pub const TensorExplicitTilingFormatPropertiesARM = extern struct {
 pub const TensorRollingBackingCreateInfoARM = extern struct {
     s_type: StructureType = .tensor_rolling_backing_create_info_arm,
     p_next: ?*const anyopaque = null,
-    wraps: [max_tensor_create_info_rolling_backing_wrap_count_arm]u32 = [_]u32{0} ** max_tensor_create_info_rolling_backing_wrap_count_arm,
+    wraps: [max_tensor_create_info_rolling_backing_wrap_count_arm]u32 = @splat(0),
 };
 pub const PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE = extern struct {
     s_type: StructureType = .physical_device_descriptor_set_host_mapping_features_valve,
@@ -14107,7 +14107,7 @@ pub const PhysicalDeviceShaderModuleIdentifierFeaturesEXT = extern struct {
 pub const PhysicalDeviceShaderModuleIdentifierPropertiesEXT = extern struct {
     s_type: StructureType = .physical_device_shader_module_identifier_properties_ext,
     p_next: ?*anyopaque = null,
-    shader_module_identifier_algorithm_uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
+    shader_module_identifier_algorithm_uuid: [uuid_size]u8 = @splat(0),
 };
 pub const PipelineShaderStageModuleIdentifierCreateInfoEXT = extern struct {
     s_type: StructureType = .pipeline_shader_stage_module_identifier_create_info_ext,
@@ -14119,7 +14119,7 @@ pub const ShaderModuleIdentifierEXT = extern struct {
     s_type: StructureType = .shader_module_identifier_ext,
     p_next: ?*anyopaque = null,
     identifier_size: u32 = 0,
-    identifier: [max_shader_module_identifier_size_ext]u8 = [_]u8{0} ** max_shader_module_identifier_size_ext,
+    identifier: [max_shader_module_identifier_size_ext]u8 = @splat(0),
 };
 pub const ImageCompressionControlEXT = extern struct {
     s_type: StructureType = .image_compression_control_ext,
@@ -14185,7 +14185,7 @@ pub const RenderPassCreationFeedbackCreateInfoEXT = extern struct {
 };
 pub const RenderPassSubpassFeedbackInfoEXT = extern struct {
     subpass_merge_status: SubpassMergeStatusEXT = @enumFromInt(0),
-    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    description: [max_description_size - 1:0]u8 = @splat(0),
     post_merge_index: u32 = 0,
 };
 pub const RenderPassSubpassFeedbackCreateInfoEXT = extern struct {
@@ -14362,7 +14362,7 @@ pub const AccelerationStructureTrianglesDisplacementMicromapNV = extern struct {
 pub const PipelinePropertiesIdentifierEXT = extern struct {
     s_type: StructureType = .pipeline_properties_identifier_ext,
     p_next: ?*anyopaque = null,
-    pipeline_identifier: [uuid_size]u8 = [_]u8{0} ** uuid_size,
+    pipeline_identifier: [uuid_size]u8 = @splat(0),
 };
 pub const PhysicalDevicePipelinePropertiesFeaturesEXT = extern struct {
     s_type: StructureType = .physical_device_pipeline_properties_features_ext,
@@ -14670,7 +14670,7 @@ pub const DeviceFaultAddressInfoKHR = extern struct {
 };
 pub const DeviceFaultAddressInfoEXT = DeviceFaultAddressInfoKHR;
 pub const DeviceFaultVendorInfoKHR = extern struct {
-    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    description: [max_description_size - 1:0]u8 = @splat(0),
     vendor_fault_code: u64 = 0,
     vendor_fault_data: u64 = 0,
 };
@@ -14680,7 +14680,7 @@ pub const DeviceFaultInfoKHR = extern struct {
     p_next: ?*anyopaque = null,
     flags: DeviceFaultFlagsKHR = .none,
     group_id: u64 = 0,
-    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    description: [max_description_size - 1:0]u8 = @splat(0),
     fault_address_info: DeviceFaultAddressInfoKHR = .{},
     instruction_address_info: DeviceFaultAddressInfoKHR = .{},
     vendor_info: DeviceFaultVendorInfoKHR = .{},
@@ -14712,7 +14712,7 @@ pub const DeviceFaultCountsEXT = extern struct {
 pub const DeviceFaultInfoEXT = extern struct {
     s_type: StructureType = .device_fault_info_ext,
     p_next: ?*anyopaque = null,
-    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    description: [max_description_size - 1:0]u8 = @splat(0),
     p_address_infos: ?*DeviceFaultAddressInfoKHR = null,
     p_vendor_infos: ?*DeviceFaultVendorInfoKHR = null,
     p_vendor_binary_data: ?*anyopaque = null,
@@ -14723,7 +14723,7 @@ pub const DeviceFaultVendorBinaryHeaderVersionOneKHR = extern struct {
     vendor_id: u32 = 0,
     device_id: u32 = 0,
     driver_version: u32 = 0,
-    pipeline_cache_uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
+    pipeline_cache_uuid: [uuid_size]u8 = @splat(0),
     application_name_offset: u32 = 0,
     application_version: u32 = 0,
     engine_name_offset: u32 = 0,
@@ -15028,7 +15028,7 @@ pub const PhysicalDeviceShaderObjectFeaturesEXT = extern struct {
 pub const PhysicalDeviceShaderObjectPropertiesEXT = extern struct {
     s_type: StructureType = .physical_device_shader_object_properties_ext,
     p_next: ?*anyopaque = null,
-    shader_binary_uuid: [uuid_size]u8 = [_]u8{0} ** uuid_size,
+    shader_binary_uuid: [uuid_size]u8 = @splat(0),
     shader_binary_version: u32 = 0,
 };
 pub const ShaderCreateInfoEXT = extern struct {
@@ -15112,7 +15112,7 @@ pub const PhysicalDeviceShaderEnqueuePropertiesAMDX = extern struct {
     max_execution_graph_shader_payload_size: u32 = 0,
     max_execution_graph_shader_payload_count: u32 = 0,
     execution_graph_dispatch_address_alignment: u32 = 0,
-    max_execution_graph_workgroup_count: [3]u32 = [_]u32{0} ** 3,
+    max_execution_graph_workgroup_count: [3]u32 = @splat(0),
     max_execution_graph_workgroups: u32 = 0,
 };
 pub const PhysicalDeviceShaderEnqueueFeaturesAMDX = extern struct {
@@ -16326,7 +16326,7 @@ pub const PhysicalDeviceDataGraphProcessingEngineARM = extern struct {
 };
 pub const PhysicalDeviceDataGraphOperationSupportARM = extern struct {
     operation_type: PhysicalDeviceDataGraphOperationTypeARM = @enumFromInt(0),
-    name: [max_physical_device_data_graph_operation_set_name_size_arm - 1:0]u8 = [_:0]u8{0} ** (max_physical_device_data_graph_operation_set_name_size_arm - 1),
+    name: [max_physical_device_data_graph_operation_set_name_size_arm - 1:0]u8 = @splat(0),
     version: u32 = 0,
 };
 pub const QueueFamilyDataGraphPropertiesARM = extern struct {
@@ -16466,7 +16466,7 @@ pub const PerformanceCounterDescriptionARM = extern struct {
     s_type: StructureType = .performance_counter_description_arm,
     p_next: ?*anyopaque = null,
     flags: PerformanceCounterDescriptionFlagsARM = .none,
-    name: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    name: [max_description_size - 1:0]u8 = @splat(0),
 };
 pub const RenderPassPerformanceCountersByRegionBeginInfoARM = extern struct {
     s_type: StructureType = .render_pass_performance_counters_by_region_begin_info_arm,
@@ -16771,8 +16771,8 @@ pub const ShaderInstrumentationCreateInfoARM = extern struct {
 pub const ShaderInstrumentationMetricDescriptionARM = extern struct {
     s_type: StructureType = .shader_instrumentation_metric_description_arm,
     p_next: ?*anyopaque = null,
-    name: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
-    description: [max_description_size - 1:0]u8 = [_:0]u8{0} ** (max_description_size - 1),
+    name: [max_description_size - 1:0]u8 = @splat(0),
+    description: [max_description_size - 1:0]u8 = @splat(0),
 };
 pub const ShaderInstrumentationMetricDataHeaderARM = extern struct {
     result_index: u32 = 0,
@@ -16961,7 +16961,7 @@ pub const DeviceFaultShaderAbortMessageInfoKHR = extern struct {
     p_message_data: ?*anyopaque = null,
 };
 pub const DataGraphTOSANameQualityARM = extern struct {
-    name: [max_data_graph_tosa_name_size_arm - 1:0]u8 = [_:0]u8{0} ** (max_data_graph_tosa_name_size_arm - 1),
+    name: [max_data_graph_tosa_name_size_arm - 1:0]u8 = @splat(0),
     quality_flags: DataGraphTOSAQualityFlagsARM = .none,
 };
 pub const QueueFamilyDataGraphTOSAPropertiesARM = extern struct {
@@ -39385,3 +39385,4 @@ const std = @import("std");
 
 const assert = std.debug.assert;
 const Allocator = std.mem.Allocator;
+const Io = std.Io;

@@ -32,7 +32,7 @@ pub const Version = packed struct(u32) {
         return @bitCast(i);
     }
 
-    pub fn format(self: Version, writer: *std.io.Writer) std.io.Writer.Error!void {
+    pub fn format(self: Version, writer: *Io.Writer) Io.Writer.Error!void {
         return writer.print("{}.{}.{}", .{ self.major, self.minor, self.patch });
     }
 };
@@ -43,7 +43,7 @@ pub const MissingFunctionError = error{
 
 fn BitField(comptime Fields: type) type {
     const bit_count = 1 << @bitSizeOf(@typeInfo(Fields).@"enum".tag_type);
-    const BitsInt = std.meta.Int(.unsigned, bit_count);
+    const BitsInt = @Int(.unsigned, bit_count);
 
     return packed struct(BitsInt) {
         bits: BitsInt,
