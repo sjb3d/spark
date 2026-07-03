@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.355
+//! Generated from vk.xml version 1.4.356
 
 #![allow(
     clippy::too_many_arguments,
@@ -3394,6 +3394,14 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_ext_shader_ocp_microscaling_types(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_shader_ocp_microscaling_types(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_valve_shader_mixed_float_dot_product(&self) -> bool {
         (self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
             || self.supports_khr_get_physical_device_properties2())
@@ -6242,6 +6250,7 @@ pub struct DeviceExtensions {
     pub khr_maintenance11: bool,
     pub ext_shader_subgroup_partitioned: bool,
     pub khr_extended_flags: bool,
+    pub ext_shader_ocp_microscaling_types: bool,
     pub valve_shader_mixed_float_dot_product: bool,
     pub sec_throttle_hint: bool,
     pub arm_data_graph_neural_accelerator_statistics: bool,
@@ -7058,6 +7067,8 @@ impl DeviceExtensions {
             self.ext_shader_subgroup_partitioned = true;
         } else if name == c"VK_KHR_extended_flags" {
             self.khr_extended_flags = true;
+        } else if name == c"VK_EXT_shader_ocp_microscaling_types" {
+            self.ext_shader_ocp_microscaling_types = true;
         } else if name == c"VK_VALVE_shader_mixed_float_dot_product" {
             self.valve_shader_mixed_float_dot_product = true;
         } else if name == c"VK_SEC_throttle_hint" {
@@ -7477,6 +7488,7 @@ impl DeviceExtensions {
             khr_maintenance11: false,
             ext_shader_subgroup_partitioned: false,
             khr_extended_flags: false,
+            ext_shader_ocp_microscaling_types: false,
             valve_shader_mixed_float_dot_product: false,
             sec_throttle_hint: false,
             arm_data_graph_neural_accelerator_statistics: false,
@@ -10703,6 +10715,12 @@ impl DeviceExtensions {
     pub fn enable_khr_extended_flags(&mut self) {
         self.khr_extended_flags = true;
     }
+    pub fn supports_ext_shader_ocp_microscaling_types(&self) -> bool {
+        self.ext_shader_ocp_microscaling_types
+    }
+    pub fn enable_ext_shader_ocp_microscaling_types(&mut self) {
+        self.ext_shader_ocp_microscaling_types = true;
+    }
     pub fn supports_valve_shader_mixed_float_dot_product(&self) -> bool {
         self.valve_shader_mixed_float_dot_product
             && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_shader_float16_int8())
@@ -11951,6 +11969,9 @@ impl DeviceExtensions {
         }
         if self.khr_extended_flags {
             v.push(c"VK_KHR_extended_flags");
+        }
+        if self.ext_shader_ocp_microscaling_types {
+            v.push(c"VK_EXT_shader_ocp_microscaling_types");
         }
         if self.valve_shader_mixed_float_dot_product {
             v.push(c"VK_VALVE_shader_mixed_float_dot_product");

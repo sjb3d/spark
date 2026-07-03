@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.355
+//! Generated from vk.xml version 1.4.356
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -45001,3 +45001,54 @@ impl Deref for DataGraphPipelineOpticalFlowDispatchInfoARMBuilder {
 }
 impl DataGraphPipelineDispatchInfoARMNext for vk::DataGraphPipelineOpticalFlowDispatchInfoARM {}
 impl DataGraphPipelineDispatchInfoARMNext for DataGraphPipelineOpticalFlowDispatchInfoARMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT,
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT {
+    type Type = PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_float4(mut self, shader_float4: bool) -> Self {
+        self.inner.shader_float4 = if shader_float4 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn shader_float6(mut self, shader_float6: bool) -> Self {
+        self.inner.shader_float6 = if shader_float6 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn shader_float8_unsigned_e8m0(mut self, shader_float8_unsigned_e8m0: bool) -> Self {
+        self.inner.shader_float8_unsigned_e8m0 = if shader_float8_unsigned_e8m0 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_mx_int8(mut self, shader_mx_int8: bool) -> Self {
+        self.inner.shader_mx_int8 = if shader_mx_int8 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXTBuilder {}

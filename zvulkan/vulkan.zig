@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.355
+// Generated from vk.xml version 1.4.356
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -3955,6 +3955,7 @@ pub const StructureType = enum(i32) {
     physical_device_extended_flags_features_khr = 1000668004,
     image_stencil_usage_2_create_info_khr = 1000668005,
     shared_present_surface_capabilities_2_khr = 1000668006,
+    physical_device_shader_ocp_microscaling_types_features_ext = 1000672000,
     physical_device_shader_mixed_float_dot_product_features_valve = 1000673000,
     physical_device_throttle_hint_features_sec = 1000674000,
     throttle_hint_submit_info_sec = 1000674001,
@@ -4499,6 +4500,11 @@ pub const ComponentTypeKHR = enum(i32) {
     uint8_packed_nv = 1000491001,
     float8_e4m3_ext = 1000491002,
     float8_e5m2_ext = 1000491003,
+    float6_e2m3_ext = 1000672000,
+    float6_e3m2_ext = 1000672001,
+    float4_e2m1_ext = 1000672002,
+    float8_unsigned_e8m0_ext = 1000672003,
+    mxint8_ext = 1000672004,
     _,
 };
 pub const ScopeNV = ScopeKHR;
@@ -5458,6 +5464,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderConstantDataFeaturesKHR,
             *PhysicalDeviceShaderAbortFeaturesKHR,
             *PhysicalDeviceDataGraphOpticalFlowFeaturesARM,
+            *PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7943,6 +7950,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderConstantDataFeaturesKHR,
             *PhysicalDeviceShaderAbortFeaturesKHR,
             *PhysicalDeviceDataGraphOpticalFlowFeaturesARM,
+            *PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -17033,6 +17041,14 @@ pub const DataGraphPipelineOpticalFlowDispatchInfoARM = extern struct {
     flags: DataGraphOpticalFlowExecuteFlagsARM = .none,
     mean_flow_l1_norm_hint: u32 = 0,
 };
+pub const PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_shader_ocp_microscaling_types_features_ext,
+    p_next: ?*anyopaque = null,
+    shader_float4: Bool32 = .false,
+    shader_float6: Bool32 = .false,
+    shader_float8_unsigned_e8m0: Bool32 = .false,
+    shader_mx_int8: Bool32 = .false,
+};
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpEnumeratePhysicalDevices = *const fn (Instance, [*c]u32, [*c]PhysicalDevice) callconv(.c) Result;
@@ -18189,6 +18205,7 @@ const ExtensionNames = struct {
     const ext_shader_subgroup_partitioned = "VK_EXT_shader_subgroup_partitioned";
     const sec_ubm_surface = "VK_SEC_ubm_surface";
     const khr_extended_flags = "VK_KHR_extended_flags";
+    const ext_shader_ocp_microscaling_types = "VK_EXT_shader_ocp_microscaling_types";
     const valve_shader_mixed_float_dot_product = "VK_VALVE_shader_mixed_float_dot_product";
     const sec_throttle_hint = "VK_SEC_throttle_hint";
     const arm_data_graph_neural_accelerator_statistics = "VK_ARM_data_graph_neural_accelerator_statistics";
@@ -21562,6 +21579,15 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_ext_shader_ocp_microscaling_types(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_ext_shader_ocp_microscaling_types(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_valve_shader_mixed_float_dot_product(self: InstanceExtensions) bool {
         return (self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2()) and (self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_shader_float16_int8());
     }
@@ -21997,6 +22023,7 @@ pub const DeviceExtensions = packed struct {
     khr_maintenance11: bool = false,
     ext_shader_subgroup_partitioned: bool = false,
     khr_extended_flags: bool = false,
+    ext_shader_ocp_microscaling_types: bool = false,
     valve_shader_mixed_float_dot_product: bool = false,
     sec_throttle_hint: bool = false,
     arm_data_graph_neural_accelerator_statistics: bool = false,
@@ -22813,6 +22840,8 @@ pub const DeviceExtensions = packed struct {
             self.ext_shader_subgroup_partitioned = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_extended_flags) == .eq) {
             self.khr_extended_flags = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_ocp_microscaling_types) == .eq) {
+            self.ext_shader_ocp_microscaling_types = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.valve_shader_mixed_float_dot_product) == .eq) {
             self.valve_shader_mixed_float_dot_product = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.sec_throttle_hint) == .eq) {
@@ -23242,6 +23271,7 @@ pub const DeviceExtensions = packed struct {
         if (self.khr_maintenance11) try names.append(allocator, ExtensionNames.khr_maintenance11);
         if (self.ext_shader_subgroup_partitioned) try names.append(allocator, ExtensionNames.ext_shader_subgroup_partitioned);
         if (self.khr_extended_flags) try names.append(allocator, ExtensionNames.khr_extended_flags);
+        if (self.ext_shader_ocp_microscaling_types) try names.append(allocator, ExtensionNames.ext_shader_ocp_microscaling_types);
         if (self.valve_shader_mixed_float_dot_product) try names.append(allocator, ExtensionNames.valve_shader_mixed_float_dot_product);
         if (self.sec_throttle_hint) try names.append(allocator, ExtensionNames.sec_throttle_hint);
         if (self.arm_data_graph_neural_accelerator_statistics) try names.append(allocator, ExtensionNames.arm_data_graph_neural_accelerator_statistics);
@@ -26660,6 +26690,13 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_khr_extended_flags(self: *DeviceExtensions) void {
         self.khr_extended_flags = true;
+    }
+
+    pub fn supports_ext_shader_ocp_microscaling_types(self: DeviceExtensions) bool {
+        return self.ext_shader_ocp_microscaling_types;
+    }
+    pub fn enable_ext_shader_ocp_microscaling_types(self: *DeviceExtensions) void {
+        self.ext_shader_ocp_microscaling_types = true;
     }
 
     pub fn supports_valve_shader_mixed_float_dot_product(self: DeviceExtensions) bool {

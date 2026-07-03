@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.355
+//! Generated from vk.xml version 1.4.356
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -8837,6 +8837,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_EXTENDED_FLAGS_FEATURES_KHR: Self = Self(1000668004);
     pub const IMAGE_STENCIL_USAGE_2_CREATE_INFO_KHR: Self = Self(1000668005);
     pub const SHARED_PRESENT_SURFACE_CAPABILITIES_2_KHR: Self = Self(1000668006);
+    pub const PHYSICAL_DEVICE_SHADER_OCP_MICROSCALING_TYPES_FEATURES_EXT: Self = Self(1000672000);
     pub const PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE: Self = Self(1000673000);
     pub const PHYSICAL_DEVICE_THROTTLE_HINT_FEATURES_SEC: Self = Self(1000674000);
     pub const THROTTLE_HINT_SUBMIT_INFO_SEC: Self = Self(1000674001);
@@ -9963,6 +9964,7 @@ impl fmt::Display for StructureType {
             1000668004 => Some(&"PHYSICAL_DEVICE_EXTENDED_FLAGS_FEATURES_KHR"),
             1000668005 => Some(&"IMAGE_STENCIL_USAGE_2_CREATE_INFO_KHR"),
             1000668006 => Some(&"SHARED_PRESENT_SURFACE_CAPABILITIES_2_KHR"),
+            1000672000 => Some(&"PHYSICAL_DEVICE_SHADER_OCP_MICROSCALING_TYPES_FEATURES_EXT"),
             1000673000 => Some(&"PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE"),
             1000674000 => Some(&"PHYSICAL_DEVICE_THROTTLE_HINT_FEATURES_SEC"),
             1000674001 => Some(&"THROTTLE_HINT_SUBMIT_INFO_SEC"),
@@ -11910,6 +11912,11 @@ impl ComponentTypeKHR {
     pub const FLOAT_E5M2_NV: Self = Self::FLOAT8_E5M2_EXT;
     pub const FLOAT8_E4M3_EXT: Self = Self(1000491002);
     pub const FLOAT8_E5M2_EXT: Self = Self(1000491003);
+    pub const FLOAT6_E2M3_EXT: Self = Self(1000672000);
+    pub const FLOAT6_E3M2_EXT: Self = Self(1000672001);
+    pub const FLOAT4_E2M1_EXT: Self = Self(1000672002);
+    pub const FLOAT8_UNSIGNED_E8M0_EXT: Self = Self(1000672003);
+    pub const MXINT8_EXT: Self = Self(1000672004);
 }
 impl fmt::Display for ComponentTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -11930,6 +11937,11 @@ impl fmt::Display for ComponentTypeKHR {
             1000491001 => Some(&"UINT8_PACKED_NV"),
             1000491002 => Some(&"FLOAT8_E4M3_EXT"),
             1000491003 => Some(&"FLOAT8_E5M2_EXT"),
+            1000672000 => Some(&"FLOAT6_E2M3_EXT"),
+            1000672001 => Some(&"FLOAT6_E3M2_EXT"),
+            1000672002 => Some(&"FLOAT4_E2M1_EXT"),
+            1000672003 => Some(&"FLOAT8_UNSIGNED_E8M0_EXT"),
+            1000672004 => Some(&"MXINT8_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -57971,6 +57983,43 @@ impl fmt::Debug for DataGraphPipelineOpticalFlowDispatchInfoARM {
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
             .field("mean_flow_l1_norm_hint", &self.mean_flow_l1_norm_hint)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_float4: Bool32,
+    pub shader_float6: Bool32,
+    pub shader_float8_unsigned_e8m0: Bool32,
+    pub shader_mx_int8: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT {}
+impl Default for PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_OCP_MICROSCALING_TYPES_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_float4: Default::default(),
+            shader_float6: Default::default(),
+            shader_float8_unsigned_e8m0: Default::default(),
+            shader_mx_int8: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_float4", &self.shader_float4)
+            .field("shader_float6", &self.shader_float6)
+            .field("shader_float8_unsigned_e8m0", &self.shader_float8_unsigned_e8m0)
+            .field("shader_mx_int8", &self.shader_mx_int8)
             .finish()
     }
 }
