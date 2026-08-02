@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.357
+//! Generated from vk.xml version 1.4.358
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -8845,6 +8845,8 @@ impl StructureType {
     pub const DATA_GRAPH_PIPELINE_SESSION_NEURAL_STATISTICS_CREATE_INFO_ARM: Self = Self(1000676001);
     pub const PHYSICAL_DEVICE_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_FEATURES_ARM: Self = Self(1000676002);
     pub const PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT: Self = Self(1000678000);
+    pub const PHYSICAL_DEVICE_IMAGE_TILING_CONTROL_FEATURES_EXT: Self = Self(1000687000);
+    pub const IMAGE_TILING_CONTROL_CREATE_INFO_EXT: Self = Self(1000687001);
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV: Self = Self(1000689000);
 }
 impl fmt::Display for StructureType {
@@ -9972,6 +9974,8 @@ impl fmt::Display for StructureType {
             1000676001 => Some(&"DATA_GRAPH_PIPELINE_SESSION_NEURAL_STATISTICS_CREATE_INFO_ARM"),
             1000676002 => Some(&"PHYSICAL_DEVICE_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_FEATURES_ARM"),
             1000678000 => Some(&"PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT"),
+            1000687000 => Some(&"PHYSICAL_DEVICE_IMAGE_TILING_CONTROL_FEATURES_EXT"),
+            1000687001 => Some(&"IMAGE_TILING_CONTROL_CREATE_INFO_EXT"),
             1000689000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV"),
             _ => None,
         };
@@ -10368,6 +10372,30 @@ impl fmt::Display for RayTracingInvocationReorderModeEXT {
     }
 }
 pub type RayTracingInvocationReorderModeNV = RayTracingInvocationReorderModeEXT;
+
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ImageTilingControlEXT(pub(crate) i32);
+impl ImageTilingControlEXT {
+    pub const DEFAULT: Self = Self(0);
+    pub const MIN_SIZE: Self = Self(1);
+    pub const MAX_PERFORMANCE: Self = Self(2);
+}
+impl fmt::Display for ImageTilingControlEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DEFAULT"),
+            1 => Some(&"MIN_SIZE"),
+            2 => Some(&"MAX_PERFORMANCE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            f.write_str(name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -57983,6 +58011,62 @@ impl fmt::Debug for DataGraphPipelineOpticalFlowDispatchInfoARM {
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
             .field("mean_flow_l1_norm_hint", &self.mean_flow_l1_norm_hint)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageTilingControlFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub image_tiling_control: Bool32,
+}
+unsafe impl Send for PhysicalDeviceImageTilingControlFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceImageTilingControlFeaturesEXT {}
+impl Default for PhysicalDeviceImageTilingControlFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_TILING_CONTROL_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            image_tiling_control: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageTilingControlFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageTilingControlFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_tiling_control", &self.image_tiling_control)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageTilingControlCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub tiling_control: ImageTilingControlEXT,
+}
+unsafe impl Send for ImageTilingControlCreateInfoEXT {}
+unsafe impl Sync for ImageTilingControlCreateInfoEXT {}
+impl Default for ImageTilingControlCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_TILING_CONTROL_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            tiling_control: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageTilingControlCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageTilingControlCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tiling_control", &self.tiling_control)
             .finish()
     }
 }

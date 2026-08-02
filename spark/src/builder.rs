@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.357
+//! Generated from vk.xml version 1.4.358
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -45009,6 +45009,74 @@ impl Deref for DataGraphPipelineOpticalFlowDispatchInfoARMBuilder {
 }
 impl DataGraphPipelineDispatchInfoARMNext for vk::DataGraphPipelineOpticalFlowDispatchInfoARM {}
 impl DataGraphPipelineDispatchInfoARMNext for DataGraphPipelineOpticalFlowDispatchInfoARMBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceImageTilingControlFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceImageTilingControlFeaturesEXT,
+}
+impl Builder<'_> for vk::PhysicalDeviceImageTilingControlFeaturesEXT {
+    type Type = PhysicalDeviceImageTilingControlFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceImageTilingControlFeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceImageTilingControlFeaturesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_tiling_control(mut self, image_tiling_control: bool) -> Self {
+        self.inner.image_tiling_control = if image_tiling_control { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceImageTilingControlFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceImageTilingControlFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageTilingControlFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageTilingControlFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceImageTilingControlFeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDeviceImageTilingControlFeaturesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct ImageTilingControlCreateInfoEXTBuilder {
+    inner: vk::ImageTilingControlCreateInfoEXT,
+}
+impl Builder<'_> for vk::ImageTilingControlCreateInfoEXT {
+    type Type = ImageTilingControlCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl ImageTilingControlCreateInfoEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::ImageTilingControlCreateInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tiling_control(mut self, tiling_control: vk::ImageTilingControlEXT) -> Self {
+        self.inner.tiling_control = tiling_control;
+        self
+    }
+}
+impl Deref for ImageTilingControlCreateInfoEXTBuilder {
+    type Target = vk::ImageTilingControlCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageCreateInfoNext for vk::ImageTilingControlCreateInfoEXT {}
+impl ImageCreateInfoNext for ImageTilingControlCreateInfoEXTBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.357
+//! Generated from vk.xml version 1.4.358
 
 #![allow(
     clippy::too_many_arguments,
@@ -6255,6 +6255,7 @@ pub struct DeviceExtensions {
     pub sec_throttle_hint: bool,
     pub arm_data_graph_neural_accelerator_statistics: bool,
     pub ext_primitive_restart_index: bool,
+    pub ext_image_tiling_control: bool,
     pub nv_cooperative_matrix_decode_vector: bool,
 }
 impl DeviceExtensions {
@@ -7077,6 +7078,8 @@ impl DeviceExtensions {
             self.arm_data_graph_neural_accelerator_statistics = true;
         } else if name == c"VK_EXT_primitive_restart_index" {
             self.ext_primitive_restart_index = true;
+        } else if name == c"VK_EXT_image_tiling_control" {
+            self.ext_image_tiling_control = true;
         } else if name == c"VK_NV_cooperative_matrix_decode_vector" {
             self.nv_cooperative_matrix_decode_vector = true;
         }
@@ -7493,6 +7496,7 @@ impl DeviceExtensions {
             sec_throttle_hint: false,
             arm_data_graph_neural_accelerator_statistics: false,
             ext_primitive_restart_index: false,
+            ext_image_tiling_control: false,
             nv_cooperative_matrix_decode_vector: false,
         }
     }
@@ -10749,6 +10753,12 @@ impl DeviceExtensions {
     pub fn enable_ext_primitive_restart_index(&mut self) {
         self.ext_primitive_restart_index = true;
     }
+    pub fn supports_ext_image_tiling_control(&self) -> bool {
+        self.ext_image_tiling_control
+    }
+    pub fn enable_ext_image_tiling_control(&mut self) {
+        self.ext_image_tiling_control = true;
+    }
     pub fn supports_nv_cooperative_matrix_decode_vector(&self) -> bool {
         self.nv_cooperative_matrix_decode_vector && self.supports_nv_cooperative_matrix2()
     }
@@ -11984,6 +11994,9 @@ impl DeviceExtensions {
         }
         if self.ext_primitive_restart_index {
             v.push(c"VK_EXT_primitive_restart_index");
+        }
+        if self.ext_image_tiling_control {
+            v.push(c"VK_EXT_image_tiling_control");
         }
         if self.nv_cooperative_matrix_decode_vector {
             v.push(c"VK_NV_cooperative_matrix_decode_vector");

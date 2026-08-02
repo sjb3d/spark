@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.357
+// Generated from vk.xml version 1.4.358
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -3963,6 +3963,8 @@ pub const StructureType = enum(i32) {
     data_graph_pipeline_session_neural_statistics_create_info_arm = 1000676001,
     physical_device_data_graph_neural_accelerator_statistics_features_arm = 1000676002,
     physical_device_primitive_restart_index_features_ext = 1000678000,
+    physical_device_image_tiling_control_features_ext = 1000687000,
+    image_tiling_control_create_info_ext = 1000687001,
     physical_device_cooperative_matrix_decode_vector_features_nv = 1000689000,
     _,
 };
@@ -4090,6 +4092,12 @@ pub const RayTracingInvocationReorderModeEXT = enum(i32) {
     _,
 };
 pub const RayTracingInvocationReorderModeNV = RayTracingInvocationReorderModeEXT;
+pub const ImageTilingControlEXT = enum(i32) {
+    default = 0,
+    min_size = 1,
+    max_performance = 2,
+    _,
+};
 pub const IndirectCommandsTokenTypeNV = enum(i32) {
     shader_group = 0,
     state_flags = 1,
@@ -5464,6 +5472,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderConstantDataFeaturesKHR,
             *PhysicalDeviceShaderAbortFeaturesKHR,
             *PhysicalDeviceDataGraphOpticalFlowFeaturesARM,
+            *PhysicalDeviceImageTilingControlFeaturesEXT,
             *PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
@@ -5807,6 +5816,7 @@ pub const ImageCreateInfo = extern struct {
             *ExternalFormatOHOS,
             *OpaqueCaptureDataCreateInfoEXT,
             *DataGraphOpticalFlowImageFormatInfoARM,
+            *ImageTilingControlCreateInfoEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7953,6 +7963,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderConstantDataFeaturesKHR,
             *PhysicalDeviceShaderAbortFeaturesKHR,
             *PhysicalDeviceDataGraphOpticalFlowFeaturesARM,
+            *PhysicalDeviceImageTilingControlFeaturesEXT,
             *PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
@@ -17045,6 +17056,16 @@ pub const DataGraphPipelineOpticalFlowDispatchInfoARM = extern struct {
     flags: DataGraphOpticalFlowExecuteFlagsARM = .none,
     mean_flow_l1_norm_hint: u32 = 0,
 };
+pub const PhysicalDeviceImageTilingControlFeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_image_tiling_control_features_ext,
+    p_next: ?*anyopaque = null,
+    image_tiling_control: Bool32 = .false,
+};
+pub const ImageTilingControlCreateInfoEXT = extern struct {
+    s_type: StructureType = .image_tiling_control_create_info_ext,
+    p_next: ?*const anyopaque = null,
+    tiling_control: ImageTilingControlEXT = @enumFromInt(0),
+};
 pub const PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT = extern struct {
     s_type: StructureType = .physical_device_shader_ocp_microscaling_types_features_ext,
     p_next: ?*anyopaque = null,
@@ -18221,6 +18242,7 @@ const ExtensionNames = struct {
     const sec_throttle_hint = "VK_SEC_throttle_hint";
     const arm_data_graph_neural_accelerator_statistics = "VK_ARM_data_graph_neural_accelerator_statistics";
     const ext_primitive_restart_index = "VK_EXT_primitive_restart_index";
+    const ext_image_tiling_control = "VK_EXT_image_tiling_control";
     const nv_cooperative_matrix_decode_vector = "VK_NV_cooperative_matrix_decode_vector";
 };
 
@@ -22039,6 +22061,7 @@ pub const DeviceExtensions = packed struct {
     sec_throttle_hint: bool = false,
     arm_data_graph_neural_accelerator_statistics: bool = false,
     ext_primitive_restart_index: bool = false,
+    ext_image_tiling_control: bool = false,
     nv_cooperative_matrix_decode_vector: bool = false,
 
     pub fn enable_by_name(self: *DeviceExtensions, maybe_name: ?[*:0]const u8) void {
@@ -22861,6 +22884,8 @@ pub const DeviceExtensions = packed struct {
             self.arm_data_graph_neural_accelerator_statistics = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_primitive_restart_index) == .eq) {
             self.ext_primitive_restart_index = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_image_tiling_control) == .eq) {
+            self.ext_image_tiling_control = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_cooperative_matrix_decode_vector) == .eq) {
             self.nv_cooperative_matrix_decode_vector = true;
         }
@@ -23287,6 +23312,7 @@ pub const DeviceExtensions = packed struct {
         if (self.sec_throttle_hint) try names.append(allocator, ExtensionNames.sec_throttle_hint);
         if (self.arm_data_graph_neural_accelerator_statistics) try names.append(allocator, ExtensionNames.arm_data_graph_neural_accelerator_statistics);
         if (self.ext_primitive_restart_index) try names.append(allocator, ExtensionNames.ext_primitive_restart_index);
+        if (self.ext_image_tiling_control) try names.append(allocator, ExtensionNames.ext_image_tiling_control);
         if (self.nv_cooperative_matrix_decode_vector) try names.append(allocator, ExtensionNames.nv_cooperative_matrix_decode_vector);
         return names.toOwnedSlice(allocator);
     }
@@ -26739,6 +26765,13 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_ext_primitive_restart_index(self: *DeviceExtensions) void {
         self.ext_primitive_restart_index = true;
+    }
+
+    pub fn supports_ext_image_tiling_control(self: DeviceExtensions) bool {
+        return self.ext_image_tiling_control;
+    }
+    pub fn enable_ext_image_tiling_control(self: *DeviceExtensions) void {
+        self.ext_image_tiling_control = true;
     }
 
     pub fn supports_nv_cooperative_matrix_decode_vector(self: DeviceExtensions) bool {
