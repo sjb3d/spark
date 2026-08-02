@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.356
+//! Generated from vk.xml version 1.4.357
 
 #![allow(
     clippy::too_many_arguments,
@@ -12547,6 +12547,13 @@ pub struct Device {
     pub fp_set_latency_marker_nv: Option<vk::FnSetLatencyMarkerNV>,
     pub fp_get_latency_timings_nv: Option<vk::FnGetLatencyTimingsNV>,
     pub fp_queue_notify_out_of_band_nv: Option<vk::FnQueueNotifyOutOfBandNV>,
+    pub fp_set_latency_sleep_mode_legacy_nv: Option<vk::FnSetLatencySleepModeLegacyNV>,
+    pub fp_latency_sleep_legacy_nv: Option<vk::FnLatencySleepLegacyNV>,
+    pub fp_set_latency_marker_legacy_nv: Option<vk::FnSetLatencyMarkerLegacyNV>,
+    pub fp_get_latency_timings_legacy_nv: Option<vk::FnGetLatencyTimingsLegacyNV>,
+    pub fp_queue_notify_out_of_band_legacy_nv: Option<vk::FnQueueNotifyOutOfBandLegacyNV>,
+    pub fp_get_sleep_status_legacy_nv: Option<vk::FnGetSleepStatusLegacyNV>,
+    pub fp_shutdown_latency_device_legacy_nv: Option<vk::FnShutdownLatencyDeviceLegacyNV>,
     pub fp_cmd_set_rendering_attachment_locations: Option<vk::FnCmdSetRenderingAttachmentLocations>,
     pub fp_cmd_set_rendering_input_attachment_indices: Option<vk::FnCmdSetRenderingInputAttachmentIndices>,
     pub fp_cmd_set_depth_clamp_range_ext: Option<vk::FnCmdSetDepthClampRangeEXT>,
@@ -16701,6 +16708,55 @@ impl Device {
             fp_queue_notify_out_of_band_nv: if extensions.nv_low_latency2 {
                 instance
                     .get_device_proc_addr(device, c"vkQueueNotifyOutOfBandNV")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_latency_sleep_mode_legacy_nv: if extensions.nv_low_latency {
+                instance
+                    .get_device_proc_addr(device, c"vkSetLatencySleepModeLegacyNV")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_latency_sleep_legacy_nv: if extensions.nv_low_latency {
+                instance
+                    .get_device_proc_addr(device, c"vkLatencySleepLegacyNV")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_latency_marker_legacy_nv: if extensions.nv_low_latency {
+                instance
+                    .get_device_proc_addr(device, c"vkSetLatencyMarkerLegacyNV")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_latency_timings_legacy_nv: if extensions.nv_low_latency {
+                instance
+                    .get_device_proc_addr(device, c"vkGetLatencyTimingsLegacyNV")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_queue_notify_out_of_band_legacy_nv: if extensions.nv_low_latency {
+                instance
+                    .get_device_proc_addr(device, c"vkQueueNotifyOutOfBandLegacyNV")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_sleep_status_legacy_nv: if extensions.nv_low_latency {
+                instance
+                    .get_device_proc_addr(device, c"vkGetSleepStatusLegacyNV")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_shutdown_latency_device_legacy_nv: if extensions.nv_low_latency {
+                instance
+                    .get_device_proc_addr(device, c"vkShutdownLatencyDeviceLegacyNV")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -25715,6 +25771,60 @@ impl Device {
             .fp_queue_notify_out_of_band_nv
             .expect("vkQueueNotifyOutOfBandNV is not loaded");
         (fp)(queue, p_queue_type_info)
+    }
+    pub unsafe fn set_latency_sleep_mode_legacy_nv(
+        &self,
+        low_latency_mode: bool,
+        low_latency_boost: bool,
+        minimum_interval_us: u32,
+    ) {
+        let fp = self
+            .fp_set_latency_sleep_mode_legacy_nv
+            .expect("vkSetLatencySleepModeLegacyNV is not loaded");
+        (fp)(
+            self.handle,
+            if low_latency_mode { vk::TRUE } else { vk::FALSE },
+            if low_latency_boost { vk::TRUE } else { vk::FALSE },
+            minimum_interval_us,
+        )
+    }
+    pub unsafe fn latency_sleep_legacy_nv(&self, signal_semaphore: vk::Semaphore, value: u64) {
+        let fp = self
+            .fp_latency_sleep_legacy_nv
+            .expect("vkLatencySleepLegacyNV is not loaded");
+        (fp)(self.handle, signal_semaphore, value)
+    }
+    pub unsafe fn set_latency_marker_legacy_nv(&self, frame_id: u64, marker: u32) {
+        let fp = self
+            .fp_set_latency_marker_legacy_nv
+            .expect("vkSetLatencyMarkerLegacyNV is not loaded");
+        (fp)(self.handle, frame_id, marker)
+    }
+    pub unsafe fn get_latency_timings_legacy_nv(&self, p_timings: *mut c_void) {
+        let fp = self
+            .fp_get_latency_timings_legacy_nv
+            .expect("vkGetLatencyTimingsLegacyNV is not loaded");
+        (fp)(self.handle, p_timings)
+    }
+    pub unsafe fn queue_notify_out_of_band_legacy_nv(&self, queue: vk::Queue, queue_type: u32) {
+        let fp = self
+            .fp_queue_notify_out_of_band_legacy_nv
+            .expect("vkQueueNotifyOutOfBandLegacyNV is not loaded");
+        (fp)(queue, queue_type)
+    }
+    pub unsafe fn get_sleep_status_legacy_nv(&self) -> bool {
+        let fp = self
+            .fp_get_sleep_status_legacy_nv
+            .expect("vkGetSleepStatusLegacyNV is not loaded");
+        let mut p_low_latency_mode = MaybeUninit::<_>::uninit();
+        (fp)(self.handle, p_low_latency_mode.as_mut_ptr());
+        p_low_latency_mode.assume_init() != vk::FALSE
+    }
+    pub unsafe fn shutdown_latency_device_legacy_nv(&self) {
+        let fp = self
+            .fp_shutdown_latency_device_legacy_nv
+            .expect("vkShutdownLatencyDeviceLegacyNV is not loaded");
+        (fp)(self.handle)
     }
     pub unsafe fn cmd_set_rendering_attachment_locations(
         &self,

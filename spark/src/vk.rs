@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.356
+//! Generated from vk.xml version 1.4.357
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -60821,6 +60821,18 @@ pub type FnGetLatencyTimingsNV = unsafe extern "system" fn(
 );
 pub type FnQueueNotifyOutOfBandNV =
     unsafe extern "system" fn(queue: Queue, p_queue_type_info: *const OutOfBandQueueTypeInfoNV);
+pub type FnSetLatencySleepModeLegacyNV = unsafe extern "system" fn(
+    device: Device,
+    low_latency_mode: Bool32,
+    low_latency_boost: Bool32,
+    minimum_interval_us: u32,
+);
+pub type FnLatencySleepLegacyNV = unsafe extern "system" fn(device: Device, signal_semaphore: Semaphore, value: u64);
+pub type FnSetLatencyMarkerLegacyNV = unsafe extern "system" fn(device: Device, frame_id: u64, marker: u32);
+pub type FnGetLatencyTimingsLegacyNV = unsafe extern "system" fn(device: Device, p_timings: *mut c_void);
+pub type FnQueueNotifyOutOfBandLegacyNV = unsafe extern "system" fn(queue: Queue, queue_type: u32);
+pub type FnGetSleepStatusLegacyNV = unsafe extern "system" fn(device: Device, p_low_latency_mode: *mut Bool32);
+pub type FnShutdownLatencyDeviceLegacyNV = unsafe extern "system" fn(device: Device);
 pub type FnCmdSetRenderingAttachmentLocations =
     unsafe extern "system" fn(command_buffer: CommandBuffer, p_location_info: *const RenderingAttachmentLocationInfo);
 pub type FnCmdSetRenderingInputAttachmentIndices = unsafe extern "system" fn(

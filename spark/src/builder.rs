@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.356
+//! Generated from vk.xml version 1.4.357
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -6342,6 +6342,14 @@ impl ShaderModuleCreateInfoNext for vk::ValidationFeaturesEXT {}
 impl ShaderModuleCreateInfoNext for ValidationFeaturesEXTBuilder<'_> {}
 impl ShaderCreateInfoEXTNext for vk::ValidationFeaturesEXT {}
 impl ShaderCreateInfoEXTNext for ValidationFeaturesEXTBuilder<'_> {}
+impl PipelineShaderStageCreateInfoNext for vk::ValidationFeaturesEXT {}
+impl PipelineShaderStageCreateInfoNext for ValidationFeaturesEXTBuilder<'_> {}
+impl GraphicsPipelineCreateInfoNext for vk::ValidationFeaturesEXT {}
+impl GraphicsPipelineCreateInfoNext for ValidationFeaturesEXTBuilder<'_> {}
+impl ComputePipelineCreateInfoNext for vk::ValidationFeaturesEXT {}
+impl ComputePipelineCreateInfoNext for ValidationFeaturesEXTBuilder<'_> {}
+impl RayTracingPipelineCreateInfoKHRNext for vk::ValidationFeaturesEXT {}
+impl RayTracingPipelineCreateInfoKHRNext for ValidationFeaturesEXTBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]

@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.356
+// Generated from vk.xml version 1.4.357
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -6101,6 +6101,7 @@ pub const PipelineShaderStageCreateInfo = extern struct {
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
             inline *ShaderModuleCreateInfo,
+            *ValidationFeaturesEXT,
             *ShaderModuleValidationCacheCreateInfoEXT,
             *DebugUtilsObjectNameInfoEXT,
             *PipelineShaderStageRequiredSubgroupSizeCreateInfo,
@@ -6130,6 +6131,7 @@ pub const ComputePipelineCreateInfo = extern struct {
             inline *ComputePipelineIndirectBufferInfoNV,
             *PipelineCreateFlags2CreateInfo,
             *PipelineBinaryInfoKHR,
+            *ValidationFeaturesEXT,
             *PipelineCreationFeedbackCreateInfo,
             *SubpassShadingPipelineCreateInfoHUAWEI,
             *PipelineCompilerControlCreateInfoAMD,
@@ -6380,6 +6382,7 @@ pub const GraphicsPipelineCreateInfo = extern struct {
         switch (@TypeOf(next)) {
             inline *PipelineCreateFlags2CreateInfo,
             *PipelineBinaryInfoKHR,
+            *ValidationFeaturesEXT,
             *GraphicsPipelineShaderGroupsCreateInfoNV,
             *PipelineDiscardRectangleStateCreateInfoEXT,
             *ExternalFormatANDROID,
@@ -10739,6 +10742,7 @@ pub const RayTracingPipelineCreateInfoKHR = extern struct {
         switch (@TypeOf(next)) {
             inline *PipelineCreateFlags2CreateInfo,
             *PipelineBinaryInfoKHR,
+            *ValidationFeaturesEXT,
             *RayTracingPipelineClusterAccelerationStructureCreateInfoNV,
             *PipelineCreationFeedbackCreateInfo,
             *PipelineRobustnessCreateInfo,
@@ -17674,6 +17678,13 @@ pub const FpLatencySleepNV = *const fn (Device, SwapchainKHR, [*c]const LatencyS
 pub const FpSetLatencyMarkerNV = *const fn (Device, SwapchainKHR, [*c]const SetLatencyMarkerInfoNV) callconv(.c) void;
 pub const FpGetLatencyTimingsNV = *const fn (Device, SwapchainKHR, [*c]GetLatencyMarkerInfoNV) callconv(.c) void;
 pub const FpQueueNotifyOutOfBandNV = *const fn (Queue, [*c]const OutOfBandQueueTypeInfoNV) callconv(.c) void;
+pub const FpSetLatencySleepModeLegacyNV = *const fn (Device, Bool32, Bool32, u32) callconv(.c) void;
+pub const FpLatencySleepLegacyNV = *const fn (Device, Semaphore, u64) callconv(.c) void;
+pub const FpSetLatencyMarkerLegacyNV = *const fn (Device, u64, u32) callconv(.c) void;
+pub const FpGetLatencyTimingsLegacyNV = *const fn (Device, ?*anyopaque) callconv(.c) void;
+pub const FpQueueNotifyOutOfBandLegacyNV = *const fn (Queue, u32) callconv(.c) void;
+pub const FpGetSleepStatusLegacyNV = *const fn (Device, [*c]Bool32) callconv(.c) void;
+pub const FpShutdownLatencyDeviceLegacyNV = *const fn (Device) callconv(.c) void;
 pub const FpCmdSetRenderingAttachmentLocations = *const fn (CommandBuffer, [*c]const RenderingAttachmentLocationInfo) callconv(.c) void;
 pub const FpCmdSetRenderingInputAttachmentIndices = *const fn (CommandBuffer, [*c]const RenderingInputAttachmentIndexInfo) callconv(.c) void;
 pub const FpCmdSetDepthClampRangeEXT = *const fn (CommandBuffer, DepthClampModeEXT, [*c]const DepthClampRangeEXT) callconv(.c) void;
@@ -29507,6 +29518,13 @@ pub const DeviceCommands = struct {
     fp_set_latency_marker_nv: ?FpSetLatencyMarkerNV,
     fp_get_latency_timings_nv: ?FpGetLatencyTimingsNV,
     fp_queue_notify_out_of_band_nv: ?FpQueueNotifyOutOfBandNV,
+    fp_set_latency_sleep_mode_legacy_nv: ?FpSetLatencySleepModeLegacyNV,
+    fp_latency_sleep_legacy_nv: ?FpLatencySleepLegacyNV,
+    fp_set_latency_marker_legacy_nv: ?FpSetLatencyMarkerLegacyNV,
+    fp_get_latency_timings_legacy_nv: ?FpGetLatencyTimingsLegacyNV,
+    fp_queue_notify_out_of_band_legacy_nv: ?FpQueueNotifyOutOfBandLegacyNV,
+    fp_get_sleep_status_legacy_nv: ?FpGetSleepStatusLegacyNV,
+    fp_shutdown_latency_device_legacy_nv: ?FpShutdownLatencyDeviceLegacyNV,
     fp_cmd_set_rendering_attachment_locations: ?FpCmdSetRenderingAttachmentLocations,
     fp_cmd_set_rendering_input_attachment_indices: ?FpCmdSetRenderingInputAttachmentIndices,
     fp_cmd_set_depth_clamp_range_ext: ?FpCmdSetDepthClampRangeEXT,
@@ -30141,6 +30159,13 @@ pub const DeviceCommands = struct {
             .fp_set_latency_marker_nv = if (extensions.nv_low_latency2) @ptrCast(try instance.get_device_proc_addr(device, "vkSetLatencyMarkerNV")) else null,
             .fp_get_latency_timings_nv = if (extensions.nv_low_latency2) @ptrCast(try instance.get_device_proc_addr(device, "vkGetLatencyTimingsNV")) else null,
             .fp_queue_notify_out_of_band_nv = if (extensions.nv_low_latency2) @ptrCast(try instance.get_device_proc_addr(device, "vkQueueNotifyOutOfBandNV")) else null,
+            .fp_set_latency_sleep_mode_legacy_nv = if (extensions.nv_low_latency) @ptrCast(try instance.get_device_proc_addr(device, "vkSetLatencySleepModeLegacyNV")) else null,
+            .fp_latency_sleep_legacy_nv = if (extensions.nv_low_latency) @ptrCast(try instance.get_device_proc_addr(device, "vkLatencySleepLegacyNV")) else null,
+            .fp_set_latency_marker_legacy_nv = if (extensions.nv_low_latency) @ptrCast(try instance.get_device_proc_addr(device, "vkSetLatencyMarkerLegacyNV")) else null,
+            .fp_get_latency_timings_legacy_nv = if (extensions.nv_low_latency) @ptrCast(try instance.get_device_proc_addr(device, "vkGetLatencyTimingsLegacyNV")) else null,
+            .fp_queue_notify_out_of_band_legacy_nv = if (extensions.nv_low_latency) @ptrCast(try instance.get_device_proc_addr(device, "vkQueueNotifyOutOfBandLegacyNV")) else null,
+            .fp_get_sleep_status_legacy_nv = if (extensions.nv_low_latency) @ptrCast(try instance.get_device_proc_addr(device, "vkGetSleepStatusLegacyNV")) else null,
+            .fp_shutdown_latency_device_legacy_nv = if (extensions.nv_low_latency) @ptrCast(try instance.get_device_proc_addr(device, "vkShutdownLatencyDeviceLegacyNV")) else null,
             .fp_cmd_set_rendering_attachment_locations = if (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int()) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetRenderingAttachmentLocations")) else if (extensions.khr_dynamic_rendering_local_read) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetRenderingAttachmentLocationsKHR")) else null,
             .fp_cmd_set_rendering_input_attachment_indices = if (extensions.core_version.to_int() >= make_version(1, 4, 0).to_int()) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetRenderingInputAttachmentIndices")) else if (extensions.khr_dynamic_rendering_local_read) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetRenderingInputAttachmentIndicesKHR")) else null,
             .fp_cmd_set_depth_clamp_range_ext = if (extensions.ext_depth_clamp_control) @ptrCast(try instance.get_device_proc_addr(device, "vkCmdSetDepthClampRangeEXT")) else null,
@@ -38138,6 +38163,53 @@ pub const DeviceCommands = struct {
         p_queue_type_info: *const OutOfBandQueueTypeInfoNV,
     ) void {
         self.fp_queue_notify_out_of_band_nv.?(queue, p_queue_type_info);
+    }
+    pub fn set_latency_sleep_mode_legacy_nv(
+        self: DeviceCommands,
+        low_latency_mode: bool,
+        low_latency_boost: bool,
+        minimum_interval_us: u32,
+    ) void {
+        self.fp_set_latency_sleep_mode_legacy_nv.?(self.handle, Bool32.from_bool(low_latency_mode), Bool32.from_bool(low_latency_boost), minimum_interval_us);
+    }
+    pub fn latency_sleep_legacy_nv(
+        self: DeviceCommands,
+        signal_semaphore: Semaphore,
+        value: u64,
+    ) void {
+        self.fp_latency_sleep_legacy_nv.?(self.handle, signal_semaphore, value);
+    }
+    pub fn set_latency_marker_legacy_nv(
+        self: DeviceCommands,
+        frame_id: u64,
+        marker: u32,
+    ) void {
+        self.fp_set_latency_marker_legacy_nv.?(self.handle, frame_id, marker);
+    }
+    pub fn get_latency_timings_legacy_nv(
+        self: DeviceCommands,
+        p_timings: *anyopaque,
+    ) void {
+        self.fp_get_latency_timings_legacy_nv.?(self.handle, p_timings);
+    }
+    pub fn queue_notify_out_of_band_legacy_nv(
+        self: DeviceCommands,
+        queue: Queue,
+        queue_type: u32,
+    ) void {
+        self.fp_queue_notify_out_of_band_legacy_nv.?(queue, queue_type);
+    }
+    pub fn get_sleep_status_legacy_nv(
+        self: DeviceCommands,
+    ) bool {
+        var p_low_latency_mode: Bool32 = undefined;
+        self.fp_get_sleep_status_legacy_nv.?(self.handle, &p_low_latency_mode);
+        return p_low_latency_mode.to_bool();
+    }
+    pub fn shutdown_latency_device_legacy_nv(
+        self: DeviceCommands,
+    ) void {
+        self.fp_shutdown_latency_device_legacy_nv.?(self.handle);
     }
     pub fn cmd_set_rendering_attachment_locations(
         self: DeviceCommands,
