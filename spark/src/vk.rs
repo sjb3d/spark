@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.359
+//! Generated from vk.xml version 1.4.360
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 

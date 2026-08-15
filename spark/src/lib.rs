@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.359
+//! Generated from vk.xml version 1.4.360
 
 #![allow(
     clippy::too_many_arguments,
@@ -3421,10 +3421,26 @@ impl InstanceExtensions {
             self.enable_khr_shader_float16_int8();
         }
     }
+    pub fn supports_arm_data_graph_neural_accelerator_statistics(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_arm_data_graph_neural_accelerator_statistics(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_ext_primitive_restart_index(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_primitive_restart_index(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+    pub fn supports_ext_image_tiling_control(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_image_tiling_control(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
             self.enable_khr_get_physical_device_properties2();
         }

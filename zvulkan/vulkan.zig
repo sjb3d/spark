@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.359
+// Generated from vk.xml version 1.4.360
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -21681,10 +21681,28 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_arm_data_graph_neural_accelerator_statistics(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_arm_data_graph_neural_accelerator_statistics(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_ext_primitive_restart_index(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
     pub fn enable_ext_primitive_restart_index(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
+    pub fn supports_ext_image_tiling_control(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_ext_image_tiling_control(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
             self.enable_khr_get_physical_device_properties2();
         }
@@ -38652,7 +38670,7 @@ pub const DeviceCommands = struct {
         self: DeviceCommands,
         instrumentation: ShaderInstrumentationARM,
         p_metric_block_count: *u32,
-        p_metric_values: *anyopaque,
+        p_metric_values: ?*anyopaque,
         flags: ShaderInstrumentationValuesFlagsARM,
     ) GetShaderInstrumentationValuesARMError!EnumerateResult {
         switch (self.fp_get_shader_instrumentation_values_arm.?(self.handle, instrumentation, p_metric_block_count, p_metric_values, flags)) {
