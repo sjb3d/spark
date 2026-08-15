@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.358
+//! Generated from vk.xml version 1.4.359
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -36368,6 +36368,49 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCooperativeMatrixFeatures
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceCooperativeMatrixFeaturesKHRBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrixFeaturesKHR {}
 impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrixFeaturesKHRBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceCooperativeMatrixInfo2EXTBuilder {
+    inner: vk::PhysicalDeviceCooperativeMatrixInfo2EXT,
+}
+impl Builder<'_> for vk::PhysicalDeviceCooperativeMatrixInfo2EXT {
+    type Type = PhysicalDeviceCooperativeMatrixInfo2EXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceCooperativeMatrixInfo2EXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceCooperativeMatrixInfo2EXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn scope(mut self, scope: vk::ScopeKHR) -> Self {
+        self.inner.scope = scope;
+        self
+    }
+    pub fn invocations(mut self, invocations: u32) -> Self {
+        self.inner.invocations = invocations;
+        self
+    }
+    pub fn subgroup_size(mut self, subgroup_size: u32) -> Self {
+        self.inner.subgroup_size = subgroup_size;
+        self
+    }
+    pub fn flags(mut self, flags: vk::CooperativeMatrixFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl Deref for PhysicalDeviceCooperativeMatrixInfo2EXTBuilder {
+    type Target = vk::PhysicalDeviceCooperativeMatrixInfo2EXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCooperativeMatrixPropertiesKHR {}
 
 #[repr(transparent)]
@@ -45128,3 +45171,77 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderOCPMicroscalingType
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXTBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT {}
 impl DeviceCreateInfoNext for PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT,
+}
+impl Builder<'_> for vk::PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT {
+    type Type = PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXTBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cooperative_matrix_properties2(mut self, cooperative_matrix_properties2: bool) -> Self {
+        self.inner.cooperative_matrix_properties2 = if cooperative_matrix_properties2 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn cooperative_matrix_reductions(mut self, cooperative_matrix_reductions: bool) -> Self {
+        self.inner.cooperative_matrix_reductions = if cooperative_matrix_reductions {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn cooperative_matrix_conversions(mut self, cooperative_matrix_conversions: bool) -> Self {
+        self.inner.cooperative_matrix_conversions = if cooperative_matrix_conversions {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn cooperative_matrix_per_element_operations(
+        mut self,
+        cooperative_matrix_per_element_operations: bool,
+    ) -> Self {
+        self.inner.cooperative_matrix_per_element_operations = if cooperative_matrix_per_element_operations {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn cooperative_matrix_get_coordinate(mut self, cooperative_matrix_get_coordinate: bool) -> Self {
+        self.inner.cooperative_matrix_get_coordinate = if cooperative_matrix_get_coordinate {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT {}
+impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXTBuilder {}

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.358
+//! Generated from vk.xml version 1.4.359
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -5158,6 +5158,19 @@ impl fmt::Display for AccessFlags3KHR {
 }
 
 #[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct CooperativeMatrixFlagsEXT(pub(crate) u32);
+impl CooperativeMatrixFlagsEXT {
+    pub const SATURATING_ACCUMULATION: Self = Self(0x1);
+}
+impl_bitmask!(CooperativeMatrixFlagsEXT);
+impl fmt::Display for CooperativeMatrixFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "SATURATING_ACCUMULATION")], f)
+    }
+}
+
+#[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]
 pub struct Instance(usize);
 impl_handle!(Instance);
@@ -8828,6 +8841,9 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV: Self = Self(1000645001);
     pub const PHYSICAL_DEVICE_MAINTENANCE_11_FEATURES_KHR: Self = Self(1000657000);
     pub const QUEUE_FAMILY_OPTIMAL_IMAGE_TRANSFER_GRANULARITY_PROPERTIES_KHR: Self = Self(1000657001);
+    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_MAINTENANCE_1_FEATURES_EXT: Self = Self(1000659000);
+    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_INFO_2_EXT: Self = Self(1000659001);
+    pub const COOPERATIVE_MATRIX_PROPERTIES_2_EXT: Self = Self(1000659002);
     pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT: Self = Self(1000662000);
     pub const UBM_SURFACE_CREATE_INFO_SEC: Self = Self(1000664000);
     pub const FORMAT_PROPERTIES_4_KHR: Self = Self(1000668000);
@@ -9957,6 +9973,9 @@ impl fmt::Display for StructureType {
             1000645001 => Some(&"PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV"),
             1000657000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_11_FEATURES_KHR"),
             1000657001 => Some(&"QUEUE_FAMILY_OPTIMAL_IMAGE_TRANSFER_GRANULARITY_PROPERTIES_KHR"),
+            1000659000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_MAINTENANCE_1_FEATURES_EXT"),
+            1000659001 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_INFO_2_EXT"),
+            1000659002 => Some(&"COOPERATIVE_MATRIX_PROPERTIES_2_EXT"),
             1000662000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT"),
             1000664000 => Some(&"UBM_SURFACE_CREATE_INFO_SEC"),
             1000668000 => Some(&"FORMAT_PROPERTIES_4_KHR"),
@@ -13646,6 +13665,7 @@ impl DriverId {
     pub const MESA_KOSMICKRISP: Self = Self(28);
     pub const MESA_GFXSTREAM: Self = Self(29);
     pub const APE_SOFT: Self = Self(30);
+    pub const RESERVED_31: Self = Self(31);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -13692,6 +13712,7 @@ impl fmt::Display for DriverId {
             28 => Some(&"MESA_KOSMICKRISP"),
             29 => Some(&"MESA_GFXSTREAM"),
             30 => Some(&"APE_SOFT"),
+            31 => Some(&"RESERVED_31"),
             _ => None,
         };
         if let Some(name) = name {
@@ -49669,6 +49690,89 @@ impl fmt::Debug for CooperativeMatrixPropertiesKHR {
 
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceCooperativeMatrixInfo2EXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub scope: ScopeKHR,
+    pub invocations: u32,
+    pub subgroup_size: u32,
+    pub flags: CooperativeMatrixFlagsEXT,
+}
+unsafe impl Send for PhysicalDeviceCooperativeMatrixInfo2EXT {}
+unsafe impl Sync for PhysicalDeviceCooperativeMatrixInfo2EXT {}
+impl Default for PhysicalDeviceCooperativeMatrixInfo2EXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_INFO_2_EXT,
+            p_next: ptr::null(),
+            scope: Default::default(),
+            invocations: Default::default(),
+            subgroup_size: Default::default(),
+            flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCooperativeMatrixInfo2EXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCooperativeMatrixInfo2EXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("scope", &self.scope)
+            .field("invocations", &self.invocations)
+            .field("subgroup_size", &self.subgroup_size)
+            .field("flags", &self.flags)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CooperativeMatrixProperties2EXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub m_granularity: u32,
+    pub n_granularity: u32,
+    pub k_granularity: u32,
+    pub a_type: ComponentTypeKHR,
+    pub b_type: ComponentTypeKHR,
+    pub c_type: ComponentTypeKHR,
+    pub result_type: ComponentTypeKHR,
+}
+unsafe impl Send for CooperativeMatrixProperties2EXT {}
+unsafe impl Sync for CooperativeMatrixProperties2EXT {}
+impl Default for CooperativeMatrixProperties2EXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COOPERATIVE_MATRIX_PROPERTIES_2_EXT,
+            p_next: ptr::null_mut(),
+            m_granularity: Default::default(),
+            n_granularity: Default::default(),
+            k_granularity: Default::default(),
+            a_type: Default::default(),
+            b_type: Default::default(),
+            c_type: Default::default(),
+            result_type: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for CooperativeMatrixProperties2EXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CooperativeMatrixProperties2EXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("m_granularity", &self.m_granularity)
+            .field("n_granularity", &self.n_granularity)
+            .field("k_granularity", &self.k_granularity)
+            .field("a_type", &self.a_type)
+            .field("b_type", &self.b_type)
+            .field("c_type", &self.c_type)
+            .field("result_type", &self.result_type)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceCooperativeMatrixPropertiesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -58107,6 +58211,52 @@ impl fmt::Debug for PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT {
             .finish()
     }
 }
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cooperative_matrix_properties2: Bool32,
+    pub cooperative_matrix_reductions: Bool32,
+    pub cooperative_matrix_conversions: Bool32,
+    pub cooperative_matrix_per_element_operations: Bool32,
+    pub cooperative_matrix_get_coordinate: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT {}
+impl Default for PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_MAINTENANCE_1_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            cooperative_matrix_properties2: Default::default(),
+            cooperative_matrix_reductions: Default::default(),
+            cooperative_matrix_conversions: Default::default(),
+            cooperative_matrix_per_element_operations: Default::default(),
+            cooperative_matrix_get_coordinate: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("cooperative_matrix_properties2", &self.cooperative_matrix_properties2)
+            .field("cooperative_matrix_reductions", &self.cooperative_matrix_reductions)
+            .field("cooperative_matrix_conversions", &self.cooperative_matrix_conversions)
+            .field(
+                "cooperative_matrix_per_element_operations",
+                &self.cooperative_matrix_per_element_operations,
+            )
+            .field(
+                "cooperative_matrix_get_coordinate",
+                &self.cooperative_matrix_get_coordinate,
+            )
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -60784,6 +60934,12 @@ pub type FnGetPhysicalDeviceCooperativeMatrixPropertiesKHR = unsafe extern "syst
     physical_device: PhysicalDevice,
     p_property_count: *mut u32,
     p_properties: *mut CooperativeMatrixPropertiesKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceCooperativeMatrixProperties2EXT = unsafe extern "system" fn(
+    physical_device: PhysicalDevice,
+    p_cooperative_matrix_info: *const PhysicalDeviceCooperativeMatrixInfo2EXT,
+    p_property_count: *mut u32,
+    p_properties: *mut CooperativeMatrixProperties2EXT,
 ) -> Result;
 pub type FnGetExecutionGraphPipelineScratchSizeAMDX = unsafe extern "system" fn(
     device: Device,

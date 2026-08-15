@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.358
+//! Generated from vk.xml version 1.4.359
 
 #![allow(
     clippy::too_many_arguments,
@@ -3371,6 +3371,12 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_ext_cooperative_matrix_maintenance1(&self) -> bool {
+        self.supports_khr_cooperative_matrix()
+    }
+    pub fn enable_ext_cooperative_matrix_maintenance1(&mut self) {
+        self.enable_khr_cooperative_matrix();
+    }
     pub fn supports_ext_shader_subgroup_partitioned(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
@@ -6248,6 +6254,7 @@ pub struct DeviceExtensions {
     pub ext_shader_uniform_buffer_unsized_array: bool,
     pub nv_compute_occupancy_priority: bool,
     pub khr_maintenance11: bool,
+    pub ext_cooperative_matrix_maintenance1: bool,
     pub ext_shader_subgroup_partitioned: bool,
     pub khr_extended_flags: bool,
     pub ext_shader_ocp_microscaling_types: bool,
@@ -7064,6 +7071,8 @@ impl DeviceExtensions {
             self.nv_compute_occupancy_priority = true;
         } else if name == c"VK_KHR_maintenance11" {
             self.khr_maintenance11 = true;
+        } else if name == c"VK_EXT_cooperative_matrix_maintenance1" {
+            self.ext_cooperative_matrix_maintenance1 = true;
         } else if name == c"VK_EXT_shader_subgroup_partitioned" {
             self.ext_shader_subgroup_partitioned = true;
         } else if name == c"VK_KHR_extended_flags" {
@@ -7489,6 +7498,7 @@ impl DeviceExtensions {
             ext_shader_uniform_buffer_unsized_array: false,
             nv_compute_occupancy_priority: false,
             khr_maintenance11: false,
+            ext_cooperative_matrix_maintenance1: false,
             ext_shader_subgroup_partitioned: false,
             khr_extended_flags: false,
             ext_shader_ocp_microscaling_types: false,
@@ -10707,6 +10717,13 @@ impl DeviceExtensions {
     pub fn enable_khr_maintenance11(&mut self) {
         self.khr_maintenance11 = true;
     }
+    pub fn supports_ext_cooperative_matrix_maintenance1(&self) -> bool {
+        self.ext_cooperative_matrix_maintenance1 && self.supports_khr_cooperative_matrix()
+    }
+    pub fn enable_ext_cooperative_matrix_maintenance1(&mut self) {
+        self.ext_cooperative_matrix_maintenance1 = true;
+        self.enable_khr_cooperative_matrix();
+    }
     pub fn supports_ext_shader_subgroup_partitioned(&self) -> bool {
         self.ext_shader_subgroup_partitioned
     }
@@ -11974,6 +11991,9 @@ impl DeviceExtensions {
         if self.khr_maintenance11 {
             v.push(c"VK_KHR_maintenance11");
         }
+        if self.ext_cooperative_matrix_maintenance1 {
+            v.push(c"VK_EXT_cooperative_matrix_maintenance1");
+        }
         if self.ext_shader_subgroup_partitioned {
             v.push(c"VK_EXT_shader_subgroup_partitioned");
         }
@@ -12530,6 +12550,8 @@ pub struct Device {
     pub fp_get_past_presentation_timing_ext: Option<vk::FnGetPastPresentationTimingEXT>,
     pub fp_get_physical_device_cooperative_matrix_properties_khr:
         Option<vk::FnGetPhysicalDeviceCooperativeMatrixPropertiesKHR>,
+    pub fp_get_physical_device_cooperative_matrix_properties2_ext:
+        Option<vk::FnGetPhysicalDeviceCooperativeMatrixProperties2EXT>,
     pub fp_get_execution_graph_pipeline_scratch_size_amdx: Option<vk::FnGetExecutionGraphPipelineScratchSizeAMDX>,
     pub fp_get_execution_graph_pipeline_node_index_amdx: Option<vk::FnGetExecutionGraphPipelineNodeIndexAMDX>,
     pub fp_create_execution_graph_pipelines_amdx: Option<vk::FnCreateExecutionGraphPipelinesAMDX>,
@@ -16489,6 +16511,14 @@ impl Device {
             fp_get_physical_device_cooperative_matrix_properties_khr: if extensions.khr_cooperative_matrix {
                 globals
                     .get_instance_proc_addr(instance.handle, c"vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR")
+                    .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_cooperative_matrix_properties2_ext: if extensions.ext_cooperative_matrix_maintenance1
+            {
+                globals
+                    .get_instance_proc_addr(instance.handle, c"vkGetPhysicalDeviceCooperativeMatrixProperties2EXT")
                     .map(|f| mem::transmute(f))
             } else {
                 None
@@ -25356,6 +25386,42 @@ impl Device {
     ) -> Result<Vec<vk::CooperativeMatrixPropertiesKHR>> {
         enumerate_generic_to_vec(|len, ptr| {
             self.get_physical_device_cooperative_matrix_properties_khr(physical_device, len, ptr)
+        })
+    }
+    pub unsafe fn get_physical_device_cooperative_matrix_properties2_ext(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_cooperative_matrix_info: &vk::PhysicalDeviceCooperativeMatrixInfo2EXT,
+        p_property_count: &mut u32,
+        p_properties: *mut vk::CooperativeMatrixProperties2EXT,
+    ) -> Result<EnumerateResult> {
+        let fp = self
+            .fp_get_physical_device_cooperative_matrix_properties2_ext
+            .expect("vkGetPhysicalDeviceCooperativeMatrixProperties2EXT is not loaded");
+        let err = (fp)(
+            physical_device,
+            p_cooperative_matrix_info,
+            p_property_count,
+            p_properties,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(EnumerateResult::Success),
+            vk::Result::INCOMPLETE => Ok(EnumerateResult::Incomplete),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_physical_device_cooperative_matrix_properties2_ext_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_cooperative_matrix_info: &vk::PhysicalDeviceCooperativeMatrixInfo2EXT,
+    ) -> Result<Vec<vk::CooperativeMatrixProperties2EXT>> {
+        enumerate_generic_to_vec(|len, ptr| {
+            self.get_physical_device_cooperative_matrix_properties2_ext(
+                physical_device,
+                p_cooperative_matrix_info,
+                len,
+                ptr,
+            )
         })
     }
     pub unsafe fn get_execution_graph_pipeline_scratch_size_amdx(

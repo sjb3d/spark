@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.358
+// Generated from vk.xml version 1.4.359
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -2027,6 +2027,11 @@ pub const AccessFlags3KHR = BitField(AccessFlagBits3KHR);
 pub const AccessFlagMasks3KHR = struct {
     pub const @"3_none" = AccessFlags3KHR{ .bits = 0x0 };
 };
+pub const CooperativeMatrixFlagBitsEXT = enum(u5) {
+    saturating_accumulation = 0,
+    _,
+};
+pub const CooperativeMatrixFlagsEXT = BitField(CooperativeMatrixFlagBitsEXT);
 pub const Instance = enum(usize) { null_handle = 0, _ };
 pub const PhysicalDevice = enum(usize) { null_handle = 0, _ };
 pub const Device = enum(usize) { null_handle = 0, _ };
@@ -3946,6 +3951,9 @@ pub const StructureType = enum(i32) {
     physical_device_compute_occupancy_priority_features_nv = 1000645001,
     physical_device_maintenance_11_features_khr = 1000657000,
     queue_family_optimal_image_transfer_granularity_properties_khr = 1000657001,
+    physical_device_cooperative_matrix_maintenance_1_features_ext = 1000659000,
+    physical_device_cooperative_matrix_info_2_ext = 1000659001,
+    cooperative_matrix_properties_2_ext = 1000659002,
     physical_device_shader_subgroup_partitioned_features_ext = 1000662000,
     ubm_surface_create_info_sec = 1000664000,
     format_properties_4_khr = 1000668000,
@@ -5032,6 +5040,7 @@ pub const DriverId = enum(i32) {
     mesa_kosmickrisp = 28,
     mesa_gfxstream = 29,
     ape_soft = 30,
+    reserved_31 = 31,
     _,
 };
 pub const DriverIdKHR = DriverId;
@@ -5474,6 +5483,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceDataGraphOpticalFlowFeaturesARM,
             *PhysicalDeviceImageTilingControlFeaturesEXT,
             *PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT,
+            *PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7965,6 +7975,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceDataGraphOpticalFlowFeaturesARM,
             *PhysicalDeviceImageTilingControlFeaturesEXT,
             *PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT,
+            *PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -15117,6 +15128,25 @@ pub const CooperativeMatrixPropertiesKHR = extern struct {
     saturating_accumulation: Bool32 = .false,
     scope: ScopeKHR = @enumFromInt(0),
 };
+pub const PhysicalDeviceCooperativeMatrixInfo2EXT = extern struct {
+    s_type: StructureType = .physical_device_cooperative_matrix_info_2_ext,
+    p_next: ?*const anyopaque = null,
+    scope: ScopeKHR = @enumFromInt(0),
+    invocations: u32 = 0,
+    subgroup_size: u32 = 0,
+    flags: CooperativeMatrixFlagsEXT = .none,
+};
+pub const CooperativeMatrixProperties2EXT = extern struct {
+    s_type: StructureType = .cooperative_matrix_properties_2_ext,
+    p_next: ?*anyopaque = null,
+    m_granularity: u32 = 0,
+    n_granularity: u32 = 0,
+    k_granularity: u32 = 0,
+    a_type: ComponentTypeKHR = @enumFromInt(0),
+    b_type: ComponentTypeKHR = @enumFromInt(0),
+    c_type: ComponentTypeKHR = @enumFromInt(0),
+    result_type: ComponentTypeKHR = @enumFromInt(0),
+};
 pub const PhysicalDeviceCooperativeMatrixPropertiesKHR = extern struct {
     s_type: StructureType = .physical_device_cooperative_matrix_properties_khr,
     p_next: ?*anyopaque = null,
@@ -17074,6 +17104,15 @@ pub const PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT = extern struct {
     shader_float8_unsigned_e8m0: Bool32 = .false,
     shader_mx_int8: Bool32 = .false,
 };
+pub const PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT = extern struct {
+    s_type: StructureType = .physical_device_cooperative_matrix_maintenance_1_features_ext,
+    p_next: ?*anyopaque = null,
+    cooperative_matrix_properties2: Bool32 = .false,
+    cooperative_matrix_reductions: Bool32 = .false,
+    cooperative_matrix_conversions: Bool32 = .false,
+    cooperative_matrix_per_element_operations: Bool32 = .false,
+    cooperative_matrix_get_coordinate: Bool32 = .false,
+};
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpEnumeratePhysicalDevices = *const fn (Instance, [*c]u32, [*c]PhysicalDevice) callconv(.c) Result;
@@ -17669,6 +17708,7 @@ pub const FpGetSwapchainTimingPropertiesEXT = *const fn (Device, SwapchainKHR, [
 pub const FpGetSwapchainTimeDomainPropertiesEXT = *const fn (Device, SwapchainKHR, [*c]SwapchainTimeDomainPropertiesEXT, [*c]u64) callconv(.c) Result;
 pub const FpGetPastPresentationTimingEXT = *const fn (Device, [*c]const PastPresentationTimingInfoEXT, [*c]PastPresentationTimingPropertiesEXT) callconv(.c) Result;
 pub const FpGetPhysicalDeviceCooperativeMatrixPropertiesKHR = *const fn (PhysicalDevice, [*c]u32, [*c]CooperativeMatrixPropertiesKHR) callconv(.c) Result;
+pub const FpGetPhysicalDeviceCooperativeMatrixProperties2EXT = *const fn (PhysicalDevice, [*c]const PhysicalDeviceCooperativeMatrixInfo2EXT, [*c]u32, [*c]CooperativeMatrixProperties2EXT) callconv(.c) Result;
 pub const FpGetExecutionGraphPipelineScratchSizeAMDX = *const fn (Device, Pipeline, [*c]ExecutionGraphPipelineScratchSizeAMDX) callconv(.c) Result;
 pub const FpGetExecutionGraphPipelineNodeIndexAMDX = *const fn (Device, Pipeline, [*c]const PipelineShaderStageNodeCreateInfoAMDX, [*c]u32) callconv(.c) Result;
 pub const FpCreateExecutionGraphPipelinesAMDX = *const fn (Device, PipelineCache, u32, [*c]const ExecutionGraphPipelineCreateInfoAMDX, [*c]const AllocationCallbacks, [*c]Pipeline) callconv(.c) Result;
@@ -18234,6 +18274,7 @@ const ExtensionNames = struct {
     const ext_shader_uniform_buffer_unsized_array = "VK_EXT_shader_uniform_buffer_unsized_array";
     const nv_compute_occupancy_priority = "VK_NV_compute_occupancy_priority";
     const khr_maintenance11 = "VK_KHR_maintenance11";
+    const ext_cooperative_matrix_maintenance1 = "VK_EXT_cooperative_matrix_maintenance1";
     const ext_shader_subgroup_partitioned = "VK_EXT_shader_subgroup_partitioned";
     const sec_ubm_surface = "VK_SEC_ubm_surface";
     const khr_extended_flags = "VK_KHR_extended_flags";
@@ -21586,6 +21627,13 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_ext_cooperative_matrix_maintenance1(self: InstanceExtensions) bool {
+        return self.supports_khr_cooperative_matrix();
+    }
+    pub fn enable_ext_cooperative_matrix_maintenance1(self: *InstanceExtensions) void {
+        self.enable_khr_cooperative_matrix();
+    }
+
     pub fn supports_ext_shader_subgroup_partitioned(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
@@ -22054,6 +22102,7 @@ pub const DeviceExtensions = packed struct {
     ext_shader_uniform_buffer_unsized_array: bool = false,
     nv_compute_occupancy_priority: bool = false,
     khr_maintenance11: bool = false,
+    ext_cooperative_matrix_maintenance1: bool = false,
     ext_shader_subgroup_partitioned: bool = false,
     khr_extended_flags: bool = false,
     ext_shader_ocp_microscaling_types: bool = false,
@@ -22870,6 +22919,8 @@ pub const DeviceExtensions = packed struct {
             self.nv_compute_occupancy_priority = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance11) == .eq) {
             self.khr_maintenance11 = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_cooperative_matrix_maintenance1) == .eq) {
+            self.ext_cooperative_matrix_maintenance1 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_subgroup_partitioned) == .eq) {
             self.ext_shader_subgroup_partitioned = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_extended_flags) == .eq) {
@@ -23305,6 +23356,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_shader_uniform_buffer_unsized_array) try names.append(allocator, ExtensionNames.ext_shader_uniform_buffer_unsized_array);
         if (self.nv_compute_occupancy_priority) try names.append(allocator, ExtensionNames.nv_compute_occupancy_priority);
         if (self.khr_maintenance11) try names.append(allocator, ExtensionNames.khr_maintenance11);
+        if (self.ext_cooperative_matrix_maintenance1) try names.append(allocator, ExtensionNames.ext_cooperative_matrix_maintenance1);
         if (self.ext_shader_subgroup_partitioned) try names.append(allocator, ExtensionNames.ext_shader_subgroup_partitioned);
         if (self.khr_extended_flags) try names.append(allocator, ExtensionNames.khr_extended_flags);
         if (self.ext_shader_ocp_microscaling_types) try names.append(allocator, ExtensionNames.ext_shader_ocp_microscaling_types);
@@ -26715,6 +26767,14 @@ pub const DeviceExtensions = packed struct {
         self.khr_maintenance11 = true;
     }
 
+    pub fn supports_ext_cooperative_matrix_maintenance1(self: DeviceExtensions) bool {
+        return self.ext_cooperative_matrix_maintenance1 and self.supports_khr_cooperative_matrix();
+    }
+    pub fn enable_ext_cooperative_matrix_maintenance1(self: *DeviceExtensions) void {
+        self.ext_cooperative_matrix_maintenance1 = true;
+        self.enable_khr_cooperative_matrix();
+    }
+
     pub fn supports_ext_shader_subgroup_partitioned(self: DeviceExtensions) bool {
         return self.ext_shader_subgroup_partitioned;
     }
@@ -29521,6 +29581,7 @@ pub const DeviceCommands = struct {
     fp_get_swapchain_time_domain_properties_ext: ?FpGetSwapchainTimeDomainPropertiesEXT,
     fp_get_past_presentation_timing_ext: ?FpGetPastPresentationTimingEXT,
     fp_get_physical_device_cooperative_matrix_properties_khr: ?FpGetPhysicalDeviceCooperativeMatrixPropertiesKHR,
+    fp_get_physical_device_cooperative_matrix_properties2_ext: ?FpGetPhysicalDeviceCooperativeMatrixProperties2EXT,
     fp_get_execution_graph_pipeline_scratch_size_amdx: ?FpGetExecutionGraphPipelineScratchSizeAMDX,
     fp_get_execution_graph_pipeline_node_index_amdx: ?FpGetExecutionGraphPipelineNodeIndexAMDX,
     fp_create_execution_graph_pipelines_amdx: ?FpCreateExecutionGraphPipelinesAMDX,
@@ -30162,6 +30223,7 @@ pub const DeviceCommands = struct {
             .fp_get_swapchain_time_domain_properties_ext = if (extensions.ext_present_timing) @ptrCast(try instance.get_device_proc_addr(device, "vkGetSwapchainTimeDomainPropertiesEXT")) else null,
             .fp_get_past_presentation_timing_ext = if (extensions.ext_present_timing) @ptrCast(try instance.get_device_proc_addr(device, "vkGetPastPresentationTimingEXT")) else null,
             .fp_get_physical_device_cooperative_matrix_properties_khr = if (extensions.khr_cooperative_matrix) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR")) else null,
+            .fp_get_physical_device_cooperative_matrix_properties2_ext = if (extensions.ext_cooperative_matrix_maintenance1) @ptrCast(try globals.get_instance_proc_addr(instance.handle, "vkGetPhysicalDeviceCooperativeMatrixProperties2EXT")) else null,
             .fp_get_execution_graph_pipeline_scratch_size_amdx = if (extensions.amdx_shader_enqueue) @ptrCast(try instance.get_device_proc_addr(device, "vkGetExecutionGraphPipelineScratchSizeAMDX")) else null,
             .fp_get_execution_graph_pipeline_node_index_amdx = if (extensions.amdx_shader_enqueue) @ptrCast(try instance.get_device_proc_addr(device, "vkGetExecutionGraphPipelineNodeIndexAMDX")) else null,
             .fp_create_execution_graph_pipelines_amdx = if (extensions.amdx_shader_enqueue) @ptrCast(try instance.get_device_proc_addr(device, "vkCreateExecutionGraphPipelinesAMDX")) else null,
@@ -37784,6 +37846,56 @@ pub const DeviceCommands = struct {
             .physical_device = physical_device,
         };
         return enumerate_generic_to_array(GetPhysicalDeviceCooperativeMatrixPropertiesKHROrAllocatorError, CooperativeMatrixPropertiesKHR, enumerator, allocator);
+    }
+    pub const GetPhysicalDeviceCooperativeMatrixProperties2EXTError = error{
+        OutOfHostMemory,
+        OutOfDeviceMemory,
+        Unknown,
+        ValidationFailed,
+        Unexpected,
+    };
+    pub fn get_physical_device_cooperative_matrix_properties2_ext(
+        self: DeviceCommands,
+        physical_device: PhysicalDevice,
+        p_cooperative_matrix_info: *const PhysicalDeviceCooperativeMatrixInfo2EXT,
+        p_property_count: *u32,
+        p_properties: ?[*]CooperativeMatrixProperties2EXT,
+    ) GetPhysicalDeviceCooperativeMatrixProperties2EXTError!EnumerateResult {
+        switch (self.fp_get_physical_device_cooperative_matrix_properties2_ext.?(physical_device, p_cooperative_matrix_info, p_property_count, p_properties)) {
+            .success => return .success,
+            .incomplete => return .incomplete,
+            .error_out_of_host_memory => return error.OutOfHostMemory,
+            .error_out_of_device_memory => return error.OutOfDeviceMemory,
+            .error_unknown => return error.Unknown,
+            .error_validation_failed => return error.ValidationFailed,
+            else => return error.Unexpected,
+        }
+    }
+    pub const GetPhysicalDeviceCooperativeMatrixProperties2EXTOrAllocatorError = GetPhysicalDeviceCooperativeMatrixProperties2EXTError || Allocator.Error;
+    pub fn get_physical_device_cooperative_matrix_properties2_ext_to_array(
+        self: DeviceCommands,
+        allocator: Allocator,
+        physical_device: PhysicalDevice,
+        p_cooperative_matrix_info: *const PhysicalDeviceCooperativeMatrixInfo2EXT,
+    ) GetPhysicalDeviceCooperativeMatrixProperties2EXTOrAllocatorError![]CooperativeMatrixProperties2EXT {
+        const enumerator = struct {
+            self: *const DeviceCommands,
+            physical_device: PhysicalDevice,
+            p_cooperative_matrix_info: *const PhysicalDeviceCooperativeMatrixInfo2EXT,
+            pub fn enumerate(enumerator: @This(), len: *u32, elements: ?[*]CooperativeMatrixProperties2EXT) !EnumerateResult {
+                return enumerator.self.get_physical_device_cooperative_matrix_properties2_ext(
+                    enumerator.physical_device,
+                    enumerator.p_cooperative_matrix_info,
+                    len,
+                    elements,
+                );
+            }
+        }{
+            .self = &self,
+            .physical_device = physical_device,
+            .p_cooperative_matrix_info = p_cooperative_matrix_info,
+        };
+        return enumerate_generic_to_array(GetPhysicalDeviceCooperativeMatrixProperties2EXTOrAllocatorError, CooperativeMatrixProperties2EXT, enumerator, allocator);
     }
     pub const GetExecutionGraphPipelineScratchSizeAMDXError = error{
         OutOfHostMemory,
