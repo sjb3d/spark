@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.364
+// Generated from vk.xml version 1.4.365
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -3964,6 +3964,7 @@ pub const StructureType = enum(i32) {
     physical_device_extended_flags_features_khr = 1000668004,
     image_stencil_usage_2_create_info_khr = 1000668005,
     shared_present_surface_capabilities_2_khr = 1000668006,
+    physical_device_cooperative_matrix_layouts_features_arm = 1000670000,
     physical_device_shader_ocp_microscaling_types_features_ext = 1000672000,
     physical_device_shader_mixed_float_dot_product_features_valve = 1000673000,
     physical_device_throttle_hint_features_sec = 1000674000,
@@ -5492,6 +5493,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT,
             *PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT,
             *PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE,
+            *PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -8007,6 +8009,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT,
             *PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT,
             *PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE,
+            *PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -9712,7 +9715,7 @@ pub const PhysicalDeviceLayeredApiPropertiesKHR = extern struct {
     vendor_id: u32 = 0,
     device_id: u32 = 0,
     layered_api: PhysicalDeviceLayeredApiKHR = @enumFromInt(0),
-    device_name: [max_physical_device_name_size]u8 = @splat(0),
+    device_name: [max_physical_device_name_size - 1:0]u8 = @splat(0),
     const Self = @This();
     pub fn insert_next(self: *Self, next: anytype) void {
         switch (@TypeOf(next)) {
@@ -17180,6 +17183,11 @@ pub const PhysicalDeviceInfoPropertiesINTEL = extern struct {
     device_ip_version_release: u32 = 0,
     device_ip_version_revision: u32 = 0,
 };
+pub const PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM = extern struct {
+    s_type: StructureType = .physical_device_cooperative_matrix_layouts_features_arm,
+    p_next: ?*anyopaque = null,
+    cooperative_matrix_arm_layouts: Bool32 = .false,
+};
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpEnumeratePhysicalDevices = *const fn (Instance, [*c]u32, [*c]PhysicalDevice) callconv(.c) Result;
@@ -18346,6 +18354,7 @@ const ExtensionNames = struct {
     const ext_shader_subgroup_partitioned = "VK_EXT_shader_subgroup_partitioned";
     const sec_ubm_surface = "VK_SEC_ubm_surface";
     const khr_extended_flags = "VK_KHR_extended_flags";
+    const arm_cooperative_matrix_layouts = "VK_ARM_cooperative_matrix_layouts";
     const ext_shader_ocp_microscaling_types = "VK_EXT_shader_ocp_microscaling_types";
     const valve_shader_mixed_float_dot_product = "VK_VALVE_shader_mixed_float_dot_product";
     const sec_throttle_hint = "VK_SEC_throttle_hint";
@@ -22230,6 +22239,7 @@ pub const DeviceExtensions = packed struct {
     ext_cooperative_matrix_maintenance1: bool = false,
     ext_shader_subgroup_partitioned: bool = false,
     khr_extended_flags: bool = false,
+    arm_cooperative_matrix_layouts: bool = false,
     ext_shader_ocp_microscaling_types: bool = false,
     valve_shader_mixed_float_dot_product: bool = false,
     sec_throttle_hint: bool = false,
@@ -23055,6 +23065,8 @@ pub const DeviceExtensions = packed struct {
             self.ext_shader_subgroup_partitioned = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_extended_flags) == .eq) {
             self.khr_extended_flags = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.arm_cooperative_matrix_layouts) == .eq) {
+            self.arm_cooperative_matrix_layouts = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_shader_ocp_microscaling_types) == .eq) {
             self.ext_shader_ocp_microscaling_types = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.valve_shader_mixed_float_dot_product) == .eq) {
@@ -23496,6 +23508,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_cooperative_matrix_maintenance1) try names.append(allocator, ExtensionNames.ext_cooperative_matrix_maintenance1);
         if (self.ext_shader_subgroup_partitioned) try names.append(allocator, ExtensionNames.ext_shader_subgroup_partitioned);
         if (self.khr_extended_flags) try names.append(allocator, ExtensionNames.khr_extended_flags);
+        if (self.arm_cooperative_matrix_layouts) try names.append(allocator, ExtensionNames.arm_cooperative_matrix_layouts);
         if (self.ext_shader_ocp_microscaling_types) try names.append(allocator, ExtensionNames.ext_shader_ocp_microscaling_types);
         if (self.valve_shader_mixed_float_dot_product) try names.append(allocator, ExtensionNames.valve_shader_mixed_float_dot_product);
         if (self.sec_throttle_hint) try names.append(allocator, ExtensionNames.sec_throttle_hint);
@@ -26937,6 +26950,13 @@ pub const DeviceExtensions = packed struct {
     }
     pub fn enable_khr_extended_flags(self: *DeviceExtensions) void {
         self.khr_extended_flags = true;
+    }
+
+    pub fn supports_arm_cooperative_matrix_layouts(self: DeviceExtensions) bool {
+        return self.arm_cooperative_matrix_layouts;
+    }
+    pub fn enable_arm_cooperative_matrix_layouts(self: *DeviceExtensions) void {
+        self.arm_cooperative_matrix_layouts = true;
     }
 
     pub fn supports_ext_shader_ocp_microscaling_types(self: DeviceExtensions) bool {

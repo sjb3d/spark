@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.364
+//! Generated from vk.xml version 1.4.365
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -8857,6 +8857,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_EXTENDED_FLAGS_FEATURES_KHR: Self = Self(1000668004);
     pub const IMAGE_STENCIL_USAGE_2_CREATE_INFO_KHR: Self = Self(1000668005);
     pub const SHARED_PRESENT_SURFACE_CAPABILITIES_2_KHR: Self = Self(1000668006);
+    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_LAYOUTS_FEATURES_ARM: Self = Self(1000670000);
     pub const PHYSICAL_DEVICE_SHADER_OCP_MICROSCALING_TYPES_FEATURES_EXT: Self = Self(1000672000);
     pub const PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE: Self = Self(1000673000);
     pub const PHYSICAL_DEVICE_THROTTLE_HINT_FEATURES_SEC: Self = Self(1000674000);
@@ -9994,6 +9995,7 @@ impl fmt::Display for StructureType {
             1000668004 => Some(&"PHYSICAL_DEVICE_EXTENDED_FLAGS_FEATURES_KHR"),
             1000668005 => Some(&"IMAGE_STENCIL_USAGE_2_CREATE_INFO_KHR"),
             1000668006 => Some(&"SHARED_PRESENT_SURFACE_CAPABILITIES_2_KHR"),
+            1000670000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_LAYOUTS_FEATURES_ARM"),
             1000672000 => Some(&"PHYSICAL_DEVICE_SHADER_OCP_MICROSCALING_TYPES_FEATURES_EXT"),
             1000673000 => Some(&"PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE"),
             1000674000 => Some(&"PHYSICAL_DEVICE_THROTTLE_HINT_FEATURES_SEC"),
@@ -58421,6 +58423,34 @@ impl fmt::Debug for PhysicalDeviceInfoPropertiesINTEL {
             .field("device_ip_version_arch", &self.device_ip_version_arch)
             .field("device_ip_version_release", &self.device_ip_version_release)
             .field("device_ip_version_revision", &self.device_ip_version_revision)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cooperative_matrix_arm_layouts: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM {}
+unsafe impl Sync for PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM {}
+impl Default for PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_LAYOUTS_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            cooperative_matrix_arm_layouts: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("cooperative_matrix_arm_layouts", &self.cooperative_matrix_arm_layouts)
             .finish()
     }
 }

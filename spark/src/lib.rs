@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.364
+//! Generated from vk.xml version 1.4.365
 
 #![allow(
     clippy::too_many_arguments,
@@ -6305,6 +6305,7 @@ pub struct DeviceExtensions {
     pub ext_cooperative_matrix_maintenance1: bool,
     pub ext_shader_subgroup_partitioned: bool,
     pub khr_extended_flags: bool,
+    pub arm_cooperative_matrix_layouts: bool,
     pub ext_shader_ocp_microscaling_types: bool,
     pub valve_shader_mixed_float_dot_product: bool,
     pub sec_throttle_hint: bool,
@@ -7130,6 +7131,8 @@ impl DeviceExtensions {
             self.ext_shader_subgroup_partitioned = true;
         } else if name == c"VK_KHR_extended_flags" {
             self.khr_extended_flags = true;
+        } else if name == c"VK_ARM_cooperative_matrix_layouts" {
+            self.arm_cooperative_matrix_layouts = true;
         } else if name == c"VK_EXT_shader_ocp_microscaling_types" {
             self.ext_shader_ocp_microscaling_types = true;
         } else if name == c"VK_VALVE_shader_mixed_float_dot_product" {
@@ -7561,6 +7564,7 @@ impl DeviceExtensions {
             ext_cooperative_matrix_maintenance1: false,
             ext_shader_subgroup_partitioned: false,
             khr_extended_flags: false,
+            arm_cooperative_matrix_layouts: false,
             ext_shader_ocp_microscaling_types: false,
             valve_shader_mixed_float_dot_product: false,
             sec_throttle_hint: false,
@@ -10812,6 +10816,12 @@ impl DeviceExtensions {
     pub fn enable_khr_extended_flags(&mut self) {
         self.khr_extended_flags = true;
     }
+    pub fn supports_arm_cooperative_matrix_layouts(&self) -> bool {
+        self.arm_cooperative_matrix_layouts
+    }
+    pub fn enable_arm_cooperative_matrix_layouts(&mut self) {
+        self.arm_cooperative_matrix_layouts = true;
+    }
     pub fn supports_ext_shader_ocp_microscaling_types(&self) -> bool {
         self.ext_shader_ocp_microscaling_types
     }
@@ -12104,6 +12114,9 @@ impl DeviceExtensions {
         }
         if self.khr_extended_flags {
             v.push(c"VK_KHR_extended_flags");
+        }
+        if self.arm_cooperative_matrix_layouts {
+            v.push(c"VK_ARM_cooperative_matrix_layouts");
         }
         if self.ext_shader_ocp_microscaling_types {
             v.push(c"VK_EXT_shader_ocp_microscaling_types");

@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.364
+//! Generated from vk.xml version 1.4.365
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -45421,3 +45421,42 @@ impl BufferCreateInfoNext for BufferDeviceAddressAlignmentAllocateInfoVALVEBuild
 impl MemoryAllocateInfoNext for vk::BufferDeviceAddressAlignmentAllocateInfoVALVE {}
 impl MemoryAllocateInfoNext for BufferDeviceAddressAlignmentAllocateInfoVALVEBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceInfoPropertiesINTEL {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceCooperativeMatrixLayoutsFeaturesARMBuilder {
+    inner: vk::PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM,
+}
+impl Builder<'_> for vk::PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM {
+    type Type = PhysicalDeviceCooperativeMatrixLayoutsFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceCooperativeMatrixLayoutsFeaturesARMBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cooperative_matrix_arm_layouts(mut self, cooperative_matrix_arm_layouts: bool) -> Self {
+        self.inner.cooperative_matrix_arm_layouts = if cooperative_matrix_arm_layouts {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCooperativeMatrixLayoutsFeaturesARMBuilder {
+    type Target = vk::PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCooperativeMatrixLayoutsFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM {}
+impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrixLayoutsFeaturesARMBuilder {}
