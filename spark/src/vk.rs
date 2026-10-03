@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.361
+//! Generated from vk.xml version 1.4.362
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -8613,7 +8613,8 @@ impl StructureType {
     pub const LAYER_SETTINGS_CREATE_INFO_EXT: Self = Self(1000496000);
     pub const PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM: Self = Self(1000497000);
     pub const PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM: Self = Self(1000497001);
-    pub const PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT: Self = Self(1000498000);
+    pub const PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT: Self =
+        Self::PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_KHR;
     pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT: Self = Self(1000499000);
     pub const PHYSICAL_DEVICE_INTERNALLY_SYNCHRONIZED_QUEUES_FEATURES_KHR: Self = Self(1000504000);
     pub const LATENCY_SLEEP_MODE_INFO_NV: Self = Self(1000505000);
@@ -8841,6 +8842,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT: Self = Self(1000642000);
     pub const COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV: Self = Self(1000645000);
     pub const PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV: Self = Self(1000645001);
+    pub const PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_KHR: Self = Self(1000498000);
     pub const PHYSICAL_DEVICE_MAINTENANCE_11_FEATURES_KHR: Self = Self(1000657000);
     pub const QUEUE_FAMILY_OPTIMAL_IMAGE_TRANSFER_GRANULARITY_PROPERTIES_KHR: Self = Self(1000657001);
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_MAINTENANCE_1_FEATURES_EXT: Self = Self(1000659000);
@@ -8867,6 +8869,9 @@ impl StructureType {
     pub const IMAGE_TILING_CONTROL_CREATE_INFO_EXT: Self = Self(1000687001);
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV: Self = Self(1000689000);
     pub const PHYSICAL_DEVICE_PRIVATE_DATA_BASE_HANDLE_FEATURES_NV: Self = Self(1000707000);
+    pub const PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_FEATURES_VALVE: Self = Self(1000709000);
+    pub const PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_PROPERTIES_VALVE: Self = Self(1000709001);
+    pub const BUFFER_DEVICE_ADDRESS_ALIGNMENT_ALLOCATE_INFO_VALVE: Self = Self(1000709002);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9770,7 +9775,6 @@ impl fmt::Display for StructureType {
             1000496000 => Some(&"LAYER_SETTINGS_CREATE_INFO_EXT"),
             1000497000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM"),
             1000497001 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM"),
-            1000498000 => Some(&"PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT"),
             1000499000 => Some(&"PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT"),
             1000504000 => Some(&"PHYSICAL_DEVICE_INTERNALLY_SYNCHRONIZED_QUEUES_FEATURES_KHR"),
             1000505000 => Some(&"LATENCY_SLEEP_MODE_INFO_NV"),
@@ -9974,6 +9978,7 @@ impl fmt::Display for StructureType {
             1000642000 => Some(&"PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT"),
             1000645000 => Some(&"COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV"),
             1000645001 => Some(&"PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV"),
+            1000498000 => Some(&"PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_KHR"),
             1000657000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_11_FEATURES_KHR"),
             1000657001 => Some(&"QUEUE_FAMILY_OPTIMAL_IMAGE_TRANSFER_GRANULARITY_PROPERTIES_KHR"),
             1000659000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_MAINTENANCE_1_FEATURES_EXT"),
@@ -10000,6 +10005,9 @@ impl fmt::Display for StructureType {
             1000687001 => Some(&"IMAGE_TILING_CONTROL_CREATE_INFO_EXT"),
             1000689000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV"),
             1000707000 => Some(&"PHYSICAL_DEVICE_PRIVATE_DATA_BASE_HANDLE_FEATURES_NV"),
+            1000709000 => Some(&"PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_FEATURES_VALVE"),
+            1000709001 => Some(&"PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_PROPERTIES_VALVE"),
+            1000709002 => Some(&"BUFFER_DEVICE_ADDRESS_ALIGNMENT_ALLOCATE_INFO_VALVE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -48204,28 +48212,29 @@ impl fmt::Debug for PhysicalDeviceFaultPropertiesKHR {
             .finish()
     }
 }
+pub type PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT = PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {
+pub struct PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub pipeline_library_group_handles: Bool32,
 }
-unsafe impl Send for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {}
-unsafe impl Sync for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {}
-impl Default for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {
+unsafe impl Send for PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR {}
+unsafe impl Sync for PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR {}
+impl Default for PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT,
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_KHR,
             p_next: ptr::null_mut(),
             pipeline_library_group_handles: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {
+impl fmt::Debug for PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT")
+        fmt.debug_struct("PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("pipeline_library_group_handles", &self.pipeline_library_group_handles)
@@ -58286,6 +58295,96 @@ impl fmt::Debug for PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT {
                 "cooperative_matrix_get_coordinate",
                 &self.cooperative_matrix_get_coordinate,
             )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub buffer_device_address_allocation_alignment: Bool32,
+}
+unsafe impl Send for PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE {}
+unsafe impl Sync for PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE {}
+impl Default for PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_FEATURES_VALVE,
+            p_next: ptr::null_mut(),
+            buffer_device_address_allocation_alignment: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "buffer_device_address_allocation_alignment",
+                &self.buffer_device_address_allocation_alignment,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_buffer_device_address_allocation_alignment: u32,
+}
+unsafe impl Send for PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE {}
+unsafe impl Sync for PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE {}
+impl Default for PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_PROPERTIES_VALVE,
+            p_next: ptr::null_mut(),
+            max_buffer_device_address_allocation_alignment: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_buffer_device_address_allocation_alignment",
+                &self.max_buffer_device_address_allocation_alignment,
+            )
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferDeviceAddressAlignmentAllocateInfoVALVE {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub alignment: u32,
+}
+unsafe impl Send for BufferDeviceAddressAlignmentAllocateInfoVALVE {}
+unsafe impl Sync for BufferDeviceAddressAlignmentAllocateInfoVALVE {}
+impl Default for BufferDeviceAddressAlignmentAllocateInfoVALVE {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_DEVICE_ADDRESS_ALIGNMENT_ALLOCATE_INFO_VALVE,
+            p_next: ptr::null_mut(),
+            alignment: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferDeviceAddressAlignmentAllocateInfoVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferDeviceAddressAlignmentAllocateInfoVALVE")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("alignment", &self.alignment)
             .finish()
     }
 }

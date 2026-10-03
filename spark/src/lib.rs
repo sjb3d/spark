@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.361
+//! Generated from vk.xml version 1.4.362
 
 #![allow(
     clippy::too_many_arguments,
@@ -3364,6 +3364,12 @@ impl InstanceExtensions {
             self.enable_khr_get_physical_device_properties2();
         }
     }
+    pub fn supports_khr_pipeline_library_group_handles(&self) -> bool {
+        self.supports_khr_ray_tracing_pipeline()
+    }
+    pub fn enable_khr_pipeline_library_group_handles(&mut self) {
+        self.enable_khr_ray_tracing_pipeline();
+    }
     pub fn supports_khr_maintenance11(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
     }
@@ -3458,6 +3464,14 @@ impl InstanceExtensions {
     pub fn enable_nv_private_data_base_handle(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             self.enable_ext_private_data();
+        }
+    }
+    pub fn supports_valve_buffer_device_address_allocation_alignment(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_buffer_device_address()
+    }
+    pub fn enable_valve_buffer_device_address_allocation_alignment(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_buffer_device_address();
         }
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
@@ -6278,6 +6292,7 @@ pub struct DeviceExtensions {
     pub sec_pipeline_cache_incremental_mode: bool,
     pub ext_shader_uniform_buffer_unsized_array: bool,
     pub nv_compute_occupancy_priority: bool,
+    pub khr_pipeline_library_group_handles: bool,
     pub khr_maintenance11: bool,
     pub ext_cooperative_matrix_maintenance1: bool,
     pub ext_shader_subgroup_partitioned: bool,
@@ -6290,6 +6305,7 @@ pub struct DeviceExtensions {
     pub ext_image_tiling_control: bool,
     pub nv_cooperative_matrix_decode_vector: bool,
     pub nv_private_data_base_handle: bool,
+    pub valve_buffer_device_address_allocation_alignment: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -7095,6 +7111,8 @@ impl DeviceExtensions {
             self.ext_shader_uniform_buffer_unsized_array = true;
         } else if name == c"VK_NV_compute_occupancy_priority" {
             self.nv_compute_occupancy_priority = true;
+        } else if name == c"VK_KHR_pipeline_library_group_handles" {
+            self.khr_pipeline_library_group_handles = true;
         } else if name == c"VK_KHR_maintenance11" {
             self.khr_maintenance11 = true;
         } else if name == c"VK_EXT_cooperative_matrix_maintenance1" {
@@ -7119,6 +7137,8 @@ impl DeviceExtensions {
             self.nv_cooperative_matrix_decode_vector = true;
         } else if name == c"VK_NV_private_data_base_handle" {
             self.nv_private_data_base_handle = true;
+        } else if name == c"VK_VALVE_buffer_device_address_allocation_alignment" {
+            self.valve_buffer_device_address_allocation_alignment = true;
         }
     }
     pub fn new(core_version: vk::Version) -> Self {
@@ -7525,6 +7545,7 @@ impl DeviceExtensions {
             sec_pipeline_cache_incremental_mode: false,
             ext_shader_uniform_buffer_unsized_array: false,
             nv_compute_occupancy_priority: false,
+            khr_pipeline_library_group_handles: false,
             khr_maintenance11: false,
             ext_cooperative_matrix_maintenance1: false,
             ext_shader_subgroup_partitioned: false,
@@ -7537,6 +7558,7 @@ impl DeviceExtensions {
             ext_image_tiling_control: false,
             nv_cooperative_matrix_decode_vector: false,
             nv_private_data_base_handle: false,
+            valve_buffer_device_address_allocation_alignment: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -10743,6 +10765,16 @@ impl DeviceExtensions {
     pub fn enable_nv_compute_occupancy_priority(&mut self) {
         self.nv_compute_occupancy_priority = true;
     }
+    pub fn supports_khr_pipeline_library_group_handles(&self) -> bool {
+        self.khr_pipeline_library_group_handles
+            && self.supports_khr_ray_tracing_pipeline()
+            && self.supports_khr_pipeline_library()
+    }
+    pub fn enable_khr_pipeline_library_group_handles(&mut self) {
+        self.khr_pipeline_library_group_handles = true;
+        self.enable_khr_ray_tracing_pipeline();
+        self.enable_khr_pipeline_library();
+    }
     pub fn supports_khr_maintenance11(&self) -> bool {
         self.khr_maintenance11
     }
@@ -10823,6 +10855,16 @@ impl DeviceExtensions {
         self.nv_private_data_base_handle = true;
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             self.enable_ext_private_data();
+        }
+    }
+    pub fn supports_valve_buffer_device_address_allocation_alignment(&self) -> bool {
+        self.valve_buffer_device_address_allocation_alignment
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_buffer_device_address())
+    }
+    pub fn enable_valve_buffer_device_address_allocation_alignment(&mut self) {
+        self.valve_buffer_device_address_allocation_alignment = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_buffer_device_address();
         }
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
@@ -12030,6 +12072,9 @@ impl DeviceExtensions {
         if self.nv_compute_occupancy_priority {
             v.push(c"VK_NV_compute_occupancy_priority");
         }
+        if self.khr_pipeline_library_group_handles {
+            v.push(c"VK_KHR_pipeline_library_group_handles");
+        }
         if self.khr_maintenance11 {
             v.push(c"VK_KHR_maintenance11");
         }
@@ -12065,6 +12110,9 @@ impl DeviceExtensions {
         }
         if self.nv_private_data_base_handle {
             v.push(c"VK_NV_private_data_base_handle");
+        }
+        if self.valve_buffer_device_address_allocation_alignment {
+            v.push(c"VK_VALVE_buffer_device_address_allocation_alignment");
         }
         v
     }

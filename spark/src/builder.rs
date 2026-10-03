@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.361
+//! Generated from vk.xml version 1.4.362
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -34842,17 +34842,17 @@ impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFaultPropertiesKHR {}
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder {
-    inner: vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT,
+pub struct PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHRBuilder {
+    inner: vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR,
 }
-impl Builder<'_> for vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {
-    type Type = PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder;
+impl Builder<'_> for vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR {
+    type Type = PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHRBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder {
-    pub fn get_mut(&mut self) -> &mut vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {
+impl PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHRBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR {
         &mut self.inner
     }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
@@ -34868,16 +34868,16 @@ impl PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder {
         self
     }
 }
-impl Deref for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder {
-    type Target = vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT;
+impl Deref for PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHRBuilder {
+    type Target = vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {}
-impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder {}
-impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {}
-impl DeviceCreateInfoNext for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR {}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR {}
+impl DeviceCreateInfoNext for PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -45280,3 +45280,116 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCooperativeMatrixMaintena
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXTBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT {}
 impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXTBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVEBuilder {
+    inner: vk::PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE,
+}
+impl Builder<'_> for vk::PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE {
+    type Type = PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVEBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVEBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn buffer_device_address_allocation_alignment(
+        mut self,
+        buffer_device_address_allocation_alignment: bool,
+    ) -> Self {
+        self.inner.buffer_device_address_allocation_alignment = if buffer_device_address_allocation_alignment {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVEBuilder {
+    type Target = vk::PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVEBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE {}
+impl DeviceCreateInfoNext for PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVEBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVEBuilder {
+    inner: vk::PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE,
+}
+impl Builder<'_> for vk::PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE {
+    type Type = PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVEBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVEBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn max_buffer_device_address_allocation_alignment(
+        mut self,
+        max_buffer_device_address_allocation_alignment: u32,
+    ) -> Self {
+        self.inner.max_buffer_device_address_allocation_alignment = max_buffer_device_address_allocation_alignment;
+        self
+    }
+}
+impl Deref for PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVEBuilder {
+    type Target = vk::PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE {}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVEBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct BufferDeviceAddressAlignmentAllocateInfoVALVEBuilder {
+    inner: vk::BufferDeviceAddressAlignmentAllocateInfoVALVE,
+}
+impl Builder<'_> for vk::BufferDeviceAddressAlignmentAllocateInfoVALVE {
+    type Type = BufferDeviceAddressAlignmentAllocateInfoVALVEBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl BufferDeviceAddressAlignmentAllocateInfoVALVEBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::BufferDeviceAddressAlignmentAllocateInfoVALVE {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn alignment(mut self, alignment: u32) -> Self {
+        self.inner.alignment = alignment;
+        self
+    }
+}
+impl Deref for BufferDeviceAddressAlignmentAllocateInfoVALVEBuilder {
+    type Target = vk::BufferDeviceAddressAlignmentAllocateInfoVALVE;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl BufferCreateInfoNext for vk::BufferDeviceAddressAlignmentAllocateInfoVALVE {}
+impl BufferCreateInfoNext for BufferDeviceAddressAlignmentAllocateInfoVALVEBuilder {}
+impl MemoryAllocateInfoNext for vk::BufferDeviceAddressAlignmentAllocateInfoVALVE {}
+impl MemoryAllocateInfoNext for BufferDeviceAddressAlignmentAllocateInfoVALVEBuilder {}

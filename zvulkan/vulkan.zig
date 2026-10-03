@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.361
+// Generated from vk.xml version 1.4.362
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -3746,7 +3746,6 @@ pub const StructureType = enum(i32) {
     layer_settings_create_info_ext = 1000496000,
     physical_device_shader_core_builtins_features_arm = 1000497000,
     physical_device_shader_core_builtins_properties_arm = 1000497001,
-    physical_device_pipeline_library_group_handles_features_ext = 1000498000,
     physical_device_dynamic_rendering_unused_attachments_features_ext = 1000499000,
     physical_device_internally_synchronized_queues_features_khr = 1000504000,
     latency_sleep_mode_info_nv = 1000505000,
@@ -3950,6 +3949,7 @@ pub const StructureType = enum(i32) {
     physical_device_shader_uniform_buffer_unsized_array_features_ext = 1000642000,
     compute_occupancy_priority_parameters_nv = 1000645000,
     physical_device_compute_occupancy_priority_features_nv = 1000645001,
+    physical_device_pipeline_library_group_handles_features_khr = 1000498000,
     physical_device_maintenance_11_features_khr = 1000657000,
     queue_family_optimal_image_transfer_granularity_properties_khr = 1000657001,
     physical_device_cooperative_matrix_maintenance_1_features_ext = 1000659000,
@@ -3976,6 +3976,9 @@ pub const StructureType = enum(i32) {
     image_tiling_control_create_info_ext = 1000687001,
     physical_device_cooperative_matrix_decode_vector_features_nv = 1000689000,
     physical_device_private_data_base_handle_features_nv = 1000707000,
+    physical_device_buffer_device_address_allocation_alignment_features_valve = 1000709000,
+    physical_device_buffer_device_address_allocation_alignment_properties_valve = 1000709001,
+    buffer_device_address_alignment_allocate_info_valve = 1000709002,
     _,
 };
 pub const SystemAllocationScope = enum(i32) {
@@ -5399,7 +5402,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceOpticalFlowFeaturesNV,
             *PhysicalDeviceFaultFeaturesEXT,
             *PhysicalDeviceFaultFeaturesKHR,
-            *PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT,
+            *PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR,
             *PhysicalDeviceShaderCoreBuiltinsFeaturesARM,
             *PhysicalDeviceFrameBoundaryFeaturesEXT,
             *PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT,
@@ -5487,6 +5490,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceImageTilingControlFeaturesEXT,
             *PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT,
             *PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT,
+            *PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -5563,6 +5567,7 @@ pub const MemoryAllocateInfo = extern struct {
             *ImportMetalBufferInfoEXT,
             *MemoryDedicatedAllocateInfoTensorARM,
             *ImportNativeBufferInfoOHOS,
+            *BufferDeviceAddressAlignmentAllocateInfoVALVE,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -5688,6 +5693,7 @@ pub const BufferCreateInfo = extern struct {
             *BufferDeviceAddressCreateInfoEXT,
             *OpaqueCaptureDescriptorDataCreateInfoEXT,
             *BufferCollectionBufferCreateInfoFUCHSIA,
+            *BufferDeviceAddressAlignmentAllocateInfoVALVE,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -7899,7 +7905,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceOpticalFlowFeaturesNV,
             *PhysicalDeviceFaultFeaturesEXT,
             *PhysicalDeviceFaultFeaturesKHR,
-            *PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT,
+            *PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR,
             *PhysicalDeviceShaderCoreBuiltinsFeaturesARM,
             *PhysicalDeviceFrameBoundaryFeaturesEXT,
             *PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT,
@@ -7985,6 +7991,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDeviceImageTilingControlFeaturesEXT,
             *PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT,
             *PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT,
+            *PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -8126,6 +8133,7 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceDescriptorHeapTensorPropertiesARM,
             *PhysicalDeviceShaderInstrumentationPropertiesARM,
             *PhysicalDeviceShaderAbortPropertiesKHR,
+            *PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -14787,8 +14795,9 @@ pub const PhysicalDeviceFaultPropertiesKHR = extern struct {
     p_next: ?*anyopaque = null,
     max_device_fault_count: u32 = 0,
 };
-pub const PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT = extern struct {
-    s_type: StructureType = .physical_device_pipeline_library_group_handles_features_ext,
+pub const PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT = PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR;
+pub const PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR = extern struct {
+    s_type: StructureType = .physical_device_pipeline_library_group_handles_features_khr,
     p_next: ?*anyopaque = null,
     pipeline_library_group_handles: Bool32 = .false,
 };
@@ -17122,6 +17131,21 @@ pub const PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT = extern struct
     cooperative_matrix_per_element_operations: Bool32 = .false,
     cooperative_matrix_get_coordinate: Bool32 = .false,
 };
+pub const PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE = extern struct {
+    s_type: StructureType = .physical_device_buffer_device_address_allocation_alignment_features_valve,
+    p_next: ?*anyopaque = null,
+    buffer_device_address_allocation_alignment: Bool32 = .false,
+};
+pub const PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE = extern struct {
+    s_type: StructureType = .physical_device_buffer_device_address_allocation_alignment_properties_valve,
+    p_next: ?*anyopaque = null,
+    max_buffer_device_address_allocation_alignment: u32 = 0,
+};
+pub const BufferDeviceAddressAlignmentAllocateInfoVALVE = extern struct {
+    s_type: StructureType = .buffer_device_address_alignment_allocate_info_valve,
+    p_next: ?*anyopaque = null,
+    alignment: u32 = 0,
+};
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpEnumeratePhysicalDevices = *const fn (Instance, [*c]u32, [*c]PhysicalDevice) callconv(.c) Result;
@@ -18282,6 +18306,7 @@ const ExtensionNames = struct {
     const sec_pipeline_cache_incremental_mode = "VK_SEC_pipeline_cache_incremental_mode";
     const ext_shader_uniform_buffer_unsized_array = "VK_EXT_shader_uniform_buffer_unsized_array";
     const nv_compute_occupancy_priority = "VK_NV_compute_occupancy_priority";
+    const khr_pipeline_library_group_handles = "VK_KHR_pipeline_library_group_handles";
     const khr_maintenance11 = "VK_KHR_maintenance11";
     const ext_cooperative_matrix_maintenance1 = "VK_EXT_cooperative_matrix_maintenance1";
     const ext_shader_subgroup_partitioned = "VK_EXT_shader_subgroup_partitioned";
@@ -18295,6 +18320,7 @@ const ExtensionNames = struct {
     const ext_image_tiling_control = "VK_EXT_image_tiling_control";
     const nv_cooperative_matrix_decode_vector = "VK_NV_cooperative_matrix_decode_vector";
     const nv_private_data_base_handle = "VK_NV_private_data_base_handle";
+    const valve_buffer_device_address_allocation_alignment = "VK_VALVE_buffer_device_address_allocation_alignment";
 };
 
 pub const InstanceExtensions = packed struct {
@@ -21629,6 +21655,13 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_khr_pipeline_library_group_handles(self: InstanceExtensions) bool {
+        return self.supports_khr_ray_tracing_pipeline();
+    }
+    pub fn enable_khr_pipeline_library_group_handles(self: *InstanceExtensions) void {
+        self.enable_khr_ray_tracing_pipeline();
+    }
+
     pub fn supports_khr_maintenance11(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
     }
@@ -21732,6 +21765,15 @@ pub const InstanceExtensions = packed struct {
     pub fn enable_nv_private_data_base_handle(self: *InstanceExtensions) void {
         if (self.core_version.to_int() < make_version(1, 3, 0).to_int()) {
             self.enable_ext_private_data();
+        }
+    }
+
+    pub fn supports_valve_buffer_device_address_allocation_alignment(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address();
+    }
+    pub fn enable_valve_buffer_device_address_allocation_alignment(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
+            self.enable_khr_buffer_device_address();
         }
     }
 };
@@ -22139,6 +22181,7 @@ pub const DeviceExtensions = packed struct {
     sec_pipeline_cache_incremental_mode: bool = false,
     ext_shader_uniform_buffer_unsized_array: bool = false,
     nv_compute_occupancy_priority: bool = false,
+    khr_pipeline_library_group_handles: bool = false,
     khr_maintenance11: bool = false,
     ext_cooperative_matrix_maintenance1: bool = false,
     ext_shader_subgroup_partitioned: bool = false,
@@ -22151,6 +22194,7 @@ pub const DeviceExtensions = packed struct {
     ext_image_tiling_control: bool = false,
     nv_cooperative_matrix_decode_vector: bool = false,
     nv_private_data_base_handle: bool = false,
+    valve_buffer_device_address_allocation_alignment: bool = false,
 
     pub fn enable_by_name(self: *DeviceExtensions, maybe_name: ?[*:0]const u8) void {
         const name = maybe_name orelse return;
@@ -22956,6 +23000,8 @@ pub const DeviceExtensions = packed struct {
             self.ext_shader_uniform_buffer_unsized_array = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_compute_occupancy_priority) == .eq) {
             self.nv_compute_occupancy_priority = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_pipeline_library_group_handles) == .eq) {
+            self.khr_pipeline_library_group_handles = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.khr_maintenance11) == .eq) {
             self.khr_maintenance11 = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.ext_cooperative_matrix_maintenance1) == .eq) {
@@ -22980,6 +23026,8 @@ pub const DeviceExtensions = packed struct {
             self.nv_cooperative_matrix_decode_vector = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_private_data_base_handle) == .eq) {
             self.nv_private_data_base_handle = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.valve_buffer_device_address_allocation_alignment) == .eq) {
+            self.valve_buffer_device_address_allocation_alignment = true;
         }
     }
 
@@ -23396,6 +23444,7 @@ pub const DeviceExtensions = packed struct {
         if (self.sec_pipeline_cache_incremental_mode) try names.append(allocator, ExtensionNames.sec_pipeline_cache_incremental_mode);
         if (self.ext_shader_uniform_buffer_unsized_array) try names.append(allocator, ExtensionNames.ext_shader_uniform_buffer_unsized_array);
         if (self.nv_compute_occupancy_priority) try names.append(allocator, ExtensionNames.nv_compute_occupancy_priority);
+        if (self.khr_pipeline_library_group_handles) try names.append(allocator, ExtensionNames.khr_pipeline_library_group_handles);
         if (self.khr_maintenance11) try names.append(allocator, ExtensionNames.khr_maintenance11);
         if (self.ext_cooperative_matrix_maintenance1) try names.append(allocator, ExtensionNames.ext_cooperative_matrix_maintenance1);
         if (self.ext_shader_subgroup_partitioned) try names.append(allocator, ExtensionNames.ext_shader_subgroup_partitioned);
@@ -23408,6 +23457,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_image_tiling_control) try names.append(allocator, ExtensionNames.ext_image_tiling_control);
         if (self.nv_cooperative_matrix_decode_vector) try names.append(allocator, ExtensionNames.nv_cooperative_matrix_decode_vector);
         if (self.nv_private_data_base_handle) try names.append(allocator, ExtensionNames.nv_private_data_base_handle);
+        if (self.valve_buffer_device_address_allocation_alignment) try names.append(allocator, ExtensionNames.valve_buffer_device_address_allocation_alignment);
         return names.toOwnedSlice(allocator);
     }
 
@@ -26803,6 +26853,15 @@ pub const DeviceExtensions = packed struct {
         self.nv_compute_occupancy_priority = true;
     }
 
+    pub fn supports_khr_pipeline_library_group_handles(self: DeviceExtensions) bool {
+        return self.khr_pipeline_library_group_handles and self.supports_khr_ray_tracing_pipeline() and self.supports_khr_pipeline_library();
+    }
+    pub fn enable_khr_pipeline_library_group_handles(self: *DeviceExtensions) void {
+        self.khr_pipeline_library_group_handles = true;
+        self.enable_khr_ray_tracing_pipeline();
+        self.enable_khr_pipeline_library();
+    }
+
     pub fn supports_khr_maintenance11(self: DeviceExtensions) bool {
         return self.khr_maintenance11;
     }
@@ -26892,6 +26951,16 @@ pub const DeviceExtensions = packed struct {
         self.nv_private_data_base_handle = true;
         if (self.core_version.to_int() < make_version(1, 3, 0).to_int()) {
             self.enable_ext_private_data();
+        }
+    }
+
+    pub fn supports_valve_buffer_device_address_allocation_alignment(self: DeviceExtensions) bool {
+        return self.valve_buffer_device_address_allocation_alignment and (self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address());
+    }
+    pub fn enable_valve_buffer_device_address_allocation_alignment(self: *DeviceExtensions) void {
+        self.valve_buffer_device_address_allocation_alignment = true;
+        if (self.core_version.to_int() < make_version(1, 2, 0).to_int()) {
+            self.enable_khr_buffer_device_address();
         }
     }
 };
