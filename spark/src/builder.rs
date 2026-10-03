@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.360
+//! Generated from vk.xml version 1.4.361
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -7140,6 +7140,41 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePrivateDataFeatures {}
 impl PhysicalDeviceFeatures2Next for PhysicalDevicePrivateDataFeaturesBuilder {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePrivateDataFeatures {}
 impl DeviceCreateInfoNext for PhysicalDevicePrivateDataFeaturesBuilder {}
+
+#[repr(transparent)]
+#[derive(Default)]
+pub struct PhysicalDevicePrivateDataBaseHandleFeaturesNVBuilder {
+    inner: vk::PhysicalDevicePrivateDataBaseHandleFeaturesNV,
+}
+impl Builder<'_> for vk::PhysicalDevicePrivateDataBaseHandleFeaturesNV {
+    type Type = PhysicalDevicePrivateDataBaseHandleFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+impl PhysicalDevicePrivateDataBaseHandleFeaturesNVBuilder {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDevicePrivateDataBaseHandleFeaturesNV {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn private_data_base_handle(mut self, private_data_base_handle: bool) -> Self {
+        self.inner.private_data_base_handle = if private_data_base_handle { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePrivateDataBaseHandleFeaturesNVBuilder {
+    type Target = vk::PhysicalDevicePrivateDataBaseHandleFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePrivateDataBaseHandleFeaturesNV {}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePrivateDataBaseHandleFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePrivateDataBaseHandleFeaturesNV {}
+impl DeviceCreateInfoNext for PhysicalDevicePrivateDataBaseHandleFeaturesNVBuilder {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {}
 
 #[repr(transparent)]

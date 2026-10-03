@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.360
+// Generated from vk.xml version 1.4.361
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -897,6 +897,7 @@ pub const BuildAccelerationStructureFlagBitsKHR = enum(u5) {
 pub const BuildAccelerationStructureFlagsKHR = BitField(BuildAccelerationStructureFlagBitsKHR);
 pub const BuildAccelerationStructureFlagsNV = BuildAccelerationStructureFlagsKHR;
 pub const PrivateDataSlotCreateFlagBits = enum(u5) {
+    base_object_handle_nv = 0,
     _,
 };
 pub const PrivateDataSlotCreateFlags = BitField(PrivateDataSlotCreateFlagBits);
@@ -3974,6 +3975,7 @@ pub const StructureType = enum(i32) {
     physical_device_image_tiling_control_features_ext = 1000687000,
     image_tiling_control_create_info_ext = 1000687001,
     physical_device_cooperative_matrix_decode_vector_features_nv = 1000689000,
+    physical_device_private_data_base_handle_features_nv = 1000707000,
     _,
 };
 pub const SystemAllocationScope = enum(i32) {
@@ -5214,6 +5216,7 @@ pub const DeviceCreateInfo = extern struct {
             *PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV,
             *DevicePrivateDataCreateInfo,
             *PhysicalDevicePrivateDataFeatures,
+            *PhysicalDevicePrivateDataBaseHandleFeaturesNV,
             *PhysicalDeviceClusterAccelerationStructureFeaturesNV,
             *PhysicalDeviceFeatures2,
             *PhysicalDeviceVariablePointersFeatures,
@@ -7449,6 +7452,11 @@ pub const PhysicalDevicePrivateDataFeatures = extern struct {
     private_data: Bool32 = .false,
 };
 pub const PhysicalDevicePrivateDataFeaturesEXT = PhysicalDevicePrivateDataFeatures;
+pub const PhysicalDevicePrivateDataBaseHandleFeaturesNV = extern struct {
+    s_type: StructureType = .physical_device_private_data_base_handle_features_nv,
+    p_next: ?*anyopaque = null,
+    private_data_base_handle: Bool32 = .false,
+};
 pub const PhysicalDeviceDeviceGeneratedCommandsPropertiesNV = extern struct {
     s_type: StructureType = .physical_device_device_generated_commands_properties_nv,
     p_next: ?*anyopaque = null,
@@ -7714,6 +7722,7 @@ pub const PhysicalDeviceFeatures2 = extern struct {
             *PhysicalDevicePushConstantBankFeaturesNV,
             *PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV,
             *PhysicalDevicePrivateDataFeatures,
+            *PhysicalDevicePrivateDataBaseHandleFeaturesNV,
             *PhysicalDeviceClusterAccelerationStructureFeaturesNV,
             *PhysicalDeviceVariablePointersFeatures,
             *PhysicalDeviceMultiviewFeatures,
@@ -18285,6 +18294,7 @@ const ExtensionNames = struct {
     const ext_primitive_restart_index = "VK_EXT_primitive_restart_index";
     const ext_image_tiling_control = "VK_EXT_image_tiling_control";
     const nv_cooperative_matrix_decode_vector = "VK_NV_cooperative_matrix_decode_vector";
+    const nv_private_data_base_handle = "VK_NV_private_data_base_handle";
 };
 
 pub const InstanceExtensions = packed struct {
@@ -20705,10 +20715,11 @@ pub const InstanceExtensions = packed struct {
     }
 
     pub fn supports_ext_image_compression_control_swapchain(self: InstanceExtensions) bool {
-        return self.supports_ext_image_compression_control();
+        return self.supports_ext_image_compression_control() and self.supports_khr_swapchain();
     }
     pub fn enable_ext_image_compression_control_swapchain(self: *InstanceExtensions) void {
         self.enable_ext_image_compression_control();
+        self.enable_khr_swapchain();
     }
 
     pub fn supports_qcom_image_processing(self: InstanceExtensions) bool {
@@ -21714,6 +21725,15 @@ pub const InstanceExtensions = packed struct {
     pub fn enable_nv_cooperative_matrix_decode_vector(self: *InstanceExtensions) void {
         self.enable_nv_cooperative_matrix2();
     }
+
+    pub fn supports_nv_private_data_base_handle(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 3, 0).to_int() or self.supports_ext_private_data();
+    }
+    pub fn enable_nv_private_data_base_handle(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 3, 0).to_int()) {
+            self.enable_ext_private_data();
+        }
+    }
 };
 
 pub const DeviceExtensions = packed struct {
@@ -22130,6 +22150,7 @@ pub const DeviceExtensions = packed struct {
     ext_primitive_restart_index: bool = false,
     ext_image_tiling_control: bool = false,
     nv_cooperative_matrix_decode_vector: bool = false,
+    nv_private_data_base_handle: bool = false,
 
     pub fn enable_by_name(self: *DeviceExtensions, maybe_name: ?[*:0]const u8) void {
         const name = maybe_name orelse return;
@@ -22957,6 +22978,8 @@ pub const DeviceExtensions = packed struct {
             self.ext_image_tiling_control = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_cooperative_matrix_decode_vector) == .eq) {
             self.nv_cooperative_matrix_decode_vector = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_private_data_base_handle) == .eq) {
+            self.nv_private_data_base_handle = true;
         }
     }
 
@@ -23384,6 +23407,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_primitive_restart_index) try names.append(allocator, ExtensionNames.ext_primitive_restart_index);
         if (self.ext_image_tiling_control) try names.append(allocator, ExtensionNames.ext_image_tiling_control);
         if (self.nv_cooperative_matrix_decode_vector) try names.append(allocator, ExtensionNames.nv_cooperative_matrix_decode_vector);
+        if (self.nv_private_data_base_handle) try names.append(allocator, ExtensionNames.nv_private_data_base_handle);
         return names.toOwnedSlice(allocator);
     }
 
@@ -25860,11 +25884,12 @@ pub const DeviceExtensions = packed struct {
     }
 
     pub fn supports_ext_image_compression_control_swapchain(self: DeviceExtensions) bool {
-        return self.ext_image_compression_control_swapchain and self.supports_ext_image_compression_control();
+        return self.ext_image_compression_control_swapchain and self.supports_ext_image_compression_control() and self.supports_khr_swapchain();
     }
     pub fn enable_ext_image_compression_control_swapchain(self: *DeviceExtensions) void {
         self.ext_image_compression_control_swapchain = true;
         self.enable_ext_image_compression_control();
+        self.enable_khr_swapchain();
     }
 
     pub fn supports_qcom_image_processing(self: DeviceExtensions) bool {
@@ -26858,6 +26883,16 @@ pub const DeviceExtensions = packed struct {
     pub fn enable_nv_cooperative_matrix_decode_vector(self: *DeviceExtensions) void {
         self.nv_cooperative_matrix_decode_vector = true;
         self.enable_nv_cooperative_matrix2();
+    }
+
+    pub fn supports_nv_private_data_base_handle(self: DeviceExtensions) bool {
+        return self.nv_private_data_base_handle and (self.core_version.to_int() >= make_version(1, 3, 0).to_int() or self.supports_ext_private_data());
+    }
+    pub fn enable_nv_private_data_base_handle(self: *DeviceExtensions) void {
+        self.nv_private_data_base_handle = true;
+        if (self.core_version.to_int() < make_version(1, 3, 0).to_int()) {
+            self.enable_ext_private_data();
+        }
     }
 };
 

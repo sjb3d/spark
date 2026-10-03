@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.360
+//! Generated from vk.xml version 1.4.361
 
 #![allow(
     clippy::too_many_arguments,
@@ -2505,10 +2505,11 @@ impl InstanceExtensions {
         self.enable_khr_surface();
     }
     pub fn supports_ext_image_compression_control_swapchain(&self) -> bool {
-        self.supports_ext_image_compression_control()
+        self.supports_ext_image_compression_control() && self.supports_khr_swapchain()
     }
     pub fn enable_ext_image_compression_control_swapchain(&mut self) {
         self.enable_ext_image_compression_control();
+        self.enable_khr_swapchain();
     }
     pub fn supports_qcom_image_processing(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 3, 0) || self.supports_khr_format_feature_flags2()
@@ -3450,6 +3451,14 @@ impl InstanceExtensions {
     }
     pub fn enable_nv_cooperative_matrix_decode_vector(&mut self) {
         self.enable_nv_cooperative_matrix2();
+    }
+    pub fn supports_nv_private_data_base_handle(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 3, 0) || self.supports_ext_private_data()
+    }
+    pub fn enable_nv_private_data_base_handle(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            self.enable_ext_private_data();
+        }
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -6280,6 +6289,7 @@ pub struct DeviceExtensions {
     pub ext_primitive_restart_index: bool,
     pub ext_image_tiling_control: bool,
     pub nv_cooperative_matrix_decode_vector: bool,
+    pub nv_private_data_base_handle: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -7107,6 +7117,8 @@ impl DeviceExtensions {
             self.ext_image_tiling_control = true;
         } else if name == c"VK_NV_cooperative_matrix_decode_vector" {
             self.nv_cooperative_matrix_decode_vector = true;
+        } else if name == c"VK_NV_private_data_base_handle" {
+            self.nv_private_data_base_handle = true;
         }
     }
     pub fn new(core_version: vk::Version) -> Self {
@@ -7524,6 +7536,7 @@ impl DeviceExtensions {
             ext_primitive_restart_index: false,
             ext_image_tiling_control: false,
             nv_cooperative_matrix_decode_vector: false,
+            nv_private_data_base_handle: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -9859,11 +9872,14 @@ impl DeviceExtensions {
         debug_assert!(self.core_version >= vk::Version::from_raw_parts(1, 1, 0));
     }
     pub fn supports_ext_image_compression_control_swapchain(&self) -> bool {
-        self.ext_image_compression_control_swapchain && self.supports_ext_image_compression_control()
+        self.ext_image_compression_control_swapchain
+            && self.supports_ext_image_compression_control()
+            && self.supports_khr_swapchain()
     }
     pub fn enable_ext_image_compression_control_swapchain(&mut self) {
         self.ext_image_compression_control_swapchain = true;
         self.enable_ext_image_compression_control();
+        self.enable_khr_swapchain();
     }
     pub fn supports_qcom_image_processing(&self) -> bool {
         self.qcom_image_processing
@@ -10798,6 +10814,16 @@ impl DeviceExtensions {
     pub fn enable_nv_cooperative_matrix_decode_vector(&mut self) {
         self.nv_cooperative_matrix_decode_vector = true;
         self.enable_nv_cooperative_matrix2();
+    }
+    pub fn supports_nv_private_data_base_handle(&self) -> bool {
+        self.nv_private_data_base_handle
+            && (self.core_version >= vk::Version::from_raw_parts(1, 3, 0) || self.supports_ext_private_data())
+    }
+    pub fn enable_nv_private_data_base_handle(&mut self) {
+        self.nv_private_data_base_handle = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            self.enable_ext_private_data();
+        }
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -12036,6 +12062,9 @@ impl DeviceExtensions {
         }
         if self.nv_cooperative_matrix_decode_vector {
             v.push(c"VK_NV_cooperative_matrix_decode_vector");
+        }
+        if self.nv_private_data_base_handle {
+            v.push(c"VK_NV_private_data_base_handle");
         }
         v
     }

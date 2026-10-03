@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.360
+//! Generated from vk.xml version 1.4.361
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -2102,11 +2102,13 @@ pub type BuildAccelerationStructureFlagsNV = BuildAccelerationStructureFlagsKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PrivateDataSlotCreateFlags(pub(crate) u32);
-impl PrivateDataSlotCreateFlags {}
+impl PrivateDataSlotCreateFlags {
+    pub const BASE_OBJECT_HANDLE_NV: Self = Self(0x1);
+}
 impl_bitmask!(PrivateDataSlotCreateFlags);
 impl fmt::Display for PrivateDataSlotCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[], f)
+        display_bitmask(self.0 as _, &[(0x1, "BASE_OBJECT_HANDLE_NV")], f)
     }
 }
 pub type PrivateDataSlotCreateFlagsEXT = PrivateDataSlotCreateFlags;
@@ -8864,6 +8866,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_IMAGE_TILING_CONTROL_FEATURES_EXT: Self = Self(1000687000);
     pub const IMAGE_TILING_CONTROL_CREATE_INFO_EXT: Self = Self(1000687001);
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV: Self = Self(1000689000);
+    pub const PHYSICAL_DEVICE_PRIVATE_DATA_BASE_HANDLE_FEATURES_NV: Self = Self(1000707000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9996,6 +9999,7 @@ impl fmt::Display for StructureType {
             1000687000 => Some(&"PHYSICAL_DEVICE_IMAGE_TILING_CONTROL_FEATURES_EXT"),
             1000687001 => Some(&"IMAGE_TILING_CONTROL_CREATE_INFO_EXT"),
             1000689000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV"),
+            1000707000 => Some(&"PHYSICAL_DEVICE_PRIVATE_DATA_BASE_HANDLE_FEATURES_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -19307,6 +19311,34 @@ impl fmt::Debug for PhysicalDevicePrivateDataFeatures {
     }
 }
 pub type PhysicalDevicePrivateDataFeaturesEXT = PhysicalDevicePrivateDataFeatures;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePrivateDataBaseHandleFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub private_data_base_handle: Bool32,
+}
+unsafe impl Send for PhysicalDevicePrivateDataBaseHandleFeaturesNV {}
+unsafe impl Sync for PhysicalDevicePrivateDataBaseHandleFeaturesNV {}
+impl Default for PhysicalDevicePrivateDataBaseHandleFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRIVATE_DATA_BASE_HANDLE_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            private_data_base_handle: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePrivateDataBaseHandleFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePrivateDataBaseHandleFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("private_data_base_handle", &self.private_data_base_handle)
+            .finish()
+    }
+}
 
 #[repr(C)]
 #[derive(Copy, Clone)]
