@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.362
+//! Generated from vk.xml version 1.4.363
 
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
@@ -8869,6 +8869,7 @@ impl StructureType {
     pub const IMAGE_TILING_CONTROL_CREATE_INFO_EXT: Self = Self(1000687001);
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV: Self = Self(1000689000);
     pub const PHYSICAL_DEVICE_PRIVATE_DATA_BASE_HANDLE_FEATURES_NV: Self = Self(1000707000);
+    pub const PHYSICAL_DEVICE_INFO_PROPERTIES_INTEL: Self = Self(1000708000);
     pub const PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_FEATURES_VALVE: Self = Self(1000709000);
     pub const PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_PROPERTIES_VALVE: Self = Self(1000709001);
     pub const BUFFER_DEVICE_ADDRESS_ALIGNMENT_ALLOCATE_INFO_VALVE: Self = Self(1000709002);
@@ -10005,6 +10006,7 @@ impl fmt::Display for StructureType {
             1000687001 => Some(&"IMAGE_TILING_CONTROL_CREATE_INFO_EXT"),
             1000689000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV"),
             1000707000 => Some(&"PHYSICAL_DEVICE_PRIVATE_DATA_BASE_HANDLE_FEATURES_NV"),
+            1000708000 => Some(&"PHYSICAL_DEVICE_INFO_PROPERTIES_INTEL"),
             1000709000 => Some(&"PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_FEATURES_VALVE"),
             1000709001 => Some(&"PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_PROPERTIES_VALVE"),
             1000709002 => Some(&"BUFFER_DEVICE_ADDRESS_ALIGNMENT_ALLOCATE_INFO_VALVE"),
@@ -58385,6 +58387,40 @@ impl fmt::Debug for BufferDeviceAddressAlignmentAllocateInfoVALVE {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("alignment", &self.alignment)
+            .finish()
+    }
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceInfoPropertiesINTEL {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub device_ip_version_arch: u32,
+    pub device_ip_version_release: u32,
+    pub device_ip_version_revision: u32,
+}
+unsafe impl Send for PhysicalDeviceInfoPropertiesINTEL {}
+unsafe impl Sync for PhysicalDeviceInfoPropertiesINTEL {}
+impl Default for PhysicalDeviceInfoPropertiesINTEL {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_INFO_PROPERTIES_INTEL,
+            p_next: ptr::null_mut(),
+            device_ip_version_arch: Default::default(),
+            device_ip_version_release: Default::default(),
+            device_ip_version_revision: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceInfoPropertiesINTEL {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceInfoPropertiesINTEL")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("device_ip_version_arch", &self.device_ip_version_arch)
+            .field("device_ip_version_release", &self.device_ip_version_release)
+            .field("device_ip_version_revision", &self.device_ip_version_revision)
             .finish()
     }
 }

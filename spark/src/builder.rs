@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.362
+//! Generated from vk.xml version 1.4.363
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -45393,3 +45393,4 @@ impl BufferCreateInfoNext for vk::BufferDeviceAddressAlignmentAllocateInfoVALVE 
 impl BufferCreateInfoNext for BufferDeviceAddressAlignmentAllocateInfoVALVEBuilder {}
 impl MemoryAllocateInfoNext for vk::BufferDeviceAddressAlignmentAllocateInfoVALVE {}
 impl MemoryAllocateInfoNext for BufferDeviceAddressAlignmentAllocateInfoVALVEBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceInfoPropertiesINTEL {}

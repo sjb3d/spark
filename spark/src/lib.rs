@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.362
+//! Generated from vk.xml version 1.4.363
 
 #![allow(
     clippy::too_many_arguments,
@@ -3466,6 +3466,14 @@ impl InstanceExtensions {
             self.enable_ext_private_data();
         }
     }
+    pub fn supports_intel_device_info(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) || self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_intel_device_info(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
     pub fn supports_valve_buffer_device_address_allocation_alignment(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_buffer_device_address()
     }
@@ -6305,6 +6313,7 @@ pub struct DeviceExtensions {
     pub ext_image_tiling_control: bool,
     pub nv_cooperative_matrix_decode_vector: bool,
     pub nv_private_data_base_handle: bool,
+    pub intel_device_info: bool,
     pub valve_buffer_device_address_allocation_alignment: bool,
 }
 impl DeviceExtensions {
@@ -7137,6 +7146,8 @@ impl DeviceExtensions {
             self.nv_cooperative_matrix_decode_vector = true;
         } else if name == c"VK_NV_private_data_base_handle" {
             self.nv_private_data_base_handle = true;
+        } else if name == c"VK_INTEL_device_info" {
+            self.intel_device_info = true;
         } else if name == c"VK_VALVE_buffer_device_address_allocation_alignment" {
             self.valve_buffer_device_address_allocation_alignment = true;
         }
@@ -7558,6 +7569,7 @@ impl DeviceExtensions {
             ext_image_tiling_control: false,
             nv_cooperative_matrix_decode_vector: false,
             nv_private_data_base_handle: false,
+            intel_device_info: false,
             valve_buffer_device_address_allocation_alignment: false,
         }
     }
@@ -10857,6 +10869,12 @@ impl DeviceExtensions {
             self.enable_ext_private_data();
         }
     }
+    pub fn supports_intel_device_info(&self) -> bool {
+        self.intel_device_info
+    }
+    pub fn enable_intel_device_info(&mut self) {
+        self.intel_device_info = true;
+    }
     pub fn supports_valve_buffer_device_address_allocation_alignment(&self) -> bool {
         self.valve_buffer_device_address_allocation_alignment
             && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_khr_buffer_device_address())
@@ -12110,6 +12128,9 @@ impl DeviceExtensions {
         }
         if self.nv_private_data_base_handle {
             v.push(c"VK_NV_private_data_base_handle");
+        }
+        if self.intel_device_info {
+            v.push(c"VK_INTEL_device_info");
         }
         if self.valve_buffer_device_address_allocation_alignment {
             v.push(c"VK_VALVE_buffer_device_address_allocation_alignment");

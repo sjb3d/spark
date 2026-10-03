@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.362
+// Generated from vk.xml version 1.4.363
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -3976,6 +3976,7 @@ pub const StructureType = enum(i32) {
     image_tiling_control_create_info_ext = 1000687001,
     physical_device_cooperative_matrix_decode_vector_features_nv = 1000689000,
     physical_device_private_data_base_handle_features_nv = 1000707000,
+    physical_device_info_properties_intel = 1000708000,
     physical_device_buffer_device_address_allocation_alignment_features_valve = 1000709000,
     physical_device_buffer_device_address_allocation_alignment_properties_valve = 1000709001,
     buffer_device_address_alignment_allocate_info_valve = 1000709002,
@@ -8134,6 +8135,7 @@ pub const PhysicalDeviceProperties2 = extern struct {
             *PhysicalDeviceShaderInstrumentationPropertiesARM,
             *PhysicalDeviceShaderAbortPropertiesKHR,
             *PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE,
+            *PhysicalDeviceInfoPropertiesINTEL,
             => {
                 next.p_next = @constCast(self.p_next);
                 self.p_next = next;
@@ -17146,6 +17148,13 @@ pub const BufferDeviceAddressAlignmentAllocateInfoVALVE = extern struct {
     p_next: ?*anyopaque = null,
     alignment: u32 = 0,
 };
+pub const PhysicalDeviceInfoPropertiesINTEL = extern struct {
+    s_type: StructureType = .physical_device_info_properties_intel,
+    p_next: ?*anyopaque = null,
+    device_ip_version_arch: u32 = 0,
+    device_ip_version_release: u32 = 0,
+    device_ip_version_revision: u32 = 0,
+};
 pub const FpCreateInstance = *const fn ([*c]const InstanceCreateInfo, [*c]const AllocationCallbacks, [*c]Instance) callconv(.c) Result;
 pub const FpDestroyInstance = *const fn (Instance, [*c]const AllocationCallbacks) callconv(.c) void;
 pub const FpEnumeratePhysicalDevices = *const fn (Instance, [*c]u32, [*c]PhysicalDevice) callconv(.c) Result;
@@ -18320,6 +18329,7 @@ const ExtensionNames = struct {
     const ext_image_tiling_control = "VK_EXT_image_tiling_control";
     const nv_cooperative_matrix_decode_vector = "VK_NV_cooperative_matrix_decode_vector";
     const nv_private_data_base_handle = "VK_NV_private_data_base_handle";
+    const intel_device_info = "VK_INTEL_device_info";
     const valve_buffer_device_address_allocation_alignment = "VK_VALVE_buffer_device_address_allocation_alignment";
 };
 
@@ -21768,6 +21778,15 @@ pub const InstanceExtensions = packed struct {
         }
     }
 
+    pub fn supports_intel_device_info(self: InstanceExtensions) bool {
+        return self.core_version.to_int() >= make_version(1, 1, 0).to_int() or self.supports_khr_get_physical_device_properties2();
+    }
+    pub fn enable_intel_device_info(self: *InstanceExtensions) void {
+        if (self.core_version.to_int() < make_version(1, 1, 0).to_int()) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+    }
+
     pub fn supports_valve_buffer_device_address_allocation_alignment(self: InstanceExtensions) bool {
         return self.core_version.to_int() >= make_version(1, 2, 0).to_int() or self.supports_khr_buffer_device_address();
     }
@@ -22194,6 +22213,7 @@ pub const DeviceExtensions = packed struct {
     ext_image_tiling_control: bool = false,
     nv_cooperative_matrix_decode_vector: bool = false,
     nv_private_data_base_handle: bool = false,
+    intel_device_info: bool = false,
     valve_buffer_device_address_allocation_alignment: bool = false,
 
     pub fn enable_by_name(self: *DeviceExtensions, maybe_name: ?[*:0]const u8) void {
@@ -23026,6 +23046,8 @@ pub const DeviceExtensions = packed struct {
             self.nv_cooperative_matrix_decode_vector = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.nv_private_data_base_handle) == .eq) {
             self.nv_private_data_base_handle = true;
+        } else if (std.mem.orderZ(u8, name, ExtensionNames.intel_device_info) == .eq) {
+            self.intel_device_info = true;
         } else if (std.mem.orderZ(u8, name, ExtensionNames.valve_buffer_device_address_allocation_alignment) == .eq) {
             self.valve_buffer_device_address_allocation_alignment = true;
         }
@@ -23457,6 +23479,7 @@ pub const DeviceExtensions = packed struct {
         if (self.ext_image_tiling_control) try names.append(allocator, ExtensionNames.ext_image_tiling_control);
         if (self.nv_cooperative_matrix_decode_vector) try names.append(allocator, ExtensionNames.nv_cooperative_matrix_decode_vector);
         if (self.nv_private_data_base_handle) try names.append(allocator, ExtensionNames.nv_private_data_base_handle);
+        if (self.intel_device_info) try names.append(allocator, ExtensionNames.intel_device_info);
         if (self.valve_buffer_device_address_allocation_alignment) try names.append(allocator, ExtensionNames.valve_buffer_device_address_allocation_alignment);
         return names.toOwnedSlice(allocator);
     }
@@ -26952,6 +26975,13 @@ pub const DeviceExtensions = packed struct {
         if (self.core_version.to_int() < make_version(1, 3, 0).to_int()) {
             self.enable_ext_private_data();
         }
+    }
+
+    pub fn supports_intel_device_info(self: DeviceExtensions) bool {
+        return self.intel_device_info;
+    }
+    pub fn enable_intel_device_info(self: *DeviceExtensions) void {
+        self.intel_device_info = true;
     }
 
     pub fn supports_valve_buffer_device_address_allocation_alignment(self: DeviceExtensions) bool {
