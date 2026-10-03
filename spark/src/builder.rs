@@ -1,4 +1,4 @@
-//! Generated from vk.xml version 1.4.363
+//! Generated from vk.xml version 1.4.364
 
 #![allow(clippy::wrong_self_convention, clippy::unnecessary_cast)]
 
@@ -2657,6 +2657,8 @@ impl<'a> Deref for ComputePipelineCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl PipelineCreateInfoKHRNext for vk::ComputePipelineCreateInfo {}
+impl PipelineCreateInfoKHRNext for ComputePipelineCreateInfoBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -3541,6 +3543,8 @@ impl<'a> Deref for GraphicsPipelineCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl PipelineCreateInfoKHRNext for vk::GraphicsPipelineCreateInfo {}
+impl PipelineCreateInfoKHRNext for GraphicsPipelineCreateInfoBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -3978,16 +3982,24 @@ impl Deref for PipelineBinaryDataInfoKHRBuilder {
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct PipelineCreateInfoKHRBuilder {
+pub struct PipelineCreateInfoKHRBuilder<'a> {
     inner: vk::PipelineCreateInfoKHR,
+    phantom: PhantomData<&'a ()>,
 }
-impl Builder<'_> for vk::PipelineCreateInfoKHR {
-    type Type = PipelineCreateInfoKHRBuilder;
+impl<'a> Builder<'a> for vk::PipelineCreateInfoKHR {
+    type Type = PipelineCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl PipelineCreateInfoKHRBuilder {
+pub trait PipelineCreateInfoKHRNext {}
+impl<'a> PipelineCreateInfoKHRBuilder<'a> {
+    pub fn insert_next<T: PipelineCreateInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn get_mut(&mut self) -> &mut vk::PipelineCreateInfoKHR {
         &mut self.inner
     }
@@ -3996,7 +4008,7 @@ impl PipelineCreateInfoKHRBuilder {
         self
     }
 }
-impl Deref for PipelineCreateInfoKHRBuilder {
+impl<'a> Deref for PipelineCreateInfoKHRBuilder<'a> {
     type Target = vk::PipelineCreateInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -17828,6 +17840,8 @@ impl<'a> Deref for RayTracingPipelineCreateInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl PipelineCreateInfoKHRNext for vk::RayTracingPipelineCreateInfoKHR {}
+impl PipelineCreateInfoKHRNext for RayTracingPipelineCreateInfoKHRBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -27711,16 +27725,24 @@ impl PipelineColorBlendStateCreateInfoNext for PipelineColorWriteCreateInfoEXTBu
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct MemoryBarrier2Builder {
+pub struct MemoryBarrier2Builder<'a> {
     inner: vk::MemoryBarrier2,
+    phantom: PhantomData<&'a ()>,
 }
-impl Builder<'_> for vk::MemoryBarrier2 {
-    type Type = MemoryBarrier2Builder;
+impl<'a> Builder<'a> for vk::MemoryBarrier2 {
+    type Type = MemoryBarrier2Builder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl MemoryBarrier2Builder {
+pub trait MemoryBarrier2Next {}
+impl<'a> MemoryBarrier2Builder<'a> {
+    pub fn insert_next<T: MemoryBarrier2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn get_mut(&mut self) -> &mut vk::MemoryBarrier2 {
         &mut self.inner
     }
@@ -27745,14 +27767,14 @@ impl MemoryBarrier2Builder {
         self
     }
 }
-impl Deref for MemoryBarrier2Builder {
+impl<'a> Deref for MemoryBarrier2Builder<'a> {
     type Target = vk::MemoryBarrier2;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
 impl SubpassDependency2Next for vk::MemoryBarrier2 {}
-impl SubpassDependency2Next for MemoryBarrier2Builder {}
+impl SubpassDependency2Next for MemoryBarrier2Builder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -27940,8 +27962,10 @@ impl BufferMemoryBarrier2Next for vk::MemoryBarrierAccessFlags3KHR {}
 impl BufferMemoryBarrier2Next for MemoryBarrierAccessFlags3KHRBuilder {}
 impl ImageMemoryBarrier2Next for vk::MemoryBarrierAccessFlags3KHR {}
 impl ImageMemoryBarrier2Next for MemoryBarrierAccessFlags3KHRBuilder {}
-impl MemoryRangeBarriersInfoKHRNext for vk::MemoryBarrierAccessFlags3KHR {}
-impl MemoryRangeBarriersInfoKHRNext for MemoryBarrierAccessFlags3KHRBuilder {}
+impl MemoryBarrier2Next for vk::MemoryBarrierAccessFlags3KHR {}
+impl MemoryBarrier2Next for MemoryBarrierAccessFlags3KHRBuilder {}
+impl MemoryRangeBarrierKHRNext for vk::MemoryBarrierAccessFlags3KHR {}
+impl MemoryRangeBarrierKHRNext for MemoryBarrierAccessFlags3KHRBuilder {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -36586,6 +36610,8 @@ impl<'a> Deref for ExecutionGraphPipelineCreateInfoAMDXBuilder<'a> {
         &self.inner
     }
 }
+impl PipelineCreateInfoKHRNext for vk::ExecutionGraphPipelineCreateInfoAMDX {}
+impl PipelineCreateInfoKHRNext for ExecutionGraphPipelineCreateInfoAMDXBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
@@ -44243,14 +44269,7 @@ impl<'a> Builder<'a> for vk::MemoryRangeBarriersInfoKHR {
         Default::default()
     }
 }
-pub trait MemoryRangeBarriersInfoKHRNext {}
 impl<'a> MemoryRangeBarriersInfoKHRBuilder<'a> {
-    pub fn insert_next<T: MemoryRangeBarriersInfoKHRNext>(mut self, next: &'a mut T) -> Self {
-        unsafe {
-            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
-        }
-        self
-    }
     pub fn get_mut(&mut self) -> &mut vk::MemoryRangeBarriersInfoKHR {
         &mut self.inner
     }
@@ -44275,16 +44294,24 @@ impl DependencyInfoNext for MemoryRangeBarriersInfoKHRBuilder<'_> {}
 
 #[repr(transparent)]
 #[derive(Default)]
-pub struct MemoryRangeBarrierKHRBuilder {
+pub struct MemoryRangeBarrierKHRBuilder<'a> {
     inner: vk::MemoryRangeBarrierKHR,
+    phantom: PhantomData<&'a ()>,
 }
-impl Builder<'_> for vk::MemoryRangeBarrierKHR {
-    type Type = MemoryRangeBarrierKHRBuilder;
+impl<'a> Builder<'a> for vk::MemoryRangeBarrierKHR {
+    type Type = MemoryRangeBarrierKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-impl MemoryRangeBarrierKHRBuilder {
+pub trait MemoryRangeBarrierKHRNext {}
+impl<'a> MemoryRangeBarrierKHRBuilder<'a> {
+    pub fn insert_next<T: MemoryRangeBarrierKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn get_mut(&mut self) -> &mut vk::MemoryRangeBarrierKHR {
         &mut self.inner
     }
@@ -44325,7 +44352,7 @@ impl MemoryRangeBarrierKHRBuilder {
         self
     }
 }
-impl Deref for MemoryRangeBarrierKHRBuilder {
+impl<'a> Deref for MemoryRangeBarrierKHRBuilder<'a> {
     type Target = vk::MemoryRangeBarrierKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner

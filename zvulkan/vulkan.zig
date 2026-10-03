@@ -1,4 +1,4 @@
-// Generated from vk.xml version 1.4.363
+// Generated from vk.xml version 1.4.364
 
 pub fn make_version(major: u32, minor: u32, patch: u32) Version {
     return Version{
@@ -6513,6 +6513,20 @@ pub const PipelineBinaryDataInfoKHR = extern struct {
 pub const PipelineCreateInfoKHR = extern struct {
     s_type: StructureType = .pipeline_create_info_khr,
     p_next: ?*anyopaque = null,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *ComputePipelineCreateInfo,
+            *GraphicsPipelineCreateInfo,
+            *RayTracingPipelineCreateInfoKHR,
+            *ExecutionGraphPipelineCreateInfoAMDX,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const PipelineLayoutCreateInfo = extern struct {
     s_type: StructureType = .pipeline_layout_create_info,
@@ -13081,6 +13095,17 @@ pub const MemoryBarrier2 = extern struct {
     src_access_mask: AccessFlags2 = .none,
     dst_stage_mask: PipelineStageFlags2 = .none,
     dst_access_mask: AccessFlags2 = .none,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *MemoryBarrierAccessFlags3KHR,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const MemoryBarrier2KHR = MemoryBarrier2;
 pub const ImageMemoryBarrier2 = extern struct {
@@ -16907,17 +16932,6 @@ pub const MemoryRangeBarriersInfoKHR = extern struct {
     p_next: ?*const anyopaque = null,
     memory_range_barrier_count: u32 = 0,
     p_memory_range_barriers: ?[*]const MemoryRangeBarrierKHR = null,
-    const Self = @This();
-    pub fn insert_next(self: *Self, next: anytype) void {
-        switch (@TypeOf(next)) {
-            inline *MemoryBarrierAccessFlags3KHR,
-            => {
-                next.p_next = @constCast(self.p_next);
-                self.p_next = next;
-            },
-            else => @compileError("invalid extension struct type"),
-        }
-    }
 };
 pub const MemoryRangeBarrierKHR = extern struct {
     s_type: StructureType = .memory_range_barrier_khr,
@@ -16930,6 +16944,17 @@ pub const MemoryRangeBarrierKHR = extern struct {
     dst_queue_family_index: u32 = 0,
     address_range: DeviceAddressRangeKHR = .{},
     address_flags: AddressCommandFlagsKHR = .none,
+    const Self = @This();
+    pub fn insert_next(self: *Self, next: anytype) void {
+        switch (@TypeOf(next)) {
+            inline *MemoryBarrierAccessFlags3KHR,
+            => {
+                next.p_next = @constCast(self.p_next);
+                self.p_next = next;
+            },
+            else => @compileError("invalid extension struct type"),
+        }
+    }
 };
 pub const PhysicalDeviceDeviceAddressCommandsFeaturesKHR = extern struct {
     s_type: StructureType = .physical_device_device_address_commands_features_khr,
